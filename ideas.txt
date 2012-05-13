@@ -1,10 +1,10 @@
 # License GPL3
 System blocks
 -------------
-Client; Dispatcher; Controller; Storage; ProjectManager; Task;
+Client; Frontend; Controller; Storage; ProjectManager; Task;
 
 Server-side:
-Dispatcher; Controller; Storage; ProjectManager; Task;
+Frontend; Controller; Storage; ProjectManager; Task;
 
 Client-side:
 Client; Task;
@@ -28,14 +28,14 @@ Case 1. A project with a fixed {1GB} amount of data divided into multiple tasks.
 
 1.1 Client1: Client enters a website. The automated script subscribes as Kaylee
              Node. 
-    Dispatcher: NodeController(); PM();
-    NodeController: is asked to register a new Node. The Node is assigned a
+    Frontend: Dispatcher(); PM();
+    Dispatcher: is asked to register a new Node. The Node is assigned a
         unique id #TODO: bson-objectid-like which is based on current datetime 
         remote_addr and counter#
 1.1.2 Node1: {ProjectX} is selected by the user (or hard-coded into the
              website). {ProjectX} application files are then being requested.
-    Dispatcher: NodeController(); PM();
-    NodeController: registers and binds the Node to {Controller}
+    Frontend: Dispatcher(); PM();
+    Dispatcher: registers and binds the Node to {Controller}
         defined by PM.        
     PM: {ProjectX}'s manager is asked for client-side program (which is 
         basically a javascript app).
@@ -44,7 +44,7 @@ Case 1. A project with a fixed {1GB} amount of data divided into multiple tasks.
 2.1 Node1: Is now ready to get a task. A task consists of parameters and/or 
            data. The parameters can come from Kaylee as well as from PM. 
            The data is always Project-specific. 
-    Dispatcher: NodeController() --> {ProjectX}.Controller();
+    Frontend: Dispatcher() --> {ProjectX}.Controller();
     Controller: checks if there any unsolved {ProjecX} tasks in queue? An 
         unsolved task is a task which has been sent to a Node and has 
         not been timed out yet. In this case, there are no unsolved 
@@ -72,7 +72,7 @@ Case 1. A project with a fixed {1GB} amount of data divided into multiple tasks.
            The results consist of two parts: the data and metadata. Metadata
            is a JSON object which contains information about data size, its hash
            time spent for generation etc.                      
-    Dispatcher: ** NodeController() --> {ProjectX}.Controller();
+    Frontend: ** Dispatcher() --> {ProjectX}.Controller();
     Controller: Finds the session data of the task by given ID. The task has
         not expired. As described previously, our ProjectManager is not able to 
         verify the correctness of the results. The Controller uses 'comparison'

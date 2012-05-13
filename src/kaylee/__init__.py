@@ -1,12 +1,13 @@
+# -*- coding: utf-8 --*
+
+__version__ = '0.1'
+
 import os
 import imp
 settings = imp.load_source('settings', os.environ['KAYLEE_SETTINGS_PATH'])
 
-from .storage import Storage
-from .dispatcher import DefaultDispatcher
+from .project import Project
 from .objectid import NodeID
-from .application import Application
 
-
+from .dispatcher import DefaultDispatcher
 dispatcher = DefaultDispatcher()
-applications = Application.load()

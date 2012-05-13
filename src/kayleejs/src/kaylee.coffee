@@ -1,4 +1,7 @@
 kl = {
+    node:  { # node state
+        id : null
+    }
     classes  : {}
     config:
         root : '/kaylee'
@@ -40,10 +43,14 @@ kl.ajax = (url, reqtype, data, success, error) ->
     return null
 
 kl.post = (url, data, success, error) ->
-    kl.ajax(url, 'POST', data, success, error)
+    _success = (data) ->
+        if data.error? then error(data.error) else success(data)
+    kl.ajax(url, 'POST', data, _success, error)
     return null
 
 kl.get = (url, success, error) ->
+    _success = (data) ->
+        if data.error? then error(data.error) else success(data)
     kl.ajax(url, 'GET', {}, success, error)
     return null
 
@@ -53,11 +60,20 @@ kl.error = (err) ->
 kl.start = (callback) ->
     kl.get("#{kl.config.root}/register",
         (data) ->
+            kl.node.id = data.nid
             callback(data) if callback?
             kl.node_registered.trigger(data)
     )
 
+kl.subscribe = (app_name, callback) ->
+    kl.get("#{kl.config.root}/apps/#{app_name}/subscribe/#{kl.node.id}",
+        (data) ->
+            callback(data) if callback?
+            kl.node_subscribed.trigger(data)
+    )
+
 # Kaylee events
 kl.node_registered = new Event()
+kl.node_subscribed = new Event()
 
 window.kl = kl;

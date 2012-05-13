@@ -31,3 +31,10 @@ class NodeIDTests(unittest.TestCase):
         t1 = n1.generation_time
         utcnow = datetime.now(utc)
         self.assertTrue(utcnow - t1 <= timedelta(seconds = 1))
+
+    def test_hashability(self):
+        n1 = NodeID('127.0.0.1')
+        n2 = NodeID(nid = n1)
+        d = { n1 : 'abc' }
+        self.assertIn(n1, d)
+        self.assertIn(n2, d)

@@ -1,21 +1,26 @@
-KC = kayleejs/src
-KJ = kayleejs/static/js/kaylee
+PROJECTS = monte_carlo_pi
 
-KJSOURCES = $(KC)/*.coffee
-JSOBJECTS = $(KJSOURCES:.coffee=.js)
-
-$(KJ): $(JSOBJECTS)
-	mkdir -p $(KJ)
-	cp $(KC)/*.js $(KJ)
-
-$(JSOBJECTS): $(KJSOURCES)
-	coffee -c $? 
-
-clean:
-	rm -f $(KJ)/*.js
-	rm -f $(KC)/*.js
+KL_SRC_DIR = kayleejs/src
+KL_JSLIB_DIR = kayleejs/static/js/kaylee
+export PJ_JSLIB_DIR = $(CURDIR)/kayleejs/static/js/projects
+PJ_DIRS = $(addprefix projects/, $(PROJECTS) )
 
 
-# Cheatsheet
-# http://www.cprogramming.com/tutorial/makefiles_continued.html
-# The $? macro stores the list of dependents more recent than the target
+SUBDIRS = $(KL_SRC_DIR) $(PJ_DIRS)
+
+all : subdirs $(KL_JSLIB_DIR)
+
+subdirs: $(SUBDIRS)
+
+$(KL_JSLIB_DIR):
+	cp $(KL_SRC_DIR)/*.js $(KL_JSLIB_DIR)
+
+$(KL_SRC_DIR):
+	$(MAKE) $(MAKECMDGOALS) -C $(KL_SRC_DIR)
+
+$(PJ_DIRS):
+	$(MAKE) $(MAKECMDGOALS) -C $(PJ_DIRS)
+
+clean: subdirs
+
+.PHONY: $(SUBDIRS) $(KL_JSLIB_DIR) clean subdirs
