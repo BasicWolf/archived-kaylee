@@ -1,6 +1,5 @@
 from kaylee.project import Project
 
-
 class MonteCarloPiProject(Project):
     def __init__(self, *args, **kwargs):
         super(MonteCarloPiProject, self).__init__(*args, **kwargs)

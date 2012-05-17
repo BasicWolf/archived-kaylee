@@ -37,7 +37,6 @@ def register_node():
 @app.route('/kaylee/apps/<app_name>/subscribe/<nid>')
 def subscribe_node(nid, app_name):
     node_config = dispatcher.subscribe(nid, app_name)
-    print json.dumps(node_config)
     return json.dumps(node_config)
 
 def run():
