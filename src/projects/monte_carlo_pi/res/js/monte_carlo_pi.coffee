@@ -11,7 +11,4 @@ pj.import = () ->
         kl.project_imported.trigger(alias)
     )
 
-pj.start = () ->
-    kl.app_started.trigger(kl.node.app.name)
-
 on_task_recieved = (task) ->

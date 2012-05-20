@@ -1,81 +1,74 @@
 # -*- coding: utf-8 -*-
-import os
-import importlib
-import inspect
+from abc import ABCMeta, abstractmethod
+from datetime import datetime
 
-from . import settings
-from . import storage
-from .project import Project
 from .errors import KayleeError
 from .node import Node
 
-
 class Controller(object):
-    def __init__(self, app_name, project, nodes_storage, *args, **kwargs):
+    __metaclass__ = ABCMeta
+    def __init__(self, id, app_name, project, results_storage,
+                 app_results_storage, *args, **kwargs):
+        self.id = id
         self.app_name = app_name
         self.project = project
-        self.nodes = nodes_storage
+        self.results = results_storage
+        self.app_results = app_results_storage
 
-    def subscribe(self, nid):
+    def subscribe(self, node):
         """Subscribe Node for bound project"""
-        node = Node(nid)
-        node.subscribe()
-        self.nodes.add(node)
-        return self.project.node_config
+        node.controller = self
+        node.subscription_timestamp = datetime.now()
+        return self.project.nodes_config
+
+    @abstractmethod
+    def get_task(self, node):
+        """ """
+
+    @abstractmethod
+    def accept_results(self, node, task_id, results):
+        """ """
+
 
 class ResultsComparatorController(Controller):
     def __init__(self, *args, **kwargs):
         super(ResultsComparatorController, self).__init__(*args, **kwargs)
+        self._comparison_nodes = kwargs['comparison_nodes']
+        self._tasks_pool = set()
 
-
-def load_applications():
-    # scan for classes
-    project_classes = {}
-    controller_classes = {}
-    nstorage_classes = {}
-    for sub_dir in os.listdir(settings.PROJECTS_DIR):
-        project_dir_path = os.path.join(settings.PROJECTS_DIR, sub_dir)
-        if not os.path.isdir(project_dir_path):
-            continue
-        if '__init__.py' not in os.listdir(project_dir_path):
-            continue
-        # looks like a python module
+    def get_task(self, node):
         try:
-            pymod = importlib.import_module(sub_dir)
-        except ImportError:
-            raise ImportError('Unable to import project package {}'
-                              .format(name))
-        mod_classes = _get_classes( pymod.__dict__.values() )
-        loc_classes = _get_classes( globals().values() )
-        ns_classes = _get_classes( storage.__dict__.values() )
-        _store_classes(project_classes, mod_classes, Project)
-        _store_classes(controller_classes, mod_classes, Controller)
-        _store_classes(controller_classes, loc_classes, Controller)
-        _store_classes(nstorage_classes, ns_classes,
-                       storage.NodesStorage)
-    # load controllers/projects classes and initialize controllers
-    controllers = {}
-    for conf in settings.APPLICATIONS:
-        try:
-            pname = conf['project']['name']
-            cname = conf['controller']['name']
-            nsname = conf['controller']['nodes_storage']['name']
-            pcls = project_classes[pname]
-            ccls = controller_classes[cname]
-            nscls = nstorage_classes[nsname]
-        except KeyError as e:
-            raise KayleeError('Configuration error or required class '
-                              'was not found: "{}"'.format(e.args[0]))
-        project = pcls(**conf['project']['config'])
-        nstorage = nscls(**conf['controller']['nodes_storage']['config'])
-        app_name = conf['name']
-        controllers[app_name] = ccls(app_name, project, nstorage,
-                                    **conf['controller']['config'])
-    return controllers
+            if node.task_id is None or node.task_id in self.app_results:
+                # try getting a task from the pool
+                tp_id = _tasks_pool.pop()
+                task = self.project[tp_id]
+            else:
+                # repeat the same task
+                task = project[node.task_id]
+        except KeyError:
+                task = next(self.project)
+        _tasks_pool.add(task['task']['id'])
 
-def _store_classes(dest, classes, cls):
-    for c in (c for c in classes if issubclass (c, cls) and c is not cls ):
-        dest[c.__name__] = c
+    def accept_results(self, node, task_id, data):
+        # 'results' computed for the task by various nodes
+        results = self.results[task_id]
+        if len(results) == self._comparison_nodes - 1:
+            if self._results_are_equal(data, results):
+                self.app_results.add(task_id, data)
+                del self._results[task_id]
+                self._tasks_pool.remove(task_id)
+            else:
+                # Something is wrong with either current result or any result
+                # which was received previously. At this point we discard all
+                # results associated with task_id and task_id remains in
+                # tasks_pool.
+                del self._results[task_id]
+        else:
+            self.results.add(node_id, task_id, data)
 
-def _get_classes(attr_list):
-    return list( attr for attr in attr_list if inspect.isclass(attr) )
+    def _results_are_equal(self, r0, res):
+        for r in res.iteritems():
+            if r0 != res:
+                return False
+        return True
+

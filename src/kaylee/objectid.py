@@ -32,19 +32,19 @@ def _crc32(data):
 
 
 class NodeID(object):
+    __slots__ = ('_id')
     _inc = 0
     _inc_lock = threading.Lock()
-    __slots__ = ('_id')
 
-    def __init__(self, remote_host = None, nid = None):
-        if nid is None and not isinstance(remote_host, string_types):
+    def __init__(self, remote_host = None, node_id = None):
+        if node_id is None and not isinstance(remote_host, string_types):
             raise TypeError('remote_host must be an instance of ({}, {}), not {}'
                             .format(binary_type.__name__, string_type.__name__,
                                     type(remote_host)))
-        if nid is None:
+        if node_id is None:
             self._generate(remote_host)
         else:
-            self._parse(nid)
+            self._parse(node_id)
 
     def _generate(self, remote_host):
         """Generate a new value for this NodeID.

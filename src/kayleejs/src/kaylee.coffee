@@ -60,7 +60,7 @@ kl.get = (url, success, error) ->
     return null
 
 kl.error = (err) ->
-    alert('Kaylee has encountered an unexpected error: #{err}')
+    alert("Kaylee has encountered an unexpected error: #{err})")
     return null
 
 # Function imports js/css dynamically. Current backend is $script.js library:
@@ -85,7 +85,7 @@ kl.subscribe = (app_name) ->
     )
 
 kl.get_task = () ->
-    kl.get("#{kl.config.root}/apps/#{app_name}/#{kl.node.id}/tasks",
+    kl.get("#{kl.config.root}/tasks/#{kl.node.id}",
            (response) ->
             switch response.action
                 when 'wait' then setTimeout(kl.get_task, response.args.timeout)
@@ -94,7 +94,7 @@ kl.get_task = () ->
 
 # primary event handlers
 on_node_registered = (data) ->
-    kl.node.id = data.nid
+    kl.node.id = data.node_id
 
 on_node_subscribed = (config) ->
     kl.node.app.config = config
@@ -104,7 +104,7 @@ on_node_subscribed = (config) ->
 # this event handler should be triggered by an imported project
 # when import() call is finished
 on_project_imported = (alias) ->
-    kl.node.app.start()
+    kl.get_task()
 
 # Kaylee events
 # TODO: add comments with signatures

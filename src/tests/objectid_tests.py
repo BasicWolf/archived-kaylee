@@ -19,12 +19,12 @@ class NodeIDTests(unittest.TestCase):
 
     def test_parse(self):
         n1 = NodeID('127.0.0.1')
-        n2 = NodeID(nid = str(n1))
+        n2 = NodeID(node_id = str(n1))
         self.assertEqual(n1, n2)
-        n3 = NodeID(nid = n2)
+        n3 = NodeID(node_id = n2)
         self.assertEqual(n2, n3)
-        self.assertRaises(TypeError, NodeID, nid = 123)
-        self.assertRaises(InvalidNodeIDError, NodeID, nid = 'abc')
+        self.assertRaises(TypeError, NodeID, node_id = 123)
+        self.assertRaises(InvalidNodeIDError, NodeID, node_id = 'abc')
 
     def test_dates(self):
         n1 = NodeID('127.0.0.1')
@@ -34,7 +34,7 @@ class NodeIDTests(unittest.TestCase):
 
     def test_hashability(self):
         n1 = NodeID('127.0.0.1')
-        n2 = NodeID(nid = n1)
+        n2 = NodeID(node_id = n1)
         d = { n1 : 'abc' }
         self.assertIn(n1, d)
         self.assertIn(n2, d)

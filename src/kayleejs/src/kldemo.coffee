@@ -13,7 +13,7 @@ on_node_registered = (data) ->
     apps = data.applications.join(', ')
     app = data.applications[0]
     kl.console.print("Your node is registered by ID:
-                       <span class='cem'>#{data.nid}</span>")
+                       <span class='cem'>#{data.node_id}</span>")
     kl.console.print("Available applications:
                        <span class='cem'>#{apps}</span>")
     kl.console.print("Subscribing to application:
