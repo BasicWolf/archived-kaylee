@@ -10,12 +10,12 @@ class Project(object):
         """ """
         return self
 
-    def __next__(self):
-        """ """
-        raise StopIteration()
-
     def next(self):
         return self.__next__()
+
+    @abstractmethod
+    def __next__(self):
+        """ """
 
     @abstractmethod
     def __getitem__(self, task_id):

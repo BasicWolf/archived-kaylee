@@ -1,13 +1,9 @@
 kl = {
-    node:  { # node state
-        id  : null        # str
-        app : {
-            name : null   # str
-            config : null # {}
-            start : null  # function
-        }
-    }
-    projects : {}
+    node_id : null
+    app :
+        name : null   # str
+        config : null # {}
+        worker : null # Worker object
     classes  : {}
     config:
         root : '/kaylee'
@@ -30,12 +26,19 @@ class Event
         @callbacks[t..t] = [] if (t = @callbacks.indexOf(callback)) > -1
 kl.classes.Event = Event
 
+kl.benchmark = () ->
+    return !!window.Worker
+
 # kl.ajax is currently using jQuery.ajax()
-kl.ajax = (url, reqtype, data, success, error) ->
-   $.ajax(
-        url: url,
-        type: reqtype
-        data: data,
+kl.ajax = (url, method, data, success, error) ->
+    switch method
+        when 'GET' then data = ''
+        when 'POST' then data = JSON.stringify(data)
+    $.ajax(
+        url: url
+        type: method
+        contentType: 'application/json; charset=utf-8'
+        data: data
         dataType: 'json'
         success: (data) ->
             success(data) if success?
@@ -56,12 +59,16 @@ kl.post = (url, data, success, error) ->
 kl.get = (url, success, error) ->
     _success = (data) ->
         if data.error? then error(data.error) else success(data)
-    kl.ajax(url, 'GET', {}, success, error)
+    kl.ajax(url, 'GET', null, success, error)
     return null
 
 kl.error = (err) ->
-    alert("Kaylee has encountered an unexpected error: #{err})")
+    alert("Kaylee has encountered an unexpected error: #{err}")
     return null
+
+kl.post_message = (msg, data = {}) ->
+    kl.app.worker.postMessage({'msg' : msg, 'data' : data})
+
 
 # Function imports js/css dynamically. Current backend is $script.js library:
 # https://github.com/ded/script.js
@@ -70,48 +77,85 @@ kl.import = $script
 kl.import_lib = (libname, callback) ->
     kl.import("#{kl.config.jsroot}/lib/#{libname}", callback)
 
-kl.import_project = (alias) ->
-    kl.import("#{kl.config.jsroot}/projects/#{alias}/#{alias}.js",
-        () ->  kl.projects[alias].import()
-    )
-
 kl.register = () ->
     kl.get("#{kl.config.root}/register", kl.node_registered.trigger)
 
 kl.subscribe = (app_name) ->
-    kl.node.app.name = app_name
-    kl.get("#{kl.config.root}/apps/#{app_name}/subscribe/#{kl.node.id}",
+    kl.app.name = app_name
+    kl.get("#{kl.config.root}/apps/#{app_name}/subscribe/#{kl.node_id}",
            kl.node_subscribed.trigger
     )
 
 kl.get_task = () ->
-    kl.get("#{kl.config.root}/tasks/#{kl.node.id}",
-           (response) ->
-            switch response.action
-                when 'wait' then setTimeout(kl.get_task, response.args.timeout)
-                when 'task' then response.task_recieved(respons.args)
-    )
+    kl.get("#{kl.config.root}/tasks/#{kl.node_id}",
+           _parse_action)
 
-# primary event handlers
+kl.send_results = (data) ->
+   kl.post("#{kl.config.root}/tasks/#{kl.node_id}", data,
+       (edata) ->
+            kl.results_sent.trigger()
+            _parse_action(edata)
+   )
+
+_parse_action = (data) ->
+    switch data.action
+        when 'task' then kl.task_recieved.trigger(data.data)
+        when 'stop' then kl.node_stopped.trigger(data.data)
+
+# Primary event handlers
 on_node_registered = (data) ->
-    kl.node.id = data.node_id
+    kl.node_id = data.node_id
 
 on_node_subscribed = (config) ->
-    kl.node.app.config = config
-    if not kl.projects[config.alias]?
-        kl.import_project(config.alias)
+    kl.app.config = config
+    kl.app.worker.terminate() if kl.app.worker?
 
-# this event handler should be triggered by an imported project
-# when import() call is finished
-on_project_imported = (alias) ->
+    worker = new Worker("#{kl.config.jsroot}/kaylee/klworker.js");
+    kl.app.worker = worker;
+    worker.addEventListener('message', ((e) -> on_worker_message(e.data)),
+                            false);
+    worker.addEventListener('error', ((e) -> on_worker_error(e)), false);
+    alias = config.alias
+    kl.post_message('import_project', {
+        'config' : kl.app.config,
+        'script' : "#{kl.config.jsroot}/projects/#{alias}/#{alias}.js",
+    })
+
+
+
+on_node_stopped = (data) ->
+    kl.app.worker.terminate()
+    kl.app.worker = null;
+
+on_project_imported = (args...) ->
     kl.get_task()
+
+on_task_recieved = (data) ->
+    kl.post_message('solve_task', data)
+
+on_task_completed = (data) ->
+    kl.send_results(data)
+
+# worker event handlers
+on_worker_message = (data) ->
+    msg = data.msg
+    mdata = data.data
+    switch msg
+        when 'project_imported' then kl.project_imported.trigger(mdata)
+        when 'task_completed' then kl.task_completed.trigger(mdata)
+
+on_worker_error = (e) ->
+    kl.worker_raised_error.trigger(e)
 
 # Kaylee events
 # TODO: add comments with signatures
 kl.node_registered = new Event(on_node_registered)
 kl.node_subscribed = new Event(on_node_subscribed)
+kl.node_stopped = new Event(on_node_stopped)
 kl.project_imported = new Event(on_project_imported)
-kl.app_started = new Event()
-kl.task_recieved = new Event()
+kl.task_recieved = new Event(on_task_recieved)
+kl.task_completed = new Event(on_task_completed)
+kl.worker_raised_error = new Event()
+kl.results_sent = new Event()
 
 window.kl = kl;

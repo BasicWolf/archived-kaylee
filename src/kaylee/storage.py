@@ -34,11 +34,11 @@ class NodesStorage(object):
             return node.id
         else:
             raise KayleeError('node must be an instance of {}, {}, {} or {} not'
-                              ' {}'.format(binary_type.__name__, 
+                              ' {}'.format(binary_type.__name__,
                                            string_type.__name__,
                                            NodeID.__name__,
                                            Node.__name__, type(node).__name__))
-                    
+
 
 class MemoryNodesStorage(NodesStorage):
     def __init__(self):
@@ -79,6 +79,10 @@ class ControllerResultsStorage(object):
         """
 
     @abstractmethod
+    def clear(self):
+        """ """
+
+    @abstractmethod
     def __setitem__(self, task_id, results):
         """Stores results associated with task_id to the storage.
         """
@@ -109,6 +113,9 @@ class MemoryControllerResultsStorage(ControllerResultsStorage):
 
     def remove(self, node_id, task_id):
         del self._d[task_id][node_id]
+
+    def clear(self):
+        self._d = {}
 
     def __getitem__(self, task_id):
         try:

@@ -13,7 +13,7 @@ endif
 all: $(TARGETS)
 
 $(LIBDIR)/$(LIB): $(LIBDIR)/$(PROJECT_NAME).coffee
-	coffee -c $(LIBDIR)/$(PROJECT_NAME).coffee
+	coffee --bare -c $(LIBDIR)/$(PROJECT_NAME).coffee
 
 remote:
 	mkdir -p  $(PJ_JSLIB_DIR)/$(PROJECT_NAME)

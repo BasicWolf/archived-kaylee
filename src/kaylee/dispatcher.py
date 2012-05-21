@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import threading
+import json
 from .objectid import NodeID
 from .node import Node
 from .errors import KayleeError
@@ -17,7 +18,8 @@ class Dispatcher(object):
         with self._lock:
             node = Node(NodeID(remote_host))
             self.nodes.add(node)
-        return node.id
+        return json.dumps ({ 'node_id' : str(node.id),
+                             'applications' : self.applications.names } )
 
     def unregister(self, node_id):
         """ """
@@ -27,9 +29,12 @@ class Dispatcher(object):
         """ """
         try:
             node = self.nodes[node_id]
-            return self.applications[app].subscribe(node)
+            return json.dumps( self.applications[app].subscribe(node) )
         except KeyError:
-            raise KayleeError('Node "{}" is not registered'.format(node_id))
+            return self._json_error('Node "{}" is not registered'
+                                    .format(node_id))
+        except KayleeError as e:
+            return self._json_error(e.message)
 
     def unsubscribe(self, node_id):
         """ """
@@ -38,10 +43,18 @@ class Dispatcher(object):
     def get_task(self, node_id):
         """ """
         node = self.nodes[node_id]
+        try:
+            data = node.get_task()
+            return self._json_action('task', data)
+        except StopIteration as e:
+            # at this point Controller indicates that
+            return self._json_action('stop', e.message)
 
-    def accept_results(self, node_id, data):
+    def accept_result(self, node_id, data):
         """ """
-        raise NotImplementedError()
+        node = self.nodes[node_id]
+        node.accept_result(data)
+        return self.get_task(node.id)
 
     def clean(self):
         """The method removes all timed-out nodes from the dispatcher.
@@ -49,3 +62,9 @@ class Dispatcher(object):
         with self._lock:
             for node in self.nodes:
                 pass
+
+    def _json_action(self, action, data):
+        return json.dumps({ 'action' : action, 'data' : data }, separators=(',',':'))
+
+    def _json_error(self, message):
+        return json.dumps({ 'error' : message }, separators=(',',':'))

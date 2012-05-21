@@ -12,6 +12,12 @@ class Node(object):
         self.task_timestamp = None
         self.controller = None
 
+    def get_task(self):
+        return self.controller.get_task(self)
+
+    def accept_result(self, data):
+        self.controller.accept_result(self, data)
+
     @property
     def task_id(self):
         return self._task_id

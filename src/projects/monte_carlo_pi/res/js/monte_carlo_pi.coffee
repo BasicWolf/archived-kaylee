@@ -1,14 +1,16 @@
-alias = 'monte_carlo_pi'
-kl = window.kl
-pj = kl.projects[alias] = {}
+pj =
+    ALIAS : 'monte_carlo_pi'
 
-pj.import = () ->
-    # All further modules importing should happen here
-    # when finished kl.project_imported should be triggered
-    kl.node.app.start = pj.start
-    kl.import_lib('alea.js', () ->
-        kl.task_recieved.bind(on_task_recieved)
-        kl.project_imported.trigger(alias)
-    )
+pj.init = (config) ->
+    pj.config = config
+    importScripts('/static/js/lib/alea.js')
 
-on_task_recieved = (task) ->
+pj.on_task_recieved = (data) ->
+    random = new Alea(data.task.id)
+    counter = 0
+    for i in [0..pj.config.random_points]
+        x = random()
+        y = random()
+        if x*x + y*y <= 1
+            counter += 1
+    klw.task_completed({'in_circle_points' : counter})

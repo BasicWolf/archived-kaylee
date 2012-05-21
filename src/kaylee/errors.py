@@ -7,6 +7,10 @@ class KayleeError(Exception):
     """
 
 class InvalidNodeIDError(KayleeError):
-    def __init__(self, nid):
-        KayleeError.__init__(self, "{} is not a valid NodeID".format(nid))
+    def __init__(self, node_id):
+        KayleeError.__init__(self, "{} is not a valid NodeID".format(node_id))
 
+class AppFinishedError(KayleeError):
+    def __init__(self, app_name):
+        KayleeError.__init__(self, 'All calculations for application {} were '
+                                   'completed.'.format(app_name))
