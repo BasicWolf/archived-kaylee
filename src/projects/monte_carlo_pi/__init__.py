@@ -27,3 +27,4 @@ class MonteCarloPiProject(Project):
 
     def __getitem__(self, task_id):
         return { 'task' : { 'id' : str(task_id) } }
+

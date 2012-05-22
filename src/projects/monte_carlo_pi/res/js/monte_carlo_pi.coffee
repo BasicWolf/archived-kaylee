@@ -13,4 +13,4 @@ pj.on_task_recieved = (data) ->
         y = random()
         if x*x + y*y <= 1
             counter += 1
-    klw.task_completed({'in_circle_points' : counter})
+    klw.task_completed({'points_in_circle' : counter})

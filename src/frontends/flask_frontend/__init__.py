@@ -34,7 +34,6 @@ def json_response(s):
     return app.response_class(s, mimetype='application/json')
 
 def run():
-#    app.secret_key = "?9U'4IKHyT;)k~w7#Q+ag|N\n0iT~21"
     app.jinja_loader = FileSystemLoader(settings.FRONTEND_TEMPLATE_DIR)
     app.static_path = settings.FRONTEND_STATIC_DIR
     app.wsgi_app = SharedDataMiddleware(app.wsgi_app,

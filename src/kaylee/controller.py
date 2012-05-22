@@ -33,8 +33,18 @@ class Controller(object):
         """ """
 
     @abstractmethod
-    def accept_result(self, node, results):
-        """ """
+    def accept_result(self, node, data):
+        """Accepts and processes results from a node.
+
+        :param node: Active Kaylee Node from which the results are received.
+        :param data: JSON-parsed data (python dictionary or list)
+        :throws InvlaidResultError: in case of invalid result.
+        :returns: data normalized and validated by binded project
+        """
+        data = self.project.normalize(data)
+        if not self.project.validate(data):
+            raise InvalidResultError(node)
+        return data
 
 
 class ResultsComparatorController(Controller):
@@ -77,6 +87,7 @@ class ResultsComparatorController(Controller):
         return task
 
     def accept_result(self, node, data):
+        data = super(ResultsComparatorController, self).accept_result(node, data)
         task_id = node.task_id
         # 'results' computed for the task by various nodes
         results = self.results[task_id]
@@ -94,6 +105,7 @@ class ResultsComparatorController(Controller):
             node.task_id = None
         else:
             self.results.add(node.id, task_id, data)
+        return data
 
     def _results_are_equal(self, r0, res):
         for node_id, res in res.iteritems():
@@ -107,7 +119,7 @@ class ResultsComparatorController(Controller):
         # and can switch to "FINISHED" state
         if self._no_more_new_tasks == True:
             if len(self._tasks_pool) == 0:
-                self._state = FINISHED
+                self.state = FINISHED
                 self.results.clear()
                 # TODO: think of this part, what should we do here?
                 # e.g. should controller have a function that would do

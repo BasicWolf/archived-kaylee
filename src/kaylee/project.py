@@ -21,3 +21,8 @@ class Project(object):
     def __getitem__(self, task_id):
         """ """
 
+    def validate(self, data):
+        return True
+
+    def normalize(self, data):
+        return data

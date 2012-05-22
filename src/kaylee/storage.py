@@ -106,7 +106,6 @@ class MemoryControllerResultsStorage(ControllerResultsStorage):
         self._d = {}
 
     def add(self, node_id, task_id, result):
-        """ """
         d = self._d.get(task_id, {})
         d[node_id] = result
         self._d[task_id] = d
@@ -139,6 +138,10 @@ class AppResultsStorage(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
+    def __len__(self):
+        """ """
+
+    @abstractmethod
     def __getitem__(self, task_id):
         """ """
 
@@ -166,18 +169,20 @@ class MemoryAppResultsStorage(AppResultsStorage):
     def __init__(self):
         self._d = {}
 
+    def __len__(self):
+        return len(self._d)
+
     def __getitem__(self, task_id):
-        """ """
+        return self_d[task_id]
 
     def __setitem__(self, task_id, result):
-        """ """
         self._d[task_id] = result
 
     def __contains__(self, task_id):
-        """ """
+        return task_id in self._d
 
     def __iter__(self):
-        """ """
+        return iter(self._d)
 
     def __next__(self):
-        """ """
+        raise NotImplementedError()

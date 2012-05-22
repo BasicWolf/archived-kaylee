@@ -13,4 +13,10 @@ class InvalidNodeIDError(KayleeError):
 class AppFinishedError(KayleeError):
     def __init__(self, app_name):
         KayleeError.__init__(self, 'All calculations for application {} were '
-                                   'completed.'.format(app_name))
+                                   'completed'.format(app_name))
+
+class InvalidResultError(KayleeError):
+    def __init__(self, node):
+        self.node = node
+        KayleeError.__init__(self, 'Invalid result by node {} for task {}'
+                             .format(node.id, note.task_id))

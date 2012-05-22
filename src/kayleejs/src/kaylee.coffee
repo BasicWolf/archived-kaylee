@@ -41,12 +41,12 @@ kl.ajax = (url, method, data, success, error) ->
         data: data
         dataType: 'json'
         success: (data) ->
-            success(data) if success?
-            #sf.status.unlock() if not data.error?
+            if data.error?
+                kl.server_raised_error.trigger(data.error)
+            else
+                success(data) if success?
         error: (jqXHR, status_text, errorCode) ->
-            if error? then error(status_text) else kl.error(status_text)
-            # sf.status.error("""Connection #{status_text}.
-            # Please Refresh the page and try again.""", false)
+            kl.server_raised_error.trigger(status_text)
     )
     return null
 
@@ -60,10 +60,6 @@ kl.get = (url, success, error) ->
     _success = (data) ->
         if data.error? then error(data.error) else success(data)
     kl.ajax(url, 'GET', null, success, error)
-    return null
-
-kl.error = (err) ->
-    alert("Kaylee has encountered an unexpected error: #{err}")
     return null
 
 kl.post_message = (msg, data = {}) ->
@@ -157,5 +153,6 @@ kl.task_recieved = new Event(on_task_recieved)
 kl.task_completed = new Event(on_task_completed)
 kl.worker_raised_error = new Event()
 kl.results_sent = new Event()
+kl.server_raised_error = new Event()
 
 window.kl = kl;

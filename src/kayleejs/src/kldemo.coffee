@@ -13,6 +13,7 @@ $(document).ready( () ->
     kl.task_completed.bind(on_task_completed)
     kl.results_sent.bind(on_results_sent)
     kl.worker_raised_error.bind(on_worker_error)
+    kl.server_raised_error.bind(on_server_error)
     kl.register()
 )
 
@@ -53,3 +54,6 @@ on_results_sent = () ->
 on_worker_error = (e) ->
     kl.console.print("ERROR: <span class='cerr'>Line #{e.lineno} in
                       #{e.filename}: #{e.message}</span>")
+
+on_server_error = (message) ->
+    kl.console.print("ERROR: <span class='cerr'>#{message}</span>")
