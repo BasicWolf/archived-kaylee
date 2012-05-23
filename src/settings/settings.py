@@ -16,7 +16,7 @@ APPLICATIONS = [
             'config' : {
                 'alias' : 'monte_carlo_pi',
                 'random_points' : 1000000,
-                'tasks_count' : 3
+                'tasks_count' : 20
                 },
             },
       'controller' : {
