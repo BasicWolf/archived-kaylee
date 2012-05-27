@@ -11,8 +11,7 @@
 """
 import threading
 import json
-from .objectid import NodeID
-from .node import Node
+from .node import Node, NodeID
 from .errors import KayleeError
 
 class Dispatcher(object):

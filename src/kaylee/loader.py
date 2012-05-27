@@ -107,7 +107,6 @@ def _load_dispatcher(settings):
     applications = Applications(controllers)
     # initialize Dispatcher
     nsname = settings.DISPATCHER['nodes_storage']['name']
-    print nsname, nsname in nstorage_classes, nstorage_classes
     nscls = nstorage_classes[nsname]
     nstorage = nscls(**settings.DISPATCHER['nodes_storage']['config'])
     dispatcher = Dispatcher(applications, nstorage)

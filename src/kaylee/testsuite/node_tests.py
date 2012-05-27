@@ -1,13 +1,10 @@
 import os
-from kaylee.testsuite import KayleeTest, 
-from kaylee import Node, NodeID
+from kaylee.testsuite import KayleeTest, load_tests
+from kaylee import Node, NodeID, load
 
 class NodeTests(KayleeTest):    
-    def test_load(self):
-        kl = load(Settings)
-
-class DispatcherTests(KayleeTest):
     def setUp(self):
-        self.kl = load(Settings)    
+        pass
 
-kaylee_suite = load_tests([DispatcherLoadTest, DispatcherTests])
+
+kaylee_suite = load_tests([NodeTests])

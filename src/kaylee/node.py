@@ -113,9 +113,8 @@ class NodeID(object):
                                     self.__class__.__name__, 
                                     type(nid).__name__))
 
-        def _crc32(self, data):
-            return zlib.crc32(data) & 0xffffffff
-
+    def _crc32(self, data):
+        return zlib.crc32(data) & 0xffffffff
 
     @property
     def binary(self):

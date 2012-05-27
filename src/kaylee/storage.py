@@ -2,8 +2,7 @@
 from abc import ABCMeta, abstractmethod
 
 from .errors import KayleeError
-from .objectid import NodeID
-from .node import Node
+from .node import Node, NodeID
 
 class NodesStorage(object):
     __metaclass__ = ABCMeta
