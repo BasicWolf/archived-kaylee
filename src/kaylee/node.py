@@ -5,7 +5,7 @@
     kaylee.node
     ~~~~~~~~~~~
 
-    Implements Kaylee server-side node structure
+    Implements Kaylee server-side node classes.
 
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT or GPLv3, see LICENSE for more details.
@@ -22,6 +22,18 @@ from .tz_util import utc
 
 
 class Node(object):
+    """
+    A Node object contains information about a node which was registered
+    by :class:`Dispatcher`. Its id field is an instance :class:`NodeID`
+    which allows to track when the node was registered. Other public 
+    fields are:
+    * subscription_timestamp - a :class:`datetime.datetime` instance which
+      tracks the time when a node has subscribed to an application.
+    * task_timestamp a :class:`datetime.datetime` instance which
+      tracks the time when a node has received its last to-compute task.
+    * controller a reference or an id of a application's
+      :class:`Controller`  object
+    """
     __slots__ = ('id', '_task_id', 'subscription_timestamp', 'task_timestamp',
                  'controller')
 
@@ -67,8 +79,7 @@ class NodeID(object):
             self._parse(node_id)
 
     def _generate(self, remote_host):
-        """Generate a new value for this NodeID.
-        """
+        """Generate a new value for this NodeID."""
         nid = b''
         # 4 bytes current time
         nid += struct.pack('>i', int(time.time()))
@@ -76,26 +87,17 @@ class NodeID(object):
         nid += struct.pack('>I', self._crc32(remote_host))
         # 2 bytes inc
         with NodeID._inc_lock:
-            NodeID._inc = (NodeID._inc + 1) % 0xFFFF
             nid += struct.pack(">i", NodeID._inc)[2:4]
+            NodeID._inc = (NodeID._inc + 1) % 0xFFFF
         # 10 bytes total
         self._id = nid
 
     def _parse(self, nid):
-        """Validate and use the given id for this NodeID.
-
-        Raises TypeError if id is not an instance of (:class:`basestring`
-        (:class:`str` or :class:`bytes` in python 3), NodeID) and InvalidId if
-        it is not a valid NodeID.
-
-        :Parameters:
-          - `nid`: a valid NodeID
-        """
         if isinstance(nid, NodeID):
             self._id = nid._id
         elif isinstance(nid, basestring):
             if len(nid) == 10:
-                if isinstance(nid, str): # bytes in Py3
+                if isinstance(nid, str): 
                     self._id = nid
                 else:
                     raise InvalidNodeIDError(nid)
@@ -118,13 +120,13 @@ class NodeID(object):
 
     @property
     def binary(self):
-        """10-byte binary representation of this NodeID.
-        """
+        """10-byte binary representation of this NodeID."""
         return self._id
 
     @property
     def generation_time(self):
-        """A :class:`datetime.datetime` instance representing the time of
+        """
+        A :class:`datetime.datetime` instance representing the time of
         generation for this :class:`NodeID`.
 
         The :class:`datetime.datetime` is timezone aware, and
