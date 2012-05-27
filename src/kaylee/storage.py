@@ -4,7 +4,6 @@ from abc import ABCMeta, abstractmethod
 from .errors import KayleeError
 from .objectid import NodeID
 from .node import Node
-from .py3compat import string_types, binary_type, string_type
 
 class NodesStorage(object):
     __metaclass__ = ABCMeta
@@ -26,18 +25,18 @@ class NodesStorage(object):
         """Check if storage contains the node"""
 
     def _get_node_id(self, node):
-        if isinstance(node, string_types):
+        if isinstance(node, basestring):
             return NodeID(node_id = node)
         elif isinstance(node, NodeID):
             return node
         elif isinstance(node, Node):
             return node.id
         else:
-            raise KayleeError('node must be an instance of {}, {}, {} or {} not'
-                              ' {}'.format(binary_type.__name__,
-                                           string_type.__name__,
+            raise KayleeError('node must be an instance of {}, {}, or {} not'
+                              ' {}'.format(basestring.__name__,
                                            NodeID.__name__,
-                                           Node.__name__, type(node).__name__))
+                                           Node.__name__, 
+                                           type(node).__name__))
 
 
 class MemoryNodesStorage(NodesStorage):

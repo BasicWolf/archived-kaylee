@@ -1,13 +1,15 @@
+# -*- coding: utf-8 -*-
 import os, sys
 import argparse
 
 def setup():
-    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    cur_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.join(cur_dir, '..')
     sys.path.insert(0, os.path.join(root_dir, 'frontends'))
     sys.path.insert(0, os.path.join(root_dir, 'projects'))
+    sys.path.insert(0, os.path.join(root_dir, 'kaylee/testsuite'))
     sys.path.insert(0, root_dir)
-    os.environ['KAYLEE_SETTINGS_PATH'] = os.path.join(root_dir, 'settings/settings.py')
-
+    os.environ['KAYLEE_SETTINGS_PATH'] = os.path.join(cur_dir, 'settings.py')
 
 def main():
     parser = argparse.ArgumentParser(description='Kaylee launcher')

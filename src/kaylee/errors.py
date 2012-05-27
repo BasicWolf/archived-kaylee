@@ -1,10 +1,18 @@
+# -*- coding: utf-8 -*-
+"""
+    kaylee.errors
+    ~~~~~~~~~~~~~
+
+    This module implements all exceptions raised by the Kaylee package.
+
+    :copyright: (c) 2012 by Zaur Nasibov.
+    :license: MIT or GPLv3, see LICENSE for more details.
+"""
 
 
-"""Exceptions raised by the Kaylee package."""
 
 class KayleeError(Exception):
-    """Base class for all Kaylee exceptions.
-    """
+    """Base class for all Kaylee exceptions."""
 
 class InvalidNodeIDError(KayleeError):
     def __init__(self, node_id):
@@ -19,4 +27,4 @@ class InvalidResultError(KayleeError):
     def __init__(self, node):
         self.node = node
         KayleeError.__init__(self, 'Invalid result by node {} for task {}'
-                             .format(node.id, note.task_id))
+                             .format(node.id, node.task_id))

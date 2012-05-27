@@ -3,11 +3,6 @@ import run
 
 run.setup()
 
-from tests import *
+from kaylee.testsuite import main
 
-def main():
-    unittest.main()
-
-
-if __name__ == '__main__':
-    main()
+main()

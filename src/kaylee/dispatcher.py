@@ -1,4 +1,14 @@
 # -*- coding: utf-8 -*-
+"""
+    kaylee.dispatcher
+    ~~~~~~~~~~~~~~~~~
+
+    This module implements Kaylee's lower level front-end which could
+    be easily used with any web framework. 
+
+    :copyright: (c) 2012 by Zaur Nasibov.
+    :license: MIT or GPLv3, see LICENSE for more details.
+"""
 import threading
 import json
 from .objectid import NodeID
@@ -47,7 +57,7 @@ class Dispatcher(object):
         """ """
         node = self.nodes[node_id]
         try:
-            data = node.get_task()
+            data = node.get_task().serialize()
             return self._json_action('task', data)
         except StopIteration as e:
             # at this point Controller indicates that

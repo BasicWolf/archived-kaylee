@@ -3,8 +3,9 @@ from datetime import datetime, timedelta
 from kaylee import NodeID
 from kaylee.errors import InvalidNodeIDError
 from kaylee.tz_util import utc
+from kaylee.testsuite import KayleeTest, load_tests
 
-class NodeIDTests(unittest.TestCase):
+class NodeIDTests(KayleeTest):
     def setUp(self):
         pass
 
@@ -38,3 +39,6 @@ class NodeIDTests(unittest.TestCase):
         d = { n1 : 'abc' }
         self.assertIn(n1, d)
         self.assertIn(n2, d)
+
+
+kaylee_suite = load_tests([NodeIDTests, ])

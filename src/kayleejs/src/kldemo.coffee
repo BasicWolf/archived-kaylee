@@ -40,7 +40,7 @@ on_project_imported = (app_name) ->
     kl.console.print("Project files imported successfully.")
 
 on_task_recieved = (data) ->
-    kl.console.print("Task [<span class='cem'>#{data.task.id} /
+    kl.console.print("Task [<span class='cem'>#{data.id} /
                       ##{_tasks_counter}</span>] recieved.")
 
 on_task_completed = (data) ->

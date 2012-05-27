@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
+import os
+import imp
+
 from flask import Flask, session, request, jsonify, render_template, json
 from werkzeug import SharedDataMiddleware
 from jinja2 import FileSystemLoader
 
-from kaylee import settings, applications, dispatcher, NodeID
-from kaylee.errors import InvalidNodeIDError
+import kaylee
 
 app = Flask('kaylee')
+kl = None
 
 @app.route("/")
 def hello():
@@ -34,6 +37,10 @@ def json_response(s):
     return app.response_class(s, mimetype='application/json')
 
 def run():
+    global kl
+    settings = imp.load_source('settings', os.environ['KAYLEE_SETTINGS_PATH'])
+    kl = kaylee.load(settings)
+
     app.jinja_loader = FileSystemLoader(settings.FRONTEND_TEMPLATE_DIR)
     app.static_path = settings.FRONTEND_STATIC_DIR
     app.wsgi_app = SharedDataMiddleware(app.wsgi_app,

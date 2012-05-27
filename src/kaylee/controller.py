@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+"""
+    kaylee.controller
+    ~~~~~~~~~~~~~~~~~
+
+    This module provides classes for Kaylee controllers. 
+
+    :copyright: (c) 2012 by Zaur Nasibov.
+    :license: MIT or GPLv3, see LICENSE for more details.
+"""
 from abc import ABCMeta, abstractmethod, abstractproperty
 from datetime import datetime
 
@@ -38,13 +47,9 @@ class Controller(object):
 
         :param node: Active Kaylee Node from which the results are received.
         :param data: JSON-parsed data (python dictionary or list)
-        :throws InvlaidResultError: in case of invalid result.
         :returns: data normalized and validated by binded project
         """
-        data = self.project.normalize(data)
-        if not self.project.validate(data):
-            raise InvalidResultError(node)
-        return data
+        return self.project.normalize(data)
 
 
 class ResultsComparatorController(Controller):
@@ -81,9 +86,8 @@ class ResultsComparatorController(Controller):
                                 'in calculations for "{}" application anymore '
                                 'and will be unsubscribed.'
                                 .format(self.app_name))
-        task_id = task['task']['id']
-        node.task_id = task_id
-        self._tasks_pool.add(task_id)
+        node.task_id = task.id
+        self._tasks_pool.add(task.id)
         return task
 
     def accept_result(self, node, data):

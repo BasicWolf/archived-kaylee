@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from kaylee.project import Project
+from kaylee.project import Project, Task
 
 ALIAS = 'monte_carlo_pi'
 
@@ -26,5 +26,5 @@ class MonteCarloPiProject(Project):
             raise StopIteration()
 
     def __getitem__(self, task_id):
-        return { 'task' : { 'id' : str(task_id) } }
+        return Task(task_id)
 

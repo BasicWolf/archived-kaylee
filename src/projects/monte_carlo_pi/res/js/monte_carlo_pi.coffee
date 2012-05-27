@@ -6,7 +6,7 @@ pj.init = (config) ->
     importScripts('/static/js/lib/alea.js')
 
 pj.on_task_recieved = (data) ->
-    random = new Alea(data.task.id)
+    random = new Alea(data.id)
     counter = 0
     for i in [0..pj.config.random_points]
         x = random()
