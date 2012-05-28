@@ -18,6 +18,7 @@ class NodeIDTests(KayleeTest):
         self.assertRaises(TypeError, NodeID)
         self.assertRaises(TypeError, NodeID, 1000)
         self.assertRaises(TypeError, NodeID, 100.1)
+        self.assertEqual(len(str(n1)), 20)
 
     def test_internal_counter(self):
         NodeID._inc = 0 # modified only for test purposes
@@ -36,16 +37,16 @@ class NodeIDTests(KayleeTest):
     def test_parse(self):
         n1 = NodeID('127.0.0.1')
         n2 = NodeID(node_id = str(n1))
-        self.assertEqual(n1, n2)        
+        self.assertEqual(n1, n2)
         n2 = NodeID(node_id = unicode(n1))
         self.assertEqual(n1, n2)
-        
+
         n2 = NodeID(node_id = n1)
         self.assertEqual(n1, n2)
         self.assertRaises(TypeError, NodeID, node_id = 123)
         self.assertRaises(InvalidNodeIDError, NodeID, node_id = 'abc')
         self.assertRaises(InvalidNodeIDError, NodeID, node_id = u'1'*10)
-        
+
     def test_dates(self):
         n1 = NodeID('127.0.0.1')
         t1 = n1.generation_time
@@ -60,7 +61,7 @@ class NodeIDTests(KayleeTest):
         self.assertIn(n2, d)
 
 
-class NodeTests(KayleeTest):    
+class NodeTests(KayleeTest):
     def setUp(self):
         pass
 
@@ -68,5 +69,7 @@ class NodeTests(KayleeTest):
         nid = NodeID('127.0.0.1')
         node = Node(nid)
         self.assertEqual(nid, node.id)
+        self.assertRaises(TypeError, Node, 100)
+        self.assertRaises(TypeError, Node, 'abc')
 
 kaylee_suite = load_tests([NodeTests, NodeIDTests, ])

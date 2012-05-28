@@ -38,6 +38,11 @@ class Node(object):
                  'controller')
 
     def __init__(self, node_id):
+        if not isinstance(node_id, NodeID):
+            raise TypeError('node_id must be an instance of {}, not {}'
+                            .format(NodeID.__name__,
+                                    type(node_id).__name__ )
+                            )
         self.id = node_id
         self._task_id = None
         self.subscription_timestamp = None
@@ -72,7 +77,8 @@ class NodeID(object):
         if node_id is None and not isinstance(remote_host, basestring):
             raise TypeError('remote_host must be an instance of {}, not {}'
                             .format(basestring.__name__,
-                                    type(remote_host).__name__))
+                                    type(remote_host).__name__ )
+                            )
         if node_id is None:
             self._generate(remote_host)
         else:

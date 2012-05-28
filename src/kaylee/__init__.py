@@ -2,14 +2,14 @@
 """
     kaylee
     ~~~~~~
-    
-    Kaylee is distributed computing framework. 
+
+    Kaylee is distributed computing framework.
 
     It implements all the functionality required to distribute computation
     among nodes and collect the results. Kaylee aims to let a user
     completely focus on project's business logic and handle all other
-    stuff automatically. 
- 
+    stuff automatically.
+
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT or GPLv3, see LICENSE for more details.
 """

@@ -3,7 +3,7 @@
     kaylee.project
     ~~~~~~~~~~~~~~
 
-    This module provides basic interfaces for Kaylee projects. 
+    This module provides basic interfaces for Kaylee projects.
 
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT or GPLv3, see LICENSE for more details.
@@ -17,7 +17,7 @@ class Project(object):
     Base class for Kaylee projects. Essentialy a Project is an
     iterator that yields Tasks. Every task has a unique id and a
     project should be able to return the same task on
-    when project.__getitem__(same_id) is called. 
+    when project.__getitem__(same_id) is called.
     """
 
     __metaclass__ = ABCMeta
@@ -27,7 +27,7 @@ class Project(object):
         #: details used by every client-side node. For example, it can
         #: contain a path to the javascript file with project's
         #: client-side logic. That path will be later used by Kaylee's
-        #: client engine to load and start calculations on client. 
+        #: client engine to load and start calculations on client.
         self.nodes_config = { }
 
     def __iter__(self):
@@ -45,7 +45,7 @@ class Project(object):
         """Returns task with required id."""
 
     def normalize(self, data):
-        """Normalizes and validates the reply from a node. 
+        """Normalizes and validates the reply from a node.
 
         :param data: the data to be validated and/or normalized.
         :throws InvlaidResultError: in case of invalid result.
@@ -56,15 +56,15 @@ class Project(object):
 
 class TaskMeta(type):
     """
-    Metaclass for kaylee.project.Task. Adds 'serializable' incremental 
-    list logic to the class. The serializable field of a class is a list 
-    which contains the names of the object fields that will be put 
-    into a dictionary and returned by the serialize() method. 
+    Metaclass for kaylee.project.Task. Adds 'serializable' incremental
+    list logic to the class. The serializable field of a class is a list
+    which contains the names of the object fields that will be put
+    into a dictionary and returned by the serialize() method.
     This dictionary can be then used to e.g. dump the object to JSON.
     """
     def __new__(meta, classname, bases, class_dict):
         serializable = []
-        if 'serializable' in class_dict:            
+        if 'serializable' in class_dict:
             serializable = class_dict['serializable']
 
         for base in bases:
@@ -92,7 +92,7 @@ class Task(object):
 
     task = MyTask('001', 60)
     task.serialize()
-    >>> { 'id' : '001', 'speed' : 60 } 
+    >>> { 'id' : '001', 'speed' : 60 }
     """
     serializable = ['id']
 
