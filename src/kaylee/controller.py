@@ -79,7 +79,7 @@ class ResultsComparatorController(Controller):
         except StopIteration:
             # There will be no more new tasks from the project
             # we can still refer to old tasks via project[task_id]
-            # by re-throwing StopIteration() Controller 'tells' dispatcher that
+            # by re-throwing StopIteration() Controller 'tells' Kaylee that
             # there is no need to involve current node in further calculations
             self._no_more_new_tasks = True
             raise StopIteration('Current node is not allowed to participate '

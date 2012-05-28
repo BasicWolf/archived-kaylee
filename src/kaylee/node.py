@@ -24,8 +24,8 @@ from .tz_util import utc
 class Node(object):
     """
     A Node object contains information about a node which was registered
-    by :class:`Dispatcher`. Its id field is an instance :class:`NodeID`
-    which allows to track when the node was registered. Other public 
+    by :class:`Kaylee`. Its id field is an instance :class:`NodeID`
+    which allows to track when the node was registered. Other public
     fields are:
     * subscription_timestamp - a :class:`datetime.datetime` instance which
       tracks the time when a node has subscribed to an application.
@@ -71,7 +71,7 @@ class NodeID(object):
     def __init__(self, remote_host = None, node_id = None):
         if node_id is None and not isinstance(remote_host, basestring):
             raise TypeError('remote_host must be an instance of {}, not {}'
-                            .format(basestring.__name__, 
+                            .format(basestring.__name__,
                                     type(remote_host).__name__))
         if node_id is None:
             self._generate(remote_host)
@@ -97,7 +97,7 @@ class NodeID(object):
             self._id = nid._id
         elif isinstance(nid, basestring):
             if len(nid) == 10:
-                if isinstance(nid, str): 
+                if isinstance(nid, str):
                     self._id = nid
                 else:
                     raise InvalidNodeIDError(nid)
@@ -110,9 +110,9 @@ class NodeID(object):
                 raise InvalidNodeIDError(nid)
         else:
             raise TypeError('id must be an instance of {}, {} or {}, not {}'
-                            .format(str.__name__,  
-                                    unicode.__name__, 
-                                    self.__class__.__name__, 
+                            .format(str.__name__,
+                                    unicode.__name__,
+                                    self.__class__.__name__,
                                     type(nid).__name__))
 
     def _crc32(self, data):

@@ -18,6 +18,6 @@ __version__ = '0.1'
 
 from .project import Project
 from .node import Node, NodeID
-from .dispatcher import Dispatcher
+from .kaylee import Kaylee
 from .controller import Controller
-from .loader import load_dispatcher as load
+from .loader import load_kaylee as load

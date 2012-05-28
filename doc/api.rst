@@ -7,9 +7,9 @@ API
 
 This part of the documentation covers all the interfaces of Kaylee.
 
-Dispatcher Object
+Kaylee Object
 ------------------
 
-.. autoclass:: kaylee.Dispatcher
+.. autoclass:: kaylee.Kaylee
    :members:
    :inherited-members:

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 PROJECTS_DIR = '/home/zaur/Documents/projects/kaylee/src/projects'
 
-DISPATCHER = {
+KAYLEE = {
     'nodes_storage' : {
         'name' : 'MemoryNodesStorage',
         'config' : {},

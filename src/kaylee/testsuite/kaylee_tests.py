@@ -3,19 +3,19 @@ from kaylee.testsuite import KayleeTest, load_tests, TestSettings
 from kaylee import load
 
 class Settings(TestSettings):
-    DISPATCHER = {
+    KAYLEE = {
         'nodes_storage' : {
             'name' : 'MemoryNodesStorage',
             'config' : {},
             },
     }
 
-class DispatcherLoadTest(KayleeTest):    
+class KayleeLoadTest(KayleeTest):
     def test_load(self):
         kl = load(Settings)
 
-class DispatcherTests(KayleeTest):
+class KayleeTests(KayleeTest):
     def setUp(self):
-        self.kl = load(Settings)    
+        self.kl = load(Settings)
 
-kaylee_suite = load_tests([DispatcherLoadTest, DispatcherTests])
+kaylee_suite = load_tests([KayleeLoadTest, KayleeTests])

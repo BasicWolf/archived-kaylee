@@ -3,7 +3,7 @@
     kaylee.loader
     ~~~~~~~~~~~~~
 
-    Implements Kaylee projects, controllers and dispatcher loader.
+    Implements Kaylee projects, controllers and Kaylee loader.
 
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT or GPLv3, see LICENSE for more details.
@@ -28,20 +28,20 @@ class Applications(object):
             return self._controllers[key]
 
 
-def load_dispatcher(settings):
+def load_kaylee(settings):
     try:
-        return _load_dispatcher(settings)
+        return _load_kaylee(settings)
     except KeyError as e:
         raise KayleeError('Configuration error or object was not found: '
                           ' "{}"'.format(e.args[0]))
 
-def _load_dispatcher(settings):
+def _load_kaylee(settings):
     """Loads Kaylee global objects using configuration from settings."""
     from . import storage
     from . import controller
     from . import project
     from . errors import KayleeError
-    from .dispatcher import Dispatcher
+    from .kaylee import Kaylee
 
     # scan for classes
     project_classes = {}
@@ -105,12 +105,12 @@ def _load_dispatcher(settings):
         controllers[app_name] = controller
         _idx += 1
     applications = Applications(controllers)
-    # initialize Dispatcher
-    nsname = settings.DISPATCHER['nodes_storage']['name']
+    # initialize Kaylee
+    nsname = settings.KAYLEE['nodes_storage']['name']
     nscls = nstorage_classes[nsname]
-    nstorage = nscls(**settings.DISPATCHER['nodes_storage']['config'])
-    dispatcher = Dispatcher(applications, nstorage)
-    return dispatcher
+    nstorage = nscls(**settings.KAYLEE['nodes_storage']['config'])
+    kaylee = Kaylee(applications, nstorage)
+    return kaylee
 
 def _store_classes(dest, classes, cls):
     for c in (c for c in classes if issubclass (c, cls) and c is not cls ):
