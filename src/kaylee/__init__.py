@@ -16,8 +16,11 @@
 
 __version__ = '0.1'
 
-from .project import Project
-from .node import Node, NodeID
 from .kaylee import Kaylee
+from .node import Node, NodeID
+from .storage import NodesStorage
 from .controller import Controller
-from .loader import load_kaylee as load
+from .project import Project
+from .loader import Applications, load
+from .errors import KayleeError
+

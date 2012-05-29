@@ -13,12 +13,10 @@ from copy import copy
 
 
 class Project(object):
-    """
-    Base class for Kaylee projects. Essentialy a Project is an
+    """Base class for Kaylee projects. Essentialy a Project is an
     iterator that yields Tasks. Every task has a unique id and a
     project should be able to return the same task on
-    when project.__getitem__(same_id) is called.
-    """
+    when project.__getitem__(same_id) is called."""
 
     __metaclass__ = ABCMeta
 

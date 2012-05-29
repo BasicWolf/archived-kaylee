@@ -28,10 +28,10 @@ class Applications(object):
             return self._controllers[key]
 
 
-def load_kaylee(settings):
+def load(settings):
     try:
         return _load_kaylee(settings)
-    except KeyError as e:
+    except (KeyError, AttributeError) as e:
         raise KayleeError('Configuration error or object was not found: '
                           ' "{}"'.format(e.args[0]))
 
@@ -49,14 +49,14 @@ def _load_kaylee(settings):
     nstorage_classes = {}
     crstorage_classes = {}
     arstorage_classes = {}
-    
+
     # load built-in kaylee classes
     ctrl_classes = _get_classes( controller.__dict__.values()  )
     stg_classes = _get_classes( storage.__dict__.values() )
     _store_classes(controller_classes, ctrl_classes, controller.Controller)
     _store_classes(nstorage_classes, stg_classes, storage.NodesStorage)
     _store_classes(arstorage_classes, stg_classes, storage.AppResultsStorage)
-    _store_classes(crstorage_classes, stg_classes, 
+    _store_classes(crstorage_classes, stg_classes,
                    storage.ControllerResultsStorage)
 
     # load classes from project modules
@@ -109,7 +109,7 @@ def _load_kaylee(settings):
     nsname = settings.KAYLEE['nodes_storage']['name']
     nscls = nstorage_classes[nsname]
     nstorage = nscls(**settings.KAYLEE['nodes_storage']['config'])
-    kaylee = Kaylee(applications, nstorage)
+    kaylee = Kaylee(nstorage, applications)
     return kaylee
 
 def _store_classes(dest, classes, cls):

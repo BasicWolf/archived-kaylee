@@ -13,9 +13,21 @@ import threading
 import json
 from .node import Node, NodeID
 from .errors import KayleeError
+from .loader import Applications
 
 class Kaylee(object):
-    def __init__(self, applications, nodes_storage):
+    """The Kaylee class serves as a proxy between WSGI framework and Kaylee
+    applications. It handles requests from clients and returns JSON-formatted
+    data. Note that it is the task of particular front-end to set the
+    content-type to "application/json".
+
+    Usually you don't create an instance of :class:`Kaylee` is not created,
+    but rather call :function:`kaylee.load` with settings as an argument.
+
+    :param nodes_storage: an instance of :class:`kaylee.NodesStorage`.
+    :param applications: an instance of :class:`kaylee.Applications` object.
+    """
+    def __init__(self, nodes_storage, applications = Applications({})):
         self.applications = applications
         self.nodes = nodes_storage
         self._lock = threading.Lock()
