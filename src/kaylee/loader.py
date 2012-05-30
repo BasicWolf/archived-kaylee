@@ -6,7 +6,7 @@
     Implements Kaylee projects, controllers and Kaylee loader.
 
     :copyright: (c) 2012 by Zaur Nasibov.
-    :license: MIT or GPLv3, see LICENSE for more details.
+    :license: MIT, see LICENSE for more details.
 """
 import os
 import importlib
@@ -105,11 +105,17 @@ def _load_kaylee(settings):
         controllers[app_name] = controller
         _idx += 1
     applications = Applications(controllers)
+
+    # build Kaylee nodes configuration
+    nodes_config = {'projects_static_root' : settings.PROJECTS_STATIC_ROOT,
+                    'kaylee_js_root' : settings.KAYLEE_JS_ROOT,
+                    'lib_js_root' : settings.LIB_JS_ROOT,
+                    }
     # initialize Kaylee
-    nsname = settings.KAYLEE['nodes_storage']['name']
+    nsname = settings.NODES_STORAGE['name']
     nscls = nstorage_classes[nsname]
-    nstorage = nscls(**settings.KAYLEE['nodes_storage']['config'])
-    kaylee = Kaylee(nstorage, applications)
+    nstorage = nscls(**settings.NODES_STORAGE['config'])
+    kaylee = Kaylee(nodes_config, nstorage, applications)
     return kaylee
 
 def _store_classes(dest, classes, cls):

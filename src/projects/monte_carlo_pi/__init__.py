@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 from kaylee.project import Project, Task
 
-ALIAS = 'monte_carlo_pi'
-
 class MonteCarloPiProject(Project):
     def __init__(self, *args, **kwargs):
         super(MonteCarloPiProject, self).__init__(*args, **kwargs)
         self.tasks_count = kwargs['tasks_count']
         self.random_points = kwargs['random_points']
-        self.nodes_config = {
-            'alias' : kwargs.get('alias', ALIAS),
-            'random_points' : self.random_points,
-            }
+        self.nodes_config.update({
+                'random_points' : self.random_points,
+                })
         self._tasks_counter = -1
 
     def __iter__(self):

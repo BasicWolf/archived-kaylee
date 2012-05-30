@@ -3,6 +3,7 @@ kl = window.kl
 _tasks_counter = 0
 
 $(document).ready( () ->
+    kl.setup( { url_root : '/kaylee' } )
     kl.console.init('console')
     kl.console.print('<b>Kaylee status console</b><br>')
     kl.node_registered.bind(on_node_registered)

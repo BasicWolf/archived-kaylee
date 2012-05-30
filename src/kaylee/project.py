@@ -6,7 +6,7 @@
     This module provides basic interfaces for Kaylee projects.
 
     :copyright: (c) 2012 by Zaur Nasibov.
-    :license: MIT or GPLv3, see LICENSE for more details.
+    :license: MIT, see LICENSE for more details.
 """
 from abc import ABCMeta, abstractmethod
 from copy import copy
@@ -26,7 +26,9 @@ class Project(object):
         #: contain a path to the javascript file with project's
         #: client-side logic. That path will be later used by Kaylee's
         #: client engine to load and start calculations on client.
-        self.nodes_config = { }
+        self.nodes_config = {
+            'script' : kwargs['script'],
+            }
 
     def __iter__(self):
         return self

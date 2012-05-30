@@ -8,7 +8,7 @@
     Implements Kaylee server-side node classes.
 
     :copyright: (c) 2012 by Zaur Nasibov.
-    :license: MIT or GPLv3, see LICENSE for more details.
+    :license: MIT, see LICENSE for more details.
 """
 
 from datetime import datetime

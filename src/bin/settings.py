@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-PROJECTS_DIR = '/home/zaur/Documents/projects/kaylee/src/projects'
 
-KAYLEE = {
-    'nodes_storage' : {
-        'name' : 'MemoryNodesStorage',
-        'config' : {},
-        },
+PROJECTS_DIR = '/home/zaur/Documents/projects/kaylee/src/projects'
+KAYLEE_JS_ROOT = '/static/js/kaylee'
+LIB_JS_ROOT    = '/static/js/lib'
+PROJECTS_STATIC_ROOT = '/static/js/projects'
+
+NODES_STORAGE = {
+    'name' : 'MemoryNodesStorage',
+    'config' : {},
 }
 
 APPLICATIONS = [
@@ -14,7 +16,7 @@ APPLICATIONS = [
       'project' : {
             'name' : 'MonteCarloPiProject',
             'config' : {
-                'alias' : 'monte_carlo_pi',
+                'script' : 'monte_carlo_pi/monte_carlo_pi.js',
                 'random_points' : 1000000,
                 'tasks_count' : 20
                 },

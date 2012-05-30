@@ -5,9 +5,12 @@ kl = {
         config : null # {}
         worker : null # Worker object
     classes  : {}
-    config:
-        root : '/kaylee'
-        jsroot : '/static/js'
+    config: {
+        # url_root             # set by kl.setup()
+        # kaylee_js_root
+        # lib_js_root
+        # projects_static_root
+        }
 }
 
 class Event
@@ -71,23 +74,28 @@ kl.post_message = (msg, data = {}) ->
 kl.import = $script
 
 kl.import_lib = (libname, callback) ->
-    kl.import("#{kl.config.jsroot}/lib/#{libname}", callback)
+    kl.import("#{kl.config.lib_js_root}/#{libname}", callback)
+
+kl.setup = (config) ->
+    # expected configuration
+    # url_root = all Kaylee requests fill starts with current prefix
+    kl.config = config
 
 kl.register = () ->
-    kl.get("#{kl.config.root}/register", kl.node_registered.trigger)
+    kl.get("#{kl.config.url_root}/register", kl.node_registered.trigger)
 
 kl.subscribe = (app_name) ->
     kl.app.name = app_name
-    kl.get("#{kl.config.root}/apps/#{app_name}/subscribe/#{kl.node_id}",
+    kl.get("#{kl.config.url_root}/apps/#{app_name}/subscribe/#{kl.node_id}",
            kl.node_subscribed.trigger
     )
 
 kl.get_task = () ->
-    kl.get("#{kl.config.root}/tasks/#{kl.node_id}",
+    kl.get("#{kl.config.url_root}/tasks/#{kl.node_id}",
            _parse_action)
 
 kl.send_results = (data) ->
-   kl.post("#{kl.config.root}/tasks/#{kl.node_id}", data,
+   kl.post("#{kl.config.url_root}/tasks/#{kl.node_id}", data,
        (edata) ->
             kl.results_sent.trigger()
             _parse_action(edata)
@@ -100,21 +108,23 @@ _parse_action = (data) ->
 
 # Primary event handlers
 on_node_registered = (data) ->
+    for key, val of data.config
+        kl.config[key] = val
     kl.node_id = data.node_id
 
 on_node_subscribed = (config) ->
     kl.app.config = config
     kl.app.worker.terminate() if kl.app.worker?
 
-    worker = new Worker("#{kl.config.jsroot}/kaylee/klworker.js");
+    worker = new Worker("#{kl.config.kaylee_js_root}/klworker.js");
     kl.app.worker = worker;
     worker.addEventListener('message', ((e) -> on_worker_message(e.data)),
                             false);
     worker.addEventListener('error', ((e) -> on_worker_error(e)), false);
-    alias = config.alias
     kl.post_message('import_project', {
-        'config' : kl.app.config,
-        'script' : "#{kl.config.jsroot}/projects/#{alias}/#{alias}.js",
+        'kl_config' : kl.config,
+        'app_config' : kl.app.config,
+        'script' : "#{kl.config.projects_static_root}/#{config.script}",
     })
 
 

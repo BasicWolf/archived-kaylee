@@ -6,7 +6,7 @@
     This module implements all exceptions raised by the Kaylee package.
 
     :copyright: (c) 2012 by Zaur Nasibov.
-    :license: MIT or GPLv3, see LICENSE for more details.
+    :license: MIT, see LICENSE for more details.
 """
 
 

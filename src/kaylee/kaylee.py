@@ -7,7 +7,7 @@
     be easily used with any web framework.
 
     :copyright: (c) 2012 by Zaur Nasibov.
-    :license: MIT or GPLv3, see LICENSE for more details.
+    :license: MIT, see LICENSE for more details.
 """
 import threading
 import json
@@ -24,12 +24,16 @@ class Kaylee(object):
     Usually you don't create an instance of :class:`Kaylee` is not created,
     but rather call :function:`kaylee.load` with settings as an argument.
 
+    :param nodes_config: settings-based configuration required by every node
+                         in order to function properly. This includes for
+                         example the URL root of the projects' script files.
     :param nodes_storage: an instance of :class:`kaylee.NodesStorage`.
     :param applications: an instance of :class:`kaylee.Applications` object.
     """
-    def __init__(self, nodes_storage, applications = Applications({})):
-        self.applications = applications
+    def __init__(self, nodes_config, nodes_storage, applications):
+        self.nodes_config = nodes_config
         self.nodes = nodes_storage
+        self.applications = applications
         self._lock = threading.Lock()
 
     def register(self, remote_host):
@@ -37,6 +41,7 @@ class Kaylee(object):
             node = Node(NodeID(remote_host))
             self.nodes.add(node)
         return json.dumps ({ 'node_id' : str(node.id),
+                             'config' : self.nodes_config,
                              'applications' : self.applications.names } )
 
     def unregister(self, node_id):
