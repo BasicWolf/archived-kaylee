@@ -1,15 +1,22 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
 import unittest
 from importlib import import_module
 
 unittest.defaultTestLoader = unittest.TestLoader()
 
+PROJECTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            'projects')
+sys.path.insert(0, PROJECTS_DIR)
+
 class TestSettings(object):
     """A simple object wrapper which emulates Kaylee settings module
     in tests."""
-    PROJECTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                'projects')
+    PROJECTS_DIR = PROJECTS_DIR
+    KAYLEE_JS_ROOT = ''
+    LIB_JS_ROOT    = ''
+    PROJECTS_STATIC_ROOT = ''
     APPLICATIONS = []
 
 
@@ -33,7 +40,7 @@ def suite():
     suite = unittest.TestSuite()
     cdir = os.path.dirname(os.path.abspath(__file__))
     for fname in os.listdir(cdir):
-        if not fname.endswith('.py'):
+        if not fname.endswith('_tests.py'):
             continue
         modname = fname[:-3]
         mod = import_module(modname)
@@ -46,21 +53,21 @@ def find_all_tests(root_suite):
     """Yields all the tests and their names from a given suite."""
     suites = [root_suite]
     while suites:
-        suite = suites.pop()    
+        suite = suites.pop()
         try:
             # not that suite is iterable, thus every sub-suite from suite
             # is appended to the suites list
-            suites.extend(suite) 
+            suites.extend(suite)
         except TypeError:
             yield suite, '{}.{}.{}'.format(
                 suite.__class__.__module__,
                 suite.__class__.__name__,
                 suite._testMethodName ).lower()
-            
+
 
 class KayleeTestsLoader(unittest.TestLoader):
     """
-    A custom loader for Kaylee unit tests. 
+    A custom loader for Kaylee unit tests.
     Usage example:
     1. test.py kaylee_tests   # loads the suite from the module
     2. test.py KayleeLoadTest # loads particular TestCase
@@ -90,7 +97,7 @@ class KayleeTestsLoader(unittest.TestLoader):
 
         suite = unittest.TestSuite()
         if len(tests) == 1:
-            return all_tests[0]
+            return tests[0]
         for test in tests:
             suite.addTest(test)
         return suite

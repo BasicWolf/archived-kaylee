@@ -37,7 +37,3 @@ APPLICATIONS = [
             },
       },
 ]
-
-# Common front-end settings
-FRONTEND_STATIC_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/static'
-FRONTEND_TEMPLATE_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/templates'

@@ -3,7 +3,7 @@
     kaylee.controller
     ~~~~~~~~~~~~~~~~~
 
-    This module provides classes for Kaylee controllers. 
+    This module provides classes for Kaylee controllers.
 
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.

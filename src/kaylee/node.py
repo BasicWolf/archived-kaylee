@@ -27,6 +27,7 @@ class Node(object):
     by :class:`Kaylee`. Its id field is an instance :class:`NodeID`
     which allows to track when the node was registered. Other public
     fields are:
+
     * subscription_timestamp - a :class:`datetime.datetime` instance which
       tracks the time when a node has subscribed to an application.
     * task_timestamp a :class:`datetime.datetime` instance which
@@ -44,6 +45,9 @@ class Node(object):
                                     type(node_id).__name__ )
                             )
         self.id = node_id
+        self.reset()
+
+    def reset(self):
         self._task_id = None
         self.subscription_timestamp = None
         self.task_timestamp = None
@@ -73,7 +77,7 @@ class NodeID(object):
     _inc = 0
     _inc_lock = threading.Lock()
 
-    def __init__(self, remote_host = None, node_id = None):
+    def __init__(self, node_id = None, remote_host = '127.0.0.1'):
         if node_id is None and not isinstance(remote_host, basestring):
             raise TypeError('remote_host must be an instance of {}, not {}'
                             .format(basestring.__name__,
@@ -83,6 +87,10 @@ class NodeID(object):
             self._generate(remote_host)
         else:
             self._parse(node_id)
+
+    @staticmethod
+    def for_host(host):
+        return NodeID(remote_host = host)
 
     def _generate(self, remote_host):
         """Generate a new value for this NodeID."""

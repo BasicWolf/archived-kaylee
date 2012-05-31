@@ -8,6 +8,7 @@ from jinja2 import FileSystemLoader
 
 # load Kaylee
 import kaylee
+
 settings = imp.load_source('settings', os.environ['KAYLEE_SETTINGS_PATH'])
 kl = kaylee.load(settings)
 
@@ -39,8 +40,10 @@ def json_response(s):
     return app.response_class(s, mimetype='application/json')
 
 def run():
-    app.jinja_loader = FileSystemLoader(settings.FRONTEND_TEMPLATE_DIR)
-    app.static_path = settings.FRONTEND_STATIC_DIR
+    STATIC_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/static'
+    TEMPLATE_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/templates'
+    app.jinja_loader = FileSystemLoader(TEMPLATE_DIR)
+    app.static_path = STATIC_DIR
     app.wsgi_app = SharedDataMiddleware(app.wsgi_app,
                                         { '/static': app.static_path } )
     app.debug = True

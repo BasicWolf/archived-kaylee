@@ -1,5 +1,4 @@
-pj =
-    ALIAS : 'monte_carlo_pi'
+pj = {}
 
 pj.init = (kl_config, app_config) ->
     pj.config = app_config

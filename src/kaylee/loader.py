@@ -11,37 +11,27 @@
 import os
 import importlib
 import inspect
-from operator import attrgetter
+
 from .errors import KayleeError
-
-class Applications(object):
-    def __init__(self, controllers):
-        self._controllers = controllers
-        self._idx_controllers = sorted([c for c in controllers.itervalues()],
-                                       key = attrgetter('id'))
-        self.names = list(controllers.keys())
-
-    def __getitem__(self, key):
-        if isinstance(key, int):
-            return self._idx_controllers[key]
-        else:
-            return self._controllers[key]
+from .kaylee import Kaylee, Applications
 
 
 def load(settings):
     try:
-        return _load_kaylee(settings)
+        return Kaylee( *load_kaylee_objects(settings) )
     except (KeyError, AttributeError) as e:
-        raise KayleeError('Configuration error or object was not found: '
+        raise KayleeError('Settings error or object was not found: '
                           ' "{}"'.format(e.args[0]))
 
-def _load_kaylee(settings):
-    """Loads Kaylee global objects using configuration from settings."""
+def load_kaylee_objects(settings):
+    """Loads Kaylee objects using configuration from settings.
+
+    :returns: Nodes configuration, nodes storage and applications.
+    :rtype: (dict, :class:`NodesStorage`, :class:`Applcations`)
+    """
     from . import storage
     from . import controller
     from . import project
-    from . errors import KayleeError
-    from .kaylee import Kaylee
 
     # scan for classes
     project_classes = {}
@@ -69,9 +59,9 @@ def _load_kaylee(settings):
         # looks like a python module
         try:
             pymod = importlib.import_module(sub_dir)
-        except ImportError:
-            raise ImportError('Unable to import project package {}'
-                              .format(name))
+        except ImportError as e:
+            raise ImportError('Unable to import project package: {}'
+                              .format(e))
         mod_classes = _get_classes( pymod.__dict__.values() )
         _store_classes(project_classes, mod_classes, project.Project)
         _store_classes(controller_classes, mod_classes, controller.Controller)
@@ -107,16 +97,15 @@ def _load_kaylee(settings):
     applications = Applications(controllers)
 
     # build Kaylee nodes configuration
-    nodes_config = {'projects_static_root' : settings.PROJECTS_STATIC_ROOT,
-                    'kaylee_js_root' : settings.KAYLEE_JS_ROOT,
-                    'lib_js_root' : settings.LIB_JS_ROOT,
-                    }
-    # initialize Kaylee
+    nconfig = {'projects_static_root' : settings.PROJECTS_STATIC_ROOT,
+               'kaylee_js_root' : settings.KAYLEE_JS_ROOT,
+               'lib_js_root' : settings.LIB_JS_ROOT,
+               }
+    # initialize Kaylee objects
     nsname = settings.NODES_STORAGE['name']
     nscls = nstorage_classes[nsname]
     nstorage = nscls(**settings.NODES_STORAGE['config'])
-    kaylee = Kaylee(nodes_config, nstorage, applications)
-    return kaylee
+    return nconfig, nstorage, applications
 
 def _store_classes(dest, classes, cls):
     for c in (c for c in classes if issubclass (c, cls) and c is not cls ):

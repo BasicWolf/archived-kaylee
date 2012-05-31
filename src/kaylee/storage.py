@@ -9,19 +9,19 @@ class NodesStorage(object):
 
     @abstractmethod
     def add(self, node):
-        """Add node to storage"""
+        """TODO: Add node to storage"""
 
     @abstractmethod
-    def remove(self, node):
-        """Remove node from storage"""
+    def __delitem__(self, node):
+        """Removes the node from the storage"""
 
     @abstractmethod
     def __getitem__(self, node_id):
-        """Return node with requested id"""
+        """TODO: Returns a node with requested id"""
 
     @abstractmethod
     def __contains__(self, node):
-        """Check if storage contains the node"""
+        """TODO: Check if storage contains the node"""
 
     def _get_node_id(self, node):
         if isinstance(node, basestring):
@@ -34,7 +34,7 @@ class NodesStorage(object):
             raise KayleeError('node must be an instance of {}, {}, or {} not'
                               ' {}'.format(basestring.__name__,
                                            NodeID.__name__,
-                                           Node.__name__, 
+                                           Node.__name__,
                                            type(node).__name__))
 
 
@@ -45,7 +45,7 @@ class MemoryNodesStorage(NodesStorage):
     def add(self, node):
         self._d[node.id] = node
 
-    def remove(self, node):
+    def __delitem__(self, node):
         node_id = self._get_node_id(node)
         try:
             del self._d[node_id]
@@ -82,8 +82,7 @@ class ControllerResultsStorage(object):
 
     @abstractmethod
     def __setitem__(self, task_id, results):
-        """Stores results associated with task_id to the storage.
-        """
+        """Stores results associated with task_id to the storage."""
 
     @abstractmethod
     def __getitem__(self, task_id):
@@ -91,8 +90,7 @@ class ControllerResultsStorage(object):
 
     @abstractmethod
     def __delitem__(self, task_id):
-        """Removes all results associated with task_id from the storage.
-        """
+        """Removes all results associated with task_id from the storage."""
 
     @abstractmethod
     def __contains__(self, task_id):
