@@ -65,6 +65,9 @@ class Kaylee(object):
         * node_id - hex-formatted node id
         * config  - global nodes configuration (see :module:`loader`)
         * applications - a list of Kaylee applications' names.
+
+        :param remote_host: an IP address of the remote host
+        :type remote_host: string
         """
         node = Node(NodeID.for_host(remote_host))
         with self._lock:
@@ -89,6 +92,7 @@ class Kaylee(object):
         Kaylee will send task from particular application to this node.
         When a node subscribes to an application it received the its
         configuration defined for nodes.
+
         :param node_id: a valid node id
         :param application: registered Kaylee application name
         :type node_id: string
@@ -108,11 +112,31 @@ class Kaylee(object):
 
     @json_error_handler
     def unsubscribe(self, node_id):
-        """Unsubscribes the node from bound application."""
+        """Unsubscribes the node from the bound application.
+
+        :param node_id: a valid node id
+        :type node_id: string
+        """
         self.nodes[node_id].reset()
 
     @json_error_handler
     def get_task(self, node_id):
+        """Returns a task from the subscribed application.
+        The format of the JSON response is:
+        {
+            'action' : <action>,
+            'data'   : <data>
+        }
+        Here, <action> tells the Node, what should it do and <data> is
+        the attached data. The available values of <action> are:
+
+        * 'task' - indicated that <data> contains task data
+        * 'stop' - indicates that there is no need for the Node to
+                   request tasks from the subscribed application any more.
+
+        :param node_id: a valid node id
+        :type node_id: string
+        """
         node = self.nodes[node_id]
         try:
             data = node.get_task().serialize()
@@ -123,12 +147,21 @@ class Kaylee(object):
 
     @json_error_handler
     def accept_result(self, node_id, data):
+        """Accepts the results from the node.
+
+        :param node_id: a valid node id
+        :param data: the data returned by the node. This data will be later
+                     normalized and validated by the project and then
+                     stored to the application's storages.
+        :type node_id: string
+        :type data: string
+        """
         node = self.nodes[node_id]
         node.accept_result(data)
         return self.get_task(node.id)
 
     def clean(self):
-        """The method removes all timed-out nodes from Kaylee."""
+        """Removes all timed-out nodes from Kaylee."""
         raise NotImplementedError()
         # with self._lock:
         #     for node in self.nodes:
@@ -160,4 +193,3 @@ class Applications(object):
     @staticmethod
     def empty():
         return Applications({})
-

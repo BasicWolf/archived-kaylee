@@ -3,9 +3,13 @@ from abc import ABCMeta, abstractmethod
 
 from .errors import KayleeError
 from .node import Node, NodeID
+from .util import parse_timedelta
 
 class NodesStorage(object):
     __metaclass__ = ABCMeta
+
+    def __init__(self, *args, **kwargs):
+        pass
 
     @abstractmethod
     def add(self, node):
@@ -23,41 +27,29 @@ class NodesStorage(object):
     def __contains__(self, node):
         """TODO: Check if storage contains the node"""
 
-    def _get_node_id(self, node):
-        if isinstance(node, basestring):
-            return NodeID(node_id = node)
-        elif isinstance(node, NodeID):
-            return node
-        elif isinstance(node, Node):
-            return node.id
-        else:
-            raise KayleeError('node must be an instance of {}, {}, or {} not'
-                              ' {}'.format(basestring.__name__,
-                                           NodeID.__name__,
-                                           Node.__name__,
-                                           type(node).__name__))
-
 
 class MemoryNodesStorage(NodesStorage):
-    def __init__(self):
+    def __init__(self, timeout, *args, **kwargs):
         self._d = {}
+        self.timeout = parse_timedelta(timeout)
+        super(MemoryNodesStorage, self).__init__(*args, **kwargs)
 
     def add(self, node):
         self._d[node.id] = node
 
     def __delitem__(self, node):
-        node_id = self._get_node_id(node)
+        node_id = NodeID.from_object(node)
         try:
             del self._d[node_id]
         except KeyError:
             pass
 
     def __getitem__(self, node_id):
-        node_id = self._get_node_id(node_id)
+        node_id = NodeID.from_object(node_id)
         return self._d[node_id]
 
     def __contains__(self, node):
-        node_id = self._get_node_id(node)
+        node_id = NodeID.from_object(node)
         return node_id in self._d
 
 

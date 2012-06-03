@@ -92,6 +92,21 @@ class NodeID(object):
     def for_host(host):
         return NodeID(remote_host = host)
 
+    @staticmethod
+    def from_object(node):
+        if isinstance(node, basestring):
+            return NodeID(node_id = node)
+        elif isinstance(node, NodeID):
+            return node
+        elif isinstance(node, Node):
+            return node.id
+        else:
+            raise KayleeError('node must be an instance of {}, {}, or {} not'
+                              ' {}'.format(basestring.__name__,
+                                           NodeID.__name__,
+                                           Node.__name__,
+                                           type(node).__name__))
+
     def _generate(self, remote_host):
         """Generate a new value for this NodeID."""
         nid = b''

@@ -17,7 +17,9 @@ class Settings1(TestSettings):
 
     NODES_STORAGE = {
         'name' : 'MemoryNodesStorage',
-        'config' : {},
+        'config' : {
+            'timeout' : '2s',
+            },
     }
 
 class Settings2(Settings1):
@@ -70,10 +72,24 @@ class KayleeLoaderTests(KayleeTest):
 
     def test_load_kaylee(self):
         kl = load(Settings2)
+        self.assertIn('dummy.1', kl.applications)
+        self.assertIsInstance(kl.nodes, MemoryNodesStorage)
+
+    def test_init_kaylee(self):
+        project = DummyProject()
+        results_storage = MemoryControllerResultsStorage()
+        app_results_storage = MemoryAppResultsStorage()
+        controller = DummyController(0, 'dummy_app', project, results_storage,
+                                     app_results_storage)
+        apps = Applications({'dummy_app' : controller})
+        kl = Kaylee({}, MemoryNodesStorage(timeout = '2h'), apps)
+        self.assertIn('dummy_app', kl.applications)
+        self.assertIsInstance(kl.nodes, MemoryNodesStorage)
+
 
 class KayleeTests(KayleeTest):
     def test_register_unregister(self):
-        kl = Kaylee({}, MemoryNodesStorage(), Applications.empty())
+        kl = load(Settings2)
         node_json_config = kl.register('127.0.0.1')
         node_config = json.loads(node_json_config)
         self.assertEqual(len(node_config), 3)
@@ -91,23 +107,18 @@ class KayleeTests(KayleeTest):
     def test_subscribe_unsubscribe(self):
         # todo: this should be in test_init()
         # todo: write test_loader and then use Settings to initialize Kaylee here
-        project = DummyProject()
-        results_storage = MemoryControllerResultsStorage()
-        app_results_storage = MemoryAppResultsStorage()
-        controller = DummyController(0, 'dummy_app', project, results_storage,
-                                     app_results_storage)
-        apps = Applications({'dummy_app' : controller})
-        kl = Kaylee({}, MemoryNodesStorage(), apps)
+        kl = load(Settings2)
+        app = kl.applications['dummy.1']
         node_json_config = kl.register('127.0.0.1')
         node_config = json.loads(node_json_config)
         node_id = node_config['node_id']
 
         # test node.subscribe
-        app_json_config = kl.subscribe(node_id, 'dummy_app')
+        app_json_config = kl.subscribe(node_id, 'dummy.1')
         app_config = json.loads(app_json_config)
         self.assertEqual(app_config['dummy_key'], 'dummy_value')
         node = kl.nodes[node_id]
-        self.assertEqual(node.controller, controller)
+        self.assertEqual(node.controller, app)
         self.assertTrue(0 <= (datetime.now() - node.subscription_timestamp).seconds < 1)
 
         # test node.unsubscribe
