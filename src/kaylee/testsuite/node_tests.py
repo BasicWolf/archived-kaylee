@@ -30,8 +30,20 @@ class NodeIDTests(KayleeTest):
         self.assertRaises(TypeError, NodeID.for_host, 1000)
         self.assertRaises(TypeError, NodeID.for_host, 100.1)
 
+    def test_from_object(self):
+        n  = NodeID.for_host('127.0.0.1')
+        n1 = NodeID.from_object(n)
+        self.assertIs(n, n1)
+        n2 = NodeID.from_object(str(n))
+        self.assertEqual(n, n2)
+        node = Node(n)
+        n3 = NodeID.from_object(node)
+        self.assertEqual(n, n3)
+        self.assertRaises(InvalidNodeIDError, NodeID.from_object, 'abc')
+        self.assertRaises(TypeError, NodeID.from_object, 10)
+
     def test_internal_counter(self):
-        NodeID._inc = 0 # modified only for test purposes
+        NodeID._inc = 0 # modified for test purposes only
         remote = '127.0.0.1'
         for i in xrange(0, 2**16 - 1):
             n = NodeID.for_host(remote)
@@ -59,7 +71,7 @@ class NodeIDTests(KayleeTest):
 
     def test_dates(self):
         n1 = NodeID.for_host('127.0.0.1')
-        t1 = n1.generation_time
+        t1 = n1.timestamp
         utcnow = datetime.now(utc)
         self.assertTrue(utcnow - t1 <= timedelta(seconds = 1))
 

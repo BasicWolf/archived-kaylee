@@ -101,11 +101,11 @@ class NodeID(object):
         elif isinstance(node, Node):
             return node.id
         else:
-            raise KayleeError('node must be an instance of {}, {}, or {} not'
-                              ' {}'.format(basestring.__name__,
-                                           NodeID.__name__,
-                                           Node.__name__,
-                                           type(node).__name__))
+            raise TypeError('node must be an instance of {}, {}, or {} not'
+                            ' {}'.format(basestring.__name__,
+                                         NodeID.__name__,
+                                         Node.__name__,
+                                         type(node).__name__))
 
     def _generate(self, remote_host):
         """Generate a new value for this NodeID."""
@@ -153,7 +153,7 @@ class NodeID(object):
         return self._id
 
     @property
-    def generation_time(self):
+    def timestamp(self):
         """
         A :class:`datetime.datetime` instance representing the time of
         generation for this :class:`NodeID`.
