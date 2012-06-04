@@ -9,13 +9,13 @@
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
 """
-import threading
 import json
 from operator import attrgetter
 from functools import partial
 
 from .node import Node, NodeID
 from .errors import KayleeError
+from . import util
 
 #: Returns the results of :function:`json.dumps` in compact encoding
 json.dumps = partial(json.dumps, separators=(',',':'))
@@ -49,13 +49,15 @@ class Kaylee(object):
                          example the URL root of the projects' script files.
     :param nodes_storage: an instance of :class:`kaylee.NodesStorage`.
     :param applications: an instance of :class:`kaylee.Applications` object.
+    :param settings: Kaylee settings module or object
     """
 
-    def __init__(self, nodes_config, nodes_storage, applications):
+    def __init__(self, nodes_config, nodes_storage, applications,
+                 settings = util.Object()):
         self.nodes_config = nodes_config
         self.nodes = nodes_storage
         self.applications = applications
-        self._lock = threading.Lock()
+        self.settings = settings
 
     @json_error_handler
     def register(self, remote_host):
@@ -70,8 +72,7 @@ class Kaylee(object):
         :type remote_host: string
         """
         node = Node(NodeID.for_host(remote_host))
-        with self._lock:
-            self.nodes.add(node)
+        self.nodes.add(node)
         return json.dumps ({ 'node_id' : str(node.id),
                              'config' : self.nodes_config,
                              'applications' : self.applications.names } )
@@ -147,7 +148,7 @@ class Kaylee(object):
 
     @json_error_handler
     def accept_result(self, node_id, data):
-        """Accepts the results from the node.
+        """Accepts the results from the node and returns a new task.
 
         :param node_id: a valid node id
         :param data: the data returned by the node. This data will be later
@@ -155,17 +156,15 @@ class Kaylee(object):
                      stored to the application's storages.
         :type node_id: string
         :type data: string
+        :returns: a task returned by :function:`Kaylee.get_task`.
         """
         node = self.nodes[node_id]
         node.accept_result(data)
         return self.get_task(node.id)
 
     def clean(self):
-        """Removes all timed-out nodes from Kaylee."""
-        raise NotImplementedError()
-        # with self._lock:
-        #     for node in self.nodes:
-        #         pass
+        """Removes outdated nodes from Kaylee's nodes storage."""
+        self.nodes.clean()
 
     def _json_action(self, action, data):
         return json.dumps( { 'action' : action, 'data' : data } )

@@ -86,8 +86,8 @@ kl.register = () ->
 
 kl.subscribe = (app_name) ->
     kl.app.name = app_name
-    kl.get("#{kl.config.url_root}/apps/#{app_name}/subscribe/#{kl.node_id}",
-           kl.node_subscribed.trigger
+    kl.post("#{kl.config.url_root}/apps/#{app_name}/#{kl.node_id}", {},
+            kl.node_subscribed.trigger
     )
 
 kl.get_task = () ->

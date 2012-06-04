@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from abc import ABCMeta, abstractmethod
+from datetime import datetime
 
 from .errors import KayleeError
 from .node import Node, NodeID
@@ -14,6 +15,10 @@ class NodesStorage(object):
     @abstractmethod
     def add(self, node):
         """TODO: Add node to storage"""
+
+    @abstractmethod
+    def clean(self, node):
+        """Removes the obsolete nodes from the storage"""
 
     @abstractmethod
     def __delitem__(self, node):
@@ -36,6 +41,12 @@ class MemoryNodesStorage(NodesStorage):
 
     def add(self, node):
         self._d[node.id] = node
+
+    def clean(self):
+        nodes_to_clean = [node for node in self._d.iteritems()
+                          if datetime.now() - node.id.timestamp > self.timeout]
+        for node in nodes_to_clean:
+            del self._d[node]
 
     def __delitem__(self, node):
         node_id = NodeID.from_object(node)

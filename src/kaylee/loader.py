@@ -9,6 +9,7 @@
     :license: MIT, see LICENSE for more details.
 """
 import os
+import imp
 import importlib
 import inspect
 
@@ -16,16 +17,20 @@ from .errors import KayleeError
 from .kaylee import Kaylee, Applications
 
 
-def load(settings):
+def load(settings = None):
     try:
-        return Kaylee( *load_kaylee_objects(settings) )
+        return Kaylee(*load_kaylee_objects(settings))
     except (KeyError, AttributeError) as e:
         raise KayleeError('Settings error or object was not found: '
                           ' "{}"'.format(e.args[0]))
 
-def load_kaylee_objects(settings):
+def load_kaylee_objects(settings = None):
     """Loads Kaylee objects using configuration from settings.
 
+    :param: Python module or class with Kaylee settings. If the value
+            of settings is None, then the loader tries to load the
+            settings using KAYLEE_SETTINGS_MODULE environmental
+            variable.
     :returns: Nodes configuration, nodes storage and applications.
     :rtype: (dict, :class:`NodesStorage`, :class:`Applcations`)
     """
@@ -33,6 +38,9 @@ def load_kaylee_objects(settings):
     from . import controller
     from . import project
 
+    if settings is None:
+        settings = imp.load_source('settings',
+                                   os.environ['KAYLEE_SETTINGS_MODULE'])
     # scan for classes
     project_classes = {}
     controller_classes = {}
@@ -105,7 +113,7 @@ def load_kaylee_objects(settings):
     nsname = settings.NODES_STORAGE['name']
     nscls = nstorage_classes[nsname]
     nstorage = nscls(**settings.NODES_STORAGE['config'])
-    return nconfig, nstorage, applications
+    return nconfig, nstorage, applications, settings
 
 def _store_classes(dest, classes, cls):
     for c in (c for c in classes if issubclass (c, cls) and c is not cls ):

@@ -8,11 +8,15 @@
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
 """
+import re
 from abc import ABCMeta, abstractmethod, abstractproperty
 from datetime import datetime
 
 from .node import Node
 from .errors import AppFinishedError
+
+app_name_pattern = r'^[a-zA-Z\.\d_-]+$'
+_app_name_re = re.compile(app_name_pattern)
 
 ACTIVE = 0x2
 FINISHED = 0x4
@@ -21,6 +25,8 @@ class Controller(object):
     __metaclass__ = ABCMeta
     def __init__(self, id, app_name, project, results_storage,
                  app_results_storage, *args, **kwargs):
+        if _app_name_re.match(app_name) is None:
+            raise ValueError('Invalid application name: {}'.format(app_name))
         self.id = id
         self.app_name = app_name
         self.project = project

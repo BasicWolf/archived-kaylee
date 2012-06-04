@@ -21,7 +21,7 @@ APPLICATIONS = [
             'config' : {
                 'script' : 'monte_carlo_pi/monte_carlo_pi.js',
                 'random_points' : 1000000,
-                'tasks_count' : 20
+                'tasks_count' : 4
                 },
             },
       'controller' : {
@@ -40,3 +40,7 @@ APPLICATIONS = [
             },
       },
 ]
+
+
+FRONTEND_TEMPLATES_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/templates'
+FRONTEND_STATIC_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/static'

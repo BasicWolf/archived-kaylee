@@ -20,6 +20,7 @@ import zlib
 from .errors import InvalidNodeIDError
 from .tz_util import utc
 
+node_id_pattern = r'^[\da-fA-F]{20}$'
 
 class Node(object):
     """
@@ -70,7 +71,6 @@ class Node(object):
 
     def __hash__(self):
         return hash(self.id)
-
 
 class NodeID(object):
     __slots__ = ('_id')
