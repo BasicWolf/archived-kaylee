@@ -13,7 +13,7 @@ def register_node():
     reg_data = kl.register(request.remote_addr)
     return json_response(reg_data)
 
-@klb.route('/apps/<app_name>/<node_id>', methods = ['POST'])
+@klb.route('/apps/<app_name>/subscribe/<node_id>', methods = ['POST'])
 def subscribe_node(node_id, app_name):
     node_config = kl.subscribe(node_id, app_name)
     return json_response(node_config)

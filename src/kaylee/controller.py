@@ -15,8 +15,10 @@ from datetime import datetime
 from .node import Node
 from .errors import AppFinishedError
 
-app_name_pattern = r'^[a-zA-Z\.\d_-]+$'
-_app_name_re = re.compile(app_name_pattern)
+#: The Application name regular expression pattern which can be used in
+#: e.g. web frameworks' URL dispatchers.
+app_name_pattern = r'[a-zA-Z\.\d_-]+'
+_app_name_re = re.compile('^{}$'.format(app_name_pattern))
 
 ACTIVE = 0x2
 FINISHED = 0x4
