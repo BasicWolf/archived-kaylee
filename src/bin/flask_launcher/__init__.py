@@ -3,7 +3,7 @@ from jinja2 import FileSystemLoader
 from werkzeug import SharedDataMiddleware
 
 import kl_settings
-from kaylee.frontends.kaylee_flask import kaylee_blueprint
+from kaylee.frontends.flask_frontend import kaylee_blueprint
 
 app = Flask(__name__)
 

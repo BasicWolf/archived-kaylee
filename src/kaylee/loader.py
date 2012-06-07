@@ -15,6 +15,52 @@ import inspect
 
 from .errors import KayleeError
 from .kaylee import Kaylee, Applications
+from .util import LazyObject
+
+SETTINGS_ENV_VAR = 'KAYLEE_SETTINGS_MODULE'
+
+
+class Settings(object):
+    def __init__(self):
+        pass
+
+
+class LazySettings(LazyObject):
+    """
+    A lazy proxy for either global Kaylee settings or a custom settings object.
+    The user can manually configure settings prior to using them. Otherwise,
+    Kaylee uses the settings module pointed to by KAYLEE_SETTINGS_MODULE.
+    """
+    def _setup(self):
+        """
+        Load the settings module pointed to by the environment variable. This
+        is used the first time we need any settings at all, if the user has not
+        previously configured the settings manually.
+        """
+        try:
+            settings_path = os.environ[SETTINGS_ENV_VAR]
+            if not settings_path: # If it's set but is an empty string.
+                raise KeyError
+        except KeyError:
+            # NOTE: This is arguably an EnvironmentError, but that causes
+            # problems with Python's interactive help.
+            raise ImportError("Settings cannot be imported, because "
+                              "environment variable {} is undefined."
+                              .format(SETTINGS_ENV_VAR))
+
+        self._wrapped = Settings()
+
+        mod = imp.load_source('settings', settings_path)
+
+        for setting in dir(mod):
+            if setting == setting.upper():
+                setting_value = getattr(mod, setting)
+                setattr(self._wrapped, setting, setting_value)
+
+    @property
+    def configured(self):
+        """Returns True if the settings have already been configured."""
+        return self._wrapped is not empty
 
 
 def load(settings = None):
@@ -37,10 +83,9 @@ def load_kaylee_objects(settings = None):
     from . import storage
     from . import controller
     from . import project
-
     if settings is None:
-        settings = imp.load_source('settings',
-                                   os.environ['KAYLEE_SETTINGS_MODULE'])
+        from . import settings
+
     # scan for classes
     project_classes = {}
     controller_classes = {}
@@ -113,7 +158,7 @@ def load_kaylee_objects(settings = None):
     nsname = settings.NODES_STORAGE['name']
     nscls = nstorage_classes[nsname]
     nstorage = nscls(**settings.NODES_STORAGE['config'])
-    return nconfig, nstorage, applications, settings
+    return nconfig, nstorage, applications
 
 def _store_classes(dest, classes, cls):
     for c in (c for c in classes if issubclass (c, cls) and c is not cls ):

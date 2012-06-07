@@ -42,5 +42,6 @@ APPLICATIONS = [
 ]
 
 
+# Settings used for Kaylee front-end demonstration
 FRONTEND_TEMPLATES_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/templates'
 FRONTEND_STATIC_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/static'

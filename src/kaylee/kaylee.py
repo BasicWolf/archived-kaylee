@@ -49,15 +49,11 @@ class Kaylee(object):
                          example the URL root of the projects' script files.
     :param nodes_storage: an instance of :class:`kaylee.NodesStorage`.
     :param applications: an instance of :class:`kaylee.Applications` object.
-    :param settings: Kaylee settings module or object
     """
-
-    def __init__(self, nodes_config, nodes_storage, applications,
-                 settings = util.Object()):
+    def __init__(self, nodes_config, nodes_storage, applications):
         self.nodes_config = nodes_config
         self.nodes = nodes_storage
         self.applications = applications
-        self.settings = settings
 
     @json_error_handler
     def register(self, remote_host):

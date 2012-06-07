@@ -23,6 +23,6 @@ from .controller import Controller
 from .project import Project
 from .loader import load
 from .errors import KayleeError
-from .util import LazySettings
+from .loader import LazySettings
 
 settings = LazySettings()

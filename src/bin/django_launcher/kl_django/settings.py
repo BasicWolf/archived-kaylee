@@ -1,8 +1,8 @@
-# Django settings for Kaylee demonstration.
-import kl_settings
+from kaylee import settings as kl_settings
 
 # Additional locations of static files
 STATICFILES_DIRS = (
+    kl_settings.FRONTEND_STATIC_DIR,
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -14,11 +14,8 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
 )
 
-
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    kl_settings.FRONTEND_TEMPLATES_DIR,
 )
 
 INSTALLED_APPS = (
@@ -28,12 +25,10 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'kaylee.frontends.kaylee_django'
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'kaylee.frontends.django_frontend'
 )
+
+ROOT_URLCONF = 'kl_django.urls'
 
 WSGI_APPLICATION = 'kl_django.wsgi.application'
 
@@ -68,8 +63,3 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
-
-ROOT_URLCONF = 'kl_django.urls'
-
-
-

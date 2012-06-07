@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, render_template, abort, request, Response
 
-import kaylee
-kl = kaylee.load()
+from kaylee import load, settings
+kl = load()
 
 kaylee_blueprint = Blueprint('kaylee_blueprint', __name__,
-                          template_folder = kl.settings.FRONTEND_TEMPLATES_DIR)
+                          template_folder = settings.FRONTEND_TEMPLATES_DIR)
 klb = kaylee_blueprint
 
 @klb.route('/register')

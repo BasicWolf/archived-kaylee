@@ -49,23 +49,19 @@ class Settings2(Settings1):
 
 class KayleeLoaderTests(KayleeTest):
     def test_load_nodes_config(self):
-        nconf, storage, apps, settings = load_kaylee_objects(Settings1)
+        nconf, storage, apps = load_kaylee_objects(Settings1)
         self.assertEqual(nconf['kaylee_js_root'], Settings1.KAYLEE_JS_ROOT)
         self.assertEqual(nconf['lib_js_root'], Settings1.LIB_JS_ROOT)
         self.assertEqual(nconf['projects_static_root'],
                          Settings1.PROJECTS_STATIC_ROOT)
         self.assertEqual(len(apps), 0)
 
-    def test_load_settings(self):
-        nconf, storage, apps, settings = load_kaylee_objects(Settings1)
-        self.assertIs(settings, Settings1)
-
     def test_load_nodes_storage(self):
-        nconf, storage, apps, settings = load_kaylee_objects(Settings1)
+        nconf, storage, apps = load_kaylee_objects(Settings1)
         self.assertIsInstance(storage, MemoryNodesStorage)
 
     def test_load_applications(self):
-        nconf, storage, apps, settings = load_kaylee_objects(Settings2)
+        nconf, storage, apps = load_kaylee_objects(Settings2)
         self.assertEqual(len(apps), 1)
         app = apps['dummy.1']
         self.assertEqual(app.__class__.__name__, DummyController.__name__)
