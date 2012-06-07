@@ -16,11 +16,14 @@ import time
 import binascii
 import struct
 import threading
-import zlib
+import hashlib
+
 from .errors import InvalidNodeIDError
 from .tz_util import utc
 
-node_id_pattern = r'^[\da-fA-F]{20}$'
+#: The hex string formatted NodeID regular expression pattern which
+#: can be used in e.g. web frameworks' URL dispatchers.
+node_id_pattern = r'[\da-fA-F]{20}'
 
 class Node(object):
     """
@@ -113,7 +116,7 @@ class NodeID(object):
         # 4 bytes current time
         nid += struct.pack('>i', int(time.time()))
         # 4 bytes host
-        nid += struct.pack('>I', self._crc32(remote_host))
+        nid += self._host_hash(remote_host)
         # 2 bytes inc
         with NodeID._inc_lock:
             nid += struct.pack(">i", NodeID._inc)[2:4]
@@ -144,8 +147,10 @@ class NodeID(object):
                                     self.__class__.__name__,
                                     type(nid).__name__))
 
-    def _crc32(self, data):
-        return zlib.crc32(data) & 0xffffffff
+    def _host_hash(self, data):
+        h = hashlib.md5()
+        h.update(data)
+        return h.digest()[0:4]
 
     @property
     def binary(self):
