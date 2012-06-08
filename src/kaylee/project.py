@@ -12,6 +12,16 @@ from abc import ABCMeta, abstractmethod
 from copy import copy
 
 
+def depleted_guard(f):
+    def wrapper(self, *args, **kwargs):
+        try:
+            return f(self, *args, **kwargs)
+        except StopIteration as e:
+            self._depleted = True
+            raise e
+    return wrapper
+
+
 class Project(object):
     """Base class for Kaylee projects. Essentialy a Project is an
     iterator that yields Tasks. Every task has a unique id and a
@@ -29,6 +39,7 @@ class Project(object):
         self.nodes_config = {
             'script' : kwargs['script'],
             }
+        self._depleted = False
 
     def __iter__(self):
         return self
@@ -37,12 +48,29 @@ class Project(object):
         return self.__next__()
 
     @abstractmethod
+    @depleted_guard
     def __next__(self):
-        """Returns the next task."""
+        """
+        Returns the next task. In case if __next__() throws StopIteration,
+        it means that there will be no more new tasks from the project,
+        but the bound controller can still refer to old tasks via
+        project[task_id]. After StopIteration has been thrown,
+        :attr:`Project.depleted` returns True.
+        In case that :class:`Controller` does not intercept or re-throws
+        StopIteration, :class:`Kaylee` catches and interprets it as no
+        need to involve the bound node in any further calculations for
+        the application.
+
+        :throws: StopIteration
+        """
 
     @abstractmethod
     def __getitem__(self, task_id):
-        """Returns task with required id."""
+        """Returns task with the required id."""
+
+    @property
+    def depleted(self):
+        return self._project_depleted
 
     def normalize(self, data):
         """Normalizes and validates the reply from a node.

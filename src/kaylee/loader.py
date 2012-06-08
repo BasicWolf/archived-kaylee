@@ -63,6 +63,10 @@ class LazySettings(LazyObject):
         return self._wrapped is not empty
 
 
+class LazyKaylee(LazyObject):
+    def _setup(self):
+        self._wrapped = load()
+
 def load(settings = None):
     try:
         return Kaylee(*load_kaylee_objects(settings))
@@ -132,7 +136,7 @@ def load_kaylee_objects(settings = None):
         project = _get_project_object(conf, project_classes)
         crstorage = _get_results_storage_object(conf, crstorage_classes)
         arstorage = _get_app_results_storage_object(conf, arstorage_classes)
-        controller = _get_controller_object(_idx, app_name, project, crstorage, 
+        controller = _get_controller_object(_idx, app_name, project, crstorage,
                                             arstorage, conf, controller_classes)
 
         # initialize store controller to local controllers dict
@@ -175,7 +179,7 @@ def _get_app_results_storage_object(conf, arstorage_classes):
     arscls = arstorage_classes[arsname]
     return arscls(**conf['controller']['app_results_storage'].get('config', {}))
 
-def _get_controller_object(idx, app_name, project, crstorage, arstorage, 
+def _get_controller_object(idx, app_name, project, crstorage, arstorage,
                            conf, controller_classes):
     cname = conf['controller']['name']
     ccls = controller_classes[cname]

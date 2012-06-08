@@ -49,13 +49,16 @@ class Node(object):
                                     type(node_id).__name__ )
                             )
         self.id = node_id
-        self.reset()
-
-    def reset(self):
-        self._task_id = None
         self.subscription_timestamp = None
         self.task_timestamp = None
         self.controller = None
+        self._task_id = None
+
+    def unsubscribe(self):
+        self.subscription_timestamp = None
+        self.task_timestamp = None
+        self.controller = None
+        self._task_id = None
 
     def get_task(self):
         return self.controller.get_task(self)

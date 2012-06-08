@@ -35,7 +35,7 @@ on_node_subscribed = (config) ->
                       <span class='cem'>#{sconfig}</span>.")
 
 on_node_stopped = (data) ->
-    kl.console.print("Node stopped: <span class='cem'>#{data}</span>.")
+    kl.console.print("Node stopped: <span class='cem'>#{data}</span>")
 
 on_project_imported = (app_name) ->
     kl.console.print("Project files imported successfully.")

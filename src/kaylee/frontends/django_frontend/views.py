@@ -2,8 +2,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse
 
-import kaylee
-kl = kaylee.load()
+from kaylee import kl
 
 def register_node(request):
     reg_data = kl.register(request.META['REMOTE_ADDR'])

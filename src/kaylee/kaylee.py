@@ -14,8 +14,7 @@ from operator import attrgetter
 from functools import partial
 
 from .node import Node, NodeID
-from .errors import KayleeError
-from . import util
+from .errors import KayleeError, InvalidResultError
 
 #: Returns the results of :function:`json.dumps` in compact encoding
 json.dumps = partial(json.dumps, separators=(',',':'))
@@ -114,7 +113,7 @@ class Kaylee(object):
         :param node_id: a valid node id
         :type node_id: string
         """
-        self.nodes[node_id].reset()
+        self.nodes[node_id].unsubscribe()
 
     @json_error_handler
     def get_task(self, node_id):
@@ -138,13 +137,15 @@ class Kaylee(object):
         try:
             data = node.get_task().serialize()
             return self._json_action('task', data)
-        except StopIteration as e:
-            # at this point Controller indicates that
-            return self._json_action('stop', e.message)
+        except StopIteration:
+            self.unsubscribe(node)
+            return self._json_action(
+                'stop','The node has been automatically unsubscribed.')
 
     @json_error_handler
     def accept_result(self, node_id, data):
         """Accepts the results from the node and returns a new task.
+        Unsubscribes the node if the returned result is invalid.
 
         :param node_id: a valid node id
         :param data: the data returned by the node. This data will be later
@@ -155,7 +156,12 @@ class Kaylee(object):
         :returns: a task returned by :function:`Kaylee.get_task`.
         """
         node = self.nodes[node_id]
-        node.accept_result(data)
+        try:
+            node.accept_result(data)
+        except InvalidResultError as e:
+            self.unsubscribe(node)
+            raise e
+
         return self.get_task(node.id)
 
     def clean(self):

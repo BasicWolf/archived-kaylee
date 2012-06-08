@@ -15,8 +15,9 @@ def setup():
     os.environ[SETTINGS_ENV_VAR] = \
         os.path.join(cur_dir, 'kl_settings.py')
 
-    from kaylee import settings
+    from kaylee import settings, kl
     settings._setup()
+    kl._setup()
 
 def main():
     parser = argparse.ArgumentParser(description='Kaylee launcher')
