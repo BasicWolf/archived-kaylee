@@ -128,23 +128,14 @@ def load_kaylee_objects(settings = None):
             raise KayleeError('Configuration error: app name {} is not a string'
                               .format(app_name))
 
-        pname = conf['project']['name']
-        cname = conf['controller']['name']
-        crsname = conf['controller']['results_storage']['name']
-        arsname = conf['controller']['app_results_storage']['name']
-        pcls = project_classes[pname]
-        ccls = controller_classes[cname]
-        crscls = crstorage_classes[crsname]
-        arscls = arstorage_classes[arsname]
-
         # initialize objects
-        project = pcls(**conf['project']['config'])
-        crstorage = crscls(**conf['controller']['results_storage']['config'])
-        arstorage = arscls(**conf['controller']['app_results_storage']
-                             ['config'])
-        # initialize controller and store it local controllers dict
-        controller = ccls(_idx, app_name, project, crstorage, arstorage,
-                          **conf['controller']['config'])
+        project = _get_project_object(conf, project_classes)
+        crstorage = _get_results_storage_object(conf, crstorage_classes)
+        arstorage = _get_app_results_storage_object(conf, arstorage_classes)
+        controller = _get_controller_object(_idx, app_name, project, crstorage, 
+                                            arstorage, conf, controller_classes)
+
+        # initialize store controller to local controllers dict
         controllers[app_name] = controller
         _idx += 1
     applications = Applications(controllers)
@@ -166,3 +157,27 @@ def _store_classes(dest, classes, cls):
 
 def _get_classes(attr_list):
     return list( attr for attr in attr_list if inspect.isclass(attr) )
+
+def _get_project_object(conf, project_classes):
+    pname = conf['project']['name']
+    pcls = project_classes[pname]
+    return pcls(**conf['project'].get('config', {}))
+
+def _get_results_storage_object(conf, crstorage_classes):
+    if not 'results_storage' in conf['controller']:
+        return None
+    crsname = conf['controller']['results_storage']['name']
+    crscls = crstorage_classes[crsname]
+    return crscls(**conf['controller']['results_storage'].get('config', {}))
+
+def _get_app_results_storage_object(conf, arstorage_classes):
+    arsname = conf['controller']['app_results_storage']['name']
+    arscls = arstorage_classes[arsname]
+    return arscls(**conf['controller']['app_results_storage'].get('config', {}))
+
+def _get_controller_object(idx, app_name, project, crstorage, arstorage, 
+                           conf, controller_classes):
+    cname = conf['controller']['name']
+    ccls = controller_classes[cname]
+    return ccls(idx, app_name, project, crstorage, arstorage,
+                **conf['controller'].get('config', {}))

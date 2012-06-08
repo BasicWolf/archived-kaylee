@@ -33,7 +33,6 @@ class Settings2(Settings1):
           'controller' : {
                 'name' :'DummyController',
                 'config' : {},
-
                 'results_storage' : {
                     'name' : 'MemoryControllerResultsStorage',
                     'config' : {}
@@ -41,6 +40,22 @@ class Settings2(Settings1):
                 'app_results_storage' : {
                     'name' : 'MemoryAppResultsStorage',
                     'config' : {}
+                    },
+                },
+          }
+        ]
+
+class Settings3(Settings1):
+    APPLICATIONS = [
+        { 'name' : 'dummy.1',
+          'description' : 'Dummy application',
+          'project' : {
+                'name' : 'DummyProject',
+                },
+          'controller' : {
+                'name' :'DummyController',
+                'app_results_storage' : {
+                    'name' : 'MemoryAppResultsStorage',
                     },
                 },
           }
@@ -69,6 +84,9 @@ class KayleeLoaderTests(KayleeTest):
         self.assertIsInstance(app.results, MemoryControllerResultsStorage)
         self.assertIsInstance(app.app_results, MemoryAppResultsStorage)
         self.assertEqual(app.project.__class__.__name__, DummyProject.__name__)
+
+    def test_load_controller(self):
+        nconf, storage, apps = load_kaylee_objects(Settings3)
 
     def test_load_kaylee(self):
         kl = load(Settings2)
