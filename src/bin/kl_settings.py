@@ -39,6 +39,26 @@ APPLICATIONS = [
                 }
             },
       },
+
+    { 'name' : 'hash_cracker.1',
+      'description' : 'Crack a salted hash',
+      'project' : {
+            'name' : 'HashCrackerProject',
+            'config' : {
+                'script' : 'hash_cracker/hash_cracker.js',
+                'alphabet' : 'abcdefghijklmopqrstuvwxyz',
+                'key_length' : (4, 5),
+                'hash_func' : 'md5(md5(k) + s)',
+                'hashes_per_task' : 100,
+                }
+            },
+      'controller' : {
+            'name' :'SimpleController',
+            'app_results_storage' : {
+                'name' : 'MemoryAppResultsStorage',
+                }
+            }
+      },
 ]
 
 

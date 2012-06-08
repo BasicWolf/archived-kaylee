@@ -56,11 +56,12 @@ class Project(object):
 
 class TaskMeta(type):
     """
-    Metaclass for kaylee.project.Task. Adds 'serializable' incremental
-    list logic to the class. The serializable field of a class is a list
-    which contains the names of the object fields that will be put
-    into a dictionary and returned by the serialize() method.
-    This dictionary can be then used to e.g. dump the object to JSON.
+    The Metaclass for :class:`kaylee.project.Task`. Adds 'serializable'
+    incremental list logic to the class. The serializable attributes
+    of the class is a list which contains the names of the objects'
+    attributes that are put into a dictionary which is then returned
+    by the serialize() method. This dictionary can be then used to
+    e.g. dump the object to JSON.
     """
     def __new__(meta, classname, bases, class_dict):
         serializable = []
@@ -77,9 +78,9 @@ class TaskMeta(type):
 class Task(object):
     """
     Base class for Kaylee projects' tasks. This class is meant to be
-    inherited in users' projects if additional fields-to-be-serialized
+    inherited in users' projects if additional attributes-to-be-serialized
     are required. When serialized Task.id is converted to string,
-    whereas other fields' values are stored unmodified. For example:
+    whereas other attributes' values are stored unmodified. For example:
 
     class MyTask(Task):
 
@@ -101,7 +102,7 @@ class Task(object):
 
     def serialize(self):
         """
-        Serializes object fields to dictionary. The serialized fields
+        Serializes object attributes to dictionary. The serialized fields
         are taken from self.serializable list.
         """
         return { key : self.__dict__[key] for key in self.serializable }

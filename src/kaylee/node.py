@@ -28,9 +28,9 @@ node_id_pattern = r'[\da-fA-F]{20}'
 class Node(object):
     """
     A Node object contains information about a node which was registered
-    by :class:`Kaylee`. Its id field is an instance :class:`NodeID`
+    by :class:`Kaylee`. Its id attribute is an instance of :class:`NodeID`
     which allows to track when the node was registered. Other public
-    fields are:
+    attributes are:
 
     * subscription_timestamp - a :class:`datetime.datetime` instance which
       tracks the time when a node has subscribed to an application.
@@ -207,6 +207,5 @@ class NodeID(object):
         return NotImplemented
 
     def __hash__(self):
-        """Get a hash value for this :class:`NodeID`.
-        """
+        """Get a hash value for this :class:`NodeID`."""
         return hash(self._id)
