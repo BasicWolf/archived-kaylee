@@ -8,18 +8,25 @@
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
 """
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 from copy import copy
+from .util import AutoWrapperABCMeta
 
 
 def depleted_guard(f):
-    def wrapper(self, *args, **kwargs):
+    def wrapper(obj, *args, **kwargs):
         try:
-            return f(self, *args, **kwargs)
+            return f(obj, *args, **kwargs)
         except StopIteration as e:
-            self._depleted = True
+            obj._depleted = True
             raise e
     return wrapper
+
+
+class ProjectMeta(AutoWrapperABCMeta):
+    _wrappers = {
+        '__next__' : [depleted_guard, ]
+        }
 
 
 class Project(object):
@@ -28,7 +35,8 @@ class Project(object):
     project should be able to return the same task on
     when project.__getitem__(same_id) is called."""
 
-    __metaclass__ = ABCMeta
+    __metaclass__ = ProjectMeta
+    auto_wrap = True
 
     def __init__(self, *args, **kwargs):
         #: Project.node_config is a dictionary with configuration
@@ -48,14 +56,13 @@ class Project(object):
         return self.__next__()
 
     @abstractmethod
-    @depleted_guard
     def __next__(self):
         """
         Returns the next task. In case if __next__() throws StopIteration,
         it means that there will be no more new tasks from the project,
         but the bound controller can still refer to old tasks via
         project[task_id]. After StopIteration has been thrown,
-        :attr:`Project.depleted` returns True.
+        :attr:`Project.depleted` **must** return True.
         In case that :class:`Controller` does not intercept or re-throws
         StopIteration, :class:`Kaylee` catches and interprets it as no
         need to involve the bound node in any further calculations for
@@ -70,7 +77,7 @@ class Project(object):
 
     @property
     def depleted(self):
-        return self._project_depleted
+        return self._depleted
 
     def normalize(self, data):
         """Normalizes and validates the reply from a node.

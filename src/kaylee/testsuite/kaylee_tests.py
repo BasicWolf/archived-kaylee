@@ -33,7 +33,7 @@ class Settings2(Settings1):
           'controller' : {
                 'name' :'DummyController',
                 'config' : {},
-                'results_storage' : {
+                'tmp_storage' : {
                     'name' : 'MemoryControllerResultsStorage',
                     'config' : {}
                     },
@@ -54,7 +54,7 @@ class Settings3(Settings1):
                 },
           'controller' : {
                 'name' :'DummyController',
-                'app_results_storage' : {
+                'app_storage' : {
                     'name' : 'MemoryAppResultsStorage',
                     },
                 },
@@ -95,10 +95,10 @@ class KayleeLoaderTests(KayleeTest):
 
     def test_init_kaylee(self):
         project = DummyProject()
-        results_storage = MemoryControllerResultsStorage()
-        app_results_storage = MemoryAppResultsStorage()
-        controller = DummyController(0, 'dummy_app', project, results_storage,
-                                     app_results_storage)
+        tmp_storage = MemoryControllerResultsStorage()
+        app_storage = MemoryAppResultsStorage()
+        controller = DummyController(0, 'dummy_app', project, tmp_storage,
+                                     app_storage)
         apps = Applications({'dummy_app' : controller})
         kl = Kaylee({}, MemoryNodesStorage(timeout = '2h'), apps)
         self.assertIn('dummy_app', kl.applications)

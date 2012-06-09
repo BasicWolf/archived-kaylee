@@ -137,10 +137,11 @@ class Kaylee(object):
         try:
             data = node.get_task().serialize()
             return self._json_action('task', data)
-        except StopIteration:
+        except StopIteration as e:
             self.unsubscribe(node)
             return self._json_action(
-                'stop','The node has been automatically unsubscribed.')
+                'stop', ('The node has been automatically unsubscribed: {}.'
+                         .format(e)))
 
     @json_error_handler
     def accept_result(self, node_id, data):

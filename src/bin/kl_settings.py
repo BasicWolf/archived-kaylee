@@ -15,7 +15,7 @@ app_hash_cracker_1 = {
         },
     'controller' : {
         'name' :'SimpleController',
-        'app_results_storage' : {
+        'app_storage' : {
             'name' : 'MemoryAppResultsStorage',
             }
         }
@@ -29,19 +29,19 @@ app_mc_pi_1 = {
         'config' : {
             'script' : 'monte_carlo_pi/monte_carlo_pi.js',
             'random_points' : 1000000,
-            'tasks_count' : 4
+            'tasks_count' : 20
             },
         },
     'controller' : {
         'name' : 'ResultsComparatorController',
         'config' : {
-            'comparison_nodes': 2
+            'comparison_nodes': 3
             },
-        'results_storage' : {
+        'tmp_storage' : {
             'name' : 'MemoryControllerResultsStorage',
             'config' : {},
             },
-        'app_results_storage' : {
+        'app_storage' : {
             'name' : 'MemoryAppResultsStorage',
             'config' : {},
             }

@@ -134,8 +134,8 @@ def load_kaylee_objects(settings = None):
 
         # initialize objects
         project = _get_project_object(conf, project_classes)
-        crstorage = _get_results_storage_object(conf, crstorage_classes)
-        arstorage = _get_app_results_storage_object(conf, arstorage_classes)
+        crstorage = _get_tmp_storage_object(conf, crstorage_classes)
+        arstorage = _get_app_storage_object(conf, arstorage_classes)
         controller = _get_controller_object(_idx, app_name, project, crstorage,
                                             arstorage, conf, controller_classes)
 
@@ -167,17 +167,17 @@ def _get_project_object(conf, project_classes):
     pcls = project_classes[pname]
     return pcls(**conf['project'].get('config', {}))
 
-def _get_results_storage_object(conf, crstorage_classes):
-    if not 'results_storage' in conf['controller']:
+def _get_tmp_storage_object(conf, crstorage_classes):
+    if not 'tmp_storage' in conf['controller']:
         return None
-    crsname = conf['controller']['results_storage']['name']
+    crsname = conf['controller']['tmp_storage']['name']
     crscls = crstorage_classes[crsname]
-    return crscls(**conf['controller']['results_storage'].get('config', {}))
+    return crscls(**conf['controller']['tmp_storage'].get('config', {}))
 
-def _get_app_results_storage_object(conf, arstorage_classes):
-    arsname = conf['controller']['app_results_storage']['name']
+def _get_app_storage_object(conf, arstorage_classes):
+    arsname = conf['controller']['app_storage']['name']
     arscls = arstorage_classes[arsname]
-    return arscls(**conf['controller']['app_results_storage'].get('config', {}))
+    return arscls(**conf['controller']['app_storage'].get('config', {}))
 
 def _get_controller_object(idx, app_name, project, crstorage, arstorage,
                            conf, controller_classes):
