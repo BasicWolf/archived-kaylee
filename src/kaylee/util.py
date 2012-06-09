@@ -1,6 +1,7 @@
 import re
 from datetime import timedelta
 from .errors import KayleeError
+from abc import ABCMeta
 
 _timeout_regex = re.compile(r'((?P<days>\d+?)d)?\s?((?P<hours>\d+?)h)?\s?'
                             '((?P<minutes>\d+?)m)?\s?((?P<seconds>\d+?)s)?')
@@ -66,4 +67,31 @@ class LazyObject(object):
 
     # introspection support:
     __dir__ = new_method_proxy(dir)
+
+
+
+class AutoWrapperABCMeta(ABCMeta):
+    _wrappers = {
+
+        }
+
+    def __new__(cls, name, bases, dct):
+        auto_wrap = dct.get('auto_wrap', True)
+        if auto_wrap:
+            # TODO: document this
+            # Automatically wrap methods from _wrappers so that the user
+            # does not have to worry about the common stuff.
+            for attr_name, attr in dct.iteritems():
+                try:
+                    wrappers = cls._wrappers[attr_name]
+                    method = attr
+                    for wrapper in wrappers:
+                        method = wrapper(method)
+                    dct[attr_name] = method
+                except KeyError:
+                    pass
+        return super(AutoWrapperABCMeta, cls).__new__(cls, name, bases, dct)
+
+    def __init__(cls, name, bases, dct):
+        super(AutoWrapperABCMeta, cls).__init__(name, bases, dct)
 
