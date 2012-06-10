@@ -20,8 +20,8 @@ class InvalidNodeIDError(KayleeError):
 
 class AppFinishedError(StopIteration, KayleeError):
     def __init__(self, app_name):
-        KayleeError.__init__(self, 'All calculations for application {} were '
-                                   'completed'.format(app_name))
+        KayleeError.__init__(self, 'All calculations for application {} '
+                                   'were completed'.format(app_name))
 
 class InvalidResultError(KayleeError):
     def __init__(self, node):

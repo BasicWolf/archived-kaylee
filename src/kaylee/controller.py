@@ -11,7 +11,6 @@
 import re
 from abc import abstractmethod, abstractproperty
 from datetime import datetime
-from collections import deque
 
 from .node import Node
 from .util import AutoWrapperABCMeta
@@ -22,22 +21,38 @@ from .errors import AppFinishedError
 app_name_pattern = r'[a-zA-Z\.\d_-]+'
 _app_name_re = re.compile('^{}$'.format(app_name_pattern))
 
+#: Indicates active state of an application.
 ACTIVE = 0x2
+#: Indicates finished state of an application.
 FINISHED = 0x4
 
 
 def app_finished_guard(f):
+    """This decorator handles two cases of finished Kaylee application:
+
+    1. First, it checks if the application has already finished and
+       in that case raises :exc:`AppFinishedError`.
+    2. Second, it wraps ``f`` in ``try..except`` block in order to
+       set object's :attr:`Controller.state` value to :data:`FINISHED`.
+       The :exc:`AppFinishedError` is then re-raised.
+    """
     def wrapper(obj, *args, **kwargs):
         if obj.state == FINISHED:
             raise AppFinishedError(obj.app_name)
-        return f(obj, *args, **kwargs)
+        try:
+            return f(obj, *args, **kwargs)
+        except AppFinishedError as e:
+            obj.state = FINISHED
+            raise e
     return wrapper
+
 
 def normalize_result(f):
     def wrapper(self, node, data):
         data = self.project.normalize(data)
         return f(self, node, data)
     return wrapper
+
 
 class ControllerMeta(AutoWrapperABCMeta):
     _wrappers = {
@@ -88,7 +103,7 @@ class Controller(object):
 class SimpleController(Controller):
     def __init__(self, *args, **kwargs):
         super(SimpleController, self).__init__(*args, **kwargs)
-        self._tasks_queue = deque()
+        self._tasks_pool = set()
 
     def get_task(self, node):
         if not self.project.depleted:
@@ -101,20 +116,20 @@ class SimpleController(Controller):
 
         if self.project.depleted:
             try:
-                tp_id = self._tasks_queue.pop()
+                tp_id = self._tasks_pool.pop()
                 task = self.project[tp_id]
             except KeyError:
                 # project depleted and nothing in the pool,
                 # looks like the application has finished.
-                raise StopIteration
+                raise AppFinishedError(self.app_name)
 
         node.task_id = task.id
         self._tasks_pool.add(task.id)
         return task
 
     def accept_result(self, node, data):
-        task_id = node.task_id
-        self.app_storage[task_id] = data
+        self.app_storage[node.task_id] = data
+        self._tasks_pool.remove(node.task_id)
 
 
 class ResultsComparatorController(Controller):
@@ -139,7 +154,7 @@ class ResultsComparatorController(Controller):
             except KeyError:
                 # project depleted and nothing in the pool,
                 # looks like the application has finished.
-                raise StopIteration
+                raise AppFinishedError(self.app_name)
 
         if node.id in self.tmp_storage[task.id]:
             raise StopIteration('Node has already completed task #{}'

@@ -14,7 +14,7 @@ app_hash_cracker_1 = {
             }
         },
     'controller' : {
-        'name' :'SimpleController',
+        'name' : 'SimpleController',
         'app_storage' : {
             'name' : 'MemoryAppResultsStorage',
             }
@@ -29,7 +29,7 @@ app_mc_pi_1 = {
         'config' : {
             'script' : 'monte_carlo_pi/monte_carlo_pi.js',
             'random_points' : 1000000,
-            'tasks_count' : 20
+            'tasks_count' : 3
             },
         },
     'controller' : {
