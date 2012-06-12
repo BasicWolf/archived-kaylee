@@ -7,9 +7,13 @@ app_hash_cracker_1 = {
         'name' : 'HashCrackerProject',
         'config' : {
             'script' : 'hash_cracker/hash_cracker.js',
-            'alphabet' : 'abcdefghijklmopqrstuvwxyz',
-            'key_length' : (4, 5),
-            'hash_func' : 'md5(md5(k) + s)',
+            'hash_to_crack' : '9b630e300e46c67c8f4ab07522b469c7',
+            'salt'          : 'klsalt',
+            'alphabet'      : 'abcdefghijklmopqrstuvwxyz',
+            'hash_func'     : 'md5(md5(k) + s)',
+            # although knowing the length of the key is a cheat,
+            # but it's fine enough for demo purposes
+            'key_length'    : 4,
             'hashes_per_task' : 100,
             }
         },
@@ -48,7 +52,7 @@ app_mc_pi_1 = {
         },
     }
 
-APPLICATIONS = [app_mc_pi_1, ]
+APPLICATIONS = [app_mc_pi_1, app_hash_cracker_1]
 
 NODES_STORAGE = {
     'name' : 'MemoryNodesStorage',

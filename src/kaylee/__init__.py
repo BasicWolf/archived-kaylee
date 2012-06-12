@@ -20,7 +20,7 @@ from .kaylee import Kaylee, Applications
 from .node import Node, NodeID
 from .storage import NodesStorage
 from .controller import Controller
-from .project import Project
+from .project import Project, Task
 from .loader import load, LazyKaylee
 from .errors import KayleeError
 from .loader import LazySettings

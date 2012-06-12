@@ -37,7 +37,7 @@ class Settings2(Settings1):
                     'name' : 'MemoryControllerResultsStorage',
                     'config' : {}
                     },
-                'app_results_storage' : {
+                'app_storage' : {
                     'name' : 'MemoryAppResultsStorage',
                     'config' : {}
                     },
@@ -81,8 +81,8 @@ class KayleeLoaderTests(KayleeTest):
         app = apps['dummy.1']
         self.assertEqual(app.__class__.__name__, DummyController.__name__)
         self.assertEqual(app.app_name, 'dummy.1')
-        self.assertIsInstance(app.results, MemoryControllerResultsStorage)
-        self.assertIsInstance(app.app_results, MemoryAppResultsStorage)
+        self.assertIsInstance(app.tmp_storage, MemoryControllerResultsStorage)
+        self.assertIsInstance(app.app_storage, MemoryAppResultsStorage)
         self.assertEqual(app.project.__class__.__name__, DummyProject.__name__)
 
     def test_load_controller(self):
