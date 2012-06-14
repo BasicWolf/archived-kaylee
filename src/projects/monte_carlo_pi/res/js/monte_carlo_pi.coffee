@@ -1,8 +1,8 @@
 pj = {}
 
 pj.init = (kl_config, app_config) ->
-    pj.config = app_config
     importScripts("#{kl_config.lib_js_root}/alea.js")
+    pj.config = app_config
 
 pj.on_task_recieved = (data) ->
     random = new Alea(data.id)

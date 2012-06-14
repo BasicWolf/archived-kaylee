@@ -18,14 +18,13 @@ class HashCrackerProject(Project):
         self.hashes_per_task = kwargs['hashes_per_task']
         self.hash_to_crack = kwargs['hash_to_crack']
         self.salt = kwargs['salt']
-
+        self.tasks_count = len(self.alphabet) ** self.key_length / self.hashes_per_task + 1
         self.nodes_config.update({
                 'alphabet' : self.alphabet,
                 'key_length' : self.key_length,
                 'hash_func' : self._hash_func_name,
                 'hashes_per_task' : self.hashes_per_task,
                 })
-        self.tasks_count = len(self.alphabet) ** self.key_length
 
     def __iter__(self):
         self._tasks_counter = -1
