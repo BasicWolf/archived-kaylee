@@ -14,7 +14,6 @@ import importlib
 import inspect
 
 from .errors import KayleeError
-from .kaylee import Kaylee, Applications
 from .util import LazyObject
 
 SETTINGS_ENV_VAR = 'KAYLEE_SETTINGS_MODULE'
@@ -47,11 +46,9 @@ class LazySettings(LazyObject):
             raise ImportError("Settings cannot be imported, because "
                               "environment variable {} is undefined."
                               .format(SETTINGS_ENV_VAR))
-
         self._wrapped = Settings()
 
         mod = imp.load_source('settings', settings_path)
-
         for setting in dir(mod):
             if setting == setting.upper():
                 setting_value = getattr(mod, setting)
@@ -68,6 +65,7 @@ class LazyKaylee(LazyObject):
         self._wrapped = load()
 
 def load(settings = None):
+    from .kaylee import Kaylee
     try:
         return Kaylee(*load_kaylee_objects(settings))
     except (KeyError, AttributeError) as e:
@@ -87,6 +85,7 @@ def load_kaylee_objects(settings = None):
     from . import storage
     from . import controller
     from . import project
+    from .kaylee import Applications
     if settings is None:
         from . import settings
 
@@ -155,6 +154,7 @@ def load_kaylee_objects(settings = None):
     nstorage = nscls(**settings.NODES_STORAGE['config'])
     return nconfig, nstorage, applications
 
+
 def _store_classes(dest, classes, cls):
     for c in (c for c in classes if issubclass (c, cls) and c is not cls ):
         dest[c.__name__] = c
@@ -183,5 +183,21 @@ def _get_controller_object(idx, app_name, project, crstorage, arstorage,
                            conf, controller_classes):
     cname = conf['controller']['name']
     ccls = controller_classes[cname]
-    return ccls(idx, app_name, project, crstorage, arstorage,
+    cobj = ccls(idx, app_name, project, crstorage, arstorage,
                 **conf['controller'].get('config', {}))
+
+    if not ccls.auto_filter:
+        return cobj
+
+    # dynamically decorate controller methods with filters
+    # (if required and if there are any filters defined).
+    try:
+        filters = conf['controller']['filters']
+        for method_name, fil in filters.iteritems():
+            method = getattr(cobj, method_name)
+            fil_func = getattr(importlib.import_module(fil[0]), fil[1])
+            setattr(cobj, 'method_name', fil_func(method))
+    except KeyError:
+        pass
+    finally:
+        return cobj

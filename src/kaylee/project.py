@@ -10,8 +10,7 @@
 """
 from abc import abstractmethod
 from copy import copy
-from .util import AutoWrapperABCMeta
-
+from .util import AutoFilterABCMeta
 
 def depleted_guard(f):
     def wrapper(obj, *args, **kwargs):
@@ -23,8 +22,8 @@ def depleted_guard(f):
     return wrapper
 
 
-class ProjectMeta(AutoWrapperABCMeta):
-    _wrappers = {
+class ProjectMeta(AutoFilterABCMeta):
+    _filters = {
         '__next__' : [depleted_guard, ]
         }
 
@@ -36,7 +35,7 @@ class Project(object):
     when project.__getitem__(same_id) is called."""
 
     __metaclass__ = ProjectMeta
-    auto_wrap = True
+    auto_filter = True
 
     def __init__(self, *args, **kwargs):
         #: Project.node_config is a dictionary with configuration

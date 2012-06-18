@@ -13,7 +13,7 @@ from abc import abstractmethod, abstractproperty
 from datetime import datetime
 
 from .node import Node
-from .util import AutoWrapperABCMeta
+from .util import AutoFilterABCMeta
 from .errors import AppFinishedError
 
 #: The Application name regular expression pattern which can be used in
@@ -46,28 +46,37 @@ def app_finished_guard(f):
             raise e
     return wrapper
 
-
-def normalize_result(f):
+def normalize_result_filter(f):
     def wrapper(self, node, data):
         data = self.project.normalize(data)
         return f(self, node, data)
     return wrapper
 
+def failed_result_filter(f):
+    def wrapper(self, node, data):
+        try:
+            if data['__result__'] == False:
+                return
+        except KeyError:
+            pass
+        return f(self, node, data)
+    return wrapper
 
-class ControllerMeta(AutoWrapperABCMeta):
-    _wrappers = {
+
+class ControllerMeta(AutoFilterABCMeta):
+    _filters = {
         'get_task' : [
             app_finished_guard,
             ],
         'accept_result' : [
-            normalize_result,
+            normalize_result_filter,
             ]
         }
 
 
 class Controller(object):
     __metaclass__ = ControllerMeta
-    auto_wrap = True
+    auto_filter = True
 
     def __init__(self, id, app_name, project, tmp_storage,
                  app_storage, *args, **kwargs):
@@ -82,7 +91,7 @@ class Controller(object):
 
     @app_finished_guard
     def subscribe(self, node):
-        """Subscribe Node for bound project"""
+        """Subscribes a node for bound project."""
         node.controller = self
         node.subscription_timestamp = datetime.now()
         return self.project.nodes_config
@@ -94,6 +103,7 @@ class Controller(object):
     @abstractmethod
     def accept_result(self, node, data):
         """Accepts and processes results from a node.
+        The method has no return value.
 
         :param node: Active Kaylee Node from which the results are received.
         :param data: JSON-parsed data (python dictionary or list)

@@ -1,5 +1,28 @@
 # -*- coding: utf-8 -*-
 
+DEBUG = True
+
+NODES_STORAGE = {
+    'name' : 'MemoryNodesStorage',
+    'config' : {
+        # timeout format: 1d 12h 10m 5s, e.g. "12h"; "1d 10m" etc.
+        'timeout' : '12h'
+        },
+}
+
+PROJECTS_DIR = '/home/zaur/Documents/projects/kaylee/src/projects'
+KAYLEE_JS_ROOT = '/static/js/kaylee'
+LIB_JS_ROOT    = '/static/js/lib'
+PROJECTS_STATIC_ROOT = '/static/js/projects'
+
+# Settings used for Kaylee front-end demonstration
+FRONTEND_TEMPLATES_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/templates'
+FRONTEND_STATIC_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/static'
+
+
+## User applications ##
+#######################
+
 app_hash_cracker_1 = {
     'name' : 'hash_cracker.1',
     'description' : 'Crack a salted hash',
@@ -21,6 +44,9 @@ app_hash_cracker_1 = {
         'name' : 'SimpleController',
         'app_storage' : {
             'name' : 'MemoryAppResultsStorage',
+            },
+        'filters' : {
+            'accept_result' : ('kaylee.controller', 'failed_result_filter'),
             }
         }
     }
@@ -52,22 +78,4 @@ app_mc_pi_1 = {
         },
     }
 
-APPLICATIONS = [app_mc_pi_1, app_hash_cracker_1]
-
-NODES_STORAGE = {
-    'name' : 'MemoryNodesStorage',
-    'config' : {
-        # timeout format: 1d 12h 10m 5s, e.g. "12h"; "1d 10m" etc.
-        'timeout' : '12h'
-        },
-}
-
-PROJECTS_DIR = '/home/zaur/Documents/projects/kaylee/src/projects'
-KAYLEE_JS_ROOT = '/static/js/kaylee'
-LIB_JS_ROOT    = '/static/js/lib'
-PROJECTS_STATIC_ROOT = '/static/js/projects'
-
-
-# Settings used for Kaylee front-end demonstration
-FRONTEND_TEMPLATES_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/templates'
-FRONTEND_STATIC_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/static'
+APPLICATIONS = [app_mc_pi_1, ]#app_hash_cracker_1]

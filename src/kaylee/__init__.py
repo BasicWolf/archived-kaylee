@@ -16,14 +16,16 @@
 
 __version__ = '0.1'
 
+from .loader import load, LazySettings, LazyKaylee
+
+settings = LazySettings()
+kl = LazyKaylee()
+
+
 from .kaylee import Kaylee, Applications
 from .node import Node, NodeID
 from .storage import NodesStorage
 from .controller import Controller
 from .project import Project, Task
-from .loader import load, LazyKaylee
 from .errors import KayleeError
-from .loader import LazySettings
 
-settings = LazySettings()
-kl = LazyKaylee()

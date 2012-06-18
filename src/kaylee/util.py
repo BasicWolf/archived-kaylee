@@ -70,28 +70,24 @@ class LazyObject(object):
 
 
 
-class AutoWrapperABCMeta(ABCMeta):
-    _wrappers = {
-
-        }
-
+class AutoFilterABCMeta(ABCMeta):
     def __new__(cls, name, bases, dct):
-        auto_wrap = dct.get('auto_wrap', True)
-        if auto_wrap:
+        auto_filter = dct.get('auto_filter', True)
+        if auto_filter:
             # TODO: document this
-            # Automatically wrap methods from _wrappers so that the user
+            # Automatically wrap methods from _filters so that the user
             # does not have to worry about the common stuff.
             for attr_name, attr in dct.iteritems():
                 try:
-                    wrappers = cls._wrappers[attr_name]
+                    wrappers = cls._filters[attr_name]
                     method = attr
                     for wrapper in wrappers:
                         method = wrapper(method)
                     dct[attr_name] = method
                 except KeyError:
                     pass
-        return super(AutoWrapperABCMeta, cls).__new__(cls, name, bases, dct)
+        return super(AutoFilterABCMeta, cls).__new__(cls, name, bases, dct)
 
     def __init__(cls, name, bases, dct):
-        super(AutoWrapperABCMeta, cls).__init__(name, bases, dct)
+        super(AutoFilterABCMeta, cls).__init__(name, bases, dct)
 

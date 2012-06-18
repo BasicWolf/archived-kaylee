@@ -9,12 +9,18 @@
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
 """
+import sys
 import json
+import traceback
+from StringIO import StringIO
 from operator import attrgetter
 from functools import partial
+from contextlib import closing
 
 from .node import Node, NodeID
 from .errors import KayleeError, InvalidResultError
+from . import settings
+
 
 #: Returns the results of :function:`json.dumps` in compact encoding
 json.dumps = partial(json.dumps, separators=(',',':'))
@@ -29,7 +35,16 @@ def json_error_handler(f):
         try:
             return f(*args, **kwargs)
         except Exception as e:
-            return json.dumps({ 'error' : str(e) })
+            exc_str = str(e)
+            if settings.DEBUG:
+                with closing(StringIO()) as buf:
+                    exc_type, exc_value, exc_traceback = sys.exc_info()
+                    traceback.print_tb(exc_traceback,
+                                       limit = None,
+                                       file = buf)
+                    exc_str += '\n' + buf.getvalue()
+
+            return json.dumps({ 'error' : exc_str })
     return wrapper
 
 
