@@ -30,9 +30,12 @@ class ProjectMeta(AutoFilterABCMeta):
 
 class Project(object):
     """Base class for Kaylee projects. Essentialy a Project is an
-    iterator that yields Tasks. Every task has a unique id and a
-    project should be able to return the same task on
-    when project.__getitem__(same_id) is called."""
+    iterator-like object that yields Tasks. A common project supports
+    next() calls but does not implement the __iter__() method. Thus, all
+    iteration variables should be initialized in the __init__() method.
+
+    Every task has a unique id and a project should be able to return the
+    same task when project.__getitem__(same_id) is called."""
 
     __metaclass__ = ProjectMeta
     auto_filter = True
@@ -47,9 +50,6 @@ class Project(object):
             'script' : kwargs['script'],
             }
         self._depleted = False
-
-    def __iter__(self):
-        return self
 
     def next(self):
         return self.__next__()
@@ -82,7 +82,7 @@ class Project(object):
         """Normalizes and validates the reply from a node.
 
         :param data: the data to be validated and/or normalized.
-        :throws InvlaidResultError: in case of invalid result.
+        :throws ValueError: in case of invalid result.
         :return: normalized data.
         """
         return data
@@ -104,7 +104,8 @@ class TaskMeta(type):
 
         for base in bases:
             if hasattr(base, 'serializable'):
-                serializable.extend(base.serializable)
+                # extend from left side of the list
+                serializable[:-len(serializable)] = base.serializable
         class_dict['serializable'] = serializable
         return type.__new__(meta, classname, bases, class_dict)
 
@@ -124,11 +125,11 @@ class Task(object):
             super(MyTask, self).__init__(task_id)
             self.speed = speed
 
-
     task = MyTask('001', 60)
     task.serialize()
     >>> { 'id' : '001', 'speed' : 60 }
     """
+    __metaclass__ = TaskMeta
     serializable = ['id']
 
     def __init__(self, task_id):
@@ -139,4 +140,8 @@ class Task(object):
         Serializes object attributes to dictionary. The serialized fields
         are taken from self.serializable list.
         """
-        return { key : self.__dict__[key] for key in self.serializable }
+        return { attr : getattr(self, attr) for attr in self.serializable }
+
+    def __str__(self):
+        return 'Task: ' + '; '.join('{0}: {1}'.format(attr, getattr(self, attr))
+                                    for attr in self.serializable )

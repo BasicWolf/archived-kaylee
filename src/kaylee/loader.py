@@ -14,7 +14,7 @@ import importlib
 import inspect
 
 from .errors import KayleeError
-from .util import LazyObject
+from .util import LazyObject, import_object
 
 SETTINGS_ENV_VAR = 'KAYLEE_SETTINGS_MODULE'
 
@@ -193,10 +193,10 @@ def _get_controller_object(idx, app_name, project, crstorage, arstorage,
     # (if required and if there are any filters defined).
     try:
         filters = conf['controller']['filters']
-        for method_name, fil in filters.iteritems():
+        for method_name, filter_name in filters.iteritems():
             method = getattr(cobj, method_name)
-            fil_func = getattr(importlib.import_module(fil[0]), fil[1])
-            setattr(cobj, 'method_name', fil_func(method))
+            filter_decorator = import_object(filter_name)
+            setattr(cobj, 'method_name', filter_decorator(method))
     except KeyError:
         pass
     finally:

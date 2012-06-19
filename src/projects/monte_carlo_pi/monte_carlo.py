@@ -9,12 +9,7 @@ class MonteCarloPiProject(Project):
                 'random_points' : self.random_points,
                 })
         self.tasks_count = kwargs['tasks_count']
-        # initialize self as a ready-to-go iterator
-        self.__iter__()
-
-    def __iter__(self):
         self._tasks_counter = -1
-        return self
 
     def __next__(self):
         if self._tasks_counter < self.tasks_count:

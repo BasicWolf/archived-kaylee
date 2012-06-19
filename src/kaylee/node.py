@@ -18,12 +18,13 @@ import struct
 import threading
 import hashlib
 
-from .errors import InvalidNodeIDError
+from .errors import InvalidNodeIDError, NodeUnsubscribedError
 from .tz_util import utc
 
 #: The hex string formatted NodeID regular expression pattern which
 #: can be used in e.g. web frameworks' URL dispatchers.
 node_id_pattern = r'[\da-fA-F]{20}'
+
 
 class Node(object):
     """
@@ -61,9 +62,13 @@ class Node(object):
         self._task_id = None
 
     def get_task(self):
+        if self.controller is None:
+            raise NodeUnsubscribedError(self)
         return self.controller.get_task(self)
 
     def accept_result(self, data):
+        if self.controller is None:
+            raise NodeUnsubscribedError(self)
         self.controller.accept_result(self, data)
 
     @property

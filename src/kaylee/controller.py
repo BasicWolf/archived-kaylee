@@ -55,8 +55,8 @@ def normalize_result_filter(f):
 def failed_result_filter(f):
     def wrapper(self, node, data):
         try:
-            if data['__result__'] == False:
-                return
+            if data['__kl_result__'] == False:
+                data = None
         except KeyError:
             pass
         return f(self, node, data)
@@ -103,10 +103,12 @@ class Controller(object):
     @abstractmethod
     def accept_result(self, node, data):
         """Accepts and processes results from a node.
-        The method has no return value.
 
         :param node: Active Kaylee Node from which the results are received.
-        :param data: JSON-parsed data (python dictionary or list)
+        :param data: JSON-parsed data (python dictionary or list). The ``None``
+                     value indicates that there is no need to store the data
+                     to the long-term :attr:`Controller.app_storage`
+                     application storage.
         """
 
 
@@ -138,7 +140,8 @@ class SimpleController(Controller):
         return task
 
     def accept_result(self, node, data):
-        self.app_storage[node.task_id] = data
+        if data is not None:
+            self.app_storage[node.task_id] = data
         self._tasks_pool.remove(node.task_id)
 
 
@@ -200,9 +203,10 @@ class ResultsComparatorController(Controller):
         return True
 
     def _add_result(self, task_id, data):
-        self.app_storage[task_id] = data
+        if data is not None:
+            self.app_storage[task_id] = data
         # check if application has collected all the results
-        # and can switch to "FINISHED" state
+        # and can switch to the "FINISHED" state
         if self.project.depleted:
             if len(self._tasks_pool) == 0:
                 self.state = FINISHED

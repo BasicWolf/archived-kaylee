@@ -30,13 +30,12 @@ app_hash_cracker_1 = {
         'name' : 'HashCrackerProject',
         'config' : {
             'script' : 'hash_cracker/hash_cracker.js',
-            'hash_to_crack' : '9b630e300e46c67c8f4ab07522b469c7',
-            'salt'          : 'klsalt',
+            'hash_to_crack' : '71eebe6997feec5cd4d570c1b15ae786', # key == 'kl'
+            'salt'          : 'salt',
             'alphabet'      : 'abcdefghijklmopqrstuvwxyz',
-            'hash_func'     : 'md5(md5(k) + s)',
             # although knowing the length of the key is a cheat,
             # but it's fine enough for demo purposes
-            'key_length'    : 4,
+            'key_length'    : 2,
             'hashes_per_task' : 100,
             }
         },
@@ -46,7 +45,7 @@ app_hash_cracker_1 = {
             'name' : 'MemoryAppResultsStorage',
             },
         'filters' : {
-            'accept_result' : ('kaylee.controller', 'failed_result_filter'),
+            'accept_result' : 'kaylee.controller.failed_result_filter',
             }
         }
     }
@@ -78,4 +77,4 @@ app_mc_pi_1 = {
         },
     }
 
-APPLICATIONS = [app_mc_pi_1, ]#app_hash_cracker_1]
+APPLICATIONS = [app_mc_pi_1, app_hash_cracker_1]

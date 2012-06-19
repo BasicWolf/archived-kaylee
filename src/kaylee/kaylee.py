@@ -141,9 +141,10 @@ class Kaylee(object):
         Here, <action> tells the Node, what should it do and <data> is
         the attached data. The available values of <action> are:
 
-        * 'task' - indicated that <data> contains task data
-        * 'stop' - indicates that there is no need for the Node to
-                   request tasks from the subscribed application any more.
+        * 'task'        - indicated that <data> contains task data
+        * 'unsubscribe' - indicates that there is no need for the Node to
+                          request tasks from the subscribed application
+                          any more.
 
         :param node_id: a valid node id
         :type node_id: string
@@ -154,9 +155,8 @@ class Kaylee(object):
             return self._json_action('task', data)
         except StopIteration as e:
             self.unsubscribe(node)
-            return self._json_action(
-                'stop', ('The node has been automatically unsubscribed: {}.'
-                         .format(e)))
+            return self._json_action('unsubscribe',
+                'The node has been automatically unsubscribed: {}.'.format(e))
 
     @json_error_handler
     def accept_result(self, node_id, data):
@@ -174,9 +174,9 @@ class Kaylee(object):
         node = self.nodes[node_id]
         try:
             node.accept_result(data)
-        except InvalidResultError as e:
+        except ValueError as e:
             self.unsubscribe(node)
-            raise e
+            raise InvalidResultError(node)
 
         return self.get_task(node.id)
 

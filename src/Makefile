@@ -1,4 +1,4 @@
-PROJECTS = monte_carlo_pi
+PROJECTS = monte_carlo_pi hash_cracker
 
 KL_SRC_DIR = kayleejs/src
 KL_JSLIB_DIR = kayleejs/static/js/kaylee
@@ -12,14 +12,14 @@ all : subdirs $(KL_JSLIB_DIR)
 
 subdirs: $(SUBDIRS)
 
-$(KL_JSLIB_DIR):
+$(PJ_DIRS):
+	$(MAKE) $(MAKECMDGOALS) -C $@
+
+$(KL_JSLIB_DIR): 
 	cp $(KL_SRC_DIR)/*.js $(KL_JSLIB_DIR)
 
 $(KL_SRC_DIR):
 	$(MAKE) $(MAKECMDGOALS) -C $(KL_SRC_DIR)
-
-$(PJ_DIRS):
-	$(MAKE) $(MAKECMDGOALS) -C $(PJ_DIRS)
 
 clean: subdirs
 

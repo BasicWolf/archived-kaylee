@@ -20,3 +20,6 @@ klw.import_project = (data) ->
 
 klw.task_completed = (res) ->
     klw.post_message('task_completed', res)
+
+klw.log = (message) ->
+    klw.post_message('__klw_log__', message)

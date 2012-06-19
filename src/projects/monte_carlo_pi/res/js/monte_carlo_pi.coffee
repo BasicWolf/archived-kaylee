@@ -3,6 +3,7 @@ pj = {}
 pj.init = (kl_config, app_config) ->
     importScripts("#{kl_config.lib_js_root}/alea.js")
     pj.config = app_config
+    return
 
 pj.on_task_recieved = (data) ->
     random = new Alea(data.id)
@@ -13,3 +14,4 @@ pj.on_task_recieved = (data) ->
         if x*x + y*y <= 1
             counter += 1
     klw.task_completed({'points_in_circle' : counter})
+    return

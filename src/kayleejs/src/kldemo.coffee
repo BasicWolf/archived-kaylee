@@ -8,12 +8,13 @@ $(document).ready( () ->
     kl.console.print('<b>Kaylee status console</b><br>')
     kl.node_registered.bind(on_node_registered)
     kl.node_subscribed.bind(on_node_subscribed)
-    kl.node_stopped.bind(on_node_stopped)
+    kl.node_unsubscibed.bind(on_node_unsubscibed)
     kl.project_imported.bind(on_project_imported)
     kl.task_recieved.bind(on_task_recieved)
     kl.task_completed.bind(on_task_completed)
     kl.results_sent.bind(on_results_sent)
     kl.worker_raised_error.bind(on_worker_error)
+    kl.log.bind(on_log)
     kl.server_raised_error.bind(on_server_error)
     kl.register()
 )
@@ -34,14 +35,14 @@ on_node_subscribed = (config) ->
     kl.console.print("Application configuration recieved:
                       <span class='cem'>#{sconfig}</span>.")
 
-on_node_stopped = (data) ->
-    kl.console.print("Node stopped: <span class='cem'>#{data}</span>")
+on_node_unsubscibed = (data) ->
+    kl.console.print("Node unsubscibed: <span class='cem'>#{data}</span>")
 
 on_project_imported = (app_name) ->
     kl.console.print("Project files imported successfully.")
 
 on_task_recieved = (data) ->
-    kl.console.print("Task [<span class='cem'>#{data.id} /
+    kl.console.print("Task [<span class='cem'>id=#{data.id} /
                       ##{_tasks_counter}</span>] recieved.")
 
 on_task_completed = (data) ->
@@ -53,8 +54,11 @@ on_results_sent = () ->
     kl.console.print("Results sent to the server.")
 
 on_worker_error = (e) ->
-    kl.console.print("ERROR: <span class='cerr'>Line #{e.lineno} in
-                      #{e.filename}: #{e.message}</span>")
+    kl.console.print("<span class='cerr'>ERROR:</span> Line #{e.lineno} in
+                      #{e.filename}: #{e.message}")
 
 on_server_error = (message) ->
-    kl.console.print("ERROR: <span class='cerr'>#{message}</span>")
+    kl.console.print("<span class='cerr'>ERROR: </span> #{message}")
+
+on_log = (message) ->
+    kl.console.print("<span class='cem'>LOG:</span> #{message}")

@@ -4,6 +4,7 @@ kl = {
         name : null   # str
         config : null # {}
         worker : null # Worker object
+        subscribed : false
     classes  : {}
     config: {
         # url_root             # set by kl.setup()
@@ -95,16 +96,18 @@ kl.get_task = () ->
            _parse_action)
 
 kl.send_results = (data) ->
-   kl.post("#{kl.config.url_root}/tasks/#{kl.node_id}", data,
-       (edata) ->
-            kl.results_sent.trigger()
-            _parse_action(edata)
-   )
+    if kl.app.subscribed
+        kl.post("#{kl.config.url_root}/tasks/#{kl.node_id}", data,
+            (edata) ->
+                kl.results_sent.trigger()
+                _parse_action(edata)
+        )
 
 _parse_action = (data) ->
+    console.log(data.action)
     switch data.action
         when 'task' then kl.task_recieved.trigger(data.data)
-        when 'stop' then kl.node_stopped.trigger(data.data)
+        when 'unsubscribe' then kl.node_unsubscibed.trigger(data.data)
 
 # Primary event handlers
 on_node_registered = (data) ->
@@ -115,6 +118,7 @@ on_node_registered = (data) ->
 on_node_subscribed = (config) ->
     kl.app.config = config
     kl.app.worker.terminate() if kl.app.worker?
+    kl.app.subscribed = true
 
     worker = new Worker("#{kl.config.kaylee_js_root}/klworker.js");
     kl.app.worker = worker;
@@ -128,8 +132,8 @@ on_node_subscribed = (config) ->
     })
 
 
-
-on_node_stopped = (data) ->
+on_node_unsubscibed = (data) ->
+    kl.app.subscribed = false
     kl.app.worker.terminate()
     kl.app.worker = null;
 
@@ -147,6 +151,7 @@ on_worker_message = (data) ->
     msg = data.msg
     mdata = data.data
     switch msg
+        when '__klw_log__' then kl.log.trigger(mdata)
         when 'project_imported' then kl.project_imported.trigger(mdata)
         when 'task_completed' then kl.task_completed.trigger(mdata)
 
@@ -157,10 +162,11 @@ on_worker_error = (e) ->
 # TODO: add comments with signatures
 kl.node_registered = new Event(on_node_registered)
 kl.node_subscribed = new Event(on_node_subscribed)
-kl.node_stopped = new Event(on_node_stopped)
+kl.node_unsubscibed = new Event(on_node_unsubscibed)
 kl.project_imported = new Event(on_project_imported)
 kl.task_recieved = new Event(on_task_recieved)
 kl.task_completed = new Event(on_task_completed)
+kl.log = new Event()
 kl.worker_raised_error = new Event()
 kl.results_sent = new Event()
 kl.server_raised_error = new Event()

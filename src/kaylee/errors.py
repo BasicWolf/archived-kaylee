@@ -16,7 +16,11 @@ class KayleeError(Exception):
 
 class InvalidNodeIDError(KayleeError):
     def __init__(self, node_id):
-        KayleeError.__init__(self, "{} is not a valid NodeID".format(node_id))
+        KayleeError.__init__(self, '{} is not a valid node id'.format(node_id))
+
+class NodeUnsubscribedError(KayleeError):
+    def __init__(self, node):
+        KayleeError.__init__(self, 'Node {} is not subscribed'.format(node))
 
 class AppFinishedError(StopIteration, KayleeError):
     def __init__(self, app_name):
