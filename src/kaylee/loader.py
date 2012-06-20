@@ -94,14 +94,14 @@ def load_kaylee_objects(settings = None):
     controller_classes = {}
     nstorage_classes = {}
     crstorage_classes = {}
-    arstorage_classes = {}
+    pstorage_classes = {}
 
     # load built-in kaylee classes
     ctrl_classes = _get_classes( controller.__dict__.values()  )
     stg_classes = _get_classes( storage.__dict__.values() )
     _store_classes(controller_classes, ctrl_classes, controller.Controller)
     _store_classes(nstorage_classes, stg_classes, storage.NodesStorage)
-    _store_classes(arstorage_classes, stg_classes, storage.AppResultsStorage)
+    _store_classes(pstorage_classes, stg_classes, storage.ProjectResultsStorage)
     _store_classes(crstorage_classes, stg_classes,
                    storage.ControllerResultsStorage)
 
@@ -132,11 +132,10 @@ def load_kaylee_objects(settings = None):
                               .format(app_name))
 
         # initialize objects
-        project = _get_project_object(conf, project_classes)
-        crstorage = _get_tmp_storage_object(conf, crstorage_classes)
-        arstorage = _get_app_storage_object(conf, arstorage_classes)
+        project = _get_project_object(conf, project_classes, pstorage_classes)
+        crstorage = _get_controller_storage_object(conf, crstorage_classes)
         controller = _get_controller_object(_idx, app_name, project, crstorage,
-                                            arstorage, conf, controller_classes)
+                                            conf, controller_classes)
 
         # initialize store controller to local controllers dict
         controllers[app_name] = controller
@@ -162,28 +161,32 @@ def _store_classes(dest, classes, cls):
 def _get_classes(attr_list):
     return list( attr for attr in attr_list if inspect.isclass(attr) )
 
-def _get_project_object(conf, project_classes):
+def _get_project_object(conf, project_classes, pstorage_classes):
     pname = conf['project']['name']
     pcls = project_classes[pname]
-    return pcls(**conf['project'].get('config', {}))
+    pj_config = conf['project'].get('config', {})
+    pj_storage = _get_project_storage_object(conf, pstorage_classes)
+    return pcls(storage = pj_storage, **pj_config)
 
-def _get_tmp_storage_object(conf, crstorage_classes):
-    if not 'tmp_storage' in conf['controller']:
+def _get_controller_storage_object(conf, crstorage_classes):
+    if not 'storage' in conf['controller']:
         return None
-    crsname = conf['controller']['tmp_storage']['name']
+    crsname = conf['controller']['storage']['name']
     crscls = crstorage_classes[crsname]
-    return crscls(**conf['controller']['tmp_storage'].get('config', {}))
+    return crscls(**conf['controller']['storage'].get('config', {}))
 
-def _get_app_storage_object(conf, arstorage_classes):
-    arsname = conf['controller']['app_storage']['name']
-    arscls = arstorage_classes[arsname]
-    return arscls(**conf['controller']['app_storage'].get('config', {}))
+def _get_project_storage_object(conf, pstorage_classes):
+    if not 'storage' in conf['project']:
+        return None
+    psname = conf['project']['storage']['name']
+    pscls = pstorage_classes[psname]
+    return pscls(**conf['project']['storage'].get('config', {}))
 
-def _get_controller_object(idx, app_name, project, crstorage, arstorage,
-                           conf, controller_classes):
+def _get_controller_object(idx, app_name, project, crstorage, conf,
+                           controller_classes):
     cname = conf['controller']['name']
     ccls = controller_classes[cname]
-    cobj = ccls(idx, app_name, project, crstorage, arstorage,
+    cobj = ccls(idx, app_name, project, crstorage,
                 **conf['controller'].get('config', {}))
 
     if not ccls.auto_filter:

@@ -6,7 +6,7 @@ from kaylee.testsuite import KayleeTest, load_tests, TestSettings
 from kaylee import (load, NodeID, Node, Kaylee, KayleeError, Applications, )
 from kaylee.loader import load_kaylee_objects
 from kaylee.storage import (MemoryNodesStorage, MemoryControllerResultsStorage,
-                            MemoryAppResultsStorage)
+                            MemoryProjectResultsStorage)
 from datetime import datetime
 
 
@@ -33,12 +33,12 @@ class Settings2(Settings1):
           'controller' : {
                 'name' :'DummyController',
                 'config' : {},
-                'tmp_storage' : {
+                'storage' : {
                     'name' : 'MemoryControllerResultsStorage',
                     'config' : {}
                     },
                 'app_storage' : {
-                    'name' : 'MemoryAppResultsStorage',
+                    'name' : 'MemoryProjectResultsStorage',
                     'config' : {}
                     },
                 },
@@ -55,7 +55,7 @@ class Settings3(Settings1):
           'controller' : {
                 'name' :'DummyController',
                 'app_storage' : {
-                    'name' : 'MemoryAppResultsStorage',
+                    'name' : 'MemoryProjectResultsStorage',
                     },
                 },
           }
@@ -81,8 +81,7 @@ class KayleeLoaderTests(KayleeTest):
         app = apps['dummy.1']
         self.assertEqual(app.__class__.__name__, DummyController.__name__)
         self.assertEqual(app.app_name, 'dummy.1')
-        self.assertIsInstance(app.tmp_storage, MemoryControllerResultsStorage)
-        self.assertIsInstance(app.app_storage, MemoryAppResultsStorage)
+        self.assertIsInstance(app.storage, MemoryControllerResultsStorage)
         self.assertEqual(app.project.__class__.__name__, DummyProject.__name__)
 
     def test_load_controller(self):
@@ -95,9 +94,9 @@ class KayleeLoaderTests(KayleeTest):
 
     def test_init_kaylee(self):
         project = DummyProject()
-        tmp_storage = MemoryControllerResultsStorage()
-        app_storage = MemoryAppResultsStorage()
-        controller = DummyController(0, 'dummy_app', project, tmp_storage,
+        storage = MemoryControllerResultsStorage()
+        app_storage = MemoryProjectResultsStorage()
+        controller = DummyController(0, 'dummy_app', project, storage,
                                      app_storage)
         apps = Applications({'dummy_app' : controller})
         kl = Kaylee({}, MemoryNodesStorage(timeout = '2h'), apps)

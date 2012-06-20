@@ -176,7 +176,7 @@ class Kaylee(object):
             node.accept_result(data)
         except ValueError as e:
             self.unsubscribe(node)
-            raise InvalidResultError(node)
+            raise InvalidResultError(data, str(e))
 
         return self.get_task(node.id)
 

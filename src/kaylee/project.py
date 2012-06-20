@@ -12,12 +12,16 @@ from abc import abstractmethod
 from copy import copy
 from .util import AutoFilterABCMeta
 
+DEPLETED = 0x2
+COMPLETED = 0x4
+
+
 def depleted_guard(f):
     def wrapper(obj, *args, **kwargs):
         try:
             return f(obj, *args, **kwargs)
         except StopIteration as e:
-            obj._depleted = True
+            obj._state |= DEPLETED
             raise e
     return wrapper
 
@@ -40,16 +44,17 @@ class Project(object):
     __metaclass__ = ProjectMeta
     auto_filter = True
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, storage = None, *args, **kwargs):
         #: Project.node_config is a dictionary with configuration
         #: details used by every client-side node. For example, it can
         #: contain a path to the javascript file with project's
         #: client-side logic. That path will be later used by Kaylee's
         #: client engine to load and start calculations on client.
+        self.storage = storage
         self.nodes_config = {
             'script' : kwargs['script'],
             }
-        self._depleted = False
+        self._state = 0
 
     def next(self):
         return self.__next__()
@@ -61,7 +66,7 @@ class Project(object):
         it means that there will be no more new tasks from the project,
         but the bound controller can still refer to old tasks via
         project[task_id]. After StopIteration has been thrown,
-        :attr:`Project.depleted` **must** return True.
+        :attr:`Project.state` **must** indicate :data:`DEPLETED`.
         In case that :class:`Controller` does not intercept or re-throws
         StopIteration, :class:`Kaylee` catches and interprets it as no
         need to involve the bound node in any further calculations for
@@ -75,8 +80,16 @@ class Project(object):
         """Returns task with the required id."""
 
     @property
+    def state(self):
+        return self._state
+
+    @property
     def depleted(self):
-        return self._depleted
+        return self._state & DEPLETED
+
+    @property
+    def completed(self):
+        return self._state & COMPLETED
 
     def normalize(self, data):
         """Normalizes and validates the reply from a node.
@@ -86,6 +99,19 @@ class Project(object):
         :return: normalized data.
         """
         return data
+
+    def store_result(self, task_id, data):
+        """Accepts and processes results from a node.
+
+        :param task_id: ID of the task
+        :param data: Results of the task.
+        :type data: JSON-parsed data (``dict`` or ``list``).
+                    By-default the ``None`` value indicates that there is
+                    no need to store the data to the storage.
+        """
+        if data is not None:
+            self.storage[task_id] = data
+
 
 
 class TaskMeta(type):

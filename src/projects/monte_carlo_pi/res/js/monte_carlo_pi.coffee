@@ -13,5 +13,6 @@ pj.on_task_recieved = (data) ->
         y = random()
         if x*x + y*y <= 1
             counter += 1
-    klw.task_completed({'points_in_circle' : counter})
+    pi = 4 * counter / pj.config.random_points
+    klw.task_completed({'pi' : pi})
     return

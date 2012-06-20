@@ -131,7 +131,7 @@ class MemoryControllerResultsStorage(ControllerResultsStorage):
         return task_id in self._d
 
 
-class AppResultsStorage(object):
+class ProjectResultsStorage(object):
     """Applications results holder object. This class is an interface for
     objects which should hold the final results of an application. """
     __metaclass__ = ABCMeta
@@ -157,14 +157,15 @@ class AppResultsStorage(object):
         """ """
 
     @abstractmethod
-    def __next__(self):
+    def keys(self):
         """ """
 
-    def next(self):
-        return self.__next__()
+    @abstractmethod
+    def values(self):
+        """ """
 
 
-class MemoryAppResultsStorage(AppResultsStorage):
+class MemoryProjectResultsStorage(ProjectResultsStorage):
     def __init__(self):
         self._d = {}
 
@@ -183,5 +184,8 @@ class MemoryAppResultsStorage(AppResultsStorage):
     def __iter__(self):
         return iter(self._d)
 
-    def __next__(self):
-        raise NotImplementedError()
+    def keys(self):
+        return self._d.iterkeys()
+
+    def values(self):
+        return self._d.itervalues()

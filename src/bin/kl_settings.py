@@ -42,7 +42,7 @@ app_hash_cracker_1 = {
     'controller' : {
         'name' : 'SimpleController',
         'app_storage' : {
-            'name' : 'MemoryAppResultsStorage',
+            'name' : 'MemoryProjectResultsStorage',
             },
         'filters' : {
             'accept_result' : 'kaylee.controller.failed_result_filter',
@@ -58,23 +58,23 @@ app_mc_pi_1 = {
         'config' : {
             'script' : 'monte_carlo_pi/monte_carlo_pi.js',
             'random_points' : 1000000,
-            'tasks_count' : 3
+            'tasks_count' : 4
             },
+        'storage' : {
+            'name' : 'MemoryProjectResultsStorage',
+            'config' : {},
+            }
         },
     'controller' : {
         'name' : 'ResultsComparatorController',
         'config' : {
-            'comparison_nodes': 3
+            'comparison_nodes': 2
             },
-        'tmp_storage' : {
+        'storage' : {
             'name' : 'MemoryControllerResultsStorage',
             'config' : {},
             },
-        'app_storage' : {
-            'name' : 'MemoryAppResultsStorage',
-            'config' : {},
-            }
         },
     }
 
-APPLICATIONS = [app_mc_pi_1, app_hash_cracker_1]
+APPLICATIONS = [app_mc_pi_1, ]#app_hash_cracker_1]

@@ -14,7 +14,7 @@ from datetime import datetime
 
 from .node import Node
 from .util import AutoFilterABCMeta
-from .errors import AppFinishedError
+from .errors import AppCompletedError
 
 #: The Application name regular expression pattern which can be used in
 #: e.g. web frameworks' URL dispatchers.
@@ -23,26 +23,26 @@ _app_name_re = re.compile('^{}$'.format(app_name_pattern))
 
 #: Indicates active state of an application.
 ACTIVE = 0x2
-#: Indicates finished state of an application.
-FINISHED = 0x4
+#: Indicates completed state of an application.
+COMPLETED = 0x4
 
 
-def app_finished_guard(f):
-    """This decorator handles two cases of finished Kaylee application:
+def app_completed_guard(f):
+    """This decorator handles two cases of completed Kaylee application:
 
-    1. First, it checks if the application has already finished and
-       in that case raises :exc:`AppFinishedError`.
+    1. First, it checks if the application has already completed and
+       in that case raises :exc:`AppCompletedError`.
     2. Second, it wraps ``f`` in ``try..except`` block in order to
-       set object's :attr:`Controller.state` value to :data:`FINISHED`.
-       The :exc:`AppFinishedError` is then re-raised.
+       set object's :attr:`Controller.state` value to :data:`COMPLETED`.
+       The :exc:`AppCompletedError` is then re-raised.
     """
     def wrapper(obj, *args, **kwargs):
-        if obj.state == FINISHED:
-            raise AppFinishedError(obj.app_name)
+        if obj.state == COMPLETED:
+            raise AppCompletedError(obj.app_name)
         try:
             return f(obj, *args, **kwargs)
-        except AppFinishedError as e:
-            obj.state = FINISHED
+        except AppCompletedError as e:
+            obj.state = COMPLETED
             raise e
     return wrapper
 
@@ -66,7 +66,7 @@ def failed_result_filter(f):
 class ControllerMeta(AutoFilterABCMeta):
     _filters = {
         'get_task' : [
-            app_finished_guard,
+            app_completed_guard,
             ],
         'accept_result' : [
             normalize_result_filter,
@@ -78,18 +78,17 @@ class Controller(object):
     __metaclass__ = ControllerMeta
     auto_filter = True
 
-    def __init__(self, id, app_name, project, tmp_storage,
-                 app_storage, *args, **kwargs):
+    def __init__(self, id, app_name, project, storage, *args, **kwargs):
         if _app_name_re.match(app_name) is None:
-            raise ValueError('Invalid application name: {}'.format(app_name))
+            raise ValueError('Invalid application name: {}'
+                             .format(app_name))
         self.id = id
         self.app_name = app_name
         self.project = project
-        self.tmp_storage = tmp_storage
-        self.app_storage = app_storage
+        self.storage = storage
         self.state = ACTIVE
 
-    @app_finished_guard
+    @app_completed_guard
     def subscribe(self, node):
         """Subscribes a node for bound project."""
         node.controller = self
@@ -105,10 +104,8 @@ class Controller(object):
         """Accepts and processes results from a node.
 
         :param node: Active Kaylee Node from which the results are received.
-        :param data: JSON-parsed data (python dictionary or list). The ``None``
-                     value indicates that there is no need to store the data
-                     to the long-term :attr:`Controller.app_storage`
-                     application storage.
+        :param data: Results of the task performed by the node.
+        :type data:  JSON-parsed data (``dict`` or ``list``).
         """
 
 
@@ -132,16 +129,15 @@ class SimpleController(Controller):
                 task = self.project[tp_id]
             except KeyError:
                 # project depleted and nothing in the pool,
-                # looks like the application has finished.
-                raise AppFinishedError(self.app_name)
+                # looks like the application has completed.
+                raise AppCompletedError(self.app_name)
 
         node.task_id = task.id
         self._tasks_pool.add(task.id)
         return task
 
     def accept_result(self, node, data):
-        if data is not None:
-            self.app_storage[node.task_id] = data
+        self.project.store_data(node.task_id, data)
         self._tasks_pool.remove(node.task_id)
 
 
@@ -166,10 +162,10 @@ class ResultsComparatorController(Controller):
                 task = self.project[tp_id]
             except KeyError:
                 # project depleted and nothing in the pool,
-                # looks like the application has finished.
-                raise AppFinishedError(self.app_name)
+                # looks like the application has completed.
+                raise AppCompletedError(self.app_name)
 
-        if node.id in self.tmp_storage[task.id]:
+        if node.id in self.storage[task.id]:
             raise StopIteration('Node has already completed task #{}'
                                 .format(task.id))
 
@@ -180,10 +176,10 @@ class ResultsComparatorController(Controller):
     def accept_result(self, node, data):
         task_id = node.task_id
         # 'results' computed for the task by various nodes
-        results = self.tmp_storage[task_id]
+        results = self.storage[task_id]
         if len(results) == self._comparison_nodes - 1:
             if self._results_are_equal(data, results):
-                del self.tmp_storage[task_id]
+                del self.storage[task_id]
                 self._tasks_pool.remove(task_id)
                 self._add_result(task_id, data)
             else:
@@ -191,10 +187,10 @@ class ResultsComparatorController(Controller):
                 # which was received previously. At this point we discard all
                 # results associated with task_id and task_id remains in
                 # tasks_pool.
-                del self.tmp_storage[task_id]
+                del self.storage[task_id]
             node.task_id = None
         else:
-            self.tmp_storage.add(node.id, task_id, data)
+            self.storage.add(node.id, task_id, data)
 
     def _results_are_equal(self, r0, res):
         for node_id, res in res.iteritems():
@@ -203,14 +199,9 @@ class ResultsComparatorController(Controller):
         return True
 
     def _add_result(self, task_id, data):
-        if data is not None:
-            self.app_storage[task_id] = data
+        self.project.store_result(task_id, data)
         # check if application has collected all the results
-        # and can switch to the "FINISHED" state
-        if self.project.depleted:
-            if len(self._tasks_pool) == 0:
-                self.state = FINISHED
-                self.tmp_storage.clear()
-                # TODO: think of this part, what should we do here?
-                # e.g. should controller have a function that would do
-                # something with results?
+        # and can switch to the "COMPLETED" state
+        if self.project.completed:
+            self.state = COMPLETED
+            self.storage.clear()
