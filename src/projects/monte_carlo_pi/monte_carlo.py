@@ -5,6 +5,8 @@ from kaylee.errors import InvalidResultError
 
 
 class MonteCarloPiProject(Project):
+    auto_filter = True
+
     def __init__(self, *args, **kwargs):
         super(MonteCarloPiProject, self).__init__(*args, **kwargs)
         self.random_points = kwargs['random_points']

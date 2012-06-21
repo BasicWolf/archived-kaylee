@@ -3,6 +3,8 @@ from hashlib import md5
 from kaylee import Project, Task
 
 class HashCrackerProject(Project):
+    auto_filter = True
+
     def __init__(self, *args, **kwargs):
         super(HashCrackerProject, self).__init__(*args, **kwargs)
         self.alphabet = kwargs['alphabet']
@@ -34,7 +36,7 @@ class HashCrackerProject(Project):
         try:
             key = data['key']
             if md5(key + self.salt).hexdigest() == self.hash_to_crack:
-                return data
+                return key
         except KeyError:
             raise ValueError('Required data is missing')
         raise ValueError('Invalid hash key')
@@ -47,7 +49,7 @@ class HashCrackerProject(Project):
             self._announce_results()
 
     def _announce_results(self):
-        key = self.storage.values()[0]
+        key = list(self.storage.values())[0]
         print('The cracked hash key is: {}'.format(key))
 
 

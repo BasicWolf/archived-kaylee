@@ -1,5 +1,6 @@
 import re
 import inspect
+import importlib
 from weakref import WeakSet, WeakKeyDictionary
 from datetime import timedelta
 from .errors import KayleeError
@@ -25,7 +26,7 @@ def parse_timedelta(s):
 
 def import_object(name):
     modname, objname = name.rsplit('.', 1)
-    mod = __import__(modname)
+    mod = importlib.import_module(modname)
     try:
         return getattr(mod, objname)
     except AttributeError:
@@ -87,11 +88,11 @@ class AutoFilterABCMeta(ABCMeta):
         auto_filter = dct.get('auto_filter', True)
         if auto_filter:
             # TODO: document this
-            # Automatically wrap methods from _filters so that the user
+            # Automatically wrap methods from auto_filters so that the user
             # does not have to worry about the common stuff.
             for attr_name, attr in dct.iteritems():
                 try:
-                    wrappers = cls._filters[attr_name]
+                    wrappers = cls.auto_filters[attr_name]
                     method = attr
                     for wrapper in wrappers:
                         method = wrapper(method)

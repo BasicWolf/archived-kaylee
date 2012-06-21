@@ -36,35 +36,35 @@ def app_completed_guard(f):
        set object's :attr:`Controller.state` value to :data:`COMPLETED`.
        The :exc:`AppCompletedError` is then re-raised.
     """
-    def wrapper(obj, *args, **kwargs):
-        if obj.state == COMPLETED:
-            raise AppCompletedError(obj.app_name)
+    def app_completed_guard_wrapper(self, *args, **kwargs):
+        if self.completed:
+            raise AppCompletedError(self.app_name)
         try:
-            return f(obj, *args, **kwargs)
+            return f(self, *args, **kwargs)
         except AppCompletedError as e:
-            obj.state = COMPLETED
+            self.completed = True
             raise e
-    return wrapper
+    return app_completed_guard_wrapper
 
 def normalize_result_filter(f):
-    def wrapper(self, node, data):
+    def normalize_result_filter_wrapper(self, node, data):
         data = self.project.normalize(data)
         return f(self, node, data)
-    return wrapper
+    return normalize_result_filter_wrapper
 
 def failed_result_filter(f):
-    def wrapper(self, node, data):
+    def failed_result_filter_wrapper(self, node, data):
         try:
             if data['__kl_result__'] == False:
                 data = None
         except KeyError:
             pass
         return f(self, node, data)
-    return wrapper
+    return failed_result_filter_wrapper
 
 
 class ControllerMeta(AutoFilterABCMeta):
-    _filters = {
+    auto_filters = {
         'get_task' : [
             app_completed_guard,
             ],
@@ -76,7 +76,7 @@ class ControllerMeta(AutoFilterABCMeta):
 
 class Controller(object):
     __metaclass__ = ControllerMeta
-    auto_filter = True
+    auto_filter = False
 
     def __init__(self, id, app_name, project, storage, *args, **kwargs):
         if _app_name_re.match(app_name) is None:
@@ -86,7 +86,7 @@ class Controller(object):
         self.app_name = app_name
         self.project = project
         self.storage = storage
-        self.state = ACTIVE
+        self._state = ACTIVE
 
     @app_completed_guard
     def subscribe(self, node):
@@ -108,8 +108,25 @@ class Controller(object):
         :type data:  JSON-parsed data (``dict`` or ``list``).
         """
 
+    @property
+    def state(self):
+        return self._state
+
+    @property
+    def completed(self):
+        return self._state & COMPLETED
+
+    @completed.setter
+    def completed(self, val):
+        if val:
+            self._state |= COMPLETED
+        else:
+            self._state &= ~COMPLETED
+
 
 class SimpleController(Controller):
+    auto_filter = True
+
     def __init__(self, *args, **kwargs):
         super(SimpleController, self).__init__(*args, **kwargs)
         self._tasks_pool = set()
@@ -137,11 +154,15 @@ class SimpleController(Controller):
         return task
 
     def accept_result(self, node, data):
-        self.project.store_data(node.task_id, data)
+        self.project.store_result(node.task_id, data)
         self._tasks_pool.remove(node.task_id)
+        if self.project.completed:
+            self.completed = True
 
 
 class ResultsComparatorController(Controller):
+    auto_filter = True
+
     def __init__(self, *args, **kwargs):
         super(ResultsComparatorController, self).__init__(*args, **kwargs)
         self._comparison_nodes = kwargs['comparison_nodes']
@@ -203,5 +224,5 @@ class ResultsComparatorController(Controller):
         # check if application has collected all the results
         # and can switch to the "COMPLETED" state
         if self.project.completed:
-            self.state = COMPLETED
+            self.completed = True
             self.storage.clear()

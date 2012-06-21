@@ -12,6 +12,7 @@ import os
 import imp
 import importlib
 import inspect
+import new
 
 from .errors import KayleeError
 from .util import LazyObject, import_object
@@ -136,7 +137,6 @@ def load_kaylee_objects(settings = None):
         crstorage = _get_controller_storage_object(conf, crstorage_classes)
         controller = _get_controller_object(_idx, app_name, project, crstorage,
                                             conf, controller_classes)
-
         # initialize store controller to local controllers dict
         controllers[app_name] = controller
         _idx += 1
@@ -199,9 +199,10 @@ def _get_controller_object(idx, app_name, project, crstorage, conf,
         for method_name, filter_name in filters.iteritems():
             method = getattr(cobj, method_name)
             filter_decorator = import_object(filter_name)
-            print getattr(cobj, method_name)
-            setattr(cobj, method_name, filter_decorator(method))
-    except KeyError:
+            decorated = new.instancemethod(filter_decorator(method.__func__),
+                                           cobj, None)
+            setattr(cobj, method_name, decorated)
+    except KeyError as e:
         pass
-    finally:
-        return cobj
+    return cobj
+

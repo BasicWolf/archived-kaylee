@@ -17,18 +17,26 @@ COMPLETED = 0x4
 
 
 def depleted_guard(f):
-    def wrapper(obj, *args, **kwargs):
+    def depleted_guard_wrapper(self, *args, **kwargs):
         try:
-            return f(obj, *args, **kwargs)
+            return f(self, *args, **kwargs)
         except StopIteration as e:
-            obj._state |= DEPLETED
+            self._state |= DEPLETED
             raise e
-    return wrapper
+    return depleted_guard_wrapper
+
+def ignore_null_result(f):
+    def ignore_null_result_wrapper(self, data):
+        if data is not None:
+            return f(self, data)
+        return None
+    return ignore_null_result_wrapper
 
 
 class ProjectMeta(AutoFilterABCMeta):
-    _filters = {
-        '__next__' : [depleted_guard, ]
+    auto_filters = {
+        '__next__' : [depleted_guard, ],
+        'normalize' : [ignore_null_result, ],
         }
 
 
@@ -42,7 +50,7 @@ class Project(object):
     same task when project.__getitem__(same_id) is called."""
 
     __metaclass__ = ProjectMeta
-    auto_filter = True
+    auto_filter = False
 
     def __init__(self, storage = None, *args, **kwargs):
         #: Project.node_config is a dictionary with configuration
