@@ -19,7 +19,7 @@ pj.on_task_recieved = (data) ->
         if hash == CryptoJS.MD5("#{key}#{salt}").toString(CryptoJS.enc.Hex)
             # we have found the answer!
             klw.task_completed({'key' : key})
-    klw.task_completed({'__result__' : false})
+    klw.task_completed({'__kl_result__' : false})
     return
 
 

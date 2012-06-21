@@ -31,9 +31,25 @@ class HashCrackerProject(Project):
         return HashCrackerTask(task_id, self.hash_to_crack, self.salt)
 
     def normalize(self, data):
-        if md5(data + self.salt).hexdigest() == self.hash_to_crack:
-            return data
-        raise ValueError()
+        try:
+            key = data['key']
+            if md5(key + self.salt).hexdigest() == self.hash_to_crack:
+                return data
+        except KeyError:
+            raise ValueError('Required data is missing')
+        raise ValueError('Invalid hash key')
+
+    def store_result(self, task_id, data):
+        super(HashCrackerProject, self).store_result(task_id, data)
+        if len(self.storage) == 1:
+            # it is enough to have a single result to complete the project
+            self.completed = True
+            self._announce_results()
+
+    def _announce_results(self):
+        key = self.storage.values()[0]
+        print('The cracked hash key is: {}'.format(key))
+
 
 
 class HashCrackerTask(Task):

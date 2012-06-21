@@ -27,7 +27,7 @@ class AppCompletedError(StopIteration, KayleeError):
         KayleeError.__init__(self, 'All calculations for application {} '
                                    'were completed'.format(app_name))
 
-class InvalidResultError(KayleeError):
+class InvalidResultError(ValueError, KayleeError):
     def __init__(self, result, why = ''):
         KayleeError.__init__(self, 'Invalid result "{}": {}'
                              .format(result, why))

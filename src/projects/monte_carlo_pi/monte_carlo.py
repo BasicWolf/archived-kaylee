@@ -28,17 +28,15 @@ class MonteCarloPiProject(Project):
         try:
             return data['pi']
         except KeyError:
-            raise InvalidResultError(data,
-                                     '"pi" key was not found')
+            raise InvalidResultError(data, '"pi" key was not found')
 
     def store_result(self, task_id, data):
         super(MonteCarloPiProject, self).store_result(task_id, data)
         if len(self.storage) == self.tasks_count:
-            self._state |= COMPLETED
+            self.completed = True
             self._announce_results()
 
     def _announce_results(self):
-        mid_pi = ( sum(res for res in self.storage.values()) /
-                   float(len(self.storage)) )
-        print('The  value of PI computed by Monte-Carlo method is: {}'
+        mid_pi = sum(res for res in self.storage.values()) / len(self.storage)
+        print('The  value of PI computed by the Monte-Carlo method is: {}'
               .format(mid_pi))

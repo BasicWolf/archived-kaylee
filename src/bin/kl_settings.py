@@ -37,13 +37,13 @@ app_hash_cracker_1 = {
             # but it's fine enough for demo purposes
             'key_length'    : 2,
             'hashes_per_task' : 100,
-            }
+            },
+        'storage' : {
+            'name' : 'MemoryProjectResultsStorage',
+            },
         },
     'controller' : {
         'name' : 'SimpleController',
-        'app_storage' : {
-            'name' : 'MemoryProjectResultsStorage',
-            },
         'filters' : {
             'accept_result' : 'kaylee.controller.failed_result_filter',
             }
@@ -77,4 +77,4 @@ app_mc_pi_1 = {
         },
     }
 
-APPLICATIONS = [app_mc_pi_1, ]#app_hash_cracker_1]
+APPLICATIONS = [app_mc_pi_1, app_hash_cracker_1]

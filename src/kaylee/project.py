@@ -87,9 +87,23 @@ class Project(object):
     def depleted(self):
         return self._state & DEPLETED
 
+    @depleted.setter
+    def depleted(self, val):
+        if val:
+            self._state |= DEPLETED
+        else:
+            self._state &= ~DEPLETED
+
     @property
     def completed(self):
         return self._state & COMPLETED
+
+    @completed.setter
+    def completed(self, val):
+        if val:
+            self._state |= COMPLETED
+        else:
+            self._state &= ~COMPLETED
 
     def normalize(self, data):
         """Normalizes and validates the reply from a node.

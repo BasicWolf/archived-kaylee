@@ -199,7 +199,8 @@ def _get_controller_object(idx, app_name, project, crstorage, conf,
         for method_name, filter_name in filters.iteritems():
             method = getattr(cobj, method_name)
             filter_decorator = import_object(filter_name)
-            setattr(cobj, 'method_name', filter_decorator(method))
+            print getattr(cobj, method_name)
+            setattr(cobj, method_name, filter_decorator(method))
     except KeyError:
         pass
     finally:
