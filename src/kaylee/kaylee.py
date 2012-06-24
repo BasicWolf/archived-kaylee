@@ -55,8 +55,9 @@ class Kaylee(object):
     response content-type to "application/json".
 
     Usually an instance of :class:`Kaylee` is not created by a user,
-    but via :function:`kaylee.load` function, which parses settings and
-    returns initialized Kaylee object.
+    but loaded automatically and can be used as follows:
+
+        from kaylee import kl
 
     :param nodes_config: settings-based configuration required by every node
                          in order to function properly. This includes for

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, render_template, abort, request, Response
 
-from kaylee import kl, load, settings
+from kaylee import kl, settings
 
 kaylee_blueprint = Blueprint('kaylee_blueprint', __name__,
                           template_folder = settings.FRONTEND_TEMPLATES_DIR)
