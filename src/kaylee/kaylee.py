@@ -16,6 +16,7 @@ from StringIO import StringIO
 from operator import attrgetter
 from functools import partial
 from contextlib import closing
+from functools import wraps
 
 from .node import Node, NodeID
 from .errors import KayleeError, InvalidResultError
@@ -31,6 +32,7 @@ def json_error_handler(f):
     JSON-formatted "{ error : str(Exception) }" if an exception has been
     raised.
     """
+    @wraps(f)
     def wrapper(*args, **kwargs):
         try:
             return f(*args, **kwargs)
@@ -43,8 +45,8 @@ def json_error_handler(f):
                                        limit = None,
                                        file = buf)
                     exc_str += '\n' + buf.getvalue()
-
             return json.dumps({ 'error' : exc_str })
+
     return wrapper
 
 
@@ -55,7 +57,7 @@ class Kaylee(object):
     response content-type to "application/json".
 
     Usually an instance of :class:`Kaylee` is not created by a user,
-    but loaded automatically and can be used as follows:
+    but loaded automatically and can be used as follows::
 
         from kaylee import kl
 
@@ -134,18 +136,20 @@ class Kaylee(object):
     @json_error_handler
     def get_task(self, node_id):
         """Returns a task from the subscribed application.
-        The format of the JSON response is:
-        {
-            'action' : <action>,
-            'data'   : <data>
-        }
+        The format of the JSON response is::
+
+            {
+                'action' : <action>,
+                'data'   : <data>
+            }
+
         Here, <action> tells the Node, what should it do and <data> is
         the attached data. The available values of <action> are:
 
         * 'task'        - indicated that <data> contains task data
         * 'unsubscribe' - indicates that there is no need for the Node to
                           request tasks from the subscribed application
-                          any more.
+                          anymore.
 
         :param node_id: a valid node id
         :type node_id: string
@@ -170,7 +174,7 @@ class Kaylee(object):
                      stored to the application's storages.
         :type node_id: string
         :type data: string
-        :returns: a task returned by :function:`Kaylee.get_task`.
+        :returns: a task returned by :meth:`get_task`.
         """
         node = self.nodes[node_id]
         try:
