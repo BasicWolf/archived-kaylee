@@ -66,7 +66,7 @@ class LazyKaylee(LazyObject):
         self._wrapped = load()
 
 def load(settings = None):
-    from .kaylee import Kaylee
+    from .app import Kaylee
     try:
         return Kaylee(*load_kaylee_objects(settings))
     except (KeyError, AttributeError) as e:
@@ -76,7 +76,7 @@ def load(settings = None):
 def load_kaylee_objects(settings = None):
     """Loads Kaylee objects using configuration from settings.
 
-    :param: Python module or class with Kaylee settings. If the value
+    :param settings: Python module or class with Kaylee settings. If the value
             of settings is None, then the loader tries to load the
             settings using KAYLEE_SETTINGS_MODULE environmental
             variable.
@@ -86,7 +86,7 @@ def load_kaylee_objects(settings = None):
     from . import storage
     from . import controller
     from . import project
-    from .kaylee import Applications
+    from .app import Applications
     if settings is None:
         from . import settings
 

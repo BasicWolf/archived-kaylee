@@ -22,7 +22,7 @@ settings = LazySettings()
 kl = LazyKaylee()
 
 
-from .kaylee import Kaylee, Applications
+from .app import Kaylee, Applications
 from .node import Node, NodeID
 from .storage import NodesStorage
 from .controller import Controller

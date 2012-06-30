@@ -53,7 +53,7 @@ def json_error_handler(f):
 class Kaylee(object):
     """The Kaylee class serves as a proxy between WSGI framework and Kaylee
     applications. It handles requests from clients and returns JSON-formatted
-    data. Note that it is the task of the particular front-end to set the
+    data. Note that it is the job of a particular front-end to set the
     response content-type to "application/json".
 
     Usually an instance of :class:`Kaylee` is not created by a user,
@@ -64,8 +64,8 @@ class Kaylee(object):
     :param nodes_config: settings-based configuration required by every node
                          in order to function properly. This includes for
                          example the URL root of the projects' script files.
-    :param nodes_storage: an instance of :class:`kaylee.NodesStorage`.
-    :param applications: an instance of :class:`kaylee.Applications` object.
+    :param nodes_storage: an instance of :class:`NodesStorage`.
+    :param applications: an instance of :class:`Applications` object.
     """
     def __init__(self, nodes_config, nodes_storage, applications):
         self.nodes_config = nodes_config
@@ -78,7 +78,7 @@ class Kaylee(object):
         JSON-formatted data with the following fields:
 
         * node_id - hex-formatted node id
-        * config  - global nodes configuration (see :module:`loader`)
+        * config  - global nodes configuration (see :mod:`loader` module)
         * applications - a list of Kaylee applications' names.
 
         :param remote_host: an IP address of the remote host
@@ -146,10 +146,9 @@ class Kaylee(object):
         Here, <action> tells the Node, what should it do and <data> is
         the attached data. The available values of <action> are:
 
-        * 'task'        - indicated that <data> contains task data
-        * 'unsubscribe' - indicates that there is no need for the Node to
-                          request tasks from the subscribed application
-                          anymore.
+        * **"task"** - indicated that <data> contains task data
+        * **"unsubscribe"** - indicates that there is no need for the Node to
+          request tasks from the subscribed application anymore.
 
         :param node_id: a valid node id
         :type node_id: string

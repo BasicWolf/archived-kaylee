@@ -18,8 +18,8 @@ import struct
 import threading
 import hashlib
 
-from .errors import InvalidNodeIDError, NodeUnsubscribedError
-from .tz_util import utc
+from kaylee.errors import InvalidNodeIDError, NodeUnsubscribedError
+from kaylee.tz_util import utc
 
 #: The hex string formatted NodeID regular expression pattern which
 #: can be used in e.g. web frameworks' URL dispatchers.
@@ -29,16 +29,10 @@ node_id_pattern = r'[\da-fA-F]{20}'
 class Node(object):
     """
     A Node object contains information about a node which was registered
-    by :class:`Kaylee`. Its id attribute is an instance of :class:`NodeID`
-    which allows to track when the node was registered. Other public
-    attributes are:
+    by :class:`Kaylee`.
 
-    * subscription_timestamp - a :class:`datetime.datetime` instance which
-      tracks the time when a node has subscribed to an application.
-    * task_timestamp a :class:`datetime.datetime` instance which
-      tracks the time when a node has received its last to-compute task.
-    * controller a reference or an id of a application's
-      :class:`Controller`  object
+    :param node_id: an instance of :class:`NodeID` or a string parsable to
+                    :class:`NodeID`
     """
     __slots__ = ('id', '_task_id', 'subscription_timestamp', 'task_timestamp',
                  'controller')
@@ -46,13 +40,18 @@ class Node(object):
     def __init__(self, node_id):
         if not isinstance(node_id, NodeID):
             raise TypeError('node_id must be an instance of {}, not {}'
-                            .format(NodeID.__name__,
-                                    type(node_id).__name__ )
-                            )
+                            .format(NodeID.__name__,  type(node_id).__name__ ))
+        #: an instance of :class:`NodeID`
         self.id = node_id
+        #: a :class:`datetime.datetime` instance which tracks the time
+        #: when a node has subscribed to an application.
         self.subscription_timestamp = None
+        #: a :class:`datetime.datetime` instance which tracks the time
+        #: of a node receiving its last to-compute task.
         self.task_timestamp = None
+        #: a reference or an id of the application's :class:`Controller` object.
         self.controller = None
+
         self._task_id = None
 
     def unsubscribe(self):
