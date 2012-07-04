@@ -11,6 +11,7 @@
 import re
 from abc import abstractmethod, abstractproperty
 from datetime import datetime
+from functools import wraps
 
 from .node import Node
 from .util import AutoFilterABCMeta
@@ -36,7 +37,8 @@ def app_completed_guard(f):
        set object's :attr:`Controller.state` value to :data:`COMPLETED`.
        The :exc:`AppCompletedError` is then re-raised.
     """
-    def app_completed_guard_wrapper(self, *args, **kwargs):
+    @wraps(f)
+    def wrapper(self, *args, **kwargs):
         if self.completed:
             raise AppCompletedError(self.app_name)
         try:
@@ -44,23 +46,25 @@ def app_completed_guard(f):
         except AppCompletedError as e:
             self.completed = True
             raise e
-    return app_completed_guard_wrapper
+    return wrapper
 
 def normalize_result_filter(f):
-    def normalize_result_filter_wrapper(self, node, data):
+    @wraps(f)
+    def wrapper(self, node, data):
         data = self.project.normalize(data)
         return f(self, node, data)
-    return normalize_result_filter_wrapper
+    return wrapper
 
 def failed_result_filter(f):
-    def failed_result_filter_wrapper(self, node, data):
+    @wraps(f)
+    def wrapper(self, node, data):
         try:
             if data['__kl_result__'] == False:
                 data = None
         except KeyError:
             pass
         return f(self, node, data)
-    return failed_result_filter_wrapper
+    return wrapper
 
 
 class ControllerMeta(AutoFilterABCMeta):

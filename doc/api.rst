@@ -32,4 +32,16 @@ Node Objects
 
 .. autoclass:: NodeID
    :members:
+   :special-members:
+
+
+Project and Task Objects
+------------------------
+
+.. autoclass:: Project
+   :members:
    :inherited-members:
+
+.. .. autoclass:: Task
+..    :members:
+..    :inherited-members:

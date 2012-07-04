@@ -48,13 +48,16 @@ class NodeIDTests(KayleeTest):
         for i in xrange(0, 2**16 - 1):
             n = NodeID.for_host(remote)
         bid = bytearray(n.binary)
-        self.assertEqual(bid[8], 0xFF)
-        self.assertEqual(bid[9], 0xFE)
+        self.assertEqual(bid[4], 0xFF)
+        self.assertEqual(bid[5], 0xFE)
 
         n = NodeID.for_host(remote)
         bid = bytearray(n.binary)
-        self.assertEqual(bid[8], 0x0)
-        self.assertEqual(bid[9], 0x0)
+        self.assertEqual(bid[4], 0x0)
+        self.assertEqual(bid[5], 0x0)
+
+    def test_compare(self):
+        self.assertLess(NodeID(), NodeID())
 
     def test_parse(self):
         n1 = NodeID.for_host('127.0.0.1')

@@ -11,26 +11,29 @@
 from abc import abstractmethod
 from copy import copy
 from .util import AutoFilterABCMeta
+from functools import wraps
 
 DEPLETED = 0x2
 COMPLETED = 0x4
 
 
 def depleted_guard(f):
-    def depleted_guard_wrapper(self, *args, **kwargs):
+    @wraps(f)
+    def wrapper(self, *args, **kwargs):
         try:
             return f(self, *args, **kwargs)
         except StopIteration as e:
             self._state |= DEPLETED
             raise e
-    return depleted_guard_wrapper
+    return wrapper
 
 def ignore_null_result(f):
-    def ignore_null_result_wrapper(self, data):
+    @wraps(f)
+    def wrapper(self, data):
         if data is not None:
             return f(self, data)
         return None
-    return ignore_null_result_wrapper
+    return wrapper
 
 
 class ProjectMeta(AutoFilterABCMeta):
@@ -42,12 +45,10 @@ class ProjectMeta(AutoFilterABCMeta):
 
 class Project(object):
     """Base class for Kaylee projects. Essentialy a Project is an
-    iterator-like object that yields Tasks. A common project supports
-    next() calls but does not implement the __iter__() method. Thus, all
-    iteration variables should be initialized in the __init__() method.
+    iterator that yields Kaylee Tasks.
 
     Every task has a unique id and a project should be able to return the
-    same task when project.__getitem__(same_id) is called."""
+    same task by given id if required."""
 
     __metaclass__ = ProjectMeta
     auto_filter = False
@@ -58,10 +59,10 @@ class Project(object):
         #: contain a path to the javascript file with project's
         #: client-side logic. That path will be later used by Kaylee's
         #: client engine to load and start calculations on client.
-        self.storage = storage
         self.nodes_config = {
             'script' : kwargs['script'],
             }
+        self.storage = storage
         self._state = 0
 
     def next(self):
@@ -142,8 +143,8 @@ class TaskMeta(type):
     incremental list logic to the class. The serializable attributes
     of the class is a list which contains the names of the objects'
     attributes that are put into a dictionary which is then returned
-    by the serialize() method. This dictionary can be then used to
-    e.g. dump the object to JSON.
+    by the serialize() method. This dictionary can be used to
+    e.g. export the object to JSON.
     """
     def __new__(meta, classname, bases, class_dict):
         serializable = []
@@ -185,8 +186,8 @@ class Task(object):
 
     def serialize(self):
         """
-        Serializes object attributes to dictionary. The serialized fields
-        are taken from self.serializable list.
+        Serializes object attributes to dict. The serialized fields
+        are taken from ``self.serializable`` list.
         """
         return { attr : getattr(self, attr) for attr in self.serializable }
 

@@ -12,3 +12,9 @@ Authors
 -------
 
 .. include:: ../AUTHORS
+
+
+Kaylee License
+--------------
+
+.. include:: ../LICENSE

@@ -49,7 +49,7 @@ class Node(object):
         #: a :class:`datetime.datetime` instance which tracks the time
         #: of a node receiving its last to-compute task.
         self.task_timestamp = None
-        #: a reference or an id of the application's :class:`Controller` object.
+        #: a reference or an id of the application's :class:`Controller` instance.
         self.controller = None
 
         self._task_id = None
@@ -82,7 +82,49 @@ class Node(object):
     def __hash__(self):
         return hash(self.id)
 
+
 class NodeID(object):
+    """
+    NodeID is a 10-bytes long ID generated from current UNIX time,
+    remote host and counter. The format is::
+
+    [UNIX time (4)][counter (2)][remote host identifier hash (4)]
+
+    Usually a new NodeID object is generated as follows::
+
+        n = NodeID.for_host('192.168.10.20')
+
+    The NodeID objects can be effectively compared in order to find out,
+    which one was created earlier, e.g.::
+
+        NodeID() < NodeID()
+        >>> True
+
+    Is always ``True``, no matter what the remote host is.
+    Another useful conversion is::
+
+        n1 = NodeID()
+        n2 = NodeID( str(NodeID) )
+        n1 == n2
+        >>> True
+
+    The NodeID object can be also effectively used as a key in collections::
+
+        n1 = NodeID()
+        d = { n1: 'some_val' }
+        n2 = NodeID( str(NodeID) )
+        n2 in d
+        >>> True
+
+    :param node_id: A valid node id. The string representation of the
+                    NodeID object is either binary 10-bytes long string
+                    or 20-characters long hex string. If ``node_id``
+                    is ``None``, then a new NodeID is generated.
+    :param remote_host: Remote host IP address or other identifier.
+    :type node_id: string, NodeID object or ``None``
+    :type remote_host: string
+    :throws: TypeError
+    """
     __slots__ = ('_id')
     _inc = 0
     _inc_lock = threading.Lock()
@@ -100,10 +142,24 @@ class NodeID(object):
 
     @staticmethod
     def for_host(host):
+        """Constructs a new NodeID object from remote host identifier.
+
+        :param host: remote host identifier
+        :type host: string
+        :returns: NodeID object
+        """
         return NodeID(remote_host = host)
 
     @staticmethod
     def from_object(node):
+        """Extracts or constructs NodeID from the given object.
+
+        :param node: a valid NodeID or previously initialized Kaylee Node
+                     object.
+        :type node: string, NodeID or :class:`Node`
+        :throws: TypeError
+        :returns: NodeID object
+        """
         if isinstance(node, basestring):
             return NodeID(node_id = node)
         elif isinstance(node, NodeID):
@@ -118,16 +174,16 @@ class NodeID(object):
                                          type(node).__name__))
 
     def _generate(self, remote_host):
-        """Generate a new value for this NodeID."""
+        """Generates a new value for this NodeID."""
         nid = b''
         # 4 bytes current time
         nid += struct.pack('>i', int(time.time()))
-        # 4 bytes host
-        nid += self._host_hash(remote_host)
         # 2 bytes inc
         with NodeID._inc_lock:
             nid += struct.pack(">i", NodeID._inc)[2:4]
             NodeID._inc = (NodeID._inc + 1) % 0xFFFF
+        # 4 bytes host
+        nid += self._host_hash(remote_host)
         # 10 bytes total
         self._id = nid
 
@@ -161,58 +217,51 @@ class NodeID(object):
 
     @property
     def binary(self):
-        """10-byte binary representation of this NodeID."""
+        """10-byte binary representation of the NodeID.
+
+        :returns: string
+        """
         return self._id
 
     @property
     def timestamp(self):
-        """
-        A :class:`datetime.datetime` instance representing the time of
-        generation for this :class:`NodeID`.
-
-        The :class:`datetime.datetime` is timezone aware, and
-        represents the generation time in UTC. It is precise to the
-        second.
+        """A timezone-aware :class:`datetime.datetime` instance representing
+        the current NodeID's generation time. It is precise to a second.
         """
         t = struct.unpack(">i", self._id[0:4])[0]
         return datetime.fromtimestamp(t, utc)
 
     def __str__(self):
+        """Hex representation of the  NodeID"""
         return binascii.hexlify(self._id).decode()
 
     def __repr__(self):
         return "NodeID('{}')".format(str(self))
 
     def __eq__(self, other):
-        if isinstance(other, NodeID):
-            return self._id == other._id
-        return NotImplemented
+        other = NodeID.from_object(other)
+        return self._id == other._id
 
     def __ne__(self,other):
-        if isinstance(other, NodeID):
-            return self._id != other._id
-        return NotImplemented
+        other = NodeID.from_object(other)
+        return self._id != other._id
 
     def __lt__(self, other):
-        if isinstance(other, NodeID):
-            return self._id < other._id
-        return NotImplemented
+        other = NodeID.from_object(other)
+        return self._id < other._id
 
     def __le__(self, other):
-        if isinstance(other, NodeID):
-            return self._id <= other._id
-        return NotImplemented
+        other = NodeID.from_object(other)
+        return self._id <= other._id
 
     def __gt__(self, other):
-        if isinstance(other, NodeID):
-            return self._id > other._id
-        return NotImplemented
+        other = NodeID.from_object(other)
+        return self._id > other._id
 
     def __ge__(self, other):
-        if isinstance(other, NodeID):
-            return self._id >= other._id
-        return NotImplemented
+        other = NodeID.from_object(other)
+        return self._id >= other._id
 
     def __hash__(self):
-        """Get a hash value for this :class:`NodeID`."""
+        """NodeID's hash"""
         return hash(self._id)

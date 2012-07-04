@@ -1,7 +1,7 @@
 :orphan:
 
 Welcome to Kaylee
-================
+=================
 
 .. Kaylee documentation master file, created by
    sphinx-quickstart on Wed May 23 23:53:22 2012.
