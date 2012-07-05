@@ -40,8 +40,19 @@ Project and Task Objects
 
 .. autoclass:: Project
    :members:
-   :inherited-members:
 
-.. .. autoclass:: Task
-..    :members:
+   .. automethod:: __next__
+   .. automethod:: __getitem__
+
+.. autoclass:: Task
+   :members:
 ..    :inherited-members:
+
+.. autoclass:: kaylee.project.TaskMeta
+
+
+Controller Object
+-----------------
+
+.. autoclass:: Controller
+   :members:

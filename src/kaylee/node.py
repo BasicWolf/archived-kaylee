@@ -18,8 +18,8 @@ import struct
 import threading
 import hashlib
 
-from kaylee.errors import InvalidNodeIDError, NodeUnsubscribedError
-from kaylee.tz_util import utc
+from .errors import InvalidNodeIDError, NodeUnsubscribedError
+from .tz_util import utc
 
 #: The hex string formatted NodeID regular expression pattern which
 #: can be used in e.g. web frameworks' URL dispatchers.
@@ -98,7 +98,7 @@ class NodeID(object):
     which one was created earlier, e.g.::
 
         NodeID() < NodeID()
-        >>> True
+        # >>> True
 
     Is always ``True``, no matter what the remote host is.
     Another useful conversion is::
@@ -106,7 +106,7 @@ class NodeID(object):
         n1 = NodeID()
         n2 = NodeID( str(NodeID) )
         n1 == n2
-        >>> True
+        # >>> True
 
     The NodeID object can be also effectively used as a key in collections::
 
@@ -114,7 +114,7 @@ class NodeID(object):
         d = { n1: 'some_val' }
         n2 = NodeID( str(NodeID) )
         n2 in d
-        >>> True
+        # >>> True
 
     :param node_id: A valid node id. The string representation of the
                     NodeID object is either binary 10-bytes long string
