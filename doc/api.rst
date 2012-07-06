@@ -61,4 +61,9 @@ Controller Object
 Storage Objects
 ---------------
 
+.. autoclass:: NodesStorage
+   :members:
 
+   .. automethod:: __delitem__
+   .. automethod:: __getitem__
+   .. automethod:: __contains__

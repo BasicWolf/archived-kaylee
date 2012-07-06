@@ -85,13 +85,14 @@ def load_kaylee_objects(settings = None):
     """
     from . import storage
     from . import controller
-    import kaylee.contrib.controllers
     from . import project
     from .app import Applications
+    import kaylee.contrib.controllers
+    import kaylee.contrib.storages
     if settings is None:
         from . import settings
 
-    # scan for classes
+    # -- scan for classes --
     project_classes = {}
     controller_classes = {}
     nstorage_classes = {}
@@ -100,7 +101,7 @@ def load_kaylee_objects(settings = None):
 
     # load built-in kaylee classes
     ctrl_classes = _get_classes(controller, kaylee.contrib.controllers)
-    stg_classes = _get_classes(storage)
+    stg_classes = _get_classes(storage, kaylee.contrib.storages)
     _store_classes(controller_classes, ctrl_classes, controller.Controller)
     _store_classes(nstorage_classes, stg_classes, storage.NodesStorage)
     _store_classes(pstorage_classes, stg_classes, storage.ProjectResultsStorage)
