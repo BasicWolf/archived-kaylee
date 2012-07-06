@@ -102,7 +102,7 @@ class Kaylee(object):
 
     @json_error_handler
     def subscribe(self, node_id, application):
-        """Subscribe a node to an application.  In practice it means that
+        """Subscribe a node to an application. In practice it means that
         Kaylee will send task from particular application to this node.
         When a node subscribes to an application it received the its
         configuration defined for nodes.
@@ -195,15 +195,10 @@ class Kaylee(object):
 class Applications(object):
     def __init__(self, controllers):
         self._controllers = controllers
-        self._idx_controllers = sorted([c for c in controllers.itervalues()],
-                                       key = attrgetter('id'))
         self.names = list(controllers.keys())
 
     def __getitem__(self, key):
-        if isinstance(key, int):
-            return self._idx_controllers[key]
-        else:
-            return self._controllers[key]
+        return self._controllers[key]
 
     def __contains__(self, key):
         return key in self._controllers

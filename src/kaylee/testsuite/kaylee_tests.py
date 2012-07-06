@@ -96,8 +96,7 @@ class KayleeLoaderTests(KayleeTest):
         project = DummyProject()
         storage = MemoryControllerResultsStorage()
         app_storage = MemoryProjectResultsStorage()
-        controller = DummyController(0, 'dummy_app', project, storage,
-                                     app_storage)
+        controller = DummyController('dummy_app', project, storage, app_storage)
         apps = Applications({'dummy_app' : controller})
         kl = Kaylee({}, MemoryNodesStorage(timeout = '2h'), apps)
         self.assertIn('dummy_app', kl.applications)

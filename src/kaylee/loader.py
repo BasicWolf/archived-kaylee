@@ -85,6 +85,7 @@ def load_kaylee_objects(settings = None):
     """
     from . import storage
     from . import controller
+    import kaylee.contrib.controllers
     from . import project
     from .app import Applications
     if settings is None:
@@ -98,8 +99,8 @@ def load_kaylee_objects(settings = None):
     pstorage_classes = {}
 
     # load built-in kaylee classes
-    ctrl_classes = _get_classes( controller.__dict__.values()  )
-    stg_classes = _get_classes( storage.__dict__.values() )
+    ctrl_classes = _get_classes(controller, kaylee.contrib.controllers)
+    stg_classes = _get_classes(storage)
     _store_classes(controller_classes, ctrl_classes, controller.Controller)
     _store_classes(nstorage_classes, stg_classes, storage.NodesStorage)
     _store_classes(pstorage_classes, stg_classes, storage.ProjectResultsStorage)
@@ -119,13 +120,12 @@ def load_kaylee_objects(settings = None):
         except ImportError as e:
             raise ImportError('Unable to import project package: {}'
                               .format(e))
-        mod_classes = _get_classes( pymod.__dict__.values() )
+        mod_classes = _get_classes(pymod)
         _store_classes(project_classes, mod_classes, project.Project)
         _store_classes(controller_classes, mod_classes, controller.Controller)
 
     # load controllers/projects classes and initialize applications
     controllers = {}
-    _idx = 0
     for conf in settings.APPLICATIONS:
         app_name = conf['name']
         if not isinstance(app_name, basestring):
@@ -135,11 +135,10 @@ def load_kaylee_objects(settings = None):
         # initialize objects
         project = _get_project_object(conf, project_classes, pstorage_classes)
         crstorage = _get_controller_storage_object(conf, crstorage_classes)
-        controller = _get_controller_object(_idx, app_name, project, crstorage,
+        controller = _get_controller_object(app_name, project, crstorage,
                                             conf, controller_classes)
         # initialize store controller to local controllers dict
         controllers[app_name] = controller
-        _idx += 1
     applications = Applications(controllers)
 
     # build Kaylee nodes configuration
@@ -158,8 +157,12 @@ def _store_classes(dest, classes, cls):
     for c in (c for c in classes if issubclass (c, cls) and c is not cls ):
         dest[c.__name__] = c
 
-def _get_classes(attr_list):
-    return list( attr for attr in attr_list if inspect.isclass(attr) )
+def _get_classes(*modules):
+    ret = []
+    for mod in modules:
+        ret.extend(list( attr for attr in mod.__dict__.values()
+                         if inspect.isclass(attr) ))
+    return ret
 
 def _get_project_object(conf, project_classes, pstorage_classes):
     pname = conf['project']['name']
@@ -182,11 +185,11 @@ def _get_project_storage_object(conf, pstorage_classes):
     pscls = pstorage_classes[psname]
     return pscls(**conf['project']['storage'].get('config', {}))
 
-def _get_controller_object(idx, app_name, project, crstorage, conf,
+def _get_controller_object(app_name, project, crstorage, conf,
                            controller_classes):
     cname = conf['controller']['name']
     ccls = controller_classes[cname]
-    cobj = ccls(idx, app_name, project, crstorage,
+    cobj = ccls(app_name, project, crstorage,
                 **conf['controller'].get('config', {}))
 
     if not ccls.auto_filter:

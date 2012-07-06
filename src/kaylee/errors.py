@@ -22,7 +22,7 @@ class NodeUnsubscribedError(KayleeError):
     def __init__(self, node):
         KayleeError.__init__(self, 'Node {} is not subscribed'.format(node))
 
-class AppCompletedError(StopIteration, KayleeError):
+class StopApplication(StopIteration, KayleeError):
     def __init__(self, app_name):
         KayleeError.__init__(self, 'All calculations for application {} '
                                    'were completed'.format(app_name))

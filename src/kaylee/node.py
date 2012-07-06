@@ -49,7 +49,7 @@ class Node(object):
         #: a :class:`datetime.datetime` instance which tracks the time
         #: of a node receiving its last to-compute task.
         self.task_timestamp = None
-        #: a reference or an id of the application's :class:`Controller` instance.
+        #: application's :class:`Controller` instance.
         self.controller = None
 
         self._task_id = None

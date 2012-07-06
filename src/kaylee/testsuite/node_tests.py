@@ -76,7 +76,7 @@ class NodeIDTests(KayleeTest):
         n1 = NodeID.for_host('127.0.0.1')
         t1 = n1.timestamp
         utcnow = datetime.now(utc)
-        self.assertTrue(utcnow - t1 <= timedelta(seconds = 1))
+        self.assertTrue(utcnow - t1 <= timedelta(seconds = 3))
 
     def test_hashability(self):
         n1 = NodeID.for_host('127.0.0.1')
