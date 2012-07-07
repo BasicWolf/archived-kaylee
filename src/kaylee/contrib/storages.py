@@ -1,5 +1,10 @@
-from kaylee.storage import (NodesStorage, ControllerResultStorage,
+from kaylee.storage import (NodesStorage, ControllerResultsStorage,
                             ProjectResultsStorage)
+
+from kaylee.errors import KayleeError
+from kaylee.node import Node, NodeID
+from kaylee.util import parse_timedelta
+
 
 class MemoryNodesStorage(NodesStorage):
     def __init__(self, timeout, *args, **kwargs):
@@ -15,6 +20,9 @@ class MemoryNodesStorage(NodesStorage):
                           if datetime.now() - node.id.timestamp > self.timeout]
         for node in nodes_to_clean:
             del self._d[node]
+
+    def __len__(self):
+        return len(self._d)
 
     def __delitem__(self, node):
         node_id = NodeID.from_object(node)
@@ -34,18 +42,22 @@ class MemoryNodesStorage(NodesStorage):
 
 class MemoryControllerResultsStorage(ControllerResultsStorage):
     def __init__(self):
-        self._d = {}
+        self.clear()
 
     def add(self, node_id, task_id, result):
         d = self._d.get(task_id, {})
         d[node_id] = result
         self._d[task_id] = d
+        self._dirty = True
 
     def remove(self, node_id, task_id):
         del self._d[task_id][node_id]
+        self._dirty = True
 
     def clear(self):
         self._d = {}
+        self._count = 0
+        self._dirty = True
 
     def __getitem__(self, task_id):
         try:
@@ -53,10 +65,17 @@ class MemoryControllerResultsStorage(ControllerResultsStorage):
         except KeyError:
             return []
 
+    def __len__(self):
+        if self._dirty:
+            self._count = sum(len(res) for res in self._d)
+            self._dirty = False
+        return self._count
+
     def __setitem__(self, task_id, val):
         self._d[task_id] = val
 
     def __delitem__(self, task_id):
+        self._dirty = True
         del self._d[task_id]
 
     def __contains__(self, task_id):
@@ -70,8 +89,11 @@ class MemoryProjectResultsStorage(ProjectResultsStorage):
     def __len__(self):
         return len(self._d)
 
+    def __delitem__(self, task_id):
+        del self._d[task_id]
+
     def __getitem__(self, task_id):
-        return self_d[task_id]
+        return self._d[task_id]
 
     def __setitem__(self, task_id, result):
         self._d[task_id] = result

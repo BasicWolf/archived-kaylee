@@ -5,8 +5,9 @@ from projects.dummy_project.dummy import DummyProject, DummyController
 from kaylee.testsuite import KayleeTest, load_tests, TestSettings
 from kaylee import (load, NodeID, Node, Kaylee, KayleeError, Applications, )
 from kaylee.loader import load_kaylee_objects
-from kaylee.storage import (MemoryNodesStorage, MemoryControllerResultsStorage,
-                            MemoryProjectResultsStorage)
+from kaylee.contrib.storages import (MemoryNodesStorage,
+                                     MemoryControllerResultsStorage,
+                                     MemoryProjectResultsStorage)
 from datetime import datetime
 
 

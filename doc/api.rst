@@ -64,6 +64,26 @@ Storage Objects
 .. autoclass:: NodesStorage
    :members:
 
+   .. automethod:: __len__
    .. automethod:: __delitem__
    .. automethod:: __getitem__
    .. automethod:: __contains__
+
+.. autoclass:: ControllerResultsStorage
+   :members:
+
+   .. automethod:: __contains__
+   .. automethod:: __delitem__
+   .. automethod:: __getitem__
+   .. automethod:: __len__
+   .. automethod:: __setitem__
+
+.. autoclass:: ProjectResultsStorage
+   :members:
+
+   .. automethod:: __contains__
+   .. automethod:: __delitem__
+   .. automethod:: __getitem__
+   .. automethod:: __iter__
+   .. automethod:: __len__
+   .. automethod:: __setitem__
