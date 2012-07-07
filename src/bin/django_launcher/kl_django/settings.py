@@ -25,7 +25,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'kaylee.frontends.django_frontend'
+    'kaylee.contrib.frontends.django_frontend'
 )
 
 ROOT_URLCONF = 'kl_django.urls'

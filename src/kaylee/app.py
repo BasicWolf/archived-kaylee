@@ -171,12 +171,15 @@ class Kaylee(object):
         :param data: the data returned by the node. This data will be later
                      normalized and validated by the project and then
                      stored to the application's storages.
-        :type node_id: string
+        :type node_id: string or JSON-parsed dict/list
         :type data: string
         :returns: a task returned by :meth:`get_task`.
         """
         node = self.nodes[node_id]
         try:
+            # parse data if it is still a JSON string
+            if isinstance(data, basestring):
+                data = json.loads(data)
             node.accept_result(data)
         except ValueError as e:
             self.unsubscribe(node)
