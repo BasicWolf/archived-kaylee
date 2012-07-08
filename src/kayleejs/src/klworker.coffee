@@ -13,9 +13,9 @@ addEventListener('message', ((e) ->
 klw.post_message = (msg, data = {}) ->
     postMessage({'msg' : msg, 'data' : data})
 
-klw.import_project = (data) ->
-    importScripts(data.script)
-    pj.init(data.kl_config, data.app_config)
+klw.import_project = (kwargs) ->
+    importScripts(kwargs.app_config.script)
+    pj.init(kwargs.kl_config, kwargs.app_config)
     klw.post_message('project_imported')
 
 klw.task_completed = (res) ->

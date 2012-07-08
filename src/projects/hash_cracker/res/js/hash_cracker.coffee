@@ -1,7 +1,7 @@
 pj = {}
 
 pj.init = (kl_config, app_config) ->
-    importScripts("#{kl_config.lib_js_root}/md5.js")
+    importScripts(app_config.md5_script)
     pj.config = app_config
     return
 

@@ -1,7 +1,7 @@
 pj = {}
 
 pj.init = (kl_config, app_config) ->
-    importScripts("#{kl_config.lib_js_root}/alea.js")
+    importScripts(app_config.alea_script)
     pj.config = app_config
     return
 

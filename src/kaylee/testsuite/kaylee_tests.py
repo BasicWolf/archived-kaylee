@@ -14,7 +14,6 @@ from datetime import datetime
 class Settings1(TestSettings):
     KAYLEE_JS_ROOT = '/path/to/kaylee/js'
     LIB_JS_ROOT    = '/path/to/js/libs'
-    PROJECTS_STATIC_ROOT = '/path/to/projects/static'
 
     NODES_STORAGE = {
         'name' : 'MemoryNodesStorage',
@@ -68,8 +67,6 @@ class KayleeLoaderTests(KayleeTest):
         nconf, storage, apps = load_kaylee_objects(Settings1)
         self.assertEqual(nconf['kaylee_js_root'], Settings1.KAYLEE_JS_ROOT)
         self.assertEqual(nconf['lib_js_root'], Settings1.LIB_JS_ROOT)
-        self.assertEqual(nconf['projects_static_root'],
-                         Settings1.PROJECTS_STATIC_ROOT)
         self.assertEqual(len(apps), 0)
 
     def test_load_nodes_storage(self):

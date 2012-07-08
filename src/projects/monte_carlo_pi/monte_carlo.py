@@ -11,8 +11,9 @@ class MonteCarloPiProject(Project):
         super(MonteCarloPiProject, self).__init__(*args, **kwargs)
         self.random_points = kwargs['random_points']
         self.nodes_config.update({
-                'random_points' : self.random_points,
-                })
+            'alea_script' : kwargs['alea_script'],
+            'random_points' : self.random_points,
+        })
         self.tasks_count = kwargs['tasks_count']
         self._tasks_counter = -1
 

@@ -24,6 +24,27 @@ class Settings(object):
     def __init__(self):
         pass
 
+class GlobalSettings(Settings):
+    DEBUG = True
+
+    NODES_STORAGE = {
+        'name' : 'MemoryNodesStorage',
+        'config' : {
+            # timeout format: 1d 12h 10m 5s, e.g. "12h"; "1d 10m" etc.
+            'timeout' : '12h'
+            },
+    }
+
+    KAYLEE_JS_ROOT = '/static/js/kaylee'
+    LIB_JS_ROOT    = '/static/js/lib'
+
+    PROJECTS_DIR = ''
+
+    FRONTEND_TEMPLATES_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/templates'
+    FRONTEND_STATIC_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/static'
+
+    applications = []
+
 
 class LazySettings(LazyObject):
     """
@@ -47,7 +68,7 @@ class LazySettings(LazyObject):
             raise ImportError("Settings cannot be imported, because "
                               "environment variable {} is undefined."
                               .format(SETTINGS_ENV_VAR))
-        self._wrapped = Settings()
+        self._wrapped = GlobalSettings()
 
         mod = imp.load_source('settings', settings_path)
         for setting in dir(mod):
@@ -143,10 +164,10 @@ def load_kaylee_objects(settings = None):
     applications = Applications(controllers)
 
     # build Kaylee nodes configuration
-    nconfig = {'projects_static_root' : settings.PROJECTS_STATIC_ROOT,
-               'kaylee_js_root' : settings.KAYLEE_JS_ROOT,
-               'lib_js_root' : settings.LIB_JS_ROOT,
-               }
+    nconfig = {
+        'kaylee_js_root' : settings.KAYLEE_JS_ROOT,
+        'lib_js_root' : settings.LIB_JS_ROOT,
+    }
     # initialize Kaylee objects
     nsname = settings.NODES_STORAGE['name']
     nscls = nstorage_classes[nsname]

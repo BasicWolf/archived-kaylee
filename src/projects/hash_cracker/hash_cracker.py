@@ -13,12 +13,14 @@ class HashCrackerProject(Project):
         self.hash_to_crack = kwargs['hash_to_crack']
         self.salt = kwargs['salt']
         self.nodes_config.update({
-                'alphabet' : self.alphabet,
-                'key_length' : self.key_length,
-                'hashes_per_task' : self.hashes_per_task,
-                })
+            'md5_script' : kwargs['md5_script'],
+            'alphabet' : self.alphabet,
+            'key_length' : self.key_length,
+            'hashes_per_task' : self.hashes_per_task,
+        })
 
-        self.tasks_count = len(self.alphabet) ** self.key_length / self.hashes_per_task + 1
+        self.tasks_count = (len(self.alphabet) ** self.key_length
+                            / self.hashes_per_task + 1)
         self._tasks_counter = -1
 
 

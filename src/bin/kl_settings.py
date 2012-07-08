@@ -13,7 +13,6 @@ NODES_STORAGE = {
 PROJECTS_DIR = '/home/zaur/Documents/projects/kaylee/src/projects'
 KAYLEE_JS_ROOT = '/static/js/kaylee'
 LIB_JS_ROOT    = '/static/js/lib'
-PROJECTS_STATIC_ROOT = '/static/js/projects'
 
 # Settings used for Kaylee front-end demonstration
 FRONTEND_TEMPLATES_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/templates'
@@ -29,8 +28,9 @@ app_hash_cracker_1 = {
     'project' : {
         'name' : 'HashCrackerProject',
         'config' : {
-            'script' : 'hash_cracker/hash_cracker.js',
-            'hash_to_crack' : '71eebe6997feec5cd4d570c1b15ae786', # key == 'kl'
+            'script'        : '/static/js/projects/hash_cracker/hash_cracker.js',
+            'md5_script'    : '/static/js/projects/hash_cracker/md5.js',
+            'hash_to_crack' : '71eebe6997feec5cd4d570c1b15ae786', # md5('klsalt')
             'salt'          : 'salt',
             'alphabet'      : 'abcdefghijklmopqrstuvwxyz',
             # although knowing the length of the key is a cheat,
@@ -56,7 +56,8 @@ app_mc_pi_1 = {
     'project' : {
         'name' : 'MonteCarloPiProject',
         'config' : {
-            'script' : 'monte_carlo_pi/monte_carlo_pi.js',
+            'script' : '/static/js/projects/monte_carlo_pi/monte_carlo_pi.js',
+            'alea_script' : '/static/js/projects/monte_carlo_pi/alea.js',
             'random_points' : 1000000,
             'tasks_count' : 4
             },

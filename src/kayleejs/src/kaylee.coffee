@@ -10,7 +10,6 @@ kl = {
         # url_root             # set by kl.setup()
         # kaylee_js_root
         # lib_js_root
-        # projects_static_root
         }
 }
 
@@ -128,7 +127,6 @@ on_node_subscribed = (config) ->
     kl.post_message('import_project', {
         'kl_config' : kl.config,
         'app_config' : kl.app.config,
-        'script' : "#{kl.config.projects_static_root}/#{config.script}",
     })
 
 

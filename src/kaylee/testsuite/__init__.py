@@ -16,7 +16,6 @@ class TestSettings(object):
     PROJECTS_DIR = PROJECTS_DIR
     KAYLEE_JS_ROOT = ''
     LIB_JS_ROOT    = ''
-    PROJECTS_STATIC_ROOT = ''
     APPLICATIONS = []
 
 
