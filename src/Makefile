@@ -2,7 +2,7 @@ PROJECTS = monte_carlo_pi hash_cracker
 
 KL_SRC_DIR = kayleejs/src
 KL_JSLIB_DIR = kayleejs/static/js/kaylee
-export PJ_JSLIB_DIR = $(CURDIR)/kayleejs/static/js/projects
+export PJ_RES_DIR = $(CURDIR)/kayleejs/static/js/projects
 PJ_DIRS = $(addprefix projects/, $(PROJECTS) )
 
 
