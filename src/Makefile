@@ -1,27 +1,23 @@
+# Define the names of the projects here
 PROJECTS = monte_carlo_pi hash_cracker
 
-KL_SRC_DIR = kayleejs/src
-KL_JSLIB_DIR = kayleejs/static/js/kaylee
-
-export PJ_RES_DIR = $(CURDIR)/kayleejs/static/js/projects
+# Create project directories' paths
 PJ_DIRS = $(addprefix projects/, $(PROJECTS) )
 
+# Define build directory and export variables for recursive make purpose
+export KL_BUILD_DIR = $(CURDIR)/_build
+export PJ_RES_DIR = $(KL_BUILD_DIR)/static/js/projects
 
-SUBDIRS = $(KL_SRC_DIR) $(PJ_DIRS)
+SUBDIRS = $(PJ_DIRS)
 
-all : subdirs $(KL_JSLIB_DIR)
+all : subdirs
 
 subdirs: $(SUBDIRS)
 
-$(PJ_DIRS):
+$(SUBDIRS): 
 	$(MAKE) $(MAKECMDGOALS) -C $@
 
-$(KL_JSLIB_DIR): 
-	cp $(KL_SRC_DIR)/*.js $(KL_JSLIB_DIR)
-
-$(KL_SRC_DIR):
-	$(MAKE) $(MAKECMDGOALS) -C $(KL_SRC_DIR)
-
 clean: subdirs
+	rm -rf $(KL_BUILD_DIR)
 
-.PHONY: $(SUBDIRS) $(KL_JSLIB_DIR) clean subdirs
+.PHONY: $(SUBDIRS) clean subdirs
