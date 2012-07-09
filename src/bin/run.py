@@ -12,8 +12,7 @@ def setup():
     sys.path.insert(0, root_dir)
 
     from kaylee.loader import SETTINGS_ENV_VAR
-    os.environ[SETTINGS_ENV_VAR] = \
-        os.path.join(cur_dir, 'kl_settings.py')
+    os.environ[SETTINGS_ENV_VAR] = os.path.join(cur_dir, 'kl_demo_settings.py')
 
     from kaylee import settings, kl
     settings._setup()

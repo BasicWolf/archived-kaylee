@@ -68,14 +68,6 @@ kl.get = (url, success, error) ->
 kl.post_message = (msg, data = {}) ->
     kl.app.worker.postMessage({'msg' : msg, 'data' : data})
 
-
-# Function imports js/css dynamically. Current backend is $script.js library:
-# https://github.com/ded/script.js
-kl.import = $script
-
-kl.import_lib = (libname, callback) ->
-    kl.import("#{kl.config.lib_js_root}/#{libname}", callback)
-
 kl.setup = (config) ->
     # expected configuration
     # url_root = all Kaylee requests fill starts with current prefix
