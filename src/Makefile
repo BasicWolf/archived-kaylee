@@ -8,17 +8,21 @@ PJ_DIRS = $(addprefix projects/, $(PROJECTS) )
 export KL_BUILD_DIR = $(CURDIR)/_build
 export PJ_RES_DIR = $(KL_BUILD_DIR)/static/js/projects
 
+CLIENT_DIR = kaylee/contrib/client
 DEMO_DIR = kaylee/contrib/client/demo
 
-all : $(PJ_DIRS)
+all : $(PJ_DIRS) client demo
 
 $(PJ_DIRS): 
 	$(MAKE) $(MAKECMDGOALS) -C $@
 
-demo:
-	$(MAKE) $(MAKECMDGOALS) -C $(DEMO_DIR)/src
+demo: client
+	$(MAKE) $(MAKECMDGOALS) -C $(DEMO_DIR)
 
-clean: subdirs
+client:
+	$(MAKE) $(MAKECMDGOALS) -C $(CLIENT_DIR)
+
+clean: $(PJ_DIRS) demo client
 	rm -rf $(KL_BUILD_DIR)
 
-.PHONY: $(SUBDIRS) clean subdirs
+.PHONY: clean demo projects $(PJ_DIRS)
