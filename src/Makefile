@@ -8,14 +8,15 @@ PJ_DIRS = $(addprefix projects/, $(PROJECTS) )
 export KL_BUILD_DIR = $(CURDIR)/_build
 export PJ_RES_DIR = $(KL_BUILD_DIR)/static/js/projects
 
-SUBDIRS = $(PJ_DIRS)
+DEMO_DIR = kaylee/contrib/client/demo
 
-all : subdirs
+all : $(PJ_DIRS)
 
-subdirs: $(SUBDIRS)
-
-$(SUBDIRS): 
+$(PJ_DIRS): 
 	$(MAKE) $(MAKECMDGOALS) -C $@
+
+demo:
+	$(MAKE) $(MAKECMDGOALS) -C $(DEMO_DIR)/src
 
 clean: subdirs
 	rm -rf $(KL_BUILD_DIR)
