@@ -10,4 +10,4 @@ program which cracks an MD5 hash which was generated from a key plus a salt.
 .. toctree::
    :maxdepth: 2
 
-   
+

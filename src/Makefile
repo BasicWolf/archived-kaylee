@@ -5,24 +5,27 @@ PROJECTS = monte_carlo_pi hash_cracker
 PJ_DIRS = $(addprefix projects/, $(PROJECTS) )
 
 # Define build directory and export variables for recursive make purpose
-export KL_BUILD_DIR = $(CURDIR)/_build
+export KL_BUILD_DIR = $(CURDIR)/demo_build
 export PJ_RES_DIR = $(KL_BUILD_DIR)/static/js/projects
 
 CLIENT_DIR = kaylee/contrib/client
 DEMO_DIR = kaylee/contrib/client/demo
 
-all : $(PJ_DIRS) client demo
+all : demo $(PJ_DIRS) client 
 
 $(PJ_DIRS): 
 	$(MAKE) $(MAKECMDGOALS) -C $@
 
 demo: client
+	@echo 'Building Kaylee demo'
 	$(MAKE) $(MAKECMDGOALS) -C $(DEMO_DIR)
 
 client:
 	$(MAKE) $(MAKECMDGOALS) -C $(CLIENT_DIR)
 
-clean: $(PJ_DIRS) demo client
+clean: 
 	rm -rf $(KL_BUILD_DIR)
+
+cleanall : clean $(PJ_DIRS) demo client
 
 .PHONY: clean demo projects $(PJ_DIRS)

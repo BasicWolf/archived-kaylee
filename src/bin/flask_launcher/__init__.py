@@ -2,8 +2,8 @@ from flask import Flask, render_template
 from jinja2 import FileSystemLoader
 from werkzeug import SharedDataMiddleware
 
-import kl_settings
 from kaylee.contrib.frontends.flask_frontend import kaylee_blueprint
+from kaylee import settings as kl_settings
 
 app = Flask(__name__)
 

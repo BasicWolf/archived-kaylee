@@ -15,10 +15,10 @@ KAYLEE_JS_ROOT = '/static/js/kaylee'
 LIB_JS_ROOT    = '/static/js/lib'
 
 # Settings used for Kaylee front-end demonstration
-FRONTEND_TEMPLATES_DIR = '/home/zaur/Documents/projects/kaylee/src/kaylee' \
-                         '/contrib/client/demo/templates'
-FRONTEND_STATIC_DIR = '/home/zaur/Documents/projects/kaylee/src/kaylee' \
-                      '/contrib/client/demo/static'
+FRONTEND_TEMPLATES_DIR = '/home/zaur/Documents/projects/kaylee/src/demo_build' \
+                         '/templates'
+FRONTEND_STATIC_DIR = '/home/zaur/Documents/projects/kaylee/src/demo_build' \
+                      '/static'
 
 
 ## User applications ##
