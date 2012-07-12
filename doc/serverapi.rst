@@ -1,11 +1,11 @@
-.. _api:
+.. _serverapi:
 
-API
-===
+Server API
+==========
 
 .. module:: kaylee
 
-This part of the documentation covers all the interfaces of Kaylee.
+This part of the documentation covers all the server-side interfaces of Kaylee.
 
 
 Kaylee Object

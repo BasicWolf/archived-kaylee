@@ -27,7 +27,7 @@ method, this part of the documentation is for you.
 .. toctree::
    :maxdepth: 2
 
-   api
+   serverapi
    clientapi
 
 Additional Notes
