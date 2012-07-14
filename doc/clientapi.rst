@@ -49,7 +49,7 @@ A typical Kaylee project implements two callbacks in the `pj` namespce:
    :param data: JSON-formatted task data.
 
 
-Kaylee worker
+Kaylee Worker
 -------------
 
 .. js:function:: klw.task_completed(result)
@@ -61,10 +61,73 @@ Kaylee worker
    :param message: todo
 
 
-Kaylee global
+Kaylee Global
 -------------
 
 .. js:function:: kl.setup(config)
 
-.. [1] http://en.wikipedia.org/wiki/Web_worker_
-.. [2] http://www.w3schools.com/html5/html5_webworkers.asp_
+Kaylee Events
+-------------
+
+.. js:function:: kl.log(message)
+
+   Triggered when a message requires to be logged.
+
+   :param message: message to log.
+
+.. js:function:: kl.node_registered(config)
+
+   Triggered when Kaylee registeres the node.
+
+   :param config: Kaylee configuration.
+
+.. js:function:: kl.node_subscribed(app_config)
+
+   Triggered when Kaylee subcsribes the node to an application.
+
+   :param config: application configuration.
+
+.. js:function:: kl.node_unsubscibed()
+
+   Triggered when Kaylee unsubscribes the node from an application.
+
+.. js:function:: kl.project_imported()
+
+   Triggered when Kaylee worker finishes importing a project required
+   by an application (this includes successful call to :js:func:`pj.init`).
+
+.. js:function:: kl.results_sent()
+
+   Triggered when Kaylee acknowledge the receipt of the task results.
+
+
+.. js:function:: kl.server_raised_error(message)
+
+   Triggered when a request to server has not been completed successfully (e.g. HTTP status 404 or 500).
+
+   :param message: Error message.
+
+.. js:function:: kl.task_completed(result)
+
+   :param result: task results. Triggered by :js:func:`klw.task_completed`.
+
+.. js:function:: kl.task_recieved(data)
+
+   Triggered when the client recieves a task from the server.
+
+   :param data: task data.
+
+.. js:function:: kl.worker_raised_error(error)
+
+   Triggered when Kaylee worker raises an error.
+
+   :param error: error object. Available fields:
+
+                 * filename
+                 * lineno
+                 * message
+
+
+.. [1] http://en.wikipedia.org/wiki/Web_worker
+.. [2] http://www.w3schools.com/html5/html5_webworkers.asp
+

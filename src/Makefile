@@ -23,9 +23,7 @@ demo: client
 client:
 	$(MAKE) $(MAKECMDGOALS) -C $(CLIENT_DIR)
 
-clean: 
+clean : clean $(PJ_DIRS) demo client
 	rm -rf $(KL_BUILD_DIR)
-
-cleanall : clean $(PJ_DIRS) demo client
 
 .PHONY: clean demo projects $(PJ_DIRS)

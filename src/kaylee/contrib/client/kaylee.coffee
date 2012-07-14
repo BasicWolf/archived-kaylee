@@ -32,42 +32,6 @@ kl.classes.Event = Event
 kl.benchmark = () ->
     return !!window.Worker
 
-# kl.ajax is currently using jQuery.ajax()
-kl.ajax = (url, method, data, success, error) ->
-    switch method
-        when 'GET' then data = ''
-        when 'POST' then data = JSON.stringify(data)
-    $.ajax(
-        url: url
-        type: method
-        contentType: 'application/json; charset=utf-8'
-        data: data
-        dataType: 'json'
-        success: (data) ->
-            if data.error?
-                kl.server_raised_error.trigger(data.error)
-            else
-                success(data) if success?
-        error: (jqXHR, status_text, errorCode) ->
-            kl.server_raised_error.trigger(status_text)
-    )
-    return null
-
-kl.post = (url, data, success, error) ->
-    _success = (data) ->
-        if data.error? then error(data.error) else success(data)
-    kl.ajax(url, 'POST', data, _success, error)
-    return null
-
-kl.get = (url, success, error) ->
-    _success = (data) ->
-        if data.error? then error(data.error) else success(data)
-    kl.ajax(url, 'GET', null, success, error)
-    return null
-
-kl.post_message = (msg, data = {}) ->
-    kl.app.worker.postMessage({'msg' : msg, 'data' : data})
-
 kl.setup = (config) ->
     # expected configuration
     # url_root = all Kaylee requests fill starts with current prefix
@@ -100,6 +64,10 @@ _parse_action = (data) ->
         when 'task' then kl.task_recieved.trigger(data.data)
         when 'unsubscribe' then kl.node_unsubscibed.trigger(data.data)
 
+kl.message_to_worker = (msg, data = {}) ->
+    kl.app.worker.postMessage({'msg' : msg, 'data' : data})
+
+
 # Primary event handlers
 on_node_registered = (data) ->
     for key, val of data.config
@@ -116,7 +84,7 @@ on_node_subscribed = (config) ->
     worker.addEventListener('message', ((e) -> on_worker_message(e.data)),
                             false);
     worker.addEventListener('error', ((e) -> on_worker_error(e)), false);
-    kl.post_message('import_project', {
+    kl.message_to_worker('import_project', {
         'kl_config' : kl.config,
         'app_config' : kl.app.config,
     })
@@ -131,7 +99,7 @@ on_project_imported = (args...) ->
     kl.get_task()
 
 on_task_recieved = (data) ->
-    kl.post_message('solve_task', data)
+    kl.message_to_worker('solve_task', data)
 
 on_task_completed = (data) ->
     kl.send_results(data)

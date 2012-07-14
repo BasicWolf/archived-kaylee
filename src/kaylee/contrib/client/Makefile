@@ -10,7 +10,7 @@ endif
 all: $(TARGETS)
 
 kaylee.js: kaylee.coffee
-	coffee -j kaylee.js -c kaylee.coffee 
+	coffee -j kaylee.js -c kaylee.coffee klajax.coffee
 
 klworker.js: klworker.coffee
 	coffee --bare -c klworker.coffee

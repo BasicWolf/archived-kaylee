@@ -51,7 +51,7 @@ on_task_completed = (data) ->
     _tasks_counter += 1
 
 on_results_sent = () ->
-    kl.console.print("Results sent to the server.")
+    kl.console.print("The results have been sent to the server.")
 
 on_worker_error = (e) ->
     kl.console.print("<span class='cerr'>ERROR:</span> Line #{e.lineno} in
