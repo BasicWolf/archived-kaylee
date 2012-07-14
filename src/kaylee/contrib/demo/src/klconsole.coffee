@@ -7,4 +7,4 @@ klc.init = (id) ->
 
 klc.print = (s) ->
     klc.$console.append("#{s}<br>")
-    klc.$console.scrollTop(klc.$console.scrollHeight)
+    klc.$console.scrollTop(klc.$console.prop('scrollHeight'))
