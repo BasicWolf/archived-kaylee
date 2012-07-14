@@ -8,8 +8,8 @@ PJ_DIRS = $(addprefix projects/, $(PROJECTS) )
 export KL_BUILD_DIR = $(CURDIR)/demo_build
 export PJ_RES_DIR = $(KL_BUILD_DIR)/static/js/projects
 
-CLIENT_DIR = kaylee/contrib/client
-DEMO_DIR = kaylee/contrib/client/demo
+CLIENT_DIR = kaylee/client
+DEMO_DIR = kaylee/contrib/demo
 
 all : demo $(PJ_DIRS) client 
 
