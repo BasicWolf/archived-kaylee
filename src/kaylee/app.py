@@ -134,8 +134,8 @@ class Kaylee(object):
         self.nodes[node_id].unsubscribe()
 
     @json_error_handler
-    def get_task(self, node_id):
-        """Returns a task from the subscribed application.
+    def get_action(self, node_id):
+        """Returns an action (usually a task from the subscribed application).
         The format of the JSON response is::
 
             {
@@ -173,7 +173,7 @@ class Kaylee(object):
                      stored to the application's storages.
         :type node_id: string or JSON-parsed dict/list
         :type data: string
-        :returns: a task returned by :meth:`get_task`.
+        :returns: a task returned by :meth:`get_action`.
         """
         node = self.nodes[node_id]
         try:
@@ -185,7 +185,7 @@ class Kaylee(object):
             self.unsubscribe(node)
             raise InvalidResultError(data, str(e))
 
-        return self.get_task(node.id)
+        return self.get_action(node.id)
 
     def clean(self):
         """Removes outdated nodes from Kaylee's nodes storage."""

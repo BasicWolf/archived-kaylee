@@ -165,8 +165,7 @@ def load_kaylee_objects(settings = None):
 
     # build Kaylee nodes configuration
     nconfig = {
-        'kaylee_js_root' : settings.KAYLEE_JS_ROOT,
-        'lib_js_root' : settings.LIB_JS_ROOT,
+        'kl_worker_script' : settings.KAYLEE_WORKER_SCRIPT,
     }
     # initialize Kaylee objects
     nsname = settings.NODES_STORAGE['name']

@@ -17,7 +17,7 @@ Kaylee Object
    .. automethod:: unregister(self, node_id)
    .. automethod:: subscribe(self, node_id, application)
    .. automethod:: unsubscribe(self, node_id)
-   .. automethod:: get_task(self, node_id)
+   .. automethod:: get_action(self, node_id)
    .. automethod:: accept_result(self, node_id, data)
    .. automethod:: clean(self)
    .. :inherited-members:

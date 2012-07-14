@@ -17,10 +17,10 @@ def subscribe_node(node_id, app_name):
     node_config = kl.subscribe(node_id, app_name)
     return json_response(node_config)
 
-@klb.route('/tasks/<node_id>', methods = ['GET', 'POST'])
+@klb.route('/actions/<node_id>', methods = ['GET', 'POST'])
 def tasks(node_id):
     if request.method == 'GET':
-        return json_response( kl.get_task(node_id) )
+        return json_response( kl.get_action(node_id) )
     else:
         next_task = kl.accept_result(node_id, request.json)
         return json_response(next_task)

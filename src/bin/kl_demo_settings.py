@@ -11,8 +11,7 @@ NODES_STORAGE = {
 }
 
 PROJECTS_DIR = '/home/zaur/Documents/projects/kaylee/src/projects'
-KAYLEE_JS_ROOT = '/static/js/kaylee'
-LIB_JS_ROOT    = '/static/js/lib'
+KAYLEE_WORKER_SCRIPT = '/static/js/kaylee/klworker.js'
 
 # Settings used for Kaylee front-end demonstration
 FRONTEND_TEMPLATES_DIR = '/home/zaur/Documents/projects/kaylee/src/demo_build' \

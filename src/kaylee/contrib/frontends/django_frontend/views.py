@@ -15,9 +15,9 @@ def subscribe_node(request, app_name, node_id):
     return json_response(node_config)
 
 @csrf_exempt
-def tasks(request, node_id):
+def actions(request, node_id):
     if request.method == 'GET':
-        return json_response( kl.get_task(node_id) )
+        return json_response( kl.get_action(node_id) )
     elif request.method == 'POST':
         next_task = kl.accept_result(node_id, request.raw_post_data)
         return json_response(next_task)
