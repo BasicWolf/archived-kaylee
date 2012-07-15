@@ -68,7 +68,7 @@ class LazySettings(LazyObject):
             raise ImportError("Settings cannot be imported, because "
                               "environment variable {} is undefined."
                               .format(SETTINGS_ENV_VAR))
-        self._wrapped = GlobalSettings()
+        self._wrapped = Settings()
 
         mod = imp.load_source('settings', settings_path)
         for setting in dir(mod):
@@ -167,6 +167,7 @@ def load_kaylee_objects(settings = None):
     nconfig = {
         'kl_worker_script' : settings.KAYLEE_WORKER_SCRIPT,
     }
+
     # initialize Kaylee objects
     nsname = settings.NODES_STORAGE['name']
     nscls = nstorage_classes[nsname]
@@ -229,4 +230,3 @@ def _get_controller_object(app_name, project, crstorage, conf,
     except KeyError as e:
         pass
     return cobj
-

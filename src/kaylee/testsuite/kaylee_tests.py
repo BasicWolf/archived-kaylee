@@ -12,15 +12,14 @@ from datetime import datetime
 
 
 class Settings1(TestSettings):
-    KAYLEE_JS_ROOT = '/path/to/kaylee/js'
-    LIB_JS_ROOT    = '/path/to/js/libs'
-
     NODES_STORAGE = {
         'name' : 'MemoryNodesStorage',
         'config' : {
             'timeout' : '2s',
             },
     }
+
+    KAYLEE_WORKER_SCRIPT = '/static/js/kaylee/klworker.js'
 
 class Settings2(Settings1):
     APPLICATIONS = [
@@ -65,8 +64,7 @@ class Settings3(Settings1):
 class KayleeLoaderTests(KayleeTest):
     def test_load_nodes_config(self):
         nconf, storage, apps = load_kaylee_objects(Settings1)
-        self.assertEqual(nconf['kaylee_js_root'], Settings1.KAYLEE_JS_ROOT)
-        self.assertEqual(nconf['lib_js_root'], Settings1.LIB_JS_ROOT)
+        self.assertEqual(nconf['kl_worker_script'], Settings1.KAYLEE_WORKER_SCRIPT)
         self.assertEqual(len(apps), 0)
 
     def test_load_nodes_storage(self):
