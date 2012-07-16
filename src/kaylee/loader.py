@@ -12,10 +12,11 @@ import os
 import imp
 import importlib
 import inspect
-import new
+import types
 
 from .errors import KayleeError
 from .util import LazyObject, import_object
+
 
 SETTINGS_ENV_VAR = 'KAYLEE_SETTINGS_MODULE'
 
@@ -24,53 +25,39 @@ class Settings(object):
     def __init__(self):
         pass
 
-class GlobalSettings(Settings):
-    DEBUG = True
-
-    NODES_STORAGE = {
-        'name' : 'MemoryNodesStorage',
-        'config' : {
-            # timeout format: 1d 12h 10m 5s, e.g. "12h"; "1d 10m" etc.
-            'timeout' : '12h'
-            },
-    }
-
-    KAYLEE_JS_ROOT = '/static/js/kaylee'
-    LIB_JS_ROOT    = '/static/js/lib'
-
-    PROJECTS_DIR = ''
-
-    FRONTEND_TEMPLATES_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/templates'
-    FRONTEND_STATIC_DIR = '/home/zaur/Documents/projects/kaylee/src/kayleejs/static'
-
-    applications = []
-
-
 class LazySettings(LazyObject):
     """
     A lazy proxy for either global Kaylee settings or a custom settings object.
     The user can manually configure settings prior to using them. Otherwise,
     Kaylee uses the settings module pointed to by KAYLEE_SETTINGS_MODULE.
     """
-    def _setup(self):
+    def _setup(self, obj = None):
         """
-        Load the settings module pointed to by the environment variable. This
-        is used the first time we need any settings at all, if the user has not
-        previously configured the settings manually.
+        Loads the settings module pointed to by the environment variable or
+        the `obj` argument.
         """
-        try:
-            settings_path = os.environ[SETTINGS_ENV_VAR]
-            if not settings_path: # If it's set but is an empty string.
-                raise KeyError
-        except KeyError:
-            # NOTE: This is arguably an EnvironmentError, but that causes
-            # problems with Python's interactive help.
-            raise ImportError("Settings cannot be imported, because "
-                              "environment variable {} is undefined."
-                              .format(SETTINGS_ENV_VAR))
-        self._wrapped = Settings()
+        if obj is not None:
+            if isinstance(obj, type):
+                mod = obj
+            else:
+                raise TypeError('obj must be {} not {}'
+                                .format(Settings.__name__, type(obj).__name__))
+        else:
+            try:
+                settings_path = os.environ[SETTINGS_ENV_VAR]
+                if not settings_path: # If it's set but is an empty string.
+                    raise KeyError
+            except KeyError:
+                # NOTE: This is arguably an EnvironmentError, but that causes
+                # problems with Python's interactive help.
+                raise ImportError("Settings cannot be imported, because "
+                                  "environment variable {} is undefined."
+                                  .format(SETTINGS_ENV_VAR))
 
-        mod = imp.load_source('settings', settings_path)
+            mod = imp.load_source('settings', settings_path)
+
+        # at this point *mod* is either a Python module or a Settings(-inherited) class
+        self._wrapped = Settings()
         for setting in dir(mod):
             if setting == setting.upper():
                 setting_value = getattr(mod, setting)
@@ -79,12 +66,21 @@ class LazySettings(LazyObject):
     @property
     def configured(self):
         """Returns True if the settings have already been configured."""
-        return self._wrapped is not empty
+        return self._wrapped is not None
 
 
 class LazyKaylee(LazyObject):
-    def _setup(self):
-        self._wrapped = load()
+    def _setup(self, obj = None):
+        if obj is not None:
+            from .app import Kaylee
+            if isinstance(obj, Kaylee):
+                self._wrapped = obj
+                return
+            else:
+                raise TypeError('obj must be an instance of {} not {}'
+                                .format(Kaylee.__name__, type(obj).__name__))
+        else:
+            self._wrapped = load()
 
 def load(settings = None):
     from .app import Kaylee
@@ -224,8 +220,8 @@ def _get_controller_object(app_name, project, crstorage, conf,
         for method_name, filter_name in filters.iteritems():
             method = getattr(cobj, method_name)
             filter_decorator = import_object(filter_name)
-            decorated = new.instancemethod(filter_decorator(method.__func__),
-                                           cobj, None)
+            decorated = types.MethodType(filter_decorator(method.__func__),
+                                         cobj, None)
             setattr(cobj, method_name, decorated)
     except KeyError as e:
         pass

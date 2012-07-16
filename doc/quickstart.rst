@@ -77,7 +77,7 @@ Kaylee Nodes exploit the new HTML5 Web Workers [1]_ in order to avoid
 interfering with browser's main JavaScript event loop.
 After registering and subscribing to Kaylee application, a Node has a single
 job to do: solve given tasks and report the results.
-x
+
 
 
 .. [1] http://www.w3schools.com/html5/html5_webworkers.asp

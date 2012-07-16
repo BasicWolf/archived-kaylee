@@ -98,6 +98,33 @@ class KayleeLoaderTests(KayleeTest):
         self.assertIn('dummy_app', kl.applications)
         self.assertIsInstance(kl.nodes, MemoryNodesStorage)
 
+    def test_settings_setup(self):
+        from kaylee import settings as kl_settings
+        kl_settings._setup(Settings1)
+        self.assertEqual(Settings1.KAYLEE_WORKER_SCRIPT,
+                         kl_settings.KAYLEE_WORKER_SCRIPT)
+        # I know that this thing does the same, as above,
+        # but just for testing purpose... :)
+        from kaylee import settings as kl_settings2
+        self.assertEqual(Settings1.NODES_STORAGE, kl_settings2.NODES_STORAGE)
+
+    def test_kaylee_setup(self):
+        project = DummyProject()
+        storage = MemoryControllerResultsStorage()
+        app_storage = MemoryProjectResultsStorage()
+        controller = DummyController('dummy_app', project, storage, app_storage)
+        apps = Applications({'dummy_app' : controller})
+        _kl = Kaylee({}, MemoryNodesStorage(timeout = '2h'), apps)
+
+        from kaylee import kl
+        kl._setup(_kl)
+        self.assertEqual(kl.applications, _kl.applications)
+        self.assertEqual(kl.nodes, _kl.nodes)
+
+        from kaylee import kl as kl2
+        self.assertEqual(kl.applications, _kl.applications)
+        self.assertEqual(kl.nodes, _kl.nodes)
+
 
 class KayleeTests(KayleeTest):
     def test_register_unregister(self):
