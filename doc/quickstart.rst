@@ -1,5 +1,7 @@
 .. _quickstart:
 
+.. module:: kaylee
+
 Quickstart
 ==========
 
@@ -24,9 +26,12 @@ in the middle which represents an "echo" console. Don't worry, it's part
 of the demo, not Kaylee in general. In few seconds something weird will
 happen and at last you will see something like this:
 
-|demo2|
+.. image:: _static/demo2.png
+   :align: center
+   :alt: Console with HashCracker application output.
 
-Congratulations! You've just cracked a salted MD5 hash. 
+
+Congratulations! You've just cracked a salted MD5 hash.
 If you scroll the console on the web page
 to the top, you'll see the steps of project's initialization process.
 Finally, check out the shell, you may notice a message from Kaylee
@@ -49,9 +54,6 @@ which says what the cracked hash key was::
   127.0.0.1 - "POST /kaylee/actions/500315e30000f528764d HTTP/1.1" 200 -
 
 
-.. |demo2| image:: /images/demo2.png
-    :align: middle
-    :alt: Console with HashCracker application output.
 
 It is time to find out, how the heck does Kaylee work.
 
@@ -78,6 +80,43 @@ interfering with browser's main JavaScript event loop.
 After registering and subscribing to Kaylee application, a Node has a single
 job to do: solve given tasks and report the results.
 
+
+Projects and Tasks
+------------------
+
+Kaylee tries to free users of routines related to distributed computation
+as much as possible. Still a user needs to write the server-side Python code
+which will generate data for computation and receive and validate the results
+and the client-side code which will compute and solve the tasks
+provided by the server.
+In Kaylee's terms the server and client-side code is written in the scope
+of a single *Project*.
+A :py:class:`Project` is an iterator-like object (it is initialized
+for iteration only once) which returns :py:class:`Task` objects on every
+`next(project)` call. Every task **must** have a unique ID which can be
+used to generate the same task if required. This means that the following 
+code::
+
+  t = next(project)
+  t2 = project[t.id]
+
+should generate `t` and `t2` with identical data, so that the computation
+results of `t` and `t2` are also the same. 
+
+
+
+
+
+
+Kaylee object and Settings
+--------------------------
+
+The two objects that are available for importing anywhere in user's
+applications and front-ends are `kl` and `settings`. `kl` is the global
+instance of :py:class:`Kaylee` and `settings` is the global settings
+pool. Kaylee instance is automatically created and it uses several
+settings provided by the end-user in order to initialize properly
+and load user's applications.
 
 
 .. [1] http://www.w3schools.com/html5/html5_webworkers.asp
