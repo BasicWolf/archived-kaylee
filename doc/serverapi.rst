@@ -88,3 +88,14 @@ Storage Objects
    .. automethod:: __len__
    .. automethod:: __setitem__
 
+
+Kaylee Loader
+-------------
+.. module:: kaylee.loader
+
+.. autodata:: SETTINGS_ENV_VAR
+
+.. autoclass:: LazySettings
+   :members:
+   :inherited-members:
+   :private-members:

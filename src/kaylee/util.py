@@ -36,9 +36,11 @@ def import_object(name):
 
 def new_method_proxy(func):
     def inner(self, *args):
-        if self._wrapped is None:
+        try:
+            return func(self._wrapped, *args)
+        except AttributeError:
             self._setup()
-        return func(self._wrapped, *args)
+            return func(self._wrapped, *args)
     return inner
 
 
@@ -60,16 +62,20 @@ class LazyObject(object):
             # Assign to __dict__ to avoid infinite __setattr__ loops.
             self.__dict__["_wrapped"] = value
         else:
-            if self._wrapped is None:
+            try:
+                setattr(self._wrapped, name, value)
+            except AttributeError:
                 self._setup()
-            setattr(self._wrapped, name, value)
+                setattr(self._wrapped, name, value)
 
     def __delattr__(self, name):
         if name == "_wrapped":
             raise TypeError("Cannot delete _wrapped.")
-        if self._wrapped is None:
+        try:
+            delattr(self._wrapped, name)
+        except AttributeError:
             self._setup()
-        delattr(self._wrapped, name)
+            delattr(self._wrapped, name)
 
     def _setup(self, obj = None):
         """

@@ -3,7 +3,7 @@
     kaylee.loader
     ~~~~~~~~~~~~~
 
-    Implements Kaylee projects, controllers and Kaylee loader.
+    Implements projects, controllers and Kaylee instance loader.
 
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
@@ -17,7 +17,8 @@ import types
 from .errors import KayleeError
 from .util import LazyObject, import_object
 
-
+#: Points to the environmental variable which holds the absolute path to the
+#: settings `*.py` file.
 SETTINGS_ENV_VAR = 'KAYLEE_SETTINGS_MODULE'
 
 
@@ -27,14 +28,15 @@ class Settings(object):
 
 class LazySettings(LazyObject):
     """
-    A lazy proxy for either global Kaylee settings or a custom settings object.
-    The user can manually configure settings prior to using them. Otherwise,
-    Kaylee uses the settings module pointed to by KAYLEE_SETTINGS_MODULE.
+    A lazy proxy for either global Kaylee settings. Uses either a custom
+    object or the settings module pointed to by :py:data:`SETTINGS_ENV_VAR`.
     """
     def _setup(self, obj = None):
         """
-        Loads the settings module pointed to by the environment variable or
-        the `obj` argument.
+        Loads and wraps the settings module pointed to by the environment
+        variable or the `obj` argument.
+
+        :param obj: Python module or class with settings attributes.
         """
         if obj is not None:
             if isinstance(obj, type):
@@ -62,11 +64,6 @@ class LazySettings(LazyObject):
             if setting == setting.upper():
                 setting_value = getattr(mod, setting)
                 setattr(self._wrapped, setting, setting_value)
-
-    @property
-    def configured(self):
-        """Returns True if the settings have already been configured."""
-        return self._wrapped is not None
 
 
 class LazyKaylee(LazyObject):

@@ -15,7 +15,8 @@ User's Guide
    :maxdepth: 2
 
    installation
-   quickstart
+   demo
+   firststeps
    tutorial/index
 
 API Reference
