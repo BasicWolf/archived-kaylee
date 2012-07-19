@@ -10,6 +10,7 @@
 {% set sidebar_width = '220px' %}
  
 @import url("basic.css");
+
  
 /* -- page layout ----------------------------------------------------------- */
  
@@ -393,3 +394,4 @@ a.footnote-reference:hover {
 a:hover tt {
     background: #EEE;
 }
+
