@@ -10,35 +10,37 @@
 {% set sidebar_width = '220px' %}
  
 @import url("basic.css");
-
  
 /* -- page layout ----------------------------------------------------------- */
  
 body {
     font-family: 'Georgia', serif;
     font-size: 17px;
-    background-color: white;
+    background-color: black;
     color: #000;
     margin: 0;
     padding: 0;
 }
 
 div.document {
+    margin: 0 auto 0 auto;
     width: {{ page_width }};
-    margin: 30px auto 0 auto;
+    display:block;
+    background-color:white;
 }
 
 div.documentwrapper {
     float: left;
-    width: 100%;
+    width: 700px;
 }
 
 div.bodywrapper {
-    margin: 0 0 0 {{ sidebar_width }};
+    margin: 0 0 0 0;
 }
 
 div.sphinxsidebar {
     width: {{ sidebar_width }};
+    float:right;
 }
 
 hr {
@@ -394,4 +396,3 @@ a.footnote-reference:hover {
 a:hover tt {
     background: #EEE;
 }
-
