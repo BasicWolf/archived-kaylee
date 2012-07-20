@@ -51,6 +51,9 @@ code::
 should generate `t` and `t2` with identical data, so that the computation
 results of `t` and `t2` are also the same.
 
+The client-side of the project contains the code which actually solves the
+given tasks (see :ref:`clientapi`). To keep things simple all communication is
+done via JSON.
 
 Global Settings and Kaylee objects
 ----------------------------------
@@ -77,6 +80,13 @@ settings provided by the user. You can access it as follows::
 
 At this point Kaylee should be ready for further processing.
 
+
+Controllers
+-----------
+
+A controller is an object which stands between the outer Kaylee interface
+and a project. Controller keeps the track of the nodes, decides what kind
+of task every node will recieve and how the results are collected.
 
 .. [1] http://www.w3schools.com/html5/html5_webworkers.asp
 

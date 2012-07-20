@@ -1,9 +1,9 @@
 .. _clientapi:
 
-.. module:: kaylee
-
 Client API
 ==========
+
+.. module:: kaylee
 
 This part of the documentation covers all the client-side interfaces of Kaylee.
 

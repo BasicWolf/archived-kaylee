@@ -8,12 +8,6 @@ instructions for deployment of Kaylee.
 .. toctree::
    :maxdepth: 2
 
-User's Guide
-------------
-
-.. toctree::
-   :maxdepth: 2
-
    installation
    demo
    firststeps
