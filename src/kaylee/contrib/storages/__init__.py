@@ -85,18 +85,23 @@ class MemoryControllerResultsStorage(ControllerResultsStorage):
 class MemoryProjectResultsStorage(ProjectResultsStorage):
     def __init__(self):
         self._d = {}
+        self._count = 0
 
     def __len__(self):
-        return len(self._d)
+        return self._count
 
     def __delitem__(self, task_id):
+        self._count -= len(self._d[task_id])
         del self._d[task_id]
 
     def __getitem__(self, task_id):
         return self._d[task_id]
 
     def __setitem__(self, task_id, result):
+        if not isinstance(result, list):
+            result = [result]
         self._d[task_id] = result
+        self._count += len(result)
 
     def __contains__(self, task_id):
         return task_id in self._d

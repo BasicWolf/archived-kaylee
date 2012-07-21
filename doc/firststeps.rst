@@ -15,25 +15,32 @@ the tasks distribution and results collection and client-side
 
 The server performs the following routines:
 
-  * Registers the nodes.
-  * Subscribes the nodes to applications.
-  * Dispatches the tasks to the nodes.
-  * Collects the results from the odes.
+  * Registers the nodes. During the registration process Kaylee decides
+    whether the host can be registered as a node and assigns the host
+    a unique :py:class:`node id <NodeID>`.
+  * Subscribes the nodes to applications. During the subscription process
+    the node loads and initializes the project script(s).
+  * Dispatches the tasks to the nodes. At this stage the subscribed nodes
+    receive the tasks, solve them and return the results back.
+  * Collects the results from the nodes. Kaylee decides whether the results
+    are satisfactory and stores them to a permanent storage.
 
-There are multiple simple and complex sub-routines among this large ones,
-but we will talk about them later.
+There are multiple simple and complex sub-routines and we will talk about
+them later.
 
-Kaylee Nodes exploit the new HTML5 Web Workers [1]_ in order to avoid
-interfering with browser's main JavaScript event loop.
+Kaylee Nodes utilize the new HTML5 Web Workers [1]_ standard in order to
+avoid interfering with browser's main JavaScript event loop.
 After registering and subscribing to Kaylee application, a Node has a single
 job to do: solve given tasks and report the results.
+
+.. _firststep_projects_and_tasks
 
 
 Projects and Tasks
 ------------------
 
 Kaylee tries to free users of routines related to distributed computation
-as much as possible. Still a user needs to write the server-side Python code
+as much as possible. Still, a user needs to write the server-side Python code
 which will generate data for computation and receive and validate the results
 and the client-side code which will compute and solve the tasks
 provided by the server.
@@ -54,6 +61,13 @@ results of `t` and `t2` are also the same.
 The client-side of the project contains the code which actually solves the
 given tasks (see :ref:`clientapi`). To keep things simple all communication is
 done via JSON.
+
+It is important to understand that a single project can be configurable so,
+that it  be instantiated. For example, a project which is used to model
+some complex process can be instantiated based on various initial
+conditions. Each of this instances will work as a separate Kaylee
+:ref:`Application <firststep_application>`.
+
 
 Global Settings and Kaylee objects
 ----------------------------------
@@ -81,12 +95,26 @@ settings provided by the user. You can access it as follows::
 At this point Kaylee should be ready for further processing.
 
 
+
 Controllers
 -----------
 
 A controller is an object which stands between the outer Kaylee interface
-and a project. Controller keeps the track of the nodes, decides what kind
-of task every node will recieve and how the results are collected.
+and a project. Controller keeps the track of subscribed nodes, decides
+what kind of task every node will recieve and how the results are collected.
+
+
+
+
+.. _firststep_application:
+
+Applications
+------------
+
+A controller and a project together form an `Application`.
+Although controllers know nothing about the bound projects, they decide
+when the project will recieve the results of a task.
+
+
 
 .. [1] http://www.w3schools.com/html5/html5_webworkers.asp
-

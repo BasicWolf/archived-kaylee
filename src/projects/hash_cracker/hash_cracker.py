@@ -51,7 +51,7 @@ class HashCrackerProject(Project):
             self._announce_results()
 
     def _announce_results(self):
-        key = list(self.storage.values())[0]
+        key = list(self.storage.values())[0][0]
         print('The cracked hash key is: {}'.format(key))
 
 

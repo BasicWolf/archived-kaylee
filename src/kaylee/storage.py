@@ -104,7 +104,10 @@ class ProjectResultsStorage(object):
 
     @abstractmethod
     def __getitem__(self, task_id):
-        """Returns the result associated with task."""
+        """Returns the results associated with task.
+
+        :rtype: list
+        """
 
     @abstractmethod
     def __setitem__(self, task_id, result):
