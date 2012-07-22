@@ -64,7 +64,7 @@ class Kaylee(object):
     :param nodes_config: settings-based configuration required by every node
                          in order to function properly. This includes for
                          example the URL root of the projects' script files.
-    :param nodes_storage: an instance of :class:`NodesStorage`.
+    :param nodes_storage: an instance of :class:`NodesRegistry`.
     :param applications: an instance of :class:`Applications` object.
     """
     def __init__(self, nodes_config, nodes_storage, applications):

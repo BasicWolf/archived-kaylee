@@ -22,10 +22,13 @@ settings = LazySettings()
 kl = LazyKaylee()
 
 from .app import Kaylee, Applications
-from .node import Node, NodeID
-from .storage import (NodesStorage, ControllerResultsStorage,
+from .node import Node, NodeID, NodesRegistry
+from .storage import (ControllerResultsStorage,
                       ProjectResultsStorage )
 from .controller import Controller
 from .project import Project, Task
 from .errors import KayleeError
 
+def setup():
+    settings._setup()
+    kl._setup()

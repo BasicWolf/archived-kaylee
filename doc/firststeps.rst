@@ -17,7 +17,8 @@ The server performs the following routines:
 
   * Registers the nodes. During the registration process Kaylee decides
     whether the host can be registered as a node and assigns the host
-    a unique :py:class:`node id <NodeID>`.
+    a unique :py:class:`node id <NodeID>`. The information about the nodes
+    is maintained on the server via an instance of :py:class:`NodesRegistry`.
   * Subscribes the nodes to applications. During the subscription process
     the node loads and initializes the project script(s).
   * Dispatches the tasks to the nodes. At this stage the subscribed nodes
@@ -88,12 +89,18 @@ or running any parts of the code which access the global `settings` object::
   print(settings.SOME_ATTRIBUTE)
 
 The global instance of :py:class:`Kaylee` is automatically created based on
-settings provided by the user. You can access it as follows::
+the settings provided by the user. You can access it as follows::
 
   from kaylee import kl
 
-At this point Kaylee should be ready for further processing.
+At this point Kaylee is still not loaded, due to its "laziness". It will
+be fully initialized only when its attributes are accessed or when
+the on-demand `_setup()` method is called. To make sure that Kaylee
+and hence the settings are loaded you can import and execute the
+`setup` function::
 
+  from kaylee import setup
+  setup()
 
 
 Controllers
@@ -103,7 +110,23 @@ A controller is an object which stands between the outer Kaylee interface
 and a project. Controller keeps the track of subscribed nodes, decides
 what kind of task every node will recieve and how the results are collected.
 
+Why do we need controllers at all? Why not communicate directly with projects?
+It's simple: the world on the other side of Kaylee is not perfect. You can
+never be sure whether a node with assigned task will return the results
+(as it can disconnect without notifying Kaylee) or the results will be correct
+at all. A controller can be designed to send the same task to multiple
+nodes instead of a single one. That kind redundancy is the fee for
+the results integrity and accuracy.
 
+
+Storages
+--------
+As we speak of the tasks' results you may wonder, how the results are
+maintained on the server? Kaylee provides abstract storage interfaces
+for both temporal (see :py:class:`ControllerResultsStorage`)
+and permanent (See :py:class:`ProjectResultsStorage`) storages.
+This allows to use any kind of storage solutions: from simple
+in-memory objects to relational or NoSQL databases.
 
 
 .. _firststep_application:

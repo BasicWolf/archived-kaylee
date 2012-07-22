@@ -11,12 +11,13 @@
     :license: MIT, see LICENSE for more details.
 """
 
-from datetime import datetime
 import time
 import binascii
 import struct
 import threading
 import hashlib
+from datetime import datetime
+from abc import ABCMeta, abstractmethod
 
 from .errors import InvalidNodeIDError, NodeUnsubscribedError
 from .tz_util import utc
@@ -265,3 +266,43 @@ class NodeID(object):
     def __hash__(self):
         """NodeID's hash"""
         return hash(self._id)
+
+
+class NodesRegistry(object):
+    """
+    The interface for registered nodes storage. A NodesRegistry is a place
+    where Kaylee keeps information about active Nodes. It can be as simple
+    as Python collection or as complex as MongoDB or memcached - that is
+    for the user to choose.
+    The implementation of NodesRegistry should accept and return
+    :class:`Node` objects. (TODO: see Mem...)
+    """
+    __metaclass__ = ABCMeta
+
+    def __init__(self, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def add(self, node):
+        """Adds node to storage."""
+
+    @abstractmethod
+    def clean(self, node):
+        """Removes the obsolete nodes from the storage."""
+
+    @abstractmethod
+    def __len__(self):
+        """Returns the amount of nodes in the storage."""
+
+    @abstractmethod
+    def __delitem__(self, node):
+        """Removes the node from the storage."""
+
+    @abstractmethod
+    def __getitem__(self, node_id):
+        """Returns a node with the requested id."""
+
+    @abstractmethod
+    def __contains__(self, node):
+        """Checks if the storage contains the node."""
+

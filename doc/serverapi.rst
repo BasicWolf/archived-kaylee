@@ -34,6 +34,14 @@ Node Objects
    :members:
    :special-members:
 
+.. autoclass:: NodesRegistry
+   :members:
+
+   .. automethod:: __len__
+   .. automethod:: __delitem__
+   .. automethod:: __getitem__
+   .. automethod:: __contains__
+
 
 Project and Task Objects
 ------------------------
@@ -60,14 +68,6 @@ Controller Object
 
 Storage Objects
 ---------------
-
-.. autoclass:: NodesStorage
-   :members:
-
-   .. automethod:: __len__
-   .. automethod:: __delitem__
-   .. automethod:: __getitem__
-   .. automethod:: __contains__
 
 .. autoclass:: ControllerResultsStorage
    :members:

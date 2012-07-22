@@ -5,15 +5,17 @@ from projects.dummy_project.dummy import DummyProject, DummyController
 from kaylee.testsuite import KayleeTest, load_tests, TestSettings
 from kaylee import (load, NodeID, Node, Kaylee, KayleeError, Applications, )
 from kaylee.loader import load_kaylee_objects
-from kaylee.contrib.storages import (MemoryNodesStorage,
-                                     MemoryControllerResultsStorage,
+from kaylee.contrib.storages import (MemoryControllerResultsStorage,
                                      MemoryProjectResultsStorage)
+
+from kaylee.contrib.registries import MemoryNodesRegistry
+
 from datetime import datetime
 
 
 class Settings1(TestSettings):
     NODES_STORAGE = {
-        'name' : 'MemoryNodesStorage',
+        'name' : 'MemoryNodesRegistry',
         'config' : {
             'timeout' : '2s',
             },
@@ -69,7 +71,7 @@ class KayleeLoaderTests(KayleeTest):
 
     def test_load_nodes_storage(self):
         nconf, storage, apps = load_kaylee_objects(Settings1)
-        self.assertIsInstance(storage, MemoryNodesStorage)
+        self.assertIsInstance(storage, MemoryNodesRegistry)
 
     def test_load_applications(self):
         nconf, storage, apps = load_kaylee_objects(Settings2)
@@ -86,7 +88,7 @@ class KayleeLoaderTests(KayleeTest):
     def test_load_kaylee(self):
         kl = load(Settings2)
         self.assertIn('dummy.1', kl.applications)
-        self.assertIsInstance(kl.nodes, MemoryNodesStorage)
+        self.assertIsInstance(kl.nodes, MemoryNodesRegistry)
 
     def test_init_kaylee(self):
         project = DummyProject()
@@ -94,9 +96,9 @@ class KayleeLoaderTests(KayleeTest):
         app_storage = MemoryProjectResultsStorage()
         controller = DummyController('dummy_app', project, storage, app_storage)
         apps = Applications({'dummy_app' : controller})
-        kl = Kaylee({}, MemoryNodesStorage(timeout = '2h'), apps)
+        kl = Kaylee({}, MemoryNodesRegistry(timeout = '2h'), apps)
         self.assertIn('dummy_app', kl.applications)
-        self.assertIsInstance(kl.nodes, MemoryNodesStorage)
+        self.assertIsInstance(kl.nodes, MemoryNodesRegistry)
 
     def test_settings_setup(self):
         from kaylee import settings as kl_settings
@@ -114,7 +116,7 @@ class KayleeLoaderTests(KayleeTest):
         app_storage = MemoryProjectResultsStorage()
         controller = DummyController('dummy_app', project, storage, app_storage)
         apps = Applications({'dummy_app' : controller})
-        _kl = Kaylee({}, MemoryNodesStorage(timeout = '2h'), apps)
+        _kl = Kaylee({}, MemoryNodesRegistry(timeout = '2h'), apps)
 
         from kaylee import kl
         kl._setup(_kl)

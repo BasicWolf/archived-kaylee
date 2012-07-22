@@ -95,34 +95,29 @@ def load_kaylee_objects(settings = None):
             settings using KAYLEE_SETTINGS_MODULE environmental
             variable.
     :returns: Nodes configuration, nodes storage and applications.
-    :rtype: (dict, :class:`NodesStorage`, :class:`Applcations`)
+    :rtype: (dict, :class:`NodesRegistry`, :class:`Applcations`)
     """
-    from . import storage
-    from . import controller
-    from . import project
+    from . import storage, controller, project, node
     from .app import Applications
     import kaylee.contrib.controllers
     import kaylee.contrib.storages
+    import kaylee.contrib.registries
     if settings is None:
         from . import settings
 
-    # -- scan for classes --
-    project_classes = {}
-    controller_classes = {}
-    nstorage_classes = {}
-    crstorage_classes = {}
-    pstorage_classes = {}
+    # load contrib classes
+    contrib_cls = _get_classes_from_module(kaylee.contrib.controllers,
+                                           kaylee.contrib.storages,
+                                           kaylee.contrib.registries)
 
-    # load built-in kaylee classes
-    ctrl_classes = _get_classes(controller, kaylee.contrib.controllers)
-    stg_classes = _get_classes(storage, kaylee.contrib.storages)
-    _store_classes(controller_classes, ctrl_classes, controller.Controller)
-    _store_classes(nstorage_classes, stg_classes, storage.NodesStorage)
-    _store_classes(pstorage_classes, stg_classes, storage.ProjectResultsStorage)
-    _store_classes(crstorage_classes, stg_classes,
-                   storage.ControllerResultsStorage)
+    controller_classes = _get_classes(contrib_cls, controller.Controller)
+    nregistry_classes = _get_classes(contrib_cls, node.NodesRegistry)
+    pstorage_classes = _get_classes(contrib_cls, storage.ProjectResultsStorage)
+    crstorage_classes = _get_classes(contrib_cls,
+                                     storage.ControllerResultsStorage)
 
     # load classes from project modules
+    project_classes = {}
     for sub_dir in os.listdir(settings.PROJECTS_DIR):
         project_dir_path = os.path.join(settings.PROJECTS_DIR, sub_dir)
         if not os.path.isdir(project_dir_path):
@@ -135,9 +130,14 @@ def load_kaylee_objects(settings = None):
         except ImportError as e:
             raise ImportError('Unable to import project package: {}'
                               .format(e))
-        mod_classes = _get_classes(pymod)
-        _store_classes(project_classes, mod_classes, project.Project)
-        _store_classes(controller_classes, mod_classes, controller.Controller)
+        mod_cls = _get_classes_from_module(pymod)
+        project_classes.update(_get_classes(mod_cls, project.Project))
+        controller_classes.update(_get_classes(mod_cls, controller.Controller))
+        nregistry_classes.update(_get_classes(mod_cls, node.NodesRegistry))
+        pstorage_classes.update(
+            _get_classes(mod_cls, storage.ProjectResultsStorage))
+        crstorage_classes.update(
+            _get_classes(mod_cls, storage.ControllerResultsStorage))
 
     # load controllers/projects classes and initialize applications
     controllers = {}
@@ -163,16 +163,21 @@ def load_kaylee_objects(settings = None):
 
     # initialize Kaylee objects
     nsname = settings.NODES_STORAGE['name']
-    nscls = nstorage_classes[nsname]
-    nstorage = nscls(**settings.NODES_STORAGE['config'])
-    return nconfig, nstorage, applications
+    nrcls = nregistry_classes[nsname]
+    nreg = nrcls(**settings.NODES_STORAGE['config'])
+    return nconfig, nreg, applications
 
 
-def _store_classes(dest, classes, cls):
+def _get_classes(classes, cls):
+    """Returns a {'class_name' : class} dictionary, where each class
+    is a subclass of the given cls argument.
+    """
+    ret = {}
     for c in (c for c in classes if issubclass (c, cls) and c is not cls ):
-        dest[c.__name__] = c
+        ret[c.__name__] = c
+    return ret
 
-def _get_classes(*modules):
+def _get_classes_from_module(*modules):
     ret = []
     for mod in modules:
         ret.extend(list( attr for attr in mod.__dict__.values()

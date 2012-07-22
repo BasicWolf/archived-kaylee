@@ -3,7 +3,7 @@
 DEBUG = True
 
 NODES_STORAGE = {
-    'name' : 'MemoryNodesStorage',
+    'name' : 'MemoryNodesRegistry',
     'config' : {
         # timeout format: 1d 12h 10m 5s, e.g. "12h"; "1d 10m" etc.
         'timeout' : '12h'
