@@ -81,7 +81,7 @@ contains the absolute path to the settings module to be loaded::
   from kaylee.loader import SETTINGS_ENV_VAR
   os.environ[SETTINGS_ENV_VAR] = os.path.join('/path/to/kaylee/settings.py')
 
-The settings are wrapped by a :py:class:`LazyObject` proxy object, that's why
+The settings are wrapped by a :py:class:`LazyObject` proxy object, that is why
 the corresponding environmental variable must be defined **before** loading
 or running any parts of the code which access the global `settings` object::
 
@@ -110,7 +110,7 @@ and a project. Controller keeps the track of subscribed nodes, decides
 what kind of task every node will recieve and how the results are collected.
 
 Why do we need controllers at all? Why not communicate directly with projects?
-It's simple: the world on the other side of Kaylee is not perfect. You can
+It is simple: the world on the other side of Kaylee is not perfect. You can
 never be sure whether a node with assigned task will return the results
 (as it can disconnect without notifying Kaylee) or the results will be correct
 at all. A controller can be designed to send the same task to multiple
@@ -161,5 +161,9 @@ to Mars, and another application will use an instance of the same class
 configured to search for trajectories to Pluto.
 
 
+Workflow
+--------
+Now that you are familiar with the basic parts of Kaylee, is time to present
+the common workflow of a single Kaylee application. 
 
 .. [1] http://www.w3schools.com/html5/html5_webworkers.asp
