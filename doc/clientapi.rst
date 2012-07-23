@@ -7,8 +7,8 @@ Client API
 
 This part of the documentation covers all the client-side interfaces of Kaylee.
 
-Kaylee Projects
----------------
+Projects
+--------
 Kaylee distrubuted application are executed via Web workers introduced in
 HTML5 web standard.
 
@@ -51,8 +51,8 @@ A typical Kaylee project implements two callbacks in the `pj` namespce:
    :param data: JSON-formatted task data.
 
 
-Kaylee Worker
--------------
+Worker
+------
 
 .. js:function:: klw.task_completed(result)
 
@@ -63,8 +63,8 @@ Kaylee Worker
    :param message: todo
 
 
-Kaylee Global
--------------
+Core
+----
 
 .. js:attribute:: kl.api
 
@@ -151,8 +151,8 @@ Kaylee Global
 
 
 
-Kaylee Events
--------------
+Events
+------
 
 .. js:class:: Event([primary_handler])
 

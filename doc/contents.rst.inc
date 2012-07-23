@@ -9,8 +9,8 @@ instructions for deployment of Kaylee.
    :maxdepth: 2
 
    installation
-   demo
    firststeps
+   demo
    tutorial/index
 
 API Reference

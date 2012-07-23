@@ -1,8 +1,8 @@
 First steps
 ===========
 
-This section briefly describes the concepts, interfaces and best practices
-used in Kaylee.
+This section briefly describes the concepts used in Kaylee with a minimum
+of technical details. 
 
 .. module:: kaylee
 
@@ -34,7 +34,7 @@ avoid interfering with browser's main JavaScript event loop.
 After registering and subscribing to Kaylee application, a Node has a single
 job to do: solve given tasks and report the results.
 
-.. _firststep_projects_and_tasks
+.. _firststep_projects_and_tasks:
 
 
 Projects and Tasks
@@ -105,7 +105,6 @@ and hence the settings are loaded you can import and execute the
 
 Controllers
 -----------
-
 A controller is an object which stands between the outer Kaylee interface
 and a project. Controller keeps the track of subscribed nodes, decides
 what kind of task every node will recieve and how the results are collected.
@@ -118,6 +117,10 @@ at all. A controller can be designed to send the same task to multiple
 nodes instead of a single one. That kind redundancy is the fee for
 the results integrity and accuracy.
 
+Implementing controllers is easy as there are only two methods to implement:
+`get_task(self, node)` and `accept_result(self, node, data)` (for more
+details see :py:class:`Controller`).
+
 
 Storages
 --------
@@ -128,15 +131,34 @@ and permanent (See :py:class:`ProjectResultsStorage`) storages.
 This allows to use any kind of storage solutions: from simple
 in-memory objects to relational or NoSQL databases.
 
+The difference between the interfaces is that controller refers to
+the results by both `node id` and `task id`. On the other hand a project
+knows nothing about the nodes and thus refers to the results by `task id`
+only.
+It is also important to remember that :py:class:`ControllerResultsStorage`
+stores a single result per node per task, while
+:py:class:`ProjectResultsStorage` stores multiple results per task.
+
+But is it necessary to use a temporal controller storage? Of course not!
+If the controller does not need to keep the intermediate results it can
+pass them right to the project.
 
 .. _firststep_application:
 
+
 Applications
 ------------
+By combining controllers storages and projects users form Kaylee
+`Applications`. Speaking in technical terms, an application
+is a combination of project, controller and storage *objects*.
+These objects are not shareable among the applications.
 
-A controller and a project together form an `Application`.
-Although controllers know nothing about the bound projects, they decide
-when the project will recieve the results of a task.
+For example, consider a project which is used to find the best
+flight trajectories for a space station sent from the Earth to another planet
+in Solar system. So, one of the applications will use an instance of
+the `SpaceTrajectoryProject` class configured to search for trajectories
+to Mars, and another application will use an instance of the same class
+configured to search for trajectories to Pluto.
 
 
 
