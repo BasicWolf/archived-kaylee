@@ -11,7 +11,7 @@ instructions for deployment of Kaylee.
    installation
    firststeps
    demo
-   tutorial/index
+   tutorial
 
 API Reference
 -------------

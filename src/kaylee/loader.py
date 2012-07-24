@@ -23,8 +23,11 @@ SETTINGS_ENV_VAR = 'KAYLEE_SETTINGS_MODULE'
 
 
 class Settings(object):
+    """Settings class documentation"""
     def __init__(self):
-        pass
+        #: Field description
+        self.AUTO_GET_NEXT_ACTION_ON_ACCEPT_RESULTS = True
+
 
 class LazySettings(LazyObject):
     """
@@ -58,7 +61,7 @@ class LazySettings(LazyObject):
 
             mod = imp.load_source('settings', settings_path)
 
-        # at this point *mod* is either a Python module or a Settings(-inherited) class
+        # at this point *mod* is either a Python module or Settings sub-class.
         self._wrapped = Settings()
         for setting in dir(mod):
             if setting == setting.upper():

@@ -2,7 +2,7 @@ First steps
 ===========
 
 This section briefly describes the concepts used in Kaylee with a minimum
-of technical details. 
+of technical details.
 
 .. module:: kaylee
 
@@ -159,11 +159,5 @@ in Solar system. So, one of the applications will use an instance of
 the `SpaceTrajectoryProject` class configured to search for trajectories
 to Mars, and another application will use an instance of the same class
 configured to search for trajectories to Pluto.
-
-
-Workflow
---------
-Now that you are familiar with the basic parts of Kaylee, is time to present
-the common workflow of a single Kaylee application. 
 
 .. [1] http://www.w3schools.com/html5/html5_webworkers.asp

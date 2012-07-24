@@ -164,7 +164,9 @@ class Kaylee(object):
 
     @json_error_handler
     def accept_result(self, node_id, data):
-        """Accepts the results from the node and returns a new task.
+        """Accepts the results from the node. Returns the next action if
+        :py:attr:`Settings.GET_NEXT_ACTION_ON_ACCEPT_RESULTS` is True.
+        Otherwise returns "pass" action.
         Unsubscribes the node if the returned result is invalid.
 
         :param node_id: a valid node id
@@ -173,7 +175,7 @@ class Kaylee(object):
                      stored to the application's storages.
         :type node_id: string or JSON-parsed dict/list
         :type data: string
-        :returns: a task returned by :meth:`get_action`.
+        :returns: a task returned by :meth:`get_action` or "pass" action.
         """
         node = self.nodes[node_id]
         try:
@@ -185,13 +187,16 @@ class Kaylee(object):
             self.unsubscribe(node)
             raise InvalidResultError(data, str(e))
 
-        return self.get_action(node.id)
+        if settings.AUTO_GET_NEXT_ACTION_ON_ACCEPT_RESULTS:
+            return self.get_action(node.id)
+        return self._json_action('pass')
+
 
     def clean(self):
         """Removes outdated nodes from Kaylee's nodes storage."""
         self.nodes.clean()
 
-    def _json_action(self, action, data):
+    def _json_action(self, action, data = ''):
         return json.dumps( { 'action' : action, 'data' : data } )
 
 
