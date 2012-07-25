@@ -84,7 +84,7 @@ on_node_subscribed = (config) ->
     kl.app.worker.terminate() if kl.app.worker?
     kl.app.subscribed = true
 
-    worker = new Worker(kl.config.kl_worker_script);
+    worker = new Worker(kl.config.KAYLEE_WORKER_SCRIPT);
     kl.app.worker = worker;
     worker.addEventListener('message', ((e) -> on_worker_message(e.data)),
                             false);

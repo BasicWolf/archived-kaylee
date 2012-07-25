@@ -66,7 +66,8 @@ class Settings3(Settings1):
 class KayleeLoaderTests(KayleeTest):
     def test_load_nodes_config(self):
         nconf, storage, apps = load_kaylee_objects(Settings1)
-        self.assertEqual(nconf['kl_worker_script'], Settings1.KAYLEE_WORKER_SCRIPT)
+        self.assertEqual(nconf['KAYLEE_WORKER_SCRIPT'],
+                         Settings1.KAYLEE_WORKER_SCRIPT)
         self.assertEqual(len(apps), 0)
 
     def test_load_nodes_storage(self):

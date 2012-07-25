@@ -40,6 +40,6 @@ class MonteCarloPiProject(Project):
             self._announce_results()
 
     def _announce_results(self):
-        mid_pi = sum(res for res in self.storage.values()[0]) / len(self.storage)
+        mid_pi = sum(res[0] for res in self.storage.values()) / len(self.storage)
         print('The  value of PI computed by the Monte-Carlo method is: {}'
               .format(mid_pi))

@@ -1,5 +1,5 @@
 from kaylee.testsuite import KayleeTest, load_tests
-from kaylee.util import parse_timedelta
+from kaylee.util import parse_timedelta, LazyObject
 from kaylee import KayleeError
 
 class KayleeUtilTests(KayleeTest):
@@ -28,6 +28,35 @@ class KayleeUtilTests(KayleeTest):
 
         self.assertRaises(KayleeError, parse_timedelta, '25x 10x')
 
+    def test_lazy_object(self):
+        class NonLazy(object):
+            def __init__(self):
+                self._x = 10
+                self.y = 20
 
+            @property
+            def x(self):
+                return self._x
+
+            @x.setter
+            def x(self, val):
+                self._x = val
+
+            def x_plus(self, val):
+                self.x += val
+
+
+        class MyLazyObject(LazyObject):
+            def _setup(self, obj = None):
+                self._wrapped = NonLazy() if obj is None else obj
+
+        lo = MyLazyObject()
+        self.assertIsNone(lo._wrapped)
+        lo.y = 20
+        self.assertIsNotNone(lo._wrapped)
+        self.assertEqual(lo.y, 20)
+        self.assertEqual(lo.x, 10)
+        lo.x_plus(40)
+        self.assertEqual(lo.x, 50)
 
 kaylee_suite = load_tests([KayleeUtilTests, ])

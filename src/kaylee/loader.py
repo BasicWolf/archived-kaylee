@@ -24,9 +24,13 @@ SETTINGS_ENV_VAR = 'KAYLEE_SETTINGS_MODULE'
 
 class Settings(object):
     """Settings class documentation"""
-    def __init__(self):
-        #: Field description
-        self.AUTO_GET_NEXT_ACTION_ON_ACCEPT_RESULTS = True
+    nodes_config_settings = set([
+            'KAYLEE_WORKER_SCRIPT',
+            'AUTO_GET_NEXT_ACTION_ON_ACCEPT_RESULTS',
+            ])
+
+    #: Field description
+    AUTO_GET_NEXT_ACTION_ON_ACCEPT_RESULTS = True
 
 
 class LazySettings(LazyObject):
@@ -61,12 +65,15 @@ class LazySettings(LazyObject):
 
             mod = imp.load_source('settings', settings_path)
 
-        # at this point *mod* is either a Python module or Settings sub-class.
+        # at this point *mod* is either a Python module or a class
+        # with settings as attributes
         self._wrapped = Settings()
+
+        # load settings from module or class if any
         for setting in dir(mod):
             if setting == setting.upper():
-                setting_value = getattr(mod, setting)
-                setattr(self._wrapped, setting, setting_value)
+                value = getattr(mod, setting)
+                setattr(self._wrapped, setting, value)
 
 
 class LazyKaylee(LazyObject):
@@ -157,14 +164,12 @@ def load_kaylee_objects(settings = None):
                                             conf, controller_classes)
         # initialize store controller to local controllers dict
         controllers[app_name] = controller
+
+    # initialize objects to return
+    nconfig = { key : getattr(settings, key)
+                for key in Settings.nodes_config_settings }
     applications = Applications(controllers)
 
-    # build Kaylee nodes configuration
-    nconfig = {
-        'kl_worker_script' : settings.KAYLEE_WORKER_SCRIPT,
-    }
-
-    # initialize Kaylee objects
     nsname = settings.NODES_STORAGE['name']
     nrcls = nregistry_classes[nsname]
     nreg = nrcls(**settings.NODES_STORAGE['config'])

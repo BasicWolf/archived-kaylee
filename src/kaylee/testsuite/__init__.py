@@ -10,14 +10,15 @@ PROJECTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             'projects')
 sys.path.insert(0, PROJECTS_DIR)
 
-class TestSettings(object):
+from kaylee import Settings
+
+class TestSettings(Settings):
     """A simple object wrapper which emulates Kaylee settings module
     in tests."""
     PROJECTS_DIR = PROJECTS_DIR
     KAYLEE_JS_ROOT = ''
     LIB_JS_ROOT    = ''
     APPLICATIONS = []
-
 
 def load_tests(test_cases):
     suite = unittest.TestSuite()

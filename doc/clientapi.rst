@@ -36,8 +36,8 @@ A typical Kaylee project implements two callbacks in the `pj` namespce:
    application is initialized. You can import required libraries via
    `importScript()` here.
 
-   :param kl_config: JSON-formatted Kaylee configuration set by
-                     :js:func:`kl.setup`
+   :param kl_config: JSON-formatted Kaylee config set by
+                       :js:func:`kl.setup`
    :param app_config: JSON-formatted application configuration recieved
                       from Kaylee server.
 
@@ -123,9 +123,8 @@ Core
 
 .. js:attribute:: kl.config
 
-   Kaylee configuration recieved from the server. It contains global
-   environment configuration which should be respected by all applications.
-   Currently contains a single attribute:
+   Kaylee nodes-specific config recieved from the server.
+   Currently contains a single attribute (TODO):
 
    * **kl_worker_script** - defines a URL of Kaylee worker script.
 
