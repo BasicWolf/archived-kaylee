@@ -21,19 +21,14 @@ from .util import LazyObject, import_object
 #: settings `*.py` file.
 SETTINGS_ENV_VAR = 'KAYLEE_SETTINGS_MODULE'
 
-
 class Settings(object):
     """Settings class documentation"""
-    nodes_config_settings = set([
+    client_config_settings = set([
             'KAYLEE_WORKER_SCRIPT',
             'AUTO_GET_NEXT_ACTION_ON_ACCEPT_RESULTS',
             ])
 
-    #: Field description
     AUTO_GET_NEXT_ACTION_ON_ACCEPT_RESULTS = True
-
-    def __init__(self):
-        self._locked = False
 
     def validate(self):
         pass
@@ -58,13 +53,14 @@ class LazySettings(LazyObject):
                 raise TypeError('obj must be {} not {}'
                                 .format(Settings.__name__, type(obj).__name__))
         else:
+            if self._wrapped is not None:
+                return
+
             try:
                 settings_path = os.environ[SETTINGS_ENV_VAR]
                 if not settings_path: # If it's set but is an empty string.
                     raise KeyError
             except KeyError:
-                # NOTE: This is arguably an EnvironmentError, but that causes
-                # problems with Python's interactive help.
                 raise ImportError("Settings cannot be imported, because "
                                   "environment variable {} is undefined."
                                   .format(SETTINGS_ENV_VAR))
@@ -93,27 +89,27 @@ class LazyKaylee(LazyObject):
                 raise TypeError('obj must be an instance of {} not {}'
                                 .format(Kaylee.__name__, type(obj).__name__))
         else:
-            self._wrapped = load()
+            self._wrapped = _load()
 
-def load(settings = None):
+def _load(settings = None):
     """Loads Kaylee.
 
     :param settings: Python module or class with Kaylee settings. If the value
-            of settings is None, then the loader tries to load the
-            settings using KAYLEE_SETTINGS_MODULE environmental
-            variable.
+                     of settings is None, then the loader tries to load the
+                     settings using KAYLEE_SETTINGS_MODULE environmental
+                     variable.
     :returns: Kaylee object.
     """
     from .app import Kaylee
     try:
         if settings is None:
             from . import settings
-        return Kaylee(*load_kaylee_objects(settings))
+        return Kaylee(*_load_kaylee_objects(settings))
     except (KeyError, AttributeError) as e:
         raise KayleeError('Settings error or object was not found: '
                           ' "{}"'.format(e.args[0]))
 
-def load_kaylee_objects(settings):
+def _load_kaylee_objects(settings):
     """Loads Kaylee objects.
 
     :returns: Nodes configuration, nodes storage and applications.
@@ -131,7 +127,7 @@ def load_kaylee_objects(settings):
                                            kaylee.contrib.registries)
 
     controller_classes = _get_classes(contrib_cls, controller.Controller)
-    nregistry_classes = _get_classes(contrib_cls, node.NodesRegistry)
+    registry_classes = _get_classes(contrib_cls, node.NodesRegistry)
     pstorage_classes = _get_classes(contrib_cls, storage.ProjectResultsStorage)
     crstorage_classes = _get_classes(contrib_cls,
                                      storage.ControllerResultsStorage)
@@ -153,7 +149,7 @@ def load_kaylee_objects(settings):
         mod_cls = _get_classes_from_module(pymod)
         project_classes.update(_get_classes(mod_cls, project.Project))
         controller_classes.update(_get_classes(mod_cls, controller.Controller))
-        nregistry_classes.update(_get_classes(mod_cls, node.NodesRegistry))
+        registry_classes.update(_get_classes(mod_cls, node.NodesRegistry))
         pstorage_classes.update(
             _get_classes(mod_cls, storage.ProjectResultsStorage))
         crstorage_classes.update(
@@ -176,14 +172,13 @@ def load_kaylee_objects(settings):
         controllers[app_name] = controller
 
     # initialize objects to return
-    nconfig = { key : getattr(settings, key)
-                for key in Settings.nodes_config_settings }
+    client_config = { key : getattr(settings, key)
+                      for key in Settings.client_config_settings }
     applications = Applications(controllers)
 
-    nsname = settings.NODES_STORAGE['name']
-    nrcls = nregistry_classes[nsname]
-    nreg = nrcls(**settings.NODES_STORAGE['config'])
-    return nconfig, nreg, applications
+    regcls = registry_classes[ settings.REGISTRY['name'] ]
+    registry = regcls(**settings.REGISTRY['config'])
+    return client_config, registry, applications
 
 
 def _get_classes(classes, cls):

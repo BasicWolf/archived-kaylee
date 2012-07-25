@@ -8,25 +8,30 @@ the Kaylee object.
 
 .. module:: kaylee
 
-Settings
---------
 
-There are two ways of storing settings in Kaylee: writing them down in a
-Python module or writing them in a Python class.
-The "module" way is very convenient when the :py:const:`loader.SETTINGS_ENV_VAR`)
-contains the path of the file::
+Loading the Settings
+--------------------
+
+There are two ways of loading the settings in Kaylee: loading them from a
+Python module or loading them from a Python class.
+The only requirement for the "module" approach is to set the
+:py:const:`loader.SETTINGS_ENV_VAR` environmental variable with the path
+of the settings file::
 
   from kaylee.loader import SETTINGS_ENV_VAR
   os.environ[SETTINGS_ENV_VAR] = os.path.join('/path/to/kaylee/settings.py')
 
-In this case settings are loaded automatically and can be imported anywhere::
+In this case settings will be loaded automatically and can be imported
+via the proxy object::
 
   from kaylee import settings
+  print(settings.DEBUG)
 
-The class way can be used when the module approach is not possible or settings
-are constructed dynamically::
+In the "class" approach case you have to setup the global settings proxy
+object manually::
 
-  from kaylee import Settings
+  from kaylee import Settings # class
+  from kaylee import settings # global settings proxy
 
   class MySettings(Settings):
       DEBUG = True
@@ -39,13 +44,11 @@ are constructed dynamically::
       }
       ...
 
-In this case it is also possible to setup the global settings object::
-
-  from kaylee import settings
   settings._setup(MySettings)
 
-Please note that although 
 
-.. autoclass:: Settings
-   :members:
+Loading the Kaylee object
+-------------------------
 
+Kaylee object is loaded automatically using the configuration provided
+in settings. 

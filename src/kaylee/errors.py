@@ -10,6 +10,7 @@
 """
 
 
+import warnings
 
 class KayleeError(Exception):
     """Base class for all Kaylee exceptions."""
@@ -31,3 +32,9 @@ class InvalidResultError(ValueError, KayleeError):
     def __init__(self, result, why = ''):
         KayleeError.__init__(self, 'Invalid result "{}": {}'
                              .format(result, why))
+
+class KayleeWarning(UserWarning):
+    pass
+
+def warn(message):
+    warnings.warn(message, KayleeWarning, 3)

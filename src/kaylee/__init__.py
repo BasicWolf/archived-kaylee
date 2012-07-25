@@ -16,7 +16,7 @@
 
 __version__ = '0.1'
 
-from .loader import Settings, LazySettings, LazyKaylee, load
+from .loader import Settings, LazySettings, LazyKaylee
 
 settings = LazySettings()
 kl = LazyKaylee()
