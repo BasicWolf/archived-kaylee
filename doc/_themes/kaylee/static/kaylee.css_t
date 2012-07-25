@@ -6,7 +6,8 @@
  * :license: Flask Design License, see LICENSE for details.
  */
 
-{% set page_width = '940px' %}
+{% set page_width = '980px' %}
+{% set document_width = '760px' %}
 {% set sidebar_width = '220px' %}
  
 @import url("basic.css");
@@ -31,7 +32,7 @@ div.document {
 
 div.documentwrapper {
     float: left;
-    width: 700px;
+    width: {{ document_width }};
 }
 
 div.bodywrapper {

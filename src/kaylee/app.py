@@ -22,7 +22,6 @@ from .node import Node, NodeID
 from .errors import KayleeError, InvalidResultError
 from . import settings
 
-
 #: Returns the results of :function:`json.dumps` in compact encoding
 json.dumps = partial(json.dumps, separators=(',',':'))
 

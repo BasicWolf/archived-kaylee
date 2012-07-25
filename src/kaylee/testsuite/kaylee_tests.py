@@ -83,9 +83,6 @@ class KayleeLoaderTests(KayleeTest):
         self.assertIsInstance(app.storage, MemoryControllerResultsStorage)
         self.assertEqual(app.project.__class__.__name__, DummyProject.__name__)
 
-    def test_load_controller(self):
-        nconf, storage, apps = load_kaylee_objects(Settings3)
-
     def test_load_kaylee(self):
         kl = load(Settings2)
         self.assertIn('dummy.1', kl.applications)

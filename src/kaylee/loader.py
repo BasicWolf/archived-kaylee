@@ -32,6 +32,12 @@ class Settings(object):
     #: Field description
     AUTO_GET_NEXT_ACTION_ON_ACCEPT_RESULTS = True
 
+    def __init__(self):
+        self._locked = False
+
+    def validate(self):
+        pass
+
 
 class LazySettings(LazyObject):
     """
@@ -90,20 +96,26 @@ class LazyKaylee(LazyObject):
             self._wrapped = load()
 
 def load(settings = None):
-    from .app import Kaylee
-    try:
-        return Kaylee(*load_kaylee_objects(settings))
-    except (KeyError, AttributeError) as e:
-        raise KayleeError('Settings error or object was not found: '
-                          ' "{}"'.format(e.args[0]))
-
-def load_kaylee_objects(settings = None):
-    """Loads Kaylee objects using configuration from settings.
+    """Loads Kaylee.
 
     :param settings: Python module or class with Kaylee settings. If the value
             of settings is None, then the loader tries to load the
             settings using KAYLEE_SETTINGS_MODULE environmental
             variable.
+    :returns: Kaylee object.
+    """
+    from .app import Kaylee
+    try:
+        if settings is None:
+            from . import settings
+        return Kaylee(*load_kaylee_objects(settings))
+    except (KeyError, AttributeError) as e:
+        raise KayleeError('Settings error or object was not found: '
+                          ' "{}"'.format(e.args[0]))
+
+def load_kaylee_objects(settings):
+    """Loads Kaylee objects.
+
     :returns: Nodes configuration, nodes storage and applications.
     :rtype: (dict, :class:`NodesRegistry`, :class:`Applcations`)
     """
@@ -112,8 +124,6 @@ def load_kaylee_objects(settings = None):
     import kaylee.contrib.controllers
     import kaylee.contrib.storages
     import kaylee.contrib.registries
-    if settings is None:
-        from . import settings
 
     # load contrib classes
     contrib_cls = _get_classes_from_module(kaylee.contrib.controllers,

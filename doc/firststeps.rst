@@ -1,3 +1,5 @@
+.. _firststeps:
+
 First steps
 ===========
 

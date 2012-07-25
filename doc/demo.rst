@@ -1,6 +1,4 @@
-.. _quickstart:
-
-.. module:: kaylee
+.. _demo:
 
 Running the demo application
 ============================
@@ -25,7 +23,9 @@ happen and at last you will see something like this:
 .. image:: _static/demo2.png
    :align: center
    :alt: Console with HashCracker application output.
-
+   :scale: 75 %
+   :width: 800
+   :height: 400
 
 Congratulations! You've just cracked a salted MD5 hash.
 If you scroll the console on the web page
@@ -48,8 +48,3 @@ which says what the cracked hash key was::
   127.0.0.1 - "POST /kaylee/actions/500315e30000f528764d HTTP/1.1" 200 -
   The cracked hash key is: kl
   127.0.0.1 - "POST /kaylee/actions/500315e30000f528764d HTTP/1.1" 200 -
-
-
-It is time to find out, how the heck does Kaylee work.
-
-

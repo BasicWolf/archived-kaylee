@@ -6,7 +6,8 @@ The easiest way to start with Kaylee is to dive into a simple distributed
 computing application. In this tutorial we are going to examine an application
 which computes the value of PI via the `Monte Carlo method`_.
 
-First, lets write down the requirements for the application:
+.. note:: This tutorial is based on the same workflow used in the :ref:`demo`.
+
 
 1. The Monte Carlo method is based on a sequence of random numbers.
    The problem with the standard `Math.random()` is that there is no official
@@ -15,7 +16,8 @@ First, lets write down the requirements for the application:
    We're going to use a 3d party `alea.js`_ library in order to generate
    pseudo-random number sequences.
 
-2. 
+2. We would like to make sure that the results returned by the Nodes are
+   not fake. 
 
 
 .. toctree::
