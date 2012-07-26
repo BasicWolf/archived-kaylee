@@ -8,7 +8,7 @@ REGISTRY = {
         # timeout format: 1d 12h 10m 5s, e.g. "12h"; "1d 10m" etc.
         'timeout' : '12h'
         },
-}
+    }
 
 PROJECTS_DIR = '/home/zaur/Documents/projects/kaylee/src/projects'
 KAYLEE_WORKER_SCRIPT = '/static/js/kaylee/klworker.js'

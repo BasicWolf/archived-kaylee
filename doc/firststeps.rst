@@ -72,8 +72,8 @@ conditions. Each of this instances will work as a separate Kaylee
 :ref:`Application <firststep_application>`.
 
 
-Global Settings and Kaylee objects
-----------------------------------
+Settings and Kaylee proxies
+---------------------------
 
 Kaylee lets you to store all settings in a single `.py` file and make them
 accessible through any part of your code.
