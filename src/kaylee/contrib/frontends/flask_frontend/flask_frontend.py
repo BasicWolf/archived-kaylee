@@ -5,7 +5,7 @@ from kaylee import kl, settings, setup
 bp = Blueprint('kaylee_blueprint', __name__,
                template_folder = settings.FRONTEND_TEMPLATES_DIR)
 
-kaylee_blueprint = bp # just an alias for importing convenience 
+kaylee_blueprint = bp # just an alias for importing convenience
 
 setup()
 

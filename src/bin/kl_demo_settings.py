@@ -46,7 +46,7 @@ app_hash_cracker_1 = {
     'controller' : {
         'name' : 'SimpleController',
         'filters' : {
-            'accept_result' : 'kaylee.controller.failed_result_filter',
+            'accept_result' : ['kaylee.controller.failed_result_filter', ] ,
             }
         }
     }

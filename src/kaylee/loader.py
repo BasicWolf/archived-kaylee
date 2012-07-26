@@ -232,9 +232,10 @@ def _get_controller_object(app_name, project, crstorage, conf,
     # (if required and if there are any filters defined).
     try:
         filters = conf['controller']['filters']
-        for method_name, filter_name in filters.iteritems():
+        for method_name, filters in filters.iteritems():
             method = getattr(cobj, method_name)
-            filter_decorator = import_object(filter_name)
+            for filter_name in filters:
+                filter_decorator = import_object(filter_name)
             decorated = types.MethodType(filter_decorator(method.__func__),
                                          cobj, None)
             setattr(cobj, method_name, decorated)

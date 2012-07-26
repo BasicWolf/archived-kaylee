@@ -55,10 +55,10 @@ class Kaylee(object):
     data. Note that it is the job of a particular front-end to set the
     response content-type to "application/json".
 
-    Usually an instance of :class:`Kaylee` is not created by a user,
-    but loaded automatically and can be used as follows::
+    An instance of :class:`Kaylee` should not be created by a user.
+    It is created automatically and can be used via proxy follows::
 
-        from kaylee import kl
+      from kaylee import kl
 
     :param client_config: settings-based configuration required by every node
                           in order to function properly. This includes for
@@ -137,10 +137,10 @@ class Kaylee(object):
         """Returns an action (usually a task from the subscribed application).
         The format of the JSON response is::
 
-            {
-                'action' : <action>,
-                'data'   : <data>
-            }
+          {
+              'action' : <action>,
+              'data'   : <data>
+          }
 
         Here, <action> tells the Node, what should it do and <data> is
         the attached data. The available values of <action> are:

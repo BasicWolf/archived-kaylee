@@ -11,8 +11,9 @@ def setup():
     sys.path.insert(0, os.path.join(root_dir, 'kaylee/testsuite'))
     sys.path.insert(0, root_dir)
 
-    from kaylee.loader import SETTINGS_ENV_VAR
-    os.environ[SETTINGS_ENV_VAR] = os.path.join(cur_dir, 'kl_demo_settings.py')
+    from kaylee import setup
+    setup(os.path.join(cur_dir, 'kl_demo_settings.py'))
+
 
 def main():
     parser = argparse.ArgumentParser(description='Kaylee launcher')
