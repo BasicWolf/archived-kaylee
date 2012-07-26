@@ -76,33 +76,12 @@ Global Settings and Kaylee objects
 ----------------------------------
 
 Kaylee lets you to store all settings in a single `.py` file and make them
-accessible through any part of your code. The settings loader looks for
-an environmental variable (see :py:const:`loader.SETTINGS_ENV_VAR`) which
-contains the absolute path to the settings module to be loaded::
+accessible through any part of your code.
+The instance of :py:class:`Kaylee` is automatically created based on
+the settings provided by the user. Both settings and Kaylee object can be
+accessed through the global proxies as follows::
 
-  from kaylee.loader import SETTINGS_ENV_VAR
-  os.environ[SETTINGS_ENV_VAR] = os.path.join('/path/to/kaylee/settings.py')
-
-The settings are wrapped by a :py:class:`LazyObject` proxy object, that is why
-the corresponding environmental variable must be defined **before** loading
-or running any parts of the code which access the global `settings` object::
-
-  from kaylee import settings
-  print(settings.SOME_ATTRIBUTE)
-
-The global instance of :py:class:`Kaylee` is automatically created based on
-the settings provided by the user. You can access it as follows::
-
-  from kaylee import kl
-
-At this point Kaylee is still not loaded, due to its "laziness". It will
-be fully initialized only when its attributes are accessed or when
-the on-demand `_setup()` method is called. To make sure that Kaylee
-and hence the settings are loaded you can import and execute the
-`setup` function::
-
-  from kaylee import setup
-  setup()
+  from kaylee import settings, kl
 
 
 Controllers
@@ -153,7 +132,7 @@ Applications
 By combining controllers storages and projects users form Kaylee
 `Applications`. Speaking in technical terms, an application
 is a combination of project, controller and storage *objects*.
-These objects are not shareable among the applications.
+which are not shareable among the applications.
 
 For example, consider a project which is used to find the best
 flight trajectories for a space station sent from the Earth to another planet

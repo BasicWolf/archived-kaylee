@@ -3,10 +3,17 @@
 Tutorial
 ========
 The easiest way to start with Kaylee is to dive into a simple distributed
-computing application. In this tutorial we are going to examine an application
+computing application. In this tutorial we are going to write an application
 which computes the value of PI via the `Monte Carlo method`_.
+Before we start with the new application please make sure that you're able to
+run Kaylee :ref:`demo` which will guarantee that we will be also able to run
+our application.
 
-.. note:: This tutorial is based on the same workflow used in the :ref:`demo`.
+.. toctree::
+   :maxdepth: 2
+
+   introduction
+
 
 
 1. The Monte Carlo method is based on a sequence of random numbers.
@@ -17,7 +24,7 @@ which computes the value of PI via the `Monte Carlo method`_.
    pseudo-random number sequences.
 
 2. We would like to make sure that the results returned by the Nodes are
-   not fake. 
+   not fake.
 
 
 .. toctree::

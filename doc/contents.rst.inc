@@ -10,7 +10,6 @@ instructions for deployment of Kaylee.
 
    installation
    firststeps
-   demo
    tutorial/index
    loading
    contrib

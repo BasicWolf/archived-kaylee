@@ -7,6 +7,11 @@ Server API
 
 This part of the documentation covers all the server-side interfaces of Kaylee.
 
+Kaylee Globals
+--------------
+
+.. autodata:: SETTINGS_ENV_VAR
+
 
 Kaylee Object
 -------------
@@ -88,14 +93,3 @@ Storage Objects
    .. automethod:: __len__
    .. automethod:: __setitem__
 
-
-Kaylee Loader
--------------
-.. module:: kaylee.loader
-
-.. autodata:: SETTINGS_ENV_VAR
-
-.. autoclass:: LazySettings
-   :members:
-   :inherited-members:
-   :private-members:

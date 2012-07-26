@@ -15,7 +15,7 @@
 /* -- page layout ----------------------------------------------------------- */
  
 body {
-    font-family: 'Georgia', serif;
+    font-family: 'Sans-Serif', serif;
     font-size: 17px;
     background-color: black;
     color: #000;
@@ -50,7 +50,7 @@ hr {
  
 div.body {
     background-color: #ffffff;
-    color: #3E4349;
+    color: #2D3136;
     padding: 0 30px 0 30px;
 }
 
@@ -102,7 +102,7 @@ div.sphinxsidebarwrapper p.logo {
  
 div.sphinxsidebar h3,
 div.sphinxsidebar h4 {
-    font-family: 'Garamond', 'Georgia', serif;
+    font-family: 'New York', 'Sans-Serif', serif;
     color: #444;
     font-size: 24px;
     font-weight: normal;
@@ -138,7 +138,7 @@ div.sphinxsidebar ul {
  
 div.sphinxsidebar input {
     border: 1px solid #ccc;
-    font-family: 'Georgia', serif;
+    font-family: 'Sans-Serif', serif;
     font-size: 1em;
 }
  
@@ -160,10 +160,11 @@ div.body h3,
 div.body h4,
 div.body h5,
 div.body h6 {
-    font-family: 'Garamond', 'Georgia', serif;
-    font-weight: normal;
+    font-family: 'New York', 'Sans-Serif', serif;
+    font-weight: bold;
     margin: 30px 0px 10px 0px;
     padding: 0;
+    color:#FF8000;
 }
 
 {% if theme_index_logo %}
@@ -214,7 +215,7 @@ dd div.admonition {
 }
 
 div.admonition p.admonition-title {
-    font-family: 'Garamond', 'Georgia', serif;
+    font-family: 'New York', 'Sans-Serif', serif;
     font-weight: normal;
     font-size: 24px;
     margin: 0 0 10px 0;
@@ -347,10 +348,12 @@ ul, ol {
 }
  
 pre {
-    background: #eee;
+    background: #f2f2f2;
     padding: 7px 30px;
     margin: 15px -30px;
     line-height: 1.3em;
+    /* border-top: 1px dotted black; */
+    /* border-bottom: 1px dotted black; */
 }
 
 dl pre, blockquote pre, li pre {
