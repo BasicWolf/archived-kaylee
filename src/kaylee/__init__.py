@@ -21,7 +21,7 @@ from .loader import Settings, LazySettings, LazyKaylee
 settings = LazySettings()
 kl = LazyKaylee()
 
-from .app import Kaylee, Applications
+from .core import Kaylee, Applications
 from .node import Node, NodeID, NodesRegistry
 from .storage import (ControllerResultsStorage,
                       ProjectResultsStorage )

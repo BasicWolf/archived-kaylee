@@ -81,7 +81,7 @@ class LazySettings(LazyObject):
 class LazyKaylee(LazyObject):
     def _setup(self, obj = None):
         if obj is not None:
-            from .app import Kaylee
+            from .core import Kaylee
             if isinstance(obj, Kaylee):
                 self._wrapped = obj
                 return
@@ -100,7 +100,7 @@ def _load(settings = None):
                      variable.
     :returns: Kaylee object.
     """
-    from .app import Kaylee
+    from .core import Kaylee
     try:
         if settings is None:
             from . import settings
@@ -116,7 +116,7 @@ def _load_kaylee_objects(settings):
     :rtype: (dict, :class:`NodesRegistry`, :class:`Applcations`)
     """
     from . import storage, controller, project, node
-    from .app import Applications
+    from .core import Applications
     import kaylee.contrib.controllers
     import kaylee.contrib.storages
     import kaylee.contrib.registries
