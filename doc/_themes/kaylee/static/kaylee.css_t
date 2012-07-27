@@ -8,7 +8,7 @@
 
 {% set page_width = '980px' %}
 {% set document_width = '750px' %}
-{% set sidebar_width = '240px' %}
+{% set sidebar_width = '260px' %}
  
 @import url("basic.css");
  

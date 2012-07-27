@@ -12,8 +12,8 @@ our application.
 .. toctree::
    :maxdepth: 2
 
-   introduction
-
+   t0_introduction
+   t1_project_structure.rst
 
 
 1. The Monte Carlo method is based on a sequence of random numbers.

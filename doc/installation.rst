@@ -9,7 +9,7 @@ Installation
 Demo
 ----
 To test whether you have install Kaylee successfully, let's run
-a demo "Hash cracker" application. 
+a demo "Hash cracker" application.
 
 Kaylee is designed to easily interact with any Python web framework.
 Out of the box Kaylee contains extensions for
@@ -28,8 +28,6 @@ happen and at last you will see something like this:
    :align: center
    :alt: Console with HashCracker application output.
    :scale: 75 %
-   :width: 800
-   :height: 400
 
 Congratulations! You've just cracked a salted MD5 hash.
 If you scroll the console on the web page

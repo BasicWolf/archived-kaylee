@@ -19,7 +19,6 @@ remote:
 	mkdir -p $(KL_JS_DIR)
 	cp *.js $(KL_JS_DIR)
 
-
 clean: $(CLEAN_TARGETS)
 	rm -f *.js
 

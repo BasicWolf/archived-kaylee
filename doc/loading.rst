@@ -63,8 +63,8 @@ settings are loaded and can be accessed via the global `kl` proxy::
       return json_response(data)
 
 
-Quick setup
------------
+Quick Load
+----------
 
 The recommended way to setup both settings and Kaylee
 with a single function call is::
