@@ -39,9 +39,9 @@ def ignore_null_result(f):
 
 class ProjectMeta(AutoFilterABCMeta):
     auto_filters = {
-        '__next__' : [depleted_guard, ],
-        'normalize' : [ignore_null_result, ],
-        }
+        '__next__' : [ depleted_guard, ],
+        'normalize' : [ ignore_null_result, ],
+       }
 
 
 class Project(object):

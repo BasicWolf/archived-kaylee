@@ -69,12 +69,8 @@ def failed_result_filter(f):
 
 class ControllerMeta(AutoFilterABCMeta):
     auto_filters = {
-        'get_task' : [
-            app_completed_guard,
-            ],
-        'accept_result' : [
-            normalize_result_filter,
-            ]
+        'get_task' : [ app_completed_guard, ],
+        'accept_result' : [ normalize_result_filter, ]
         }
 
 

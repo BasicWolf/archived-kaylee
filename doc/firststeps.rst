@@ -103,6 +103,15 @@ Implementing controllers is easy as there are only two methods to implement:
 details see :py:class:`Controller`).
 
 
+Auto Filters
+------------
+Auto-filtering is yet another feature in Kaylee which allows to write less
+code. Filters are Python decorators which can be automatically applied to
+implementation of Controllers' and Projects' abstract methods. For example
+the :py:func:`depleted_guard` filter sets project's *depleted* flag if
+`project.__next__()` raises :py:exc:`StopIteration`. TODO: filters list.
+
+
 Storages
 --------
 As we speak of the tasks' results you may wonder, how the results are

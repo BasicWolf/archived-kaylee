@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-from kaylee import Project, Task
-from kaylee.project import COMPLETED
+from kaylee import Project
 from kaylee.errors import InvalidResultError
-
 
 class MonteCarloPiProject(Project):
     auto_filter = True
