@@ -14,10 +14,8 @@ PROJECTS_DIR = '/home/zaur/Documents/projects/kaylee/src/projects'
 KAYLEE_WORKER_SCRIPT = '/static/js/kaylee/klworker.js'
 
 # Settings used for Kaylee front-end demonstration
-FRONTEND_TEMPLATES_DIR = '/home/zaur/Documents/projects/kaylee/src/demo_build' \
-                         '/templates'
-FRONTEND_STATIC_DIR = '/home/zaur/Documents/projects/kaylee/src/demo_build' \
-                      '/static'
+FRONTEND_TEMPLATES_DIR = '/home/zaur/Documents/projects/kaylee/src/build/templates'
+FRONTEND_STATIC_DIR = '/home/zaur/Documents/projects/kaylee/src/build/static'
 
 
 ## User applications ##
@@ -79,6 +77,6 @@ app_mc_pi_1 = {
         },
     }
 
-APPLICATIONS = [app_hash_cracker_1]
-#APPLICATIONS = [app_mc_pi_1, ]
+#APPLICATIONS = [app_hash_cracker_1]
+APPLICATIONS = [app_mc_pi_1, ]
 #APPLICATIONS = [app_mc_pi_1, app_hash_cracker_1]

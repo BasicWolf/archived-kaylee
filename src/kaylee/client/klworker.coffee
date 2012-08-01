@@ -5,7 +5,7 @@ addEventListener('message', ((e) ->
     mdata = e.data.data
     switch msg
         when 'import_project' then klw.import_project(mdata)
-        when 'solve_task' then pj.on_task_recieved(mdata)
+        when 'solve_task' then pj.on_task_received(mdata)
 
     ), false
 )

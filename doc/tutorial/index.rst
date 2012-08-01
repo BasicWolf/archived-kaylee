@@ -13,8 +13,8 @@ our application.
    :maxdepth: 2
 
    introduction
-   project_structure
-   project_requirements
+   structure
+   requirements
    client_side
    server_side
 

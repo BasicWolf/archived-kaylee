@@ -1,8 +1,8 @@
-Step X: Project requirements
+Step X: Project Requirements
 ============================
 
 
-Pseudo-random generator
+Pseudo-Random Generator
 -----------------------
 As we discussed before, the random numbers are what makes Monte Carlo method
 possible. Unfortunately it is not that easy to quickly generate truly random
@@ -21,7 +21,6 @@ and include `alea.js` in project's `js` directory.
 
 Configuration
 -------------
-
 Application configuration is a JSON object passed from the server to the client
 when application is initialized on the client side. It contains shared and
 application-specific information required for the project initialization.
@@ -38,3 +37,26 @@ similar to::
       'random_points' : 100000,
   }
 
+
+
+Tasks and Solutions Data
+------------------------
+Every random numbers sequence needs a seed to start with. And such unique seed
+already exists in every task: it is unique task's `id` provided by the project.
+For our purpose, even a numerical incremental id is enough to server as a seed.
+The returned solution is simpy the calculated value of PI.
+
+
+The Algorithm
+-------------
+
+The algorithm of calculating PI is based on the theory explained in
+:ref:`introduction <tutorial-introduction>`::
+
+  let points_counter = 0
+  repeat random_points times:
+      let x, y be random numbers in (0, 1) range.
+      if x^2 + y^2 <= 1 then
+          # the points is inside the circle
+          points_counter += 1
+  pi = 4 * points_counter / random_points

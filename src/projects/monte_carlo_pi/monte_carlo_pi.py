@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from kaylee import Project
+from kaylee import Project, Task
 from kaylee.errors import InvalidResultError
 
 class MonteCarloPiProject(Project):

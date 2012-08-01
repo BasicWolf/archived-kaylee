@@ -21,13 +21,13 @@ kl.api =
 
     get_action : () ->
         kl.get("/kaylee/actions/#{kl.node_id}",
-               kl.action_recieved.trigger)
+               kl.action_received.trigger)
 
     send_results : (results) ->
         kl.post("/kaylee/actions/#{kl.node_id}", results,
             (action_data) ->
                 kl.results_sent.trigger(results)
-                kl.action_recieved.trigger(action_data)
+                kl.action_received.trigger(action_data)
         )
 
 class Event
@@ -104,12 +104,12 @@ on_project_imported = () ->
     kl.get_action()
 
 
-on_action_recieved = (data) ->
+on_action_received = (data) ->
     switch data.action
-        when 'task' then kl.task_recieved.trigger(data.data)
+        when 'task' then kl.task_received.trigger(data.data)
         when 'unsubscribe' then kl.node_unsubscibed.trigger(data.data)
 
-on_task_recieved = (data) ->
+on_task_received = (data) ->
     kl.message_to_worker('solve_task', data)
 
 on_task_completed = (data) ->
@@ -132,8 +132,8 @@ kl.node_registered = new Event(on_node_registered)
 kl.node_subscribed = new Event(on_node_subscribed)
 kl.node_unsubscibed = new Event(on_node_unsubscibed)
 kl.project_imported = new Event(on_project_imported)
-kl.action_recieved = new Event(on_action_recieved)
-kl.task_recieved = new Event(on_task_recieved)
+kl.action_received = new Event(on_action_received)
+kl.task_received = new Event(on_task_received)
 kl.task_completed = new Event(on_task_completed)
 kl.log = new Event()
 kl.worker_raised_error = new Event()

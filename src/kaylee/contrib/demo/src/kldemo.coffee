@@ -9,7 +9,7 @@ $(document).ready( () ->
     kl.node_subscribed.bind(on_node_subscribed)
     kl.node_unsubscibed.bind(on_node_unsubscibed)
     kl.project_imported.bind(on_project_imported)
-    kl.task_recieved.bind(on_task_recieved)
+    kl.task_received.bind(on_task_received)
     kl.task_completed.bind(on_task_completed)
     kl.results_sent.bind(on_results_sent)
     kl.worker_raised_error.bind(on_worker_error)
@@ -31,7 +31,7 @@ on_node_registered = (data) ->
 
 on_node_subscribed = (config) ->
     sconfig = JSON.stringify(config, null, ' ')
-    kl.console.print("Application configuration recieved:
+    kl.console.print("Application configuration received:
                       <span class='cem'>#{sconfig}</span>.")
 
 on_node_unsubscibed = (data) ->
@@ -40,9 +40,9 @@ on_node_unsubscibed = (data) ->
 on_project_imported = (app_name) ->
     kl.console.print("Project files imported successfully.")
 
-on_task_recieved = (data) ->
+on_task_received = (data) ->
     kl.console.print("Task [<span class='cem'>id=#{data.id} /
-                      ##{_tasks_counter}</span>] recieved.")
+                      ##{_tasks_counter}</span>] received.")
 
 on_task_completed = (data) ->
     kl.console.print("Task [<span class='cem'>##{_tasks_counter}</span>]

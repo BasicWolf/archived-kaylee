@@ -1,12 +1,10 @@
-pj = {}
-
 pj.init = (kl_config, app_config) ->
     importScripts(app_config.alea_script)
     pj.config = app_config
     return
 
-pj.on_task_recieved = (data) ->
-    random = new Alea(data.id)
+pj.on_task_received = (task) ->
+    random = new Alea(task.id)
     counter = 0
     for i in [0..pj.config.random_points]
         x = random()

@@ -38,12 +38,12 @@ A typical Kaylee project implements two callbacks in the `pj` namespce:
 
    :param kl_config: JSON-formatted Kaylee config set by
                        :js:func:`kl.setup`
-   :param app_config: JSON-formatted application configuration recieved
+   :param app_config: JSON-formatted application configuration received
                       from Kaylee server.
 
-.. js:function:: pj.on_task_recieved(data)
+.. js:function:: pj.on_task_received(data)
 
-   This function is called every time when a project recieves a new task
+   This function is called every time when a project receives a new task
    from the server. :js:func:`klw.task_completed` is then used to notify
    Kaylee that the results of the task are available and they can be sent
    to the server.
@@ -108,13 +108,13 @@ Core
    .. js:attribute:: kl.api.get_action
 
       Gets next available action (see :py:meth:`Kaylee.get_action`).
-      Triggers :js:func:`kl.action_recieved`.
+      Triggers :js:func:`kl.action_received`.
 
    .. js:attribute:: kl.api.send_results(data)
 
       Sends task results to the server (see :py:meth:`Kaylee.accept_result`).
       Triggers :js:func:`kl.results_sent` **and** in case that Kaylee
-      immediately returns a new action :js:func:`kl.action_recieved`.
+      immediately returns a new action :js:func:`kl.action_received`.
 
 
 .. js:attribute:: kl.node_id
@@ -123,7 +123,7 @@ Core
 
 .. js:attribute:: kl.config
 
-   Kaylee nodes-specific config recieved from the server.
+   Kaylee nodes-specific config received from the server.
    Currently contains a single attribute (TODO):
 
    * **kl_worker_script** - defines a URL of Kaylee worker script.
@@ -138,7 +138,7 @@ Core
 
    * **name** - application name, which is set *before* the server subscribes
      the node to an application.
-   * **config** - application configuration object which is recieved from
+   * **config** - application configuration object which is received from
      the server as a response to subscription request. It is later transfered
      to the project via :js:func:`pj.init`.
    * **subscribed** - a boolean flag which indicates whether the app is
@@ -192,9 +192,9 @@ Events
       Unbind handler.
 
 
-.. js:function:: kl.action_recieved(data)
+.. js:function:: kl.action_received(data)
 
-   Triggered when an action from the server is recieved.
+   Triggered when an action from the server is received.
    See :py:meth:`Kaylee.get_action` for more details.
 
 .. js:function:: kl.log(message)
@@ -241,9 +241,9 @@ Events
 
    :param object result: task results. Triggered by :js:func:`klw.task_completed`.
 
-.. js:function:: kl.task_recieved(data)
+.. js:function:: kl.task_received(data)
 
-   Triggered when the client recieves a task from the server.
+   Triggered when the client receives a task from the server.
 
    :param object data: task data.
 
