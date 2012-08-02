@@ -350,7 +350,7 @@ ul, ol {
 pre {
     background: #f2f2f2;
     padding: 7px 30px;
-    margin: 15px -30px;
+    margin: 15px 0 15px -30px;
     line-height: 1.3em;
     /* border-top: 1px dotted black; */
     /* border-bottom: 1px dotted black; */

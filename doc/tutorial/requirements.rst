@@ -60,3 +60,5 @@ The algorithm of calculating PI is based on the theory explained in
           # the points is inside the circle
           points_counter += 1
   pi = 4 * points_counter / random_points
+
+.. _alea.js: http://baagoe.org/en/w/index.php/Better_random_numbers_for_javascript

@@ -51,6 +51,8 @@ A typical Kaylee project implements two callbacks in the `pj` namespce:
    :param data: JSON-formatted task data.
 
 
+.. _client_workerapi:
+
 Worker
 ------
 
