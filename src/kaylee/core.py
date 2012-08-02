@@ -202,7 +202,7 @@ class Kaylee(object):
 class Applications(object):
     def __init__(self, controllers):
         self._controllers = controllers
-        self.names = list(controllers.keys())
+        self.names = list(sorted(controllers.keys()))
 
     def __getitem__(self, key):
         return self._controllers[key]

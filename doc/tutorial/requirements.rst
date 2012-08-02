@@ -1,3 +1,5 @@
+.. _tutorial-requirements:
+
 Step X: Project Requirements
 ============================
 
@@ -18,12 +20,14 @@ So before continuing, please `download <../_static/alea.js>`_
 and include `alea.js` in project's `js` directory.
 
 
+.. _tutorial-requirements-configuration:
 
 Configuration
 -------------
-Application configuration is a JSON object passed from the server to the client
-when application is initialized on the client side. It contains shared and
-application-specific information required for the project initialization.
+The client-side application configuration is a JSON object passed from the
+server to the client when application is initialized on the client side.
+It contains shared and application-specific information required for the
+project initialization.
 What kind of configuration do we need to pass to the client?
 First of all, a Node should know the number of random points to be generated.
 Second, the project requires the `alea.js` library and should be able to load
@@ -37,6 +41,8 @@ similar to::
       'random_points' : 100000,
   }
 
+On server-side, the project needs to know the amount of completed *tasks*
+that would be enough for the overall calculations.
 
 
 Tasks and Solutions Data

@@ -1,6 +1,6 @@
 .. _firststeps:
 
-First steps
+First Steps
 ===========
 
 This section briefly describes the concepts used in Kaylee with a minimum
@@ -72,7 +72,7 @@ conditions. Each of this instances will work as a separate Kaylee
 :ref:`Application <firststep_application>`.
 
 
-Settings and Kaylee proxies
+Settings and Kaylee Proxies
 ---------------------------
 
 Kaylee lets you to store all settings in a single `.py` file and make them

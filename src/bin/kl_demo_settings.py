@@ -58,21 +58,16 @@ app_mc_pi_1 = {
             'script' : '/static/js/projects/monte_carlo_pi/monte_carlo_pi.js',
             'alea_script' : '/static/js/projects/monte_carlo_pi/alea.js',
             'random_points' : 1000000,
-            'tasks_count' : 4
+            'tasks_count' : 10
             },
         'storage' : {
             'name' : 'MemoryProjectResultsStorage',
-            'config' : {},
             }
         },
     'controller' : {
-        'name' : 'ResultsComparatorController',
-        'config' : {
-            'comparison_nodes': 2
-            },
+        'name' : 'SimpleController',
         'storage' : {
             'name' : 'MemoryControllerResultsStorage',
-            'config' : {},
             },
         },
     }

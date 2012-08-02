@@ -1,12 +1,10 @@
-pj = {}
-
 pj.init = (kl_config, app_config) ->
     importScripts(app_config.md5_script)
     pj.config = app_config
     return
 
 
-pj.on_task_recieved = (data) ->
+pj.on_task_received = (data) ->
     task_id = data.id
     hash = data.hash_to_crack
     salt = data.salt

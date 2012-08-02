@@ -36,7 +36,7 @@ class KayleeStyle(Style):
         Name:                      "#000000",        # class: 'n'
         Name.Attribute:            "#c4a000",        # class: 'na' - to be revised
         Name.Builtin:              "#a020f0",        # class: 'nb'
-        Name.Builtin.Pseudo:       "#3465a4",        # class: 'bp'
+        Name.Builtin.Pseudo:       "#a020f0",        # class: 'bp'
         Name.Class:                "#000000",        # class: 'nc' - to be revised
         Name.Constant:             "#000000",        # class: 'no' - to be revised
         Name.Decorator:            "#3EA15A",           # class: 'nd' - to be revised

@@ -1,4 +1,5 @@
 klw = {} # Kaylee worker namespace
+pj = {}  # Project namespace
 
 addEventListener('message', ((e) ->
     msg = e.data.msg

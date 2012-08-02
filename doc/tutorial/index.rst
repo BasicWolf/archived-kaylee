@@ -17,6 +17,8 @@ our application.
    requirements
    client_side
    server_side
+   configuration
+   running
 
 .. toctree::
    :maxdepth: 2

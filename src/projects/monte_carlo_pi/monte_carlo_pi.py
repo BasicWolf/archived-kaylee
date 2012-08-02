@@ -7,23 +7,22 @@ class MonteCarloPiProject(Project):
 
     def __init__(self, *args, **kwargs):
         super(MonteCarloPiProject, self).__init__(*args, **kwargs)
-        self.random_points = kwargs['random_points']
-        self.nodes_config.update({
-            'alea_script' : kwargs['alea_script'],
-            'random_points' : self.random_points,
+        self.client_config.update({
+            'alea_script'   : kwargs['alea_script'],
+            'random_points' : kwargs['random_points']
         })
         self.tasks_count = kwargs['tasks_count']
-        self._tasks_counter = -1
+        self._tasks_counter = 0
+
+    def __getitem__(self, task_id):
+        return Task(task_id)
 
     def __next__(self):
-        if self._tasks_counter < self.tasks_count:
+        if self._tasks_counter <= self.tasks_count:
             self._tasks_counter += 1
             return self[self._tasks_counter]
         else:
             raise StopIteration()
-
-    def __getitem__(self, task_id):
-        return Task(task_id)
 
     def normalize(self, data):
         try:
@@ -38,6 +37,7 @@ class MonteCarloPiProject(Project):
             self._announce_results()
 
     def _announce_results(self):
-        mid_pi = sum(res[0] for res in self.storage.values()) / len(self.storage)
+        mid_pi = ( sum(res[0] for res in self.storage.values()) /
+                   len(self.storage) )
         print('The  value of PI computed by the Monte-Carlo method is: {}'
               .format(mid_pi))

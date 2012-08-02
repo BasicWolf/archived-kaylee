@@ -1,6 +1,6 @@
 kl = window.kl
 
-_tasks_counter = 0
+_tasks_counter = 1
 
 $(document).ready( () ->
     kl.console.init('console')

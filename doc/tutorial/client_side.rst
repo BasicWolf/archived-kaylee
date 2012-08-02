@@ -45,3 +45,6 @@ passed from the server::
 Here, we implement the Monte-Carlo PI algorithm and return the result via
 the :js:func:`task_completed() <klw.task_completed>` function from
 :ref:`Kaylee Worker API <client_workerapi>`.
+
+If you are comfortable with the code above, just copy-paste it to 
+`js/monte_carlo_pi.coffee` and be ready to move to [TODO].

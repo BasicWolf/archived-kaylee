@@ -4,7 +4,7 @@ class DummyProject(Project):
     def __init__(self, *args, **kwargs):
         super(DummyProject, self).__init__(script = '', *args, **kwargs)
         self.x = 0
-        self.nodes_config = { 'dummy_key' : 'dummy_value' }
+        self.client_config = { 'dummy_key' : 'dummy_value' }
 
     def __next__(self):
         self.x += 1

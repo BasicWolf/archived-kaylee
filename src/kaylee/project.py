@@ -63,7 +63,8 @@ class Project(object):
         #: contain a path to the javascript file with project's
         #: client-side logic. That path will be later used by Kaylee's
         #: client engine to load and start calculations on client.
-        self.nodes_config = {
+        #: TODO
+        self.client_config = {
             'script' : kwargs['script'],
             }
         self.storage = storage

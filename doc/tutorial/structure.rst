@@ -25,6 +25,8 @@ The structure of the project directory should now look as following::
   |
   |--__init__.py
   |--monte_carlo_pi.py
+  |
+  |--Makefile
 
 TODO: Makefile
 

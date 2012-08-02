@@ -112,7 +112,7 @@ class Controller(object):
         """
         node.controller = self
         node.subscription_timestamp = datetime.now()
-        return self.project.nodes_config
+        return self.project.client_config
 
     @abstractmethod
     def get_task(self, node):

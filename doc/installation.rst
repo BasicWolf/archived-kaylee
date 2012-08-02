@@ -15,7 +15,7 @@ Kaylee is designed to easily interact with any Python web framework.
 Out of the box Kaylee contains extensions for
 `Flask <http://flask.pocoo.org/>`_ and `Django <http://djangoproject.com/>`_
 frameworks.
-To start the demo run `src/bin/run.py` from the package and open
+To start the demo run `python src/bin/run.py` from the package and open
 the browser with the corresponding address and port (e.g. the default
 address of Flask is http://127.0.0.1:5000).
 
@@ -28,6 +28,8 @@ happen and at last you will see something like this:
    :align: center
    :alt: Console with HashCracker application output.
    :scale: 75 %
+   :width: 800
+   :height: 400
 
 Congratulations! You've just cracked a salted MD5 hash.
 If you scroll the console on the web page

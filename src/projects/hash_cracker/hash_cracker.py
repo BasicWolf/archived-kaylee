@@ -12,7 +12,7 @@ class HashCrackerProject(Project):
         self.hashes_per_task = kwargs['hashes_per_task']
         self.hash_to_crack = kwargs['hash_to_crack']
         self.salt = kwargs['salt']
-        self.nodes_config.update({
+        self.client_config.update({
             'md5_script' : kwargs['md5_script'],
             'alphabet' : self.alphabet,
             'key_length' : self.key_length,
