@@ -13,21 +13,33 @@ kl.config = {}
 
 kl.api =
     register : () ->
-        kl.get("/kaylee/register", kl.node_registered.trigger)
+        kl.get("/kaylee/register",
+               kl.node_registered.trigger,
+               kl.server_raised_error.trigger)
 
     subscribe : (app_name) ->
         kl.post("/kaylee/apps/#{app_name}/subscribe/#{kl.node_id}",
-                null, kl.node_subscribed.trigger)
+                null,
+                kl.node_subscribed.trigger,
+                kl.server_raised_error.trigger)
 
     get_action : () ->
         kl.get("/kaylee/actions/#{kl.node_id}",
-               kl.action_received.trigger)
+               kl.action_received.trigger,
+               kl.server_raised_error.trigger)
 
     send_results : (results) ->
         kl.post("/kaylee/actions/#{kl.node_id}", results,
-            (action_data) ->
+            ((action_data) ->
                 kl.results_sent.trigger(results)
                 kl.action_received.trigger(action_data)
+            ),
+            ((err) =>
+                kl.server_raised_error.trigger(err)
+                switch(err)
+                    when 'INVALID_STATE_ERR'
+                        @get_action() if kl.app.subscribed
+            )
         )
 
 class Event

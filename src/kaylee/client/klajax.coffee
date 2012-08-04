@@ -1,6 +1,6 @@
 # This file is meant to be compiled as a part of kaylee.coffee
 
-kl.ajax = (url, method, data, success, error) ->
+kl.ajax = (url, method, data, success = (()->), error = (() ->) ) ->
     req = new XMLHttpRequest();
 
     switch method
@@ -18,14 +18,15 @@ kl.ajax = (url, method, data, success, error) ->
 
     req.onreadystatechange = () ->
         if req.readyState == 4
-            if req.status == 200
+            if req.status == 200 and req.response?
                 if req.response.error?
-                    kl.server_raised_error.trigger(req.response.error)
+                    error(req.response.error)
                 else
-                    success(req.response) if success?
+                    success(req.response)
+            else if !req.response?
+                error('INVALID_STATE_ERR')
             else
-                kl.server_raised_error.trigger(req.response)
-                error(req.response) if error?
+                error(req.response)
         return null
 
     req.send(data);
