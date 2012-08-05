@@ -1,6 +1,6 @@
 PROJECT_NAME = monte_carlo_pi
 LIB = $(PROJECT_NAME).js
-LIBDIR = res/js
+LIBDIR = js
 
 TARGETS = $(LIBDIR)/$(LIB)
 CLEAN_TARGETS = 

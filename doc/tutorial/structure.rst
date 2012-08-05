@@ -22,12 +22,12 @@ The structure of the project directory should now look as following::
   |--js/
   |  |
   |  --monte_carlo_pi.coffee
+  |  --(3d-party js libraries)
   |
   |--__init__.py
   |--monte_carlo_pi.py
   |
   |--Makefile
 
-TODO: Makefile
 
 Let's continue with writing the :ref:`client-side code <tutorial-client-side>`.

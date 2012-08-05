@@ -1,6 +1,6 @@
 .. _tutorial-server-side:
 
-Step X: Server-Side Code
+Step 3: Server-Side Code
 ========================
 
 Now, let's work a bit on the server-side. First, we need to import the
@@ -50,7 +50,7 @@ Next, lets implement two basic abstract methods of Kaylee Project::
       return Task(task_id)
 
   def __next__(self):
-      if self._tasks_counter <= self.tasks_count:
+      if self._tasks_counter < self.tasks_count:
           self._tasks_counter += 1
           return self[self._tasks_counter]
       else:
@@ -101,4 +101,5 @@ But we still need to import the project in `__init__.py` for Kaylee to find it::
 
   from .monte_carlo_pi import MonteCarloPiProject
 
-
+And we are done with the server side! Let's find out how an application can 
+be found by Kaylee in :ref:`tutorial-configuration`.

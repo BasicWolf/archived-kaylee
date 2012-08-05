@@ -1,6 +1,6 @@
 .. _tutorial-client-side:
 
-Step X: Client-Side Code
+Step 2: Client-Side Code
 ========================
 
 As you may already know, that the client-side of Kaylee is written in
@@ -47,4 +47,5 @@ the :js:func:`task_completed() <klw.task_completed>` function from
 :ref:`Kaylee Worker API <client_workerapi>`.
 
 If you are comfortable with the code above, just copy-paste it to 
-`js/monte_carlo_pi.coffee` and be ready to move to [TODO].
+`js/monte_carlo_pi.coffee` and be ready to move to 
+:ref:`tutorial-server-side`.

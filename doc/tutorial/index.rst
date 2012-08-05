@@ -10,7 +10,7 @@ run Kaylee :ref:`demo` which will guarantee that we will be also able to run
 our application.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    introduction
    structure
@@ -19,7 +19,3 @@ our application.
    server_side
    configuration
    running
-
-.. toctree::
-   :maxdepth: 2
-

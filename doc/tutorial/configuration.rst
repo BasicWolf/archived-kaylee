@@ -1,6 +1,6 @@
 .. _tutorial-configuration:
 
-Step X: Configuring the Application
+Step 4: Configuring the Application
 ===================================
 
 Kaylee's reads the configuration from a `.py` file. We can utilize the same
@@ -65,4 +65,4 @@ first available application).
   APPLICATIONS = [app_mc_pi_1 ]
 
 That's it! You are now ready to launch the application to compute PI via
-distributed calculations.
+distributed calculations. Just continue to :ref:`tutorial-running`.
