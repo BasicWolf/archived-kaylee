@@ -81,9 +81,8 @@ div.related {
 }
  
 div.sphinxsidebar a {
-    color: #5E5E5E;
     text-decoration: none;
-    border-bottom: 1px dotted #5E5E5E;
+    border-bottom: 1px dotted #004B6B;
 }
 
 div.sphinxsidebar a:hover {
@@ -109,7 +108,7 @@ div.sphinxsidebarwrapper p.logo {
 div.sphinxsidebar h3,
 div.sphinxsidebar h4 {
     font-family: sans-serif, serif;
-    color: #444;
+    color: #FF8000;
     font-size: 24px;
     font-weight: normal;
     margin: 0 0 5px 0;
@@ -120,19 +119,24 @@ div.sphinxsidebar h4 {
     font-size: 20px;
 }
  
-div.sphinxsidebar h3 a {
-    color: #444;
-}
-
 div.sphinxsidebar p.logo a,
 div.sphinxsidebar h3 a,
 div.sphinxsidebar p.logo a:hover,
 div.sphinxsidebar h3 a:hover {
     border: none;
 }
+
+div.sphinxsidebar h4 a,
+div.sphinxsidebar h3 a {
+    color: #FF8000;
+    border-bottom: 1px dotted #FF8000;
+}
  
+div.sphinxsidebar h3 a:hover {
+    border-bottom: 1px solid #FF8000;
+}
+
 div.sphinxsidebar p {
-    color: #555;
     margin: 10px 0;
 }
 
@@ -187,7 +191,7 @@ div.body h1 {
     margin-top: -{{ margin_top }}; 
     padding-right: {{ sidebar_width }};
     padding-top: {{ margin_top }};
-    padding-bottom: 30px;
+    padding-bottom: 15px;
  /* #   font-size: 240%;  */
     background: black;
     width: {{ document_width }};
@@ -200,14 +204,13 @@ div.body h1 {
 /* div.body h6 { font-size: 100%; } */
  
 a.headerlink {
-    color: #ddd;
+    color: #FF8000;
     padding: 0 4px;
     text-decoration: none;
 }
  
 a.headerlink:hover {
-    color: #444;
-    background: #eaeaea;
+    border-bottom: 1px solid #FF8000;
 }
  
 div.body p, div.body dd, div.body li {
@@ -396,8 +399,7 @@ tt.xref, a tt {
 
 a.reference {
     text-decoration: none;
-    border-bottom: 1px dotted #5E5E5E;
-    color:#5E5E5E;
+    border-bottom: 1px dotted #004B6B;
 }
 
 a.reference:hover {
