@@ -407,6 +407,11 @@ a.reference:hover {
     border-bottom: 1px solid #FF8000;
 }
 
+a.internal, a.internal:hover {
+    border:none;
+}
+
+
 a.footnote-reference {
     text-decoration: none;
     font-size: 0.7em;

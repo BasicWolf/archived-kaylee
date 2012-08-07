@@ -28,13 +28,13 @@ following JavaScript objects [2]_:
 * The parent object
 
 
-A typical Kaylee project implements two callbacks in the `pj` namespce:
+A typical Kaylee project implements two callbacks in the ``pj`` namespce:
 
 .. js:function:: pj.init(kl_config, app_config)
 
    The function is called only once, when the client-side of the
    application is initialized. You can import required libraries via
-   `importScript()` here.
+   ``importScript()`` here.
 
    :param kl_config: JSON-formatted Kaylee config set by
                        :js:func:`kl.setup`
@@ -74,7 +74,7 @@ Core
    of lettings a user to define the HTTP API between the server and
    Kaylee client.
 
-   `kl.api` is an object with four function attributes:
+   ``kl.api`` is an object with four function attributes:
 
    * :js:attr:`register <kl.api.register>`
    * :js:attr:`subscribe <kl.api.subscribe>`
@@ -134,7 +134,7 @@ Core
 
 .. js:attribute:: kl.app
 
-   `kl.app` is an object which contains active application data.
+   ``kl.app`` is an object which contains active application data.
 
    The attributes of the object are:
 
@@ -144,8 +144,8 @@ Core
      the server as a response to subscription request. It is later transfered
      to the project via :js:func:`pj.init`.
    * **subscribed** - a boolean flag which indicates whether the app is
-     subscribed or not. It is set to `true` if subscription was succcessful
-     and to `false` when the node is unsubscribed.
+     subscribed or not. It is set to ``true`` if subscription was succcessful
+     and to ``false`` when the node is unsubscribed.
    * **worker** - the active Worker object.
 
    .. note:: This object is meant to be readonly.

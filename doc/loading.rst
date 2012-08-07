@@ -3,7 +3,7 @@
 Loading Kaylee
 ==============
 
-Kaylee projects rely on global `settings` and `kl` proxy objects which
+Kaylee projects rely on global ``settings`` and ``kl`` proxy objects which
 correspondingly represent Kaylee settings and server instance.
 This section describes how these objects are initialized and loaded.
 
@@ -52,7 +52,7 @@ Loading Kaylee Object
 ---------------------
 
 An instance of :py:class:`Kaylee` is created automatically *after* the
-settings are loaded and can be accessed via the global `kl` proxy::
+settings are loaded and can be accessed via the global ``kl`` proxy::
 
   from kaylee import kl
 
@@ -72,8 +72,8 @@ with a single function call is::
   from kaylee import setup
   setup('/path/to/kaylee/settings.py') # or just setup(), see below
 
-In case the environmental variable has been previously set, call `setup()`
+In case the environmental variable has been previously set, call ``setup()``
 with no arguments.
 This is generally done during the web front-end initialization, e.g.
-put this code in Django project's `models.py` file or Flask
-blueprint's/app's `.py` file.
+put this code in Django project's ``models.py`` file or Flask
+blueprint's/app's ``.py`` file.

@@ -51,15 +51,15 @@ In Kaylee's terms the server and client-side code is written in the scope
 of a single *Project*.
 A :py:class:`Project` is an iterator-like object (it is initialized
 for iteration only once) which returns :py:class:`Task` objects on every
-`next(project)` call. Every task **must** have a unique ID which can be
+``next(project)`` call. Every task **must** have a unique ID which can be
 used to generate the same task if required. This means that the following
 code::
 
   t = next(project)
   t2 = project[t.id]
 
-should generate `t` and `t2` with identical data, so that the computation
-results of `t` and `t2` are also the same.
+should generate ``t`` and ``t2`` with identical data, so that the computation
+results of ``t`` and ``t2`` are also the same.
 
 The client-side of the project contains the code which actually solves the
 given tasks (see :ref:`clientapi`). To keep things simple all communication is
@@ -99,7 +99,7 @@ nodes instead of a single one. That kind redundancy is the fee for
 the results integrity and accuracy.
 
 Implementing controllers is easy as there are only two methods to implement:
-`get_task(self, node)` and `accept_result(self, node, data)` (for more
+``get_task(self, node)`` and ``accept_result(self, node, data)`` (for more
 details see :py:class:`Controller`).
 
 
@@ -109,7 +109,7 @@ Auto-filtering is yet another feature in Kaylee which allows to write less
 code. Filters are Python decorators which can be automatically applied to
 implementation of Controllers' and Projects' abstract methods. For example
 the :py:func:`depleted_guard` filter sets project's *depleted* flag if
-`project.__next__()` raises :py:exc:`StopIteration`. TODO: filters list.
+``project.__next__()`` raises :py:exc:`StopIteration`. TODO: filters list.
 
 
 Storages
@@ -122,8 +122,8 @@ This allows to use any kind of storage solutions: from simple
 in-memory objects to relational or NoSQL databases.
 
 The difference between the interfaces is that controller refers to
-the results by both `node id` and `task id`. On the other hand a project
-knows nothing about the nodes and thus refers to the results by `task id`
+the results by both ``node id`` and ``task id``. On the other hand a project
+knows nothing about the nodes and thus refers to the results by ``task id``
 only.
 It is also important to remember that :py:class:`ControllerResultsStorage`
 stores a single result per node per task, while

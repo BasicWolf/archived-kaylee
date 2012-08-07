@@ -9,16 +9,16 @@ required components of Kaylee::
   from kaylee import Project, Task
   from kaylee.errors import InvalidResultError
 
-Next, we have to subclass `Project` in order for Kaylee's import system
+Next, we have to subclass ``Project`` in order for Kaylee's import system
 to recognize it::
 
   class MonteCarloPiProject(Project):
       auto_filter = True
 
 I believe you're comfortable with the first line, but what does
-`auto_filter = True` do? If you read the :ref:`firststeps` guide then
+``auto_filter = True`` do? If you read the :ref:`firststeps` guide then
 you should be acquainted with Kaylee *filters* a bit. That is how you
-turn them on in a `Project` or a `Controller`. I decided to keep it that
+turn them on in a ``Project`` or a ``Controller``. I decided to keep it that
 way because "Explicit is better that implicit" and by-default the filters
 are off.
 
@@ -26,7 +26,7 @@ Before we continue with the code, lets first think, what kind of configuration
 is required in order to initialize the project? As has been discussed in the
 :ref:`project requirements <tutorial-requirements-configuration>` and
 implemented on the :ref:`client side <tutorial-client-side>`, we need
-the amount of random points and the URL of `alea.js` script to pass to
+the amount of random points and the URL of ``alea.js`` script to pass to
 the client and the amount of tasks to execute on the server::
 
   def __init__(self, *args, **kwargs):
@@ -41,7 +41,7 @@ the client and the amount of tasks to execute on the server::
 .. module:: kaylee
 
 Here, the :py:attr:`Project.client_config` attribute is the configuration
-object sent to the client and `self.tasks_count` and `self._tasks_counter`
+object sent to the client and ``self.tasks_count`` and ``self._tasks_counter``
 are the attributes related to amount of tasks to be executed.
 
 Next, lets implement two basic abstract methods of Kaylee Project::
@@ -56,9 +56,9 @@ Next, lets implement two basic abstract methods of Kaylee Project::
       else:
           raise StopIteration()
 
-As you can see, `__next__()` in conjunction with `__getitem__()` yields
-a :py:class:`task <Task>` object with numerical id derived from
-`self._tasks_counter`.
+As you can see, ``__next__()`` in conjunction with ``__getitem__()`` yields
+a :py:class:``task <Task>`` object with numerical id derived from
+``self._tasks_counter``.
 
 The next important part of every project is the :py:meth:`Project.normalize`
 method. It is used to verify and normalize the results returned by the client.
@@ -82,7 +82,7 @@ data is gathered and the application is completed::
           self.completed = True
           self._announce_results()
 
-Here, we call `Project.store_result()` because it simply stores the results
+Here, we call ``Project.store_result()`` because it simply stores the results
 to the predefined storage (don't worry we'll speak about it just a bit later)
 and then checks whether the project is completed.
 Ups, almost missed the part which announces the final results::
@@ -96,10 +96,11 @@ Ups, almost missed the part which announces the final results::
 That is the message you're going to see in Kaylee's front-end shell
 (or the logs).
 
-I belive you have already figured out that the code above goes to `monte_carlo_pi.coffee`.
-But we still need to import the project in `__init__.py` for Kaylee to find it::
+I belive you have already figured out that the code above goes to
+``monte_carlo_pi.coffee``. But we still need to import the project in
+``__init__.py`` for Kaylee to find it::
 
   from .monte_carlo_pi import MonteCarloPiProject
 
-And we are done with the server side! Let's find out how an application can 
+And we are done with the server side! Let's find out how an application can
 be found by Kaylee in :ref:`tutorial-configuration`.

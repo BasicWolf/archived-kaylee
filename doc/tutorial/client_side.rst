@@ -12,9 +12,9 @@ and even without that, the project code should be simple and clear to
 everybody.
 
 The client-side code of Kaylee projects basically consists of two callbacks
-in `pj` namespace: :js:func:`pj.init(kl_config, app_config) <pj.init>` and
+in ``pj`` namespace: :js:func:`pj.init(kl_config, app_config) <pj.init>` and
 :js:func:`pj.on_task_received(task) <pj.on_task_recieved>`.
-The `pj.init()` callback initializes projects (e.g. imports 3d party libraries,
+The ``pj.init()`` callback initializes projects (e.g. imports 3d party libraries,
 setups configuration etc.). Its arguments are global Kaylee and application
 configurations. It is called after the project script is fully loaded::
 
@@ -23,11 +23,11 @@ configurations. It is called after the project script is fully loaded::
       pj.config = app_config
       return
 
-Here, `alea.js` is loaded from the URL passed as the application configuration
-value. The configuration is also stored to `pj.config` for later use.
+Here, ``alea.js`` is loaded from the URL passed as the application configuration
+value. The configuration is also stored to ``pj.config`` for later use.
 
-The `on_task_received()` callback is called every time when Kaylee
-client recieves a task from the server. The `task` argument is the JSON object
+The ``on_task_received()`` callback is called every time when Kaylee
+client recieves a task from the server. The ``task`` argument is the JSON object
 passed from the server::
 
   pj.on_task_received = (task) ->
@@ -46,6 +46,6 @@ Here, we implement the Monte-Carlo PI algorithm and return the result via
 the :js:func:`task_completed() <klw.task_completed>` function from
 :ref:`Kaylee Worker API <client_workerapi>`.
 
-If you are comfortable with the code above, just copy-paste it to 
-`js/monte_carlo_pi.coffee` and be ready to move to 
+If you are comfortable with the code above, just copy-paste it to
+``js/monte_carlo_pi.coffee`` and be ready to move to
 :ref:`tutorial-server-side`.
