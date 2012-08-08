@@ -47,7 +47,7 @@ class LazySettings(LazyObject):
         :param obj: Python module or class with settings attributes.
         """
         if obj is not None:
-            if isinstance(obj, type):
+            if isinstance(obj, type) or isinstance(obj, types.ModuleType):
                 mod = obj
             else:
                 raise TypeError('obj must be {} not {}'

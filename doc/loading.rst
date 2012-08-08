@@ -13,9 +13,9 @@ This section describes how these objects are initialized and loaded.
 Loading Settings
 ----------------
 
-There are two ways of loading the settings in Kaylee: loading them from a
-Python module or loading them from a Python class.
-The only requirement for the "module" approach is to set the
+There are three ways of loading the settings in Kaylee: loading them from a
+Python module (directly or indirectly) or loading them from a Python class.
+The only requirement for the "indirect module" approach is to set the
 :py:const:`loader.SETTINGS_ENV_VAR` environmental variable with the
 absolute path to the settings file::
 
@@ -27,6 +27,14 @@ via the proxy (see :py:class:`LazyObject`) object::
 
   from kaylee import settings
   print(settings.DEBUG)
+
+In the "direct" approach an arbitrary Python module can contain the settings
+which are set up manually::
+
+  from kaylee import settings
+  import my_kaylee_settings
+
+  settings._setup(my_kaylee_settings)
 
 In the "class" approach case you have to setup the global settings proxy
 object manually::

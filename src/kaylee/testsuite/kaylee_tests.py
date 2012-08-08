@@ -2,10 +2,11 @@
 import os
 import json
 
+import dummy_settings
 from projects.dummy_project.dummy import DummyProject, DummyController
 from kaylee.testsuite import KayleeTest, load_tests, TestSettings
 from kaylee import (NodeID, Node, Kaylee, KayleeError, Applications, )
-from kaylee.loader import _load_kaylee_objects, _load
+from kaylee.loader import _load_kaylee_objects, _load, LazySettings
 from kaylee.contrib.storages import (MemoryControllerResultsStorage,
                                      MemoryProjectResultsStorage)
 
@@ -42,22 +43,6 @@ class Settings2(Settings1):
                 'app_storage' : {
                     'name' : 'MemoryProjectResultsStorage',
                     'config' : {}
-                    },
-                },
-          }
-        ]
-
-class Settings3(Settings1):
-    APPLICATIONS = [
-        { 'name' : 'dummy.1',
-          'description' : 'Dummy application',
-          'project' : {
-                'name' : 'DummyProject',
-                },
-          'controller' : {
-                'name' :'DummyController',
-                'app_storage' : {
-                    'name' : 'MemoryProjectResultsStorage',
                     },
                 },
           }
@@ -125,6 +110,12 @@ class KayleeLoaderTests(KayleeTest):
         from kaylee import kl as kl2
         self.assertEqual(kl.applications, _kl.applications)
         self.assertEqual(kl.registry, _kl.registry)
+
+    def test_lazy_settings_setup(self):
+        # test setup from a module
+        lzs = LazySettings()
+        lzs._setup(dummy_settings)
+        self.assertEqual(lzs.TEST_OPTION, 'test')
 
 
 class KayleeTests(KayleeTest):

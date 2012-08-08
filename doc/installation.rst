@@ -79,13 +79,22 @@ as the CheeseShop package, so you'll have to download and extract it manually::
   $ wget http://github.com/downloads/BasicWolf/kaylee/kaylee_0.1.zip
   $ unzip kaylee_0.1.zip
 
+The contents of the package should look as following::
+
+  doc/          # documentation you're reading
+  src/          # source code
+  AUTHORS       # list of authors
+  LICENSE       # Kaylee's license
+  NOTICE        # Legal notices and licenses
+  README.rst    # Readme in reStructuredText format
+
 
 Make
 ----
 
 If Kaylee and its dependencies were installed successfully you should be able
 to build Kaylee's client-side and demo via simple ``make`` command
-executed in ``src`` directory::
+executed in  ``src`` directory::
 
   $ make
   make  -C kaylee/client
@@ -93,11 +102,10 @@ executed in ``src`` directory::
   coffee -j kaylee.js -c kaylee.coffee klajax.coffee
   coffee --bare -c klworker.coffee
   ...
-  ...
 
 Kaylee utilizes recursive make techniques which may be considered harmful,
-but are suitable for Kaylee due to its small size. 
-
+but are suitable for Kaylee due to its small size. The results of the
+build process are gathered the ``src/build`` directory.
 
 .. _demo:
 
@@ -110,13 +118,14 @@ Kaylee is designed to easily interact with any Python web framework.
 Out of the box Kaylee contains extensions for
 `Flask`_ and `Django`_
 frameworks.
-To start the demo run ``python src/bin/run.py`` from the package and open
-the browser with the corresponding address and port (e.g. the default
-address of Flask is http://127.0.0.1:5000).
+To start the demo activate the virtual environment, run
+``python src/bin/run.py`` from the package and open the browser with the
+corresponding address and port (e.g. the default address of Flask is
+http://127.0.0.1:5000).
 
 If everything was successful you should see a page with a black rectangle
 in the middle which represents an "echo" console. Don't worry, it is a part
-of the demo, not Kaylee in general. In few seconds something weird will
+of the demo, not Kaylee in general. In a few seconds something weird will
 happen and at last you will see something like this:
 
 .. image:: _static/demo2.png
@@ -146,7 +155,7 @@ which says what the cracked hash key was::
   127.0.0.1 - "POST /kaylee/actions/500315e30000f528764d HTTP/1.1" 200 -
   127.0.0.1 - "POST /kaylee/actions/500315e30000f528764d HTTP/1.1" 200 -
   The cracked hash key is: kl
-
+  ...
 
 .. _Flask: http://flask.pocoo.org/
 .. _Django: http://djangoproject.com/
