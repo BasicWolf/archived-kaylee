@@ -12,7 +12,12 @@ kl.ajax = (url, method, data, success = (()->), error = (() ->) ) ->
             req.setRequestHeader("Content-length", data.length);
             req.setRequestHeader("Connection", "close");
         when "GET"
-            data = ''
+            if data?
+                alert data
+                dl = []
+                for key, val of data
+                    dl.push(key + '=' + encodeURIComponent(val))
+                url += '?' + dl.join('&')
             req.open("GET", url, true);
     req.responseType = 'json'
 
@@ -33,13 +38,21 @@ kl.ajax = (url, method, data, success = (()->), error = (() ->) ) ->
     return null
 
 kl.post = (url, data, success, error) ->
-    _success = (data) ->
-        if data.error? then error(data.error) else success(data)
+    _success = (resp_data) ->
+        if resp_data.error? then error(resp_data.error) else success(resp_data)
     kl.ajax(url, 'POST', data, _success, error)
     return null
 
-kl.get = (url, success, error) ->
-    _success = (data) ->
-        if data.error? then error(data.error) else success(data)
-    kl.ajax(url, 'GET', null, success, error)
+kl.get = (url, data, success, error) ->
+    # remap the arguments in case that the first argument is
+    # the success callback.
+    if arguments.length >= 2
+        if kl.util.is_function(data)
+            error = success
+            success = data
+            data = null
+
+    _success = (resp_data) ->
+        if resp_data.error? then error(resp_data.error) else success(resp_data)
+    kl.ajax(url, 'GET', data, _success, error)
     return null

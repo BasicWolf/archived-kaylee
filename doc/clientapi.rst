@@ -118,20 +118,6 @@ Core
       Triggers :js:func:`kl.results_sent` **and** in case that Kaylee
       immediately returns a new action :js:func:`kl.action_received`.
 
-
-.. js:attribute:: kl.node_id
-
-   Current node id. Set when a node is registered by the server.
-
-.. js:attribute:: kl.config
-
-   Kaylee nodes-specific config received from the server.
-   Currently contains a single attribute (TODO):
-
-   * **kl_worker_script** - defines a URL of Kaylee worker script.
-
-   The configuration is transfered to the project via :js:func:`pj.init`.
-
 .. js:attribute:: kl.app
 
    ``kl.app`` is an object which contains active application data.
@@ -150,6 +136,41 @@ Core
 
    .. note:: This object is meant to be readonly.
 
+
+.. js:attribute:: kl.config
+
+   Kaylee nodes-specific config received from the server.
+   Currently contains a single attribute (TODO):
+
+   * **kl_worker_script** - defines a URL of Kaylee worker script.
+
+   The configuration is transfered to the project via :js:func:`pj.init`.
+
+
+.. js:function:: kl.get_action()
+
+   Invokes :js:attr:`kl.api.get_action`.
+
+
+.. js:attribute:: kl.node_id
+
+   Current node id. Set when a node is registered by the server.
+
+
+.. js:function:: kl.register()
+
+   Invokes :js:attr:`kl.api.register` after internal benchmark and minimum
+   requirements (e.g. availability of web workers) tests.
+
+
+.. js:function:: kl.send_results(data)
+
+   Invokes :js:attr:`kl.api.send_results`.
+
+
+.. js:function:: kl.subscribe(app_name)
+
+   Setups :js:attr:`kl.app` and invokes :js:attr:`kl.api.subscribe`.
 
 
 Events
@@ -258,6 +279,33 @@ Events
                         * filename
                         * lineno
                         * message
+
+AJAX
+----
+
+.. js:function:: kl.get( url[, data] [, success(data)] [, error(message)] )
+
+   Invokes asynchronous GET request.
+
+   :param url: request URL
+   :param data: JavaScript object which is transformed to a query string
+   :param success: callback invoked in case of successful request.
+   :param error: callback invoked in of request failure.
+
+   Simple usage case example::
+
+     kl.get('/some/url', function(data) {
+       alert(data);
+     } );
+
+.. js:function:: kl.post( url [, data] [, success] [, error] )
+
+   Invokes asynchronous POST request.
+
+   :param url: request URL
+   :param data: JSON object
+   :param success: callback invoked in case of successful request.
+   :param error: callback invoked in of request failure.
 
 
 .. [1] http://en.wikipedia.org/wiki/Web_worker

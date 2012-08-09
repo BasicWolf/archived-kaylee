@@ -16,17 +16,20 @@ kl.api =
         kl.get("/kaylee/register",
                kl.node_registered.trigger,
                kl.server_raised_error.trigger)
+        return null
 
     subscribe : (app_name) ->
         kl.post("/kaylee/apps/#{app_name}/subscribe/#{kl.node_id}",
                 null,
                 kl.node_subscribed.trigger,
                 kl.server_raised_error.trigger)
+        return null
 
     get_action : () ->
         kl.get("/kaylee/actions/#{kl.node_id}",
                kl.action_received.trigger,
                kl.server_raised_error.trigger)
+        return null
 
     send_results : (results) ->
         kl.post("/kaylee/actions/#{kl.node_id}", results,
@@ -41,28 +44,33 @@ kl.api =
                         @get_action() if kl.app.subscribed
             )
         )
+        return null
 
 class Event
     constructor : (handler = null) ->
         @handlers = []
         @handlers.push(handler) if handler?
+        return null
 
     trigger : (args...) =>
         for c in @handlers
             c(args...)
+        return null
 
     bind : (handler) =>
         @handlers.push(handler)
+        return null
 
     unbind : (handler) =>
         @handlers[t..t] = [] if (t = @handlers.indexOf(handler)) > -1
+        return null
 kl.Event = Event
 
-kl.benchmark = () ->
-    return !!window.Worker
 
 kl.register = () ->
-    kl.api.register()
+    if kl._test_node().features.worker
+        kl.api.register()
+    return null
 
 kl.subscribe = (app_name) ->
     kl.app = {
@@ -71,25 +79,29 @@ kl.subscribe = (app_name) ->
         worker : null
         subscribed : false
     }
-
     kl.api.subscribe(app_name)
+    return null
 
 kl.get_action = () ->
-    kl.api.get_action()
+    if kl.app.subscribed
+        kl.api.get_action()
+    return null
 
 kl.send_results = (data) ->
     if kl.app.subscribed
         kl.api.send_results(data)
+    return null
 
-kl.message_to_worker = (msg, data = {}) ->
+kl._message_to_worker = (msg, data = {}) ->
     kl.app.worker.postMessage({'msg' : msg, 'data' : data})
-
+    return null
 
 # Primary event handlers
 on_node_registered = (data) ->
     for key, val of data.config
         kl.config[key] = val
     kl.node_id = data.node_id
+    return null
 
 on_node_subscribed = (config) ->
     kl.app.config = config
@@ -101,31 +113,35 @@ on_node_subscribed = (config) ->
     worker.addEventListener('message', ((e) -> on_worker_message(e.data)),
                             false);
     worker.addEventListener('error', ((e) -> on_worker_error(e)), false);
-    kl.message_to_worker('import_project', {
+    kl._message_to_worker('import_project', {
         'kl_config' : kl.config,
         'app_config' : kl.app.config,
     })
-
+    return null
 
 on_node_unsubscibed = (data) ->
     kl.app.subscribed = false
     kl.app.worker.terminate()
     kl.app.worker = null;
+    return null
 
 on_project_imported = () ->
     kl.get_action()
-
+    return null
 
 on_action_received = (data) ->
     switch data.action
         when 'task' then kl.task_received.trigger(data.data)
         when 'unsubscribe' then kl.node_unsubscibed.trigger(data.data)
+    return null
 
 on_task_received = (data) ->
-    kl.message_to_worker('solve_task', data)
+    kl._message_to_worker('solve_task', data)
+    return null
 
 on_task_completed = (data) ->
     kl.send_results(data)
+    return null
 
 # worker event handlers
 on_worker_message = (data) ->
@@ -135,9 +151,11 @@ on_worker_message = (data) ->
         when '__klw_log__' then kl.log.trigger(mdata)
         when 'project_imported' then kl.project_imported.trigger(mdata)
         when 'task_completed' then kl.task_completed.trigger(mdata)
+    return null
 
 on_worker_error = (e) ->
     kl.worker_raised_error.trigger(e)
+    return null
 
 # Kaylee events
 kl.node_registered = new Event(on_node_registered)
