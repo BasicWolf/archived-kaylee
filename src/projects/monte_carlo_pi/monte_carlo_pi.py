@@ -3,8 +3,6 @@ from kaylee import Project, Task
 from kaylee.errors import InvalidResultError
 
 class MonteCarloPiProject(Project):
-    auto_filter = True
-
     def __init__(self, *args, **kwargs):
         super(MonteCarloPiProject, self).__init__(*args, **kwargs)
         self.client_config.update({

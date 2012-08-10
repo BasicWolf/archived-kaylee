@@ -184,7 +184,9 @@ class NodeID(object):
             nid += struct.pack(">i", NodeID._inc)[2:4]
             NodeID._inc = (NodeID._inc + 1) % 0xFFFF
         # 4 bytes host
-        nid += self._host_hash(remote_host)
+        host_hash = hashlib.md5()
+        host_hash.update(remote_host)
+        nid += host_hash.digest()[0:4]
         # 10 bytes total
         self._id = nid
 
@@ -211,11 +213,6 @@ class NodeID(object):
                                     self.__class__.__name__,
                                     type(nid).__name__))
 
-    def _host_hash(self, data):
-        h = hashlib.md5()
-        h.update(data)
-        return h.digest()[0:4]
-
     @property
     def binary(self):
         """10-byte binary representation of the NodeID.
@@ -228,6 +225,7 @@ class NodeID(object):
     def timestamp(self):
         """A timezone-aware :class:`datetime.datetime` instance representing
         the current NodeID's generation time. It is precise to a second.
+        # TODO: what the heck?
         """
         t = struct.unpack(">i", self._id[0:4])[0]
         return datetime.fromtimestamp(t, utc)
@@ -243,7 +241,7 @@ class NodeID(object):
         other = NodeID.from_object(other)
         return self._id == other._id
 
-    def __ne__(self,other):
+    def __ne__(self, other):
         other = NodeID.from_object(other)
         return self._id != other._id
 

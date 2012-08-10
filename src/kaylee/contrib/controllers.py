@@ -8,9 +8,6 @@ class SimpleController(Controller):
     Its ``completed`` indicator is set to ``True`` the moment the bound
     project is completed.
     """
-
-    auto_filter = True
-
     def __init__(self, *args, **kwargs):
         super(SimpleController, self).__init__(*args, **kwargs)
         self._tasks_pool = set()
@@ -45,8 +42,6 @@ class SimpleController(Controller):
 
 
 class ResultsComparatorController(Controller):
-    auto_filter = True
-
     def __init__(self, *args, **kwargs):
         super(ResultsComparatorController, self).__init__(*args, **kwargs)
         self._comparison_nodes = kwargs['comparison_nodes']

@@ -13,8 +13,7 @@ from abc import abstractmethod, abstractproperty
 from datetime import datetime
 from functools import wraps
 
-from .node import Node
-from .util import AutoFilterABCMeta
+from .util import AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS
 from .errors import StopApplication
 
 #: The Application name regular expression pattern which can be used in
@@ -92,7 +91,7 @@ class Controller(object):
     :type storage: :class:`ControllerResultsStorage`
     """
     __metaclass__ = ControllerMeta
-    auto_filter = False
+    auto_filter = BASE_FILTERS | CONFIG_FILTERS
 
     def __init__(self, app_name, project, storage = None, *args, **kwargs):
         if _app_name_re.match(app_name) is None:

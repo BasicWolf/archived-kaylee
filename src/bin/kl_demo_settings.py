@@ -72,6 +72,6 @@ app_mc_pi_1 = {
         },
     }
 
-#APPLICATIONS = [app_hash_cracker_1]
-APPLICATIONS = [app_mc_pi_1, ]
+APPLICATIONS = [app_hash_cracker_1]
+#APPLICATIONS = [app_mc_pi_1, ]
 #APPLICATIONS = [app_mc_pi_1, app_hash_cracker_1]

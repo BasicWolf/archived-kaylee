@@ -12,7 +12,7 @@ from abc import abstractmethod
 from copy import copy
 from functools import wraps
 
-from .util import AutoFilterABCMeta
+from .util import AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS
 
 
 DEPLETED = 0x2
@@ -55,7 +55,7 @@ class Project(object):
     """
 
     __metaclass__ = ProjectMeta
-    auto_filter = False
+    auto_filter = BASE_FILTERS | CONFIG_FILTERS
 
     def __init__(self, storage = None, *args, **kwargs):
         #: A dictionary with configuration
@@ -130,7 +130,8 @@ class Project(object):
         return data
 
     def store_result(self, task_id, data):
-        """Accepts and processes results from a node.
+        """Accepts and stores the results to the storage. Note that
+        the ``None``-value results are not stored to the storage.
 
         :param task_id: ID of the task
         :param data: Results of the task. The results are parsed from the
@@ -152,7 +153,7 @@ class TaskMeta(type):
     by the serialize() method. This dictionary can be used to
     e.g. export the object to JSON.
     """
-    def __new__(meta, classname, bases, class_dict):
+    def __new__(mcs, classname, bases, class_dict):
         serializable = []
         if 'serializable' in class_dict:
             serializable = class_dict['serializable']
@@ -162,7 +163,7 @@ class TaskMeta(type):
                 # extend from left side of the list
                 serializable[:-len(serializable)] = base.serializable
         class_dict['serializable'] = serializable
-        return type.__new__(meta, classname, bases, class_dict)
+        return type.__new__(mcs, classname, bases, class_dict)
 
 
 class Task(object):

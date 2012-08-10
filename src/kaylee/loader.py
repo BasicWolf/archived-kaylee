@@ -15,7 +15,7 @@ import inspect
 import types
 
 from .errors import KayleeError
-from .util import LazyObject, import_object
+from .util import LazyObject, import_object, CONFIG_FILTERS
 
 #: Points to the environmental variable which holds the absolute path to the
 #: settings `*.py` file.
@@ -202,7 +202,7 @@ def _get_project_object(conf, project_classes, pstorage_classes):
     pcls = project_classes[pname]
     pj_config = conf['project'].get('config', {})
     pj_storage = _get_project_storage_object(conf, pstorage_classes)
-    return pcls(storage = pj_storage, **pj_config)
+    return pcls(storage=pj_storage, **pj_config)
 
 def _get_controller_storage_object(conf, crstorage_classes):
     if not 'storage' in conf['controller']:
@@ -225,7 +225,7 @@ def _get_controller_object(app_name, project, crstorage, conf,
     cobj = ccls(app_name, project, crstorage,
                 **conf['controller'].get('config', {}))
 
-    if not ccls.auto_filter:
+    if not ccls.auto_filter & CONFIG_FILTERS:
         return cobj
 
     # dynamically decorate controller methods with filters
@@ -239,6 +239,6 @@ def _get_controller_object(app_name, project, crstorage, conf,
             decorated = types.MethodType(filter_decorator(method.__func__),
                                          cobj, None)
             setattr(cobj, method_name, decorated)
-    except KeyError as e:
+    except KeyError:
         pass
     return cobj

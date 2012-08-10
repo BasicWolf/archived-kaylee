@@ -3,8 +3,6 @@ from hashlib import md5
 from kaylee import Project, Task
 
 class HashCrackerProject(Project):
-    auto_filter = True
-
     def __init__(self, *args, **kwargs):
         super(HashCrackerProject, self).__init__(*args, **kwargs)
         self.alphabet = kwargs['alphabet']

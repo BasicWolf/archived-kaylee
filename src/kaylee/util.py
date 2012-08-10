@@ -1,17 +1,23 @@
 # -*- coding: utf-8 -*-
 import re
-import inspect
 import importlib
-from weakref import WeakSet, WeakKeyDictionary
 from datetime import timedelta
-from .errors import KayleeError
 from abc import ABCMeta
+from .errors import KayleeError
 
-_timeout_regex = re.compile(r'((?P<days>\d+?)d)?\s?((?P<hours>\d+?)h)?\s?'
-                            '((?P<minutes>\d+?)m)?\s?((?P<seconds>\d+?)s)?')
+
+NO_FILTERS = 0x0
+BASE_FILTERS = 0x2
+CONFIG_FILTERS = 0x4
 
 def parse_timedelta(s):
-    match = _timeout_regex.match(s)
+    try:
+        match = parse_timedelta.timeout_regex.match(s)
+    except AttributeError:
+        parse_timedelta.timeout_regex = re.compile(
+            r'((?P<days>\d+?)d)?\s?((?P<hours>\d+?)h)?\s?'
+            '((?P<minutes>\d+?)m)?\s?((?P<seconds>\d+?)s)?')
+        match = parse_timedelta.timeout_regex.match(s)
 
     try:
         time_params = {}
@@ -105,22 +111,24 @@ class LazyObject(object):
 
 
 class AutoFilterABCMeta(ABCMeta):
-    def __new__(cls, name, bases, dct):
-        auto_filter = dct.get('auto_filter', True)
-        if auto_filter:
+    def __new__(mcs, name, bases, dct):
+        auto_filter = dct.get('auto_filter', BASE_FILTERS)
+        if auto_filter is None:
+            auto_filter = NO_FILTERS
+        if auto_filter & BASE_FILTERS:
             # TODO: document this
             # Automatically wrap methods from auto_filters so that the user
             # does not have to worry about the common stuff.
             for attr_name, attr in dct.iteritems():
                 try:
-                    wrappers = cls.auto_filters[attr_name]
+                    wrappers = mcs.auto_filters[attr_name]
                     method = attr
                     for wrapper in wrappers:
                         method = wrapper(method)
                     dct[attr_name] = method
                 except KeyError:
                     pass
-        return super(AutoFilterABCMeta, cls).__new__(cls, name, bases, dct)
+        return super(AutoFilterABCMeta, mcs).__new__(mcs, name, bases, dct)
 
-    def __init__(cls, name, bases, dct):
-        super(AutoFilterABCMeta, cls).__init__(name, bases, dct)
+    def __init__(mcs, name, bases, dct):
+        super(AutoFilterABCMeta, mcs).__init__(name, bases, dct)
