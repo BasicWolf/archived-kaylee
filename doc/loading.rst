@@ -10,8 +10,8 @@ This section describes how these objects are initialized and loaded.
 .. module:: kaylee
 
 
-Loading Settings
-----------------
+Loading the Settings
+--------------------
 
 There are three ways of loading the settings in Kaylee: loading them from a
 Python module (directly or indirectly) or loading them from a Python class.

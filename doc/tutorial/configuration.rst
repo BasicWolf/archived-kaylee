@@ -1,6 +1,6 @@
 .. _tutorial-configuration:
 
-Step 4: Configuring the Application
+Step 5: Configuring the Application
 ===================================
 
 Kaylee's reads the configuration from a ``.py`` file. We can utilize the same

@@ -1,6 +1,6 @@
 .. _tutorial-client-side:
 
-Step 2: Client-Side Code
+Step 3: Client-Side Code
 ========================
 
 As you may already know, that the client-side of Kaylee is written in

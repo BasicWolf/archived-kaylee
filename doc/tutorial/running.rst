@@ -1,6 +1,6 @@
 .. _tutorial-running:
 
-Step 5: Compiling and Running the Application
+Step 6: Compiling and Running the Application
 =============================================
 
 

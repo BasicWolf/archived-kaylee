@@ -89,8 +89,8 @@ The contents of the package should look as following::
   README.rst    # Readme in reStructuredText format
 
 
-Make
-----
+Building 
+--------
 
 If Kaylee and its dependencies were installed successfully you should be able
 to build Kaylee's client-side and demo via simple ``make`` command

@@ -2,6 +2,13 @@ from kaylee import Controller
 from kaylee.errors import StopApplication
 
 class SimpleController(Controller):
+    """
+    ``SimpleController`` is a very basic controller which serves the tasks by
+    Node requests and passes the accepted results directly to the project.
+    Its ``completed`` indicator is set to ``True`` the moment the bound
+    project is completed.
+    """
+
     auto_filter = True
 
     def __init__(self, *args, **kwargs):

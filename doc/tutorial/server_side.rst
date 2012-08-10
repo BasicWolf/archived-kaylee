@@ -1,6 +1,6 @@
 .. _tutorial-server-side:
 
-Step 3: Server-Side Code
+Step 4: Server-Side Code
 ========================
 
 Now, let's work a bit on the server-side. First, we need to import the

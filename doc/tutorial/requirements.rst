@@ -1,6 +1,6 @@
 .. _tutorial-requirements:
 
-Step X: Project Requirements
+Step 2: Project Requirements
 ============================
 
 
