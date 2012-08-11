@@ -19,7 +19,6 @@ from .errors import StopApplication
 #: The Application name regular expression pattern which can be used in
 #: e.g. web frameworks' URL dispatchers.
 app_name_pattern = r'[a-zA-Z\.\d_-]+'
-_app_name_re = re.compile('^{}$'.format(app_name_pattern))
 
 #: Indicates active state of an application.
 ACTIVE = 0x2
@@ -28,13 +27,16 @@ COMPLETED = 0x4
 
 
 def app_completed_guard(f):
-    """This decorator handles two cases of completed Kaylee application:
+    """The filter handles two cases of completed Kaylee application:
 
     1. First, it checks if the application has already completed and
        in that case raises :exc:`StopApplication`.
     2. Second, it wraps ``f`` in ``try..except`` block in order to
-       set object's :attr:`Controller.state` value to :data:`COMPLETED`.
+       set object's :attr:`Controller.completed` value to ``True``.
        The :exc:`StopApplication` is then re-raised.
+
+    .. note:: This is a base filter applied to
+              :meth:`Controller.get_task`.
     """
     @wraps(f)
     def wrapper(self, *args, **kwargs):
@@ -48,6 +50,11 @@ def app_completed_guard(f):
     return wrapper
 
 def normalize_result_filter(f):
+    """The filter normalizes the data before passing it further.
+
+    .. note:: This is a base filter applied to
+              :meth:`Controller.accept_result`.
+    """
     @wraps(f)
     def wrapper(self, node, data):
         data = self.project.normalize(data)
@@ -55,6 +62,11 @@ def normalize_result_filter(f):
     return wrapper
 
 def failed_result_filter(f):
+    """The filter is meant to be used in "decision search" projects which
+    supposed to deliver a single correct result.
+    It converts the ``{ '__kl_result__' : False }`` result to ``None``,
+    which is ignored by the projects' results storage  routine.
+    """
     @wraps(f)
     def wrapper(self, node, data):
         try:
@@ -64,13 +76,6 @@ def failed_result_filter(f):
             pass
         return f(self, node, data)
     return wrapper
-
-
-class ControllerMeta(AutoFilterABCMeta):
-    auto_filters = {
-        'get_task' : [ app_completed_guard, ],
-        'accept_result' : [ normalize_result_filter, ]
-        }
 
 
 class Controller(object):
@@ -90,11 +95,18 @@ class Controller(object):
     :type project: :class:`Project`
     :type storage: :class:`ControllerResultsStorage`
     """
-    __metaclass__ = ControllerMeta
+    __metaclass__ = AutoFilterABCMeta
+
     auto_filter = BASE_FILTERS | CONFIG_FILTERS
+    auto_filters = {
+        'get_task' : [ app_completed_guard, ],
+        'accept_result' : [ normalize_result_filter, ]
+        }
+
+    _app_name_re = re.compile('^{}$'.format(app_name_pattern))
 
     def __init__(self, app_name, project, storage = None, *args, **kwargs):
-        if _app_name_re.match(app_name) is None:
+        if Controller._app_name_re.match(app_name) is None:
             raise ValueError('Invalid application name: {}'
                              .format(app_name))
         self.app_name = app_name
@@ -140,4 +152,3 @@ class Controller(object):
             self._state |= COMPLETED
         else:
             self._state &= ~COMPLETED
-

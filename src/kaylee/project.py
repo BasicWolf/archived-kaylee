@@ -37,13 +37,6 @@ def ignore_null_result(f):
     return wrapper
 
 
-class ProjectMeta(AutoFilterABCMeta):
-    auto_filters = {
-        '__next__' : [ depleted_guard, ],
-        'normalize' : [ ignore_null_result, ],
-       }
-
-
 class Project(object):
     """Base class for Kaylee projects. Essentialy a Project is an
     iterator that yields Kaylee Tasks.
@@ -54,7 +47,12 @@ class Project(object):
     Project supports auto filters. (TODO)
     """
 
-    __metaclass__ = ProjectMeta
+    __metaclass__ = AutoFilterABCMeta
+    auto_filters = {
+        '__next__' : [ depleted_guard, ],
+        'normalize' : [ ignore_null_result, ],
+       }
+
     auto_filter = BASE_FILTERS | CONFIG_FILTERS
 
     def __init__(self, storage = None, *args, **kwargs):

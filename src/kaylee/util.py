@@ -115,19 +115,28 @@ class AutoFilterABCMeta(ABCMeta):
         auto_filter = dct.get('auto_filter', BASE_FILTERS)
         if auto_filter is None:
             auto_filter = NO_FILTERS
+
         if auto_filter & BASE_FILTERS:
             # TODO: document this
             # Automatically wrap methods from auto_filters so that the user
             # does not have to worry about the common stuff.
-            for attr_name, attr in dct.iteritems():
-                try:
-                    wrappers = mcs.auto_filters[attr_name]
-                    method = attr
-                    for wrapper in wrappers:
-                        method = wrapper(method)
-                    dct[attr_name] = method
-                except KeyError:
-                    pass
+
+            # if not the base class (e.g. Controller or Project)
+            if not bases[0] is object:
+                auto_filters = {}
+                # go through all bases
+                for base in bases:
+                    # look for `auto_filters` attribute
+                    base_filters = getattr(base, 'auto_filters', {})
+                    auto_filters.update(base_filters)
+
+                    # wrap the methods
+                    for method_name, filters in auto_filters.iteritems():
+                        method = dct[method_name]
+                        for f in filters:
+                            method = f(method)
+                        dct[method_name] = method
+
         return super(AutoFilterABCMeta, mcs).__new__(mcs, name, bases, dct)
 
     def __init__(mcs, name, bases, dct):
