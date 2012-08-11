@@ -37,12 +37,7 @@ kl.api =
                 kl.results_sent.trigger(results)
                 kl.action_received.trigger(action_data)
             ),
-            ((err) =>
-                kl.server_raised_error.trigger(err)
-                switch(err)
-                    when 'INVALID_STATE_ERR'
-                        @get_action() if kl.app.subscribed
-            )
+            kl._default_server_error_handler
         )
         return null
 
@@ -70,6 +65,9 @@ kl.Event = Event
 kl.register = () ->
     if kl._test_node().features.worker
         kl.api.register()
+    else
+        kl.log("Node cannot be registered: client does not meet the "
+               "requirements.")
     return null
 
 kl.subscribe = (app_name) ->
@@ -95,6 +93,13 @@ kl.send_results = (data) ->
 kl._message_to_worker = (msg, data = {}) ->
     kl.app.worker.postMessage({'msg' : msg, 'data' : data})
     return null
+
+kl._default_server_error_handler = (err) ->
+    kl.server_raised_error.trigger(err)
+    switch(err)
+        when 'INVALID_STATE_ERR'
+            @get_action() if kl.app.subscribed
+
 
 # Primary event handlers
 on_node_registered = (data) ->
