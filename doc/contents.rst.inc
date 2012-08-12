@@ -12,6 +12,7 @@ instructions for deployment of Kaylee.
    firststeps
    tutorial/index
    loading
+   auto_filters
    contrib
 
 API Reference
