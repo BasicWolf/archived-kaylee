@@ -111,33 +111,23 @@ class LazyObject(object):
 
 
 class AutoFilterABCMeta(ABCMeta):
+    """The Abstract Base Metaclass which also adds auto filters
+    functionality. Maintains ``auto_filter`` and ``auto_filters``
+    attributes of the class.
+    """
+
     def __new__(mcs, name, bases, dct):
-        auto_filter = dct.get('auto_filter', BASE_FILTERS)
-        if auto_filter is None:
-            auto_filter = NO_FILTERS
+        cls = super(AutoFilterABCMeta, mcs).__new__(mcs, name, bases, dct)
 
-        if auto_filter & BASE_FILTERS:
-            # TODO: document this
-            # Automatically wrap methods from auto_filters so that the user
-            # does not have to worry about the common stuff.
+        if cls.auto_filter & BASE_FILTERS:
+            # wrap the methods
+            for method_name, filters in cls.auto_filters.iteritems():
+                method = getattr(cls, method_name)
+                for f in filters:
+                    method = f(method)
+                setattr(cls, method_name, method)
 
-            # if not the base class (e.g. Controller or Project)
-            if not bases[0] is object:
-                auto_filters = {}
-                # go through all bases
-                for base in bases:
-                    # look for `auto_filters` attribute
-                    base_filters = getattr(base, 'auto_filters', {})
-                    auto_filters.update(base_filters)
-
-                    # wrap the methods
-                    for method_name, filters in auto_filters.iteritems():
-                        method = dct[method_name]
-                        for f in filters:
-                            method = f(method)
-                        dct[method_name] = method
-
-        return super(AutoFilterABCMeta, mcs).__new__(mcs, name, bases, dct)
+        return cls
 
     def __init__(mcs, name, bases, dct):
         super(AutoFilterABCMeta, mcs).__init__(name, bases, dct)

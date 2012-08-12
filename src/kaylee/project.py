@@ -19,6 +19,11 @@ DEPLETED = 0x2
 COMPLETED = 0x4
 
 def depleted_guard(f):
+    """Catches :exc:`StopIteration`, sets ``project.depleted`` to
+    ``True`` and re-throws the error.
+
+    .. note:: This is a base filter applied to :meth:`Project.__next__`.
+    """
     @wraps(f)
     def wrapper(self, *args, **kwargs):
         try:
@@ -29,6 +34,11 @@ def depleted_guard(f):
     return wrapper
 
 def ignore_null_result(f):
+    """Ignores ``None`` result by **not** calling the wrapped method.
+
+    .. note:: This is a base filter applied to :meth:`Project.normalize`
+              and :meth:`Project.store_result`.
+    """
     @wraps(f)
     def wrapper(self, data):
         if data is not None:
@@ -48,12 +58,13 @@ class Project(object):
     """
 
     __metaclass__ = AutoFilterABCMeta
+    auto_filter = BASE_FILTERS | CONFIG_FILTERS
     auto_filters = {
-        '__next__' : [ depleted_guard, ],
-        'normalize' : [ ignore_null_result, ],
+        '__next__' : [depleted_guard, ],
+        'normalize' : [ignore_null_result, ],
+        'store_result' : [ignore_null_result, ],
        }
 
-    auto_filter = BASE_FILTERS | CONFIG_FILTERS
 
     def __init__(self, storage = None, *args, **kwargs):
         #: A dictionary with configuration
@@ -128,18 +139,14 @@ class Project(object):
         return data
 
     def store_result(self, task_id, data):
-        """Accepts and stores the results to the storage. Note that
-        the ``None``-value results are not stored to the storage.
+        """Accepts and stores the results to the storage.
 
         :param task_id: ID of the task
         :param data: Results of the task. The results are parsed from the
                      JSON data returned by the node.
-                     By-default the ``None`` result is not stored
-                     to the storage.
-        :type data: dict, list or None
+        :type data: dict or list
         """
-        if data is not None:
-            self.storage[task_id] = data
+        self.storage[task_id] = data
 
 
 class TaskMeta(type):

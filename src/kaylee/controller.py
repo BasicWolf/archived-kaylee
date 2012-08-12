@@ -65,7 +65,8 @@ def failed_result_filter(f):
     """The filter is meant to be used in "decision search" projects which
     supposed to deliver a single correct result.
     It converts the ``{ '__kl_result__' : False }`` result to ``None``,
-    which is ignored by the projects' results storage  routine.
+    which is by-default ignored by the projects' results storage routine
+    due to automatic filtering via :func:`kaylee.project.ignore_null_result`.
     """
     @wraps(f)
     def wrapper(self, node, data):
@@ -99,8 +100,8 @@ class Controller(object):
 
     auto_filter = BASE_FILTERS | CONFIG_FILTERS
     auto_filters = {
-        'get_task' : [ app_completed_guard, ],
-        'accept_result' : [ normalize_result_filter, ]
+        'get_task' : [app_completed_guard, ],
+        'accept_result' : [normalize_result_filter, ]
         }
 
     _app_name_re = re.compile('^{}$'.format(app_name_pattern))
