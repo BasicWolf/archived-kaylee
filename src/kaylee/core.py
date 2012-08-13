@@ -68,8 +68,8 @@ class Kaylee(object):
     """
     def __init__(self, client_config, registry, applications):
         self.client_config = client_config
-        self.registry = registry
-        self.applications = applications
+        self._registry = registry
+        self._applications = applications
 
     @json_error_handler
     def register(self, remote_host):
@@ -84,10 +84,10 @@ class Kaylee(object):
         :type remote_host: string
         """
         node = Node(NodeID.for_host(remote_host))
-        self.registry.add(node)
+        self._registry.add(node)
         return json.dumps ({ 'node_id' : str(node.id),
                              'config' : self.client_config,
-                             'applications' : self.applications.names } )
+                             'applications' : self._applications.names } )
 
     @json_error_handler
     def unregister(self, node_id):
@@ -97,7 +97,7 @@ class Kaylee(object):
         :param node_id: a valid node id
         :type node_id: string
         """
-        del self.registry[node_id]
+        del self._registry[node_id]
 
     @json_error_handler
     def subscribe(self, node_id, application):
@@ -113,12 +113,12 @@ class Kaylee(object):
         :returns: jsonified node configuration
         """
         try:
-            node = self.registry[node_id]
+            node = self._registry[node_id]
         except KeyError:
             raise KayleeError('Node "{}" is not registered'.format(node_id))
 
         try:
-            app = self.applications[application]
+            app = self._applications[application]
             return json.dumps( app.subscribe(node) )
         except KeyError:
             raise KayleeError('Application "{}" was not found'.format(app))
@@ -130,7 +130,7 @@ class Kaylee(object):
         :param node_id: a valid node id
         :type node_id: string
         """
-        self.registry[node_id].unsubscribe()
+        self._registry[node_id].unsubscribe()
 
     @json_error_handler
     def get_action(self, node_id):
@@ -152,7 +152,7 @@ class Kaylee(object):
         :param node_id: a valid node id
         :type node_id: string
         """
-        node = self.registry[node_id]
+        node = self._registry[node_id]
         try:
             data = node.get_task().serialize()
             return self._json_action('task', data)
@@ -176,7 +176,7 @@ class Kaylee(object):
         :type data: string
         :returns: a task returned by :meth:`get_action` or "pass" action.
         """
-        node = self.registry[node_id]
+        node = self._registry[node_id]
         try:
             # parse data if it is still a JSON string
             if isinstance(data, basestring):
@@ -193,7 +193,17 @@ class Kaylee(object):
 
     def clean(self):
         """Removes outdated nodes from Kaylee's nodes storage."""
-        self.registry.clean()
+        self._registry.clean()
+
+    @property
+    def applications(self):
+        """TODO"""
+        return self._applications
+
+    @property
+    def registry(self):
+        """TODO"""
+        return self._registry
 
     def _json_action(self, action, data = ''):
         return json.dumps( { 'action' : action, 'data' : data } )

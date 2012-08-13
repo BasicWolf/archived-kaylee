@@ -18,7 +18,7 @@ __version__ = '0.1'
 
 import os
 
-from .loader import Settings, LazySettings, LazyKaylee, SETTINGS_ENV_VAR
+from .loader import Settings, LazySettings, LazyKaylee
 
 settings = LazySettings()
 kl = LazyKaylee()
@@ -32,8 +32,6 @@ from .project import Project, Task
 from .errors import KayleeError
 
 
-def setup(settings_path = None):
-    if settings_path is not None:
-        os.environ[SETTINGS_ENV_VAR] = settings_path
+def setup(config_obj):
     settings._setup()
     kl._setup()
