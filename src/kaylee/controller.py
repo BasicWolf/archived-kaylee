@@ -94,7 +94,7 @@ class Controller(object):
                     intermediate results before storing to project.
     :type app_name: string
     :type project: :class:`Project`
-    :type storage: :class:`ControllerResultsStorage`
+    :type storage: :class:`TemporalStorage`
     """
     __metaclass__ = AutoFilterABCMeta
 

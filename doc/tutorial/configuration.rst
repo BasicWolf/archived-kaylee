@@ -29,7 +29,7 @@ it is an entry in the ``app_mc_pi_1`` dict::
           'tasks_count' : 10
           },
       'storage' : {
-          'name' : 'MemoryProjectResultsStorage',
+          'name' : 'MemoryPermanentStorage',
           }
       },
 
@@ -37,7 +37,7 @@ The ``name`` entry indicated the Python class (Kaylee Project subclass) used
 in this application (``MonteCarloPiProject``).
 The ``config`` contains the keyword arguments passed to ``Project.__init__()``.
 The ``storage`` entry defines the :py:class:`storage <ProjectStorage>` to which
-the results are saved. The ``MemoryProjectResultsStorage`` is a simple in-memory
+the results are saved. The ``MemoryPermanentStorage`` is a simple in-memory
 storage from ``kaylee.contrib``.
 
 The final piece of the configuration is the controller and its temporal results
@@ -51,7 +51,7 @@ as well the part of the application configuration and recides inside the
         'name' : 'SimpleController',
 
         'storage' : {
-            'name' : 'MemoryControllerResultsStorage',
+            'name' : 'MemoryTemporalStorage',
             },
         },
     }

@@ -9,7 +9,8 @@
 {% set page_width = '980px' %}
 {% set document_width = '750px' %}
 {% set sidebar_width = '260px' %}
-{% set margin_top = '60px' %}
+{% set _margin_top = 60 %}
+{% set margin_top = _margin_top ~ 'px' %}
  
 @import url("basic.css");
  
@@ -43,7 +44,7 @@ div.bodywrapper {
 div.sphinxsidebar {
     width: {{ sidebar_width }};
     float:right;
-    margin-top: 150px;
+    margin-top: {{ _margin_top*2 }}px;
     padding-top: -30px;
     background: white;
 }
@@ -96,7 +97,7 @@ div.sphinxsidebar {
 }
 
 div.sphinxsidebarwrapper {
-    padding: 18px 10px;
+    padding: 10px 10px;
 }
 
 div.sphinxsidebarwrapper p.logo {

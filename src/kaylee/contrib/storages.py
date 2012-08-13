@@ -1,8 +1,9 @@
-from kaylee.storage import (ControllerResultsStorage,
-                            ProjectResultsStorage)
+from kaylee.storage import TemporalStorage, PermanentStorage
 from kaylee.errors import KayleeError
 
-class MemoryControllerResultsStorage(ControllerResultsStorage):
+class MemoryTemporalStorage(TemporalStorage):
+    """A simple Python dict-based temporal results storage."""
+
     def __init__(self):
         self.clear()
 
@@ -44,7 +45,9 @@ class MemoryControllerResultsStorage(ControllerResultsStorage):
         return task_id in self._d
 
 
-class MemoryProjectResultsStorage(ProjectResultsStorage):
+class MemoryPermanentStorage(PermanentStorage):
+    """A simple Python dict-based permanent results storage."""
+
     def __init__(self):
         self._d = {}
         self._count = 0

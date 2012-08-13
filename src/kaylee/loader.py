@@ -128,9 +128,9 @@ def _load_kaylee_objects(settings):
 
     controller_classes = _get_classes(contrib_cls, controller.Controller)
     registry_classes = _get_classes(contrib_cls, node.NodesRegistry)
-    pstorage_classes = _get_classes(contrib_cls, storage.ProjectResultsStorage)
+    pstorage_classes = _get_classes(contrib_cls, storage.PermanentStorage)
     crstorage_classes = _get_classes(contrib_cls,
-                                     storage.ControllerResultsStorage)
+                                     storage.TemporalStorage)
 
     # load classes from project modules
     project_classes = {}
@@ -151,9 +151,9 @@ def _load_kaylee_objects(settings):
         controller_classes.update(_get_classes(mod_cls, controller.Controller))
         registry_classes.update(_get_classes(mod_cls, node.NodesRegistry))
         pstorage_classes.update(
-            _get_classes(mod_cls, storage.ProjectResultsStorage))
+            _get_classes(mod_cls, storage.PermanentStorage))
         crstorage_classes.update(
-            _get_classes(mod_cls, storage.ControllerResultsStorage))
+            _get_classes(mod_cls, storage.TemporalStorage))
 
     # load controllers/projects classes and initialize applications
     controllers = {}

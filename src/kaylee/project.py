@@ -62,7 +62,6 @@ class Project(object):
     auto_filters = {
         '__next__' : [depleted_guard, ],
         'normalize' : [ignore_null_result, ],
-        'store_result' : [ignore_null_result, ],
        }
 
 
@@ -139,14 +138,16 @@ class Project(object):
         return data
 
     def store_result(self, task_id, data):
-        """Accepts and stores the results to the storage.
+        """Accepts and stores the results to the storage. Ignores
+        ``data == None`` values.
 
         :param task_id: ID of the task
         :param data: Results of the task. The results are parsed from the
                      JSON data returned by the node.
         :type data: dict or list
         """
-        self.storage[task_id] = data
+        if data is not None:
+            self.storage[task_id] = data
 
 
 class TaskMeta(type):

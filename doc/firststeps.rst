@@ -116,8 +116,8 @@ Storages
 --------
 As we speak of the tasks' results you may wonder, how the results are
 maintained on the server? Kaylee provides abstract storage interfaces
-for both temporal (see :py:class:`ControllerResultsStorage`)
-and permanent (See :py:class:`ProjectResultsStorage`) storages.
+for both temporal (see :py:class:`TemporalStorage`)
+and permanent (See :py:class:`PermanentStorage`) storages.
 This allows to use any kind of storage solutions: from simple
 in-memory objects to relational or NoSQL databases.
 
@@ -125,9 +125,9 @@ The difference between the interfaces is that controller refers to
 the results by both ``node id`` and ``task id``. On the other hand a project
 knows nothing about the nodes and thus refers to the results by ``task id``
 only.
-It is also important to remember that :py:class:`ControllerResultsStorage`
+It is also important to remember that :py:class:`TemporalStorage`
 stores a single result per node per task, while
-:py:class:`ProjectResultsStorage` stores multiple results per task.
+:py:class:`PermanentStorage` stores multiple results per task.
 
 But is it necessary to use a temporal controller storage? Of course not!
 If the controller does not need to keep the intermediate results it can

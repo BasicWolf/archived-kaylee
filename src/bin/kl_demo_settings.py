@@ -38,7 +38,7 @@ app_hash_cracker_1 = {
             'hashes_per_task' : 100,
             },
         'storage' : {
-            'name' : 'MemoryProjectResultsStorage',
+            'name' : 'MemoryPermanentStorage',
             },
         },
     'controller' : {
@@ -57,21 +57,24 @@ app_mc_pi_1 = {
         'config' : {
             'script' : '/static/js/projects/monte_carlo_pi/monte_carlo_pi.js',
             'alea_script' : '/static/js/projects/monte_carlo_pi/alea.js',
-            'random_points' : 1000000,
+            'random_points' : 100000,
             'tasks_count' : 10
             },
         'storage' : {
-            'name' : 'MemoryProjectResultsStorage',
+            'name' : 'MemoryPermanentStorage',
             }
         },
     'controller' : {
-        'name' : 'SimpleController',
+        'name' : 'ResultsComparatorController',
+        'config' : {
+            'results_count_threshold' : 2,
+            },
         'storage' : {
-            'name' : 'MemoryControllerResultsStorage',
+            'name' : 'MemoryTemporalStorage',
             },
         },
     }
 
-APPLICATIONS = [app_hash_cracker_1]
-#APPLICATIONS = [app_mc_pi_1, ]
+#APPLICATIONS = [app_hash_cracker_1]
+APPLICATIONS = [app_mc_pi_1, ]
 #APPLICATIONS = [app_mc_pi_1, app_hash_cracker_1]

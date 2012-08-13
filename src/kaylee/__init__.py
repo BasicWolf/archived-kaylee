@@ -25,8 +25,8 @@ kl = LazyKaylee()
 
 from .core import Kaylee, Applications
 from .node import Node, NodeID, NodesRegistry
-from .storage import (ControllerResultsStorage,
-                      ProjectResultsStorage )
+from .storage import (TemporalStorage,
+                      PermanentStorage )
 from .controller import Controller
 from .project import Project, Task
 from .errors import KayleeError

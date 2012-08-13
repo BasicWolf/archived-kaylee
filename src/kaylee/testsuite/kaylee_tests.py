@@ -7,8 +7,8 @@ from projects.dummy_project.dummy import DummyProject, DummyController
 from kaylee.testsuite import KayleeTest, load_tests, TestSettings
 from kaylee import (NodeID, Node, Kaylee, KayleeError, Applications, )
 from kaylee.loader import _load_kaylee_objects, _load, LazySettings
-from kaylee.contrib.storages import (MemoryControllerResultsStorage,
-                                     MemoryProjectResultsStorage)
+from kaylee.contrib.storages import (MemoryTemporalStorage,
+                                     MemoryPermanentStorage)
 
 from kaylee.contrib.registries import MemoryNodesRegistry
 
@@ -37,11 +37,11 @@ class Settings2(Settings1):
                 'name' :'DummyController',
                 'config' : {},
                 'storage' : {
-                    'name' : 'MemoryControllerResultsStorage',
+                    'name' : 'MemoryTemporalStorage',
                     'config' : {}
                     },
                 'app_storage' : {
-                    'name' : 'MemoryProjectResultsStorage',
+                    'name' : 'MemoryPermanentStorage',
                     'config' : {}
                     },
                 },
@@ -66,7 +66,7 @@ class KayleeLoaderTests(KayleeTest):
         app = apps['dummy.1']
         self.assertEqual(app.__class__.__name__, DummyController.__name__)
         self.assertEqual(app.app_name, 'dummy.1')
-        self.assertIsInstance(app.storage, MemoryControllerResultsStorage)
+        self.assertIsInstance(app.storage, MemoryTemporalStorage)
         self.assertEqual(app.project.__class__.__name__, DummyProject.__name__)
 
     def test_load_kaylee(self):
@@ -76,8 +76,8 @@ class KayleeLoaderTests(KayleeTest):
 
     def test_init_kaylee(self):
         project = DummyProject()
-        storage = MemoryControllerResultsStorage()
-        app_storage = MemoryProjectResultsStorage()
+        storage = MemoryTemporalStorage()
+        app_storage = MemoryPermanentStorage()
         controller = DummyController('dummy_app', project, storage, app_storage)
         apps = Applications({'dummy_app' : controller})
         kl = Kaylee({}, MemoryNodesRegistry(timeout = '2h'), apps)
@@ -96,8 +96,8 @@ class KayleeLoaderTests(KayleeTest):
 
     def test_kaylee_setup(self):
         project = DummyProject()
-        storage = MemoryControllerResultsStorage()
-        app_storage = MemoryProjectResultsStorage()
+        storage = MemoryTemporalStorage()
+        app_storage = MemoryPermanentStorage()
         controller = DummyController('dummy_app', project, storage, app_storage)
         apps = Applications({'dummy_app' : controller})
         _kl = Kaylee({}, MemoryNodesRegistry(timeout = '2h'), apps)

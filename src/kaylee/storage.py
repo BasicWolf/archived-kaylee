@@ -2,13 +2,13 @@
 from abc import ABCMeta, abstractmethod
 
 
-class ControllerResultsStorage(object):
+class TemporalStorage(object):
     """The interface for applications' temporal results storage.
     Consider a situation, when a controller gives the same task to
     several nodes and the end result would be the mean value of
     the returned results. To store these temporal results unless
     all Nodes finish computation, an instance of
-    ControllerResultsStorage should be used.
+    TemporalStorage should be used.
 
     Note that this storage is purely controller-specific. A particular
     controller may not use a temporal storage at all.
@@ -52,7 +52,7 @@ class ControllerResultsStorage(object):
         """Checks if there are any results associated with task."""
 
 
-class ProjectResultsStorage(object):
+class PermanentStorage(object):
     """The interface for applications' permanent results storage.
     The storage can be a file, a database, a Python object in memory etc.
     """

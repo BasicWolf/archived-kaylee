@@ -23,16 +23,16 @@ class NodeUnsubscribedError(KayleeError):
     def __init__(self, node):
         KayleeError.__init__(self, 'Node {} is not subscribed'.format(node))
 
-class StopApplication(KayleeError, StopIteration):
+class StopApplication(StopIteration, KayleeError):
     def __init__(self, app_name):
         super(StopApplication, self).__init__(
-            self, ('All calculations for application {} were completed'
-                   .format(app_name)))
+            'All calculations for application {} were completed'
+            .format(app_name))
 
-class InvalidResultError(KayleeError, ValueError):
+class InvalidResultError(ValueError, KayleeError):
     def __init__(self, result, why = ''):
         super(InvalidResultError, self).__init__(
-            self, 'Invalid result "{}": {}'.format(result, why))
+            'Invalid result "{}": {}'.format(result, why))
 
 class KayleeWarning(UserWarning):
     pass

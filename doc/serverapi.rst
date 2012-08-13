@@ -74,7 +74,7 @@ Controller Object
 Storage Objects
 ---------------
 
-.. autoclass:: ControllerResultsStorage
+.. autoclass:: TemporalStorage
    :members:
 
    .. automethod:: __contains__
@@ -83,7 +83,7 @@ Storage Objects
    .. automethod:: __len__
    .. automethod:: __setitem__
 
-.. autoclass:: ProjectResultsStorage
+.. autoclass:: PermanentStorage
    :members:
 
    .. automethod:: __contains__
