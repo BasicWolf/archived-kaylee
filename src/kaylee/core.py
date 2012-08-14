@@ -12,18 +12,21 @@
 import sys
 import json
 import traceback
+import logging
 from StringIO import StringIO
 from operator import attrgetter
 from functools import partial
 from contextlib import closing
 from functools import wraps
 
+
 from .node import Node, NodeID
 from .errors import KayleeError, InvalidResultError
-from . import settings
+
+log = logging.getLogger(__name__)
 
 #: Returns the results of :function:`json.dumps` in compact encoding
-json.dumps = partial(json.dumps, separators=(',',':'))
+json.dumps = partial(json.dumps, separators=(',', ':'))
 
 
 def json_error_handler(f):
@@ -37,7 +40,8 @@ def json_error_handler(f):
             return f(*args, **kwargs)
         except Exception as e:
             exc_str = str(e)
-            if settings.DEBUG:
+
+            if log.getEffectiveLevel() == logging.DEBUG:
                 with closing(StringIO()) as buf:
                     exc_type, exc_value, exc_traceback = sys.exc_info()
                     traceback.print_tb(exc_traceback,
@@ -60,16 +64,14 @@ class Kaylee(object):
 
       from kaylee import kl
 
-    :param client_config: settings-based configuration required by every node
-                          in order to function properly. This includes for
-                          example the URL root of the projects' script files.
-    :param client_config: an instance of :class:`NodesRegistry`.
+    :param registry: an instance of :class:`NodesRegistry`.
     :param applications: an instance of :class:`Applications` object.
+    :param kwargs: Kaylee configuration arguments
     """
-    def __init__(self, client_config, registry, applications):
-        self.client_config = client_config
+    def __init__(self, registry, applications = None, **kwargs):
+        self.config = Config(**kwargs)
         self._registry = registry
-        self._applications = applications
+        self._applications = applications or Applications()
 
     @json_error_handler
     def register(self, remote_host):
@@ -86,7 +88,7 @@ class Kaylee(object):
         node = Node(NodeID.for_host(remote_host))
         self._registry.add(node)
         return json.dumps ({ 'node_id' : str(node.id),
-                             'config' : self.client_config,
+                             'config' : self.config.to_dict()
                              'applications' : self._applications.names } )
 
     @json_error_handler
@@ -164,7 +166,7 @@ class Kaylee(object):
     @json_error_handler
     def accept_result(self, node_id, data):
         """Accepts the results from the node. Returns the next action if
-        :py:attr:`Settings.GET_NEXT_ACTION_ON_ACCEPT_RESULTS` is True.
+        :py:attr:`Config.AUTO_GET_ACTION` is True.
         Otherwise returns "pass" action.
         Unsubscribes the node if the returned result is invalid.
 
@@ -186,7 +188,7 @@ class Kaylee(object):
             self.unsubscribe(node)
             raise InvalidResultError(data, str(e))
 
-        if settings.AUTO_GET_NEXT_ACTION_ON_ACCEPT_RESULTS:
+        if settings.AUTO_AUTO_GET_ACTION:
             return self.get_action(node.id)
         return self._json_action('pass')
 
@@ -207,6 +209,32 @@ class Kaylee(object):
 
     def _json_action(self, action, data = ''):
         return json.dumps( { 'action' : action, 'data' : data } )
+
+
+class Config(object):
+    fields = ['AUTO_GET_ACTION',
+              'WORKER_SCRIPT',
+              ]
+
+    def __init__(self, **kwargs):
+        self._dirty = True
+        self._cached_dict = {}
+
+        self.AUTO_GET_ACTION = kwargs.get('AUTO_GET_ACTION', True)
+        self.worker_script = kwargs['WORKER_SCRIPT']
+
+    def __setattr__(self, name, value):
+        if name != '_dirty':
+            self.__dict__[name] = value
+            self.__dict__['_dirty'] = True
+        else:
+            self.__dict__[name] = value
+
+    def to_dict(self):
+        if self._dirty:
+            self._cached_dict = { k, getattr(self, k) for k in self.fields }
+            self._dirty = False
+        return self._cached_dict
 
 
 class Applications(object):

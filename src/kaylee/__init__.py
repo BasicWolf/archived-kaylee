@@ -18,10 +18,10 @@ __version__ = '0.1'
 
 import os
 
-from .loader import Settings, LazySettings, LazyKaylee
+from . import loader
 
-settings = LazySettings()
-kl = LazyKaylee()
+kl = loader.LazyKaylee()
+
 
 from .core import Kaylee, Applications
 from .node import Node, NodeID, NodesRegistry
@@ -32,6 +32,6 @@ from .project import Project, Task
 from .errors import KayleeError
 
 
-def setup(config_obj):
-    settings._setup()
-    kl._setup()
+def setup(config):
+    kl_obj = loader.load(config)
+    kl._setup(kl_obj)
