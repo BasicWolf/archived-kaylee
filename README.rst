@@ -1,4 +1,4 @@
-kaylee
+Kaylee
 ======
 
 Distributed javascript computing
