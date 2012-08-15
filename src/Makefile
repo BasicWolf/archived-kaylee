@@ -9,7 +9,7 @@ export KL_BUILD_DIR = $(CURDIR)/build
 export PJ_RES_DIR = $(KL_BUILD_DIR)/static/js/projects
 
 CLIENT_DIR = kaylee/client
-DEMO_DIR = kaylee/contrib/demo
+DEMO_DIR = demo
 
 all : client projects demo
 

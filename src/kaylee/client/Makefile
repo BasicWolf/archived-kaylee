@@ -8,8 +8,6 @@ CLEAN_TARGETS += clean_remote
 endif
 
 
-
-
 all: $(TARGETS)
 
 kaylee.js: kaylee.coffee

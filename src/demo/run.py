@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 import os, sys
 import argparse
+import kaylee
 
 def setup():
     cur_dir = os.path.dirname(os.path.abspath(__file__))
-    root_dir = os.path.join(cur_dir, '..')
-
     sys.path.insert(0, os.path.join(cur_dir, 'django_launcher'))
-    sys.path.insert(0, os.path.join(root_dir, 'projects'))
-    sys.path.insert(0, os.path.join(root_dir, 'kaylee/testsuite'))
-    sys.path.insert(0, root_dir)
-
-    from kaylee import setup
-    setup(os.path.join(cur_dir, 'kl_demo_settings.py'))
+    sys.path.insert(0, os.path.join(cur_dir, 'projects'))
+    sys.path.insert(0, os.path.join(cur_dir, 'src'))
+    
+    kaylee.setup(os.path.join(cur_dir, 'kl_demo_settings.py'))
 
 
 def main():
