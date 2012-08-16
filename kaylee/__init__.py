@@ -14,14 +14,9 @@
     :license: MIT, see LICENSE for more details.
 """
 
-__version__ = '0.1'
+__version__ = '0.1dev'
 
 import os
-
-from . import loader
-
-kl = loader.LazyKaylee()
-
 
 from .core import Kaylee, Applications
 from .node import Node, NodeID, NodesRegistry
@@ -30,6 +25,9 @@ from .storage import (TemporalStorage,
 from .controller import Controller
 from .project import Project, Task
 from .errors import KayleeError
+
+from . import loader
+kl = loader.LazyKaylee()
 
 
 def setup(config):

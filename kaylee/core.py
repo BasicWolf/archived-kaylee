@@ -88,7 +88,7 @@ class Kaylee(object):
         node = Node(NodeID.for_host(remote_host))
         self._registry.add(node)
         return json.dumps ({ 'node_id' : str(node.id),
-                             'config' : self.config.to_dict()
+                             'config' : self.config.to_dict(),
                              'applications' : self._applications.names } )
 
     @json_error_handler
@@ -232,7 +232,7 @@ class Config(object):
 
     def to_dict(self):
         if self._dirty:
-            self._cached_dict = { k, getattr(self, k) for k in self.fields }
+            self._cached_dict = { k : getattr(self, k) for k in self.fields }
             self._dirty = False
         return self._cached_dict
 

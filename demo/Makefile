@@ -1,29 +1,40 @@
-TARGETS = src/klconsole.js src/kldemo.js
+# Define the names of the projects here
+PROJECTS = monte_carlo_pi hash_cracker
 
-ifeq ($(origin KL_BUILD_DIR), environment)
-KL_JS_DIR = $(KL_BUILD_DIR)/static/js/kaylee
-TARGETS += remote
-CLEAN_TARGETS += clean_remote
-endif
+# Create project directories' paths
+PJ_DIRS = $(addprefix projects/, $(PROJECTS) )
 
-all: $(TARGETS)
+# Define build directory and export variables for recursive make purpose
+export KL_BUILD_DIR = $(CURDIR)/build
+export PJ_RES_DIR = $(KL_BUILD_DIR)/static/js/projects
+KL_CLIENT_DIR = $(KL_BUILD_DIR)/static/js/kaylee
 
-src/klconsole.js: src/klconsole.coffee
-	coffee -j src/klconsole.js -c src/klconsole.coffee
+all: demo
 
-src/kldemo.js: src/kldemo.coffee
-	coffee -j src/kldemo.js -c src/kldemo.coffee
+demo: static client $(PJ_DIRS) src/klconsole.js src/kldemo.js
 
-remote:
-	mkdir -p  $(KL_JS_DIR)
-	cp src/*.js $(KL_JS_DIR)
+static:
+	mkdir -p $(KL_BUILD_DIR)
+	mkdir -p $(KL_CLIENT_DIR)
 	cp -r static $(KL_BUILD_DIR)
 	cp -r templates $(KL_BUILD_DIR)
 
-clean: $(CLEAN_TARGETS)
+client:
+	python ../kaylee/bin/kaylee-copy-client.py -l $(KL_CLIENT_DIR)
+
+$(PJ_DIRS):
+	$(MAKE) $(MAKECMDGOALS) -C $@
+
+src/klconsole.js: src/klconsole.coffee
+	coffee -j src/klconsole.js -c src/klconsole.coffee
+	cp src/klconsole.js	 $(KL_CLIENT_DIR)
+
+src/kldemo.js: src/kldemo.coffee
+	coffee -j src/kldemo.js -c src/kldemo.coffee
+	cp src/kldemo.js $(KL_CLIENT_DIR)
+
+clean : clean $(PJ_DIRS) demo client
+	rm -rf $(KL_BUILD_DIR)
 	rm -f src/*.js
 
-clean_remote:
-	rm -rf $(KL_JS_DIR)
-	rm -rf $(KL_BUILD_DIR)/static
-	rm -rf $(KL_BUILD_DIR)/templates
+.PHONY: clean demo projects $(PJ_DIRS) static

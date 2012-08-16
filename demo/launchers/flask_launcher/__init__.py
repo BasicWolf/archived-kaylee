@@ -3,7 +3,8 @@ from jinja2 import FileSystemLoader
 from werkzeug import SharedDataMiddleware
 
 from kaylee.contrib.frontends.flask_frontend import kaylee_blueprint
-from kaylee import settings as kl_settings
+
+import kaylee_demo
 
 app = Flask(__name__)
 
@@ -14,11 +15,11 @@ def index():
 def run():
 
     app.register_blueprint(kaylee_blueprint,
-                           static_folder = kl_settings.FRONTEND_STATIC_DIR,
+                           static_folder = kaylee_demo.FRONTEND_STATIC_DIR,
                            url_prefix = '/kaylee')
 
-    app.jinja_loader = FileSystemLoader(kl_settings.FRONTEND_TEMPLATES_DIR)
-    app.static_path = kl_settings.FRONTEND_STATIC_DIR
+    app.jinja_loader = FileSystemLoader(kaylee_demo.FRONTEND_TEMPLATES_DIR)
+    app.static_path = kaylee_demo.FRONTEND_STATIC_DIR
     app.wsgi_app = SharedDataMiddleware(app.wsgi_app,
                                         { '/static': app.static_path } )
     app.debug = True

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
 
-DEBUG = True
 
 REGISTRY = {
     'name' : 'MemoryNodesRegistry',
@@ -10,13 +10,9 @@ REGISTRY = {
         },
     }
 
-PROJECTS_DIR = '/home/zaur/Documents/projects/kaylee/src/projects'
-KAYLEE_WORKER_SCRIPT = '/static/js/kaylee/klworker.js'
-
-# Settings used for Kaylee front-end demonstration
-FRONTEND_TEMPLATES_DIR = '/home/zaur/Documents/projects/kaylee/src/build/templates'
-FRONTEND_STATIC_DIR = '/home/zaur/Documents/projects/kaylee/src/build/static'
-
+PROJECTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                            'projects'))
+WORKER_SCRIPT = '/static/js/kaylee/klworker.js'
 
 ## User applications ##
 #######################

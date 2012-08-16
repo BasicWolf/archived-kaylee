@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, render_template, abort, request, Response
-from kaylee import kl, settings, setup
+from kaylee import kl
 
-bp = Blueprint('kaylee_blueprint', __name__,
-               template_folder = settings.FRONTEND_TEMPLATES_DIR)
-
+bp = Blueprint('kaylee_blueprint', __name__)
 kaylee_blueprint = bp # just an alias for importing convenience
-
-setup()
 
 @bp.route('/register')
 def register_node():

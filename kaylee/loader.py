@@ -50,16 +50,16 @@ def load(config):
 
     # check if python module path
     if isinstance(config, basestring):
-        config = imp.load_source('kl_config', settings_path)
-    if isinstance(config, type, types.ModuleType):
+        config = imp.load_source('kl_config', config)
+    if isinstance(config, (type, types.ModuleType)):
         # convert to dict
         d = {}
         for attr in dir(config):
             if attr == attr.upper():
-                d[attr] = getattr(config, setting)
+                d[attr] = getattr(config, attr)
         config = d
     elif isinstance(config, dict):
-        config = { k, v for k, v in config.iteritems() if k == k.upper() }
+        config = { k : v for k, v in config.iteritems() if k == k.upper() }
 
     # at this point, if config is not a dict, then object type is wrong.
     if not isinstance(config, dict):
@@ -69,10 +69,11 @@ def load(config):
                                 types.ModuleType.__name__,
                                 basestring.__name__,
                                 type(obj).__name__))
-
+    refresh(config)
     try:
-        registry = _build_registry_object()
-        return Kaylee(*_load_kaylee_objects(config))
+        registry = _build_registry_object(config)
+        apps = build_application_objects(config)
+        return Kaylee(registry, apps, **config)
     except (KeyError, AttributeError) as e:
         raise KayleeError('Config error or object was not found: "{}"'
                           .format(e.args[0]))
@@ -87,15 +88,15 @@ def build_application_objects(config):
 
     apps = {}
     if 'APPLICATIONS' in config:
-        for conf in config['APPLICATIONS']
+        for conf in config['APPLICATIONS']:
             app_name = conf['name']
             if not isinstance(app_name, basestring):
                 raise KayleeError('Configuration error: app name {} is not a string'
                                   .format(app_name))
 
             # initialize objects
-            project = _get_project_object(conf, project_classes, pstorage_classes)
-            controller = _get_controller_object(conf, app_name, project, controller_classes)
+            project = _build_project_object(conf)
+            controller = _build_controller_object(conf, app_name, project)
             # initialize store controller to local apps dict
             apps[app_name] = controller
     return apps
@@ -162,31 +163,31 @@ def _get_classes_from_module(*modules):
                          if inspect.isclass(attr) ))
     return ret
 
-def _build_project_storage_object(conf, pstorage_classes):
+def _build_project_storage_object(conf):
     if not 'storage' in conf['project']:
         return None
     psname = conf['project']['storage']['name']
-    pscls = pstorage_classes[psname]
+    pscls = _pstorage_classes[psname]
     return pscls(**conf['project']['storage'].get('config', {}))
 
-def _build_controller_storage_object(conf, tstorage_classes):
+def _build_temporal_storage_object(conf):
     if not 'storage' in conf['controller']:
         return None
     tsname = conf['controller']['storage']['name']
-    tscls = tstorage_classes[tsname]
+    tscls = _tstorage_classes[tsname]
     return tscls(**conf['controller']['storage'].get('config', {}))
 
-def _build_project_object(conf, project_classes, pstorage_classes):
+def _build_project_object(conf):
     pname = conf['project']['name']
-    pcls = project_classes[pname]
+    pcls = _project_classes[pname]
     pj_config = conf['project'].get('config', {})
-    pj_storage = _build_project_storage_object(conf, pstorage_classes)
+    pj_storage = _build_project_storage_object(conf)
     return pcls(storage=pj_storage, **pj_config)
 
-def _build_controller_object(conf, app_name, project, controller_classes):
+def _build_controller_object(conf, app_name, project):
     cname = conf['controller']['name']
-    ccls = controller_classes[cname]
-    tstorage = _get_controller_storage_object(conf, tstorage_classes)
+    ccls = _controller_classes[cname]
+    tstorage = _build_temporal_storage_object(conf)
     cobj = ccls(app_name, project, tstorage,
                 **conf['controller'].get('config', {}))
 
@@ -195,7 +196,7 @@ def _build_controller_object(conf, app_name, project, controller_classes):
 
     # dynamically decorate controller methods with filters
     # (if required and if there are any filters defined).
-    if 'filters' in conf['controller']
+    if 'filters' in conf['controller']:
         filters = conf['controller']['filters']
         for method_name, filters in filters.iteritems():
             method = getattr(cobj, method_name)
