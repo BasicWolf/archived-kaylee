@@ -19,7 +19,6 @@ from functools import partial
 from contextlib import closing
 from functools import wraps
 
-
 from .node import Node, NodeID
 from .errors import KayleeError, InvalidResultError
 
@@ -71,7 +70,7 @@ class Kaylee(object):
     def __init__(self, registry, applications = None, **kwargs):
         self.config = Config(**kwargs)
         self._registry = registry
-        self._applications = applications or Applications()
+        self._applications = Applications(applications) or Applications({})
 
     @json_error_handler
     def register(self, remote_host):
@@ -188,7 +187,7 @@ class Kaylee(object):
             self.unsubscribe(node)
             raise InvalidResultError(data, str(e))
 
-        if settings.AUTO_AUTO_GET_ACTION:
+        if self.config.AUTO_GET_ACTION:
             return self.get_action(node.id)
         return self._json_action('pass')
 
@@ -221,7 +220,7 @@ class Config(object):
         self._cached_dict = {}
 
         self.AUTO_GET_ACTION = kwargs.get('AUTO_GET_ACTION', True)
-        self.worker_script = kwargs['WORKER_SCRIPT']
+        self.WORKER_SCRIPT = kwargs['WORKER_SCRIPT']
 
     def __setattr__(self, name, value):
         if name != '_dirty':

@@ -1,4 +1,0 @@
-
-APPLICATIONS = []
-
-TEST_OPTION = 'test'

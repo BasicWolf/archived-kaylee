@@ -13,7 +13,6 @@ def index():
     return render_template('index.html')
 
 def run():
-
     app.register_blueprint(kaylee_blueprint,
                            static_folder = kaylee_demo.FRONTEND_STATIC_DIR,
                            url_prefix = '/kaylee')

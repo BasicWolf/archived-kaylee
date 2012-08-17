@@ -36,8 +36,12 @@ class LazyKaylee(LazyObject):
         if isinstance(obj, Kaylee):
             self._wrapped = obj
         else:
-            raise TypeError('obj must be an instance of {} not {}'
-                            .format(Kaylee.__name__, type(obj).__name__))
+            try:
+                self._wrapped = load(obj)
+            except TypeError:
+                raise TypeError('obj must be an instance of {} or '
+                                'a Kaylee config object, not {}'
+                                .format(Kaylee.__name__, type(obj).__name__))
 
 
 def load(config):
@@ -58,7 +62,7 @@ def load(config):
             if attr == attr.upper():
                 d[attr] = getattr(config, attr)
         config = d
-    elif isinstance(config, dict):
+    if isinstance(config, dict):
         config = { k : v for k, v in config.iteritems() if k == k.upper() }
 
     # at this point, if config is not a dict, then object type is wrong.
@@ -68,18 +72,19 @@ def load(config):
                                 type.__name__,
                                 types.ModuleType.__name__,
                                 basestring.__name__,
-                                type(obj).__name__))
-    refresh(config)
+                                type(config).__name__))
+
     try:
-        registry = _build_registry_object(config)
-        apps = build_application_objects(config)
-        return Kaylee(registry, apps, **config)
+        refresh(config)
+        registry = _load_registry(config)
+        apps = load_applications(config)
     except (KeyError, AttributeError) as e:
         raise KayleeError('Config error or object was not found: "{}"'
                           .format(e.args[0]))
 
+    return Kaylee(registry, apps, **config)
 
-def build_application_objects(config):
+def load_applications(config):
     """Loads Kaylee objects.
 
     :returns: Nodes configuration, nodes storage and applications.
@@ -95,13 +100,13 @@ def build_application_objects(config):
                                   .format(app_name))
 
             # initialize objects
-            project = _build_project_object(conf)
-            controller = _build_controller_object(conf, app_name, project)
+            project = _load_project(conf)
+            controller = _load_controller(conf, app_name, project)
             # initialize store controller to local apps dict
             apps[app_name] = controller
     return apps
 
-def _build_registry_object(conf):
+def _load_registry(conf):
     regcls = _registry_classes[conf['REGISTRY']['name']]
     return regcls(**conf['REGISTRY']['config'])
 
@@ -163,31 +168,31 @@ def _get_classes_from_module(*modules):
                          if inspect.isclass(attr) ))
     return ret
 
-def _build_project_storage_object(conf):
+def _load_project_storage(conf):
     if not 'storage' in conf['project']:
         return None
     psname = conf['project']['storage']['name']
     pscls = _pstorage_classes[psname]
     return pscls(**conf['project']['storage'].get('config', {}))
 
-def _build_temporal_storage_object(conf):
+def _load_temporal_storage(conf):
     if not 'storage' in conf['controller']:
         return None
     tsname = conf['controller']['storage']['name']
     tscls = _tstorage_classes[tsname]
     return tscls(**conf['controller']['storage'].get('config', {}))
 
-def _build_project_object(conf):
+def _load_project(conf):
     pname = conf['project']['name']
     pcls = _project_classes[pname]
     pj_config = conf['project'].get('config', {})
-    pj_storage = _build_project_storage_object(conf)
+    pj_storage = _load_project_storage(conf)
     return pcls(storage=pj_storage, **pj_config)
 
-def _build_controller_object(conf, app_name, project):
+def _load_controller(conf, app_name, project):
     cname = conf['controller']['name']
     ccls = _controller_classes[cname]
-    tstorage = _build_temporal_storage_object(conf)
+    tstorage = _load_temporal_storage(conf)
     cobj = ccls(app_name, project, tstorage,
                 **conf['controller'].get('config', {}))
 

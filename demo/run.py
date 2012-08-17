@@ -2,9 +2,11 @@
 import os
 import sys
 import argparse
-
+import logging
 
 def setup():
+    logging.basicConfig(level = logging.DEBUG)
+
     cur_dir = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, os.path.join(cur_dir, 'launchers'))
     sys.path.insert(0, os.path.join(cur_dir, 'launchers/django_launcher'))
@@ -16,7 +18,7 @@ def setup():
 
     # module mock
     class KayleeDemo(object):
-        FRONTEND_TEMPLATES_DIR = os.path.join(cur_dir, '/build/templates')
+        FRONTEND_TEMPLATES_DIR = os.path.join(cur_dir, 'build/templates')
         FRONTEND_STATIC_DIR = os.path.join(cur_dir, 'build/static')
     sys.modules['kaylee_demo'] = KayleeDemo
 

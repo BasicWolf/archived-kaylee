@@ -53,11 +53,11 @@ on_results_sent = () ->
     kl.console.print("The results have been sent to the server.")
 
 on_worker_error = (e) ->
-    kl.console.print("<span class='cerr'>ERROR:</span> Line #{e.lineno} in
+    kl.console.print("<span class='cerr'>WORKER ERROR:</span> Line #{e.lineno} in
                       #{e.filename}: #{e.message}")
 
 on_server_error = (message) ->
-    kl.console.print("<span class='cerr'>ERROR: </span> #{message}")
+    kl.console.print("<span class='cerr'>SERVER ERROR: </span> #{message}")
 
 on_log = (message) ->
     kl.console.print("<span class='cem'>LOG:</span> #{message}")
