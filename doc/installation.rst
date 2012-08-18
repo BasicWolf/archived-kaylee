@@ -8,12 +8,15 @@ Pre-requirements
 
 Kaylee is based on the following technologies:
 
-* `Python 2.7 <http://python.org>`_
-* `CoffeeScript <http://coffeescript.org>`_
-* HTML5 Web Workers
+* `Python 2.7 <http://python.org>`_ is required to run Kaylee server.
+* `CoffeeScript <http://coffeescript.org>`_ is required only if working with
+   Kaylee sources, e.g. for compiling client and projects if they are
+   written in CoffeeScript.
+* HTML5 Web Workers support is required in browsers in order to run the
+  client side of Kaylee and the projects.
 
-It also requires a server front-end to run. The out-of-the box support is
-available for:
+Kaylee also requires a server front-end to run. The out-of-the box support
+is available for:
 
 * `Flask`_
 * `Django`_
@@ -68,44 +71,14 @@ corresponding environment::
   $ . env/bin/activate
 
 Now the virtual environment is activated and everything you install via PIP
-will end up in it. For example, you can install one of the front-ends to
-work with::
+will end up in it::
+
+  $ pip install kaylee
+
+You can install Kaylee front-end(s) as well::
 
   $ pip install flask
 
-Right now Kaylee is a very early stage of development and is not available
-as the CheeseShop package, so you'll have to download and extract it manually::
-
-  $ wget http://github.com/downloads/BasicWolf/kaylee/kaylee_0.1.zip
-  $ unzip kaylee_0.1.zip
-
-The contents of the package should look as following::
-
-  doc/          # documentation you're reading
-  src/          # source code
-  AUTHORS       # list of authors
-  LICENSE       # Kaylee's license
-  NOTICE        # Legal notices and licenses
-  README.rst    # Readme in reStructuredText format
-
-
-Building 
---------
-
-If Kaylee and its dependencies were installed successfully you should be able
-to build Kaylee's client-side and demo via simple ``make`` command
-executed in  ``src`` directory::
-
-  $ make
-  make  -C kaylee/client
-  make[1]: Entering directory `/home/zaur/projects/kaylee/src/kaylee/client'
-  coffee -j kaylee.js -c kaylee.coffee klajax.coffee
-  coffee --bare -c klworker.coffee
-  ...
-
-Kaylee utilizes recursive make techniques which may be considered harmful,
-but are suitable for Kaylee due to its small size. The results of the
-build process are gathered the ``src/build`` directory.
 
 .. _demo:
 
@@ -114,12 +87,8 @@ Demo
 To test whether you have install Kaylee successfully, let's run
 a demo "Hash cracker" application.
 
-Kaylee is designed to easily interact with any Python web framework.
-Out of the box Kaylee contains extensions for
-`Flask`_ and `Django`_
-frameworks.
 To start the demo activate the virtual environment, run
-``python src/bin/run.py`` from the package and open the browser with the
+``python demo/run.py`` from the package and open the browser with the
 corresponding address and port (e.g. the default address of Flask is
 http://127.0.0.1:5000).
 

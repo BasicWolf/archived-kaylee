@@ -3,85 +3,58 @@
 Loading Kaylee
 ==============
 
-Kaylee projects rely on global ``settings`` and ``kl`` proxy objects which
-correspondingly represent Kaylee settings and server instance.
-This section describes how these objects are initialized and loaded.
-
 .. module:: kaylee
 
+Kaylee has a powerful :py:mod:`loader` module which implements several
+function in order to conveniently load Kaylee and the required objects.
+This part of the documentation describes how Kaylee configuration is
+prepared and how Kaylee object is loaded.
 
-Loading the Settings
---------------------
+Configuration
+-------------
+Kaylee configuration is an object which holds some config parameters.
+For example: the :ref:`applications <config_APPLICATIONS>`, worker
+script URI etc.
 
-There are three ways of loading the settings in Kaylee: loading them from a
-Python module (directly or indirectly) or loading them from a Python class.
-The only requirement for the "indirect module" approach is to set the
-:py:const:`loader.SETTINGS_ENV_VAR` environmental variable with the
-absolute path to the settings file::
+There are several ways of defining Kaylee configuration:
 
-  from kaylee.loader import SETTINGS_ENV_VAR
-  os.environ[SETTINGS_ENV_VAR] = os.path.join('/path/to/kaylee/settings.py')
+* Python ``dict``::
 
-In this case settings will be loaded automatically and can be imported
-via the proxy (see :py:class:`LazyObject`) object::
-
-  from kaylee import settings
-  print(settings.DEBUG)
-
-In the "direct" approach an arbitrary Python module can contain the settings
-which are set up manually::
-
-  from kaylee import settings
-  import my_kaylee_settings
-
-  settings._setup(my_kaylee_settings)
-
-In the "class" approach case you have to setup the global settings proxy
-object manually::
-
-  from kaylee import Settings # class
-  from kaylee import settings # global settings proxy
-
-  class MySettings(Settings):
-      DEBUG = True
-
-      NODES_STORAGE = {
-          'name' : 'MemoryNodesRegistry',
-          'config' : {
-              'timeout' : '12h'
-          },
-      }
+    config = {
+      'AUTO_GET_ACTION' : True,
+      'WORKER_SCRIPT' : '/static/js/kaylee/worker.js',
       ...
+    }
 
-  settings._setup(MySettings)
+* Python ``class``::
+
+    class Config(object):
+        AUTO_GET_ACTION = True
+        WORKER_SCRIPT = '/static/js/kaylee/worker.js'
+        ...
+
+* Python ``module``::
+
+    AUTO_GET_ACTION = True
+    WORKER_SCRIPT = '/static/js/kaylee/worker.js'
+
+* An absolute *path* to a Python module file.
+
+Finally, Kaylee can be manually loaded without a configuration object
+at all, but we will talk about this method a bit later.
+Use the method that suits you best.
 
 
 Loading Kaylee Object
 ---------------------
 
-An instance of :py:class:`Kaylee` is created automatically *after* the
-settings are loaded and can be accessed via the global ``kl`` proxy::
+An instance of :py:class:`Kaylee` can be created based on any configuration
+object described above. Kaylee object can be accessed via a global proxy
+from any part of the code::
 
-  from kaylee import kl
+  from kaylee import kl, setup
 
-  # An example Node registration handler.
-  @app.route('/register')
-  def register_node():
-      data = kl.register(request.remote_addr)
-      return json_response(data)
+  setup('/path/to/config/file.py') # setup accepts any valid config object
 
+  # at this point the `kl` proxy refers to the Kaylee object.
 
-Quick Load
-----------
-
-The recommended way to setup both settings and Kaylee
-with a single function call is::
-
-  from kaylee import setup
-  setup('/path/to/kaylee/settings.py') # or just setup(), see below
-
-In case the environmental variable has been previously set, call ``setup()``
-with no arguments.
-This is generally done during the web front-end initialization, e.g.
-put this code in Django project's ``models.py`` file or Flask
-blueprint's/app's ``.py`` file.

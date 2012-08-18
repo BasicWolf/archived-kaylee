@@ -11,6 +11,7 @@
 {% set sidebar_width = '260px' %}
 {% set _margin_top = 60 %}
 {% set margin_top = _margin_top ~ 'px' %}
+{% set color_black = '#292929' %}
  
 @import url("basic.css");
  
@@ -19,7 +20,7 @@
 body {
     font-family: sans-serif, serif;
     font-size: 17px;
-    background-color: black;
+    background-color: {{ color_black }};
     color: #000;
     margin: 0;
     padding: 0;
@@ -194,7 +195,7 @@ div.body h1 {
     padding-top: {{ margin_top }};
     padding-bottom: 15px;
  /* #   font-size: 240%;  */
-    background: black;
+    background: {{ color_black }};
     width: {{ document_width }};
 }
 
@@ -373,8 +374,8 @@ pre {
     padding: 7px 30px;
     margin: 15px 0 15px -30px;
     line-height: 1.3em;
-    /* border-top: 1px dotted black; */
-    /* border-bottom: 1px dotted black; */
+    /* border-top: 1px dotted {{ color_black }}; */
+    /* border-bottom: 1px dotted {{ color_black }}; */
 }
 
 dl pre, blockquote pre, li pre {

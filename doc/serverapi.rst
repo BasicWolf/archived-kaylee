@@ -7,11 +7,6 @@ Server API
 
 This part of the documentation covers all the server-side interfaces of Kaylee.
 
-Kaylee Constants
-----------------
-
-.. autodata:: SETTINGS_ENV_VAR
-
 
 Kaylee Object
 -------------
