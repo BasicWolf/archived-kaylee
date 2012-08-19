@@ -89,6 +89,8 @@ Storage Objects
    .. automethod:: __setitem__
 
 
+.. _fitlers_api:
+
 Filters
 -------
 

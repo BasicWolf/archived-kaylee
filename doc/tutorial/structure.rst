@@ -4,12 +4,11 @@ Step 1: Project Structure
 =========================
 
 Kaylee utilizes recursive Makefile techniques to automate Kaylee client,
-projects and demo building process. The ``src/projects`` directory contains
-all the user projects with all necessary ``*.py`` and ``*.coffee`` and/or
-``*.js`` files. So, first of all let's create `monte_carlo_pi` directory in
-``src/projects/``.
+projects and demo building process. The ``demo/projects`` directory contains
+all the demo projects with ``*.py`` and ``*.coffee`` and/or ``*.js`` files.
+So, first of all let's create `monte_carlo_pi` directory in ``demo/projects/``.
 It will also serve as a Python package thus, we'll need the ``__init__.py``
-in it. Another good idea is to leave the ``__init__.py`` with few lines of
+in it. Another good idea is to leave the ``__init__.py`` with as few lines of
 code as possible and to write the code in a separate ``monte_carlo_pi.py``
 file.
 Finally we will need a place to store the client-side code of the project,
@@ -30,4 +29,4 @@ The structure of the project directory should now look as following::
   |--Makefile
 
 
-Let's continue with writing the :ref:`client-side code <tutorial-client-side>`.
+Continue with :ref:`tutorial-requirements`.

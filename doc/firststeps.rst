@@ -12,7 +12,7 @@ Server and Nodes
 ----------------
 
 Kaylee is divided in two parts: the server-side Python brains which controls
-the tasks distribution and results collection and client-side
+the tasks distribution and results collection and the client-side
 (browser-side) JavaScript Nodes which do the dirty computation work.
 
 The server performs the following routines:
@@ -34,7 +34,7 @@ them later.
 Kaylee Nodes utilize the new HTML5 Web Workers [1]_ standard in order to
 avoid interfering with browser's main JavaScript event loop.
 After registering and subscribing to Kaylee application, a Node has a single
-job to do: solve given tasks and report the results.
+job to do: solve the given tasks and report the results.
 
 .. _firststep_projects_and_tasks:
 
@@ -44,8 +44,8 @@ Projects and Tasks
 
 Kaylee tries to free users of routines related to distributed computation
 as much as possible. Still, a user needs to write the server-side Python code
-which will generate data for computation and receive and validate the results
-and the client-side code which will compute and solve the tasks
+which will generate the data for computation and receive and validate the
+results and the client-side code which will compute and solve the tasks
 provided by the server.
 In Kaylee's terms the server and client-side code is written in the scope
 of a single *Project*.
@@ -58,30 +58,20 @@ code::
   t = next(project)
   t2 = project[t.id]
 
-should generate ``t`` and ``t2`` with identical data, so that the computation
-results of ``t`` and ``t2`` are also the same.
+should generate ``t`` and ``t2`` with identical data, so that in cases where
+the computation algorithm is not based on a random factor(s), the results of
+``t`` and ``t2`` agree.
 
-The client-side of the project contains the code which actually solves the
-given tasks (see :ref:`clientapi`). To keep things simple all communication is
-done via JSON.
+The client-side of a project contains the code which actually solves the
+given tasks (see :ref:`clientapi`). To keep things simple the communication
+between client and server is carried out via JSON.
 
-It is important to understand that a single project can be configurable so,
-that it  be instantiated. For example, a project which is used to model
-some complex process can be instantiated based on various initial
+An important matter to remember: a single project can be instantiated into
+multiple *applications* that differ by project's configuration.
+For example, a project which is used to model a complex weather process can
+be instantiated based on various initial wind, humidity, temperature etc.
 conditions. Each of this instances will work as a separate Kaylee
 :ref:`Application <firststep_application>`.
-
-
-Settings and Kaylee Proxies
----------------------------
-
-Kaylee lets you to store all settings in a single `.py` file and make them
-accessible through any part of your code.
-The instance of :py:class:`Kaylee` is automatically created based on
-the settings provided by the user. Both settings and Kaylee object can be
-accessed through the global proxies as follows::
-
-  from kaylee import settings, kl
 
 
 Controllers
@@ -100,7 +90,7 @@ the results integrity and accuracy.
 
 Implementing controllers is easy as there are only two methods to implement:
 ``get_task(self, node)`` and ``accept_result(self, node, data)`` (for more
-details see :py:class:`Controller`).
+details see :py:class:`Controller API <Controller>`).
 
 
 Auto Filters
@@ -108,16 +98,17 @@ Auto Filters
 Auto-filtering is yet another feature in Kaylee which allows to write less
 code. Filters are Python decorators which can be automatically applied to
 implementation of Controllers' and Projects' abstract methods. For example
-the :py:func:`depleted_guard` filter sets project's *depleted* flag if
-``project.__next__()`` raises :py:exc:`StopIteration`. TODO: filters list.
+the :py:func:`depleted_guard <kaylee.project.depleted_guard>` filter sets
+project's *depleted* flag if ``project.__next__()`` raises
+:py:exc:`StopIteration`.
 
 
 Storages
 --------
 As we speak of the tasks' results you may wonder, how the results are
 maintained on the server? Kaylee provides abstract storage interfaces
-for both temporal (see :py:class:`TemporalStorage`)
-and permanent (See :py:class:`PermanentStorage`) storages.
+for both :py:class:`temporal <TemporalStorage>` and
+:py:class:`permanent <PermanentStorage>`) storages.
 This allows to use any kind of storage solutions: from simple
 in-memory objects to relational or NoSQL databases.
 
@@ -126,10 +117,11 @@ the results by both ``node id`` and ``task id``. On the other hand a project
 knows nothing about the nodes and thus refers to the results by ``task id``
 only.
 It is also important to remember that :py:class:`TemporalStorage`
-stores a single result per node per task, while
-:py:class:`PermanentStorage` stores multiple results per task.
+stores a single result per node per task which may be discarded, while
+:py:class:`PermanentStorage` permanently stores one or multiple results
+per task.
 
-But is it necessary to use a temporal controller storage? Of course not!
+Is it necessary to use a temporal controller storage? Of course not!
 If the controller does not need to keep the intermediate results it can
 pass them right to the project.
 
@@ -140,14 +132,10 @@ Applications
 ------------
 By combining controllers storages and projects users form Kaylee
 `Applications`. Speaking in technical terms, an application
-is a combination of project, controller and storage *objects*.
+is a combination of a project, a controller and storage *objects*.
 which are not shareable among the applications.
+In run-time, Kaylee Application is an instance of the
+:py:class:`Controller` class.
 
-For example, consider a project which is used to find the best
-flight trajectories for a space station sent from the Earth to another planet
-in Solar system. So, one of the applications will use an instance of
-the `SpaceTrajectoryProject` class configured to search for trajectories
-to Mars, and another application will use an instance of the same class
-configured to search for trajectories to Pluto.
 
 .. [1] http://www.w3schools.com/html5/html5_webworkers.asp

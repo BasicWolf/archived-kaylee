@@ -25,16 +25,16 @@ and include ``alea.js`` in project's ``js`` directory.
 Configuration
 -------------
 The client-side application configuration is a JSON object passed from the
-server to the client when application is initialized on the client side.
+server to the client when an application is initialized on the client side.
 It contains shared and application-specific information required for the
 project initialization.
 What kind of configuration do we need to pass to the client?
 First of all, a Node should know the number of random points to be generated.
 Second, the project requires the ``alea.js`` library and should be able to load
 it. Luckily the standard ``importScripts()`` function is available in HTML5
-Web Workers in order to load javascript code. Thus, we just need to pass the
-URL of the library. Considering these requirements, the configuration would be
-similar to::
+Web Workers in order to load javascript code. All we have to do is to pass the
+URL of the library. Considering these requirements, the desired configuration
+is similar to::
 
   {
       'alea_script' : '/static/projects/monte_carlo_pi/alea.js',
@@ -63,8 +63,14 @@ The algorithm of calculating PI is based on the theory explained in
   repeat random_points times:
       let x, y be random numbers in (0, 1) range.
       if x^2 + y^2 <= 1 then
-          # the points is inside the circle
+          # the point is inside the circle
           points_counter += 1
   pi = 4 * points_counter / random_points
+
+On server-side the results are collected and the mean value is calculated::
+
+  pi = sum(pi_1, pi_2, ... pi_amount_of_tasks) / amount_of_tasks
+
+Continue with :ref:`tutorial-client-side`.
 
 .. _alea.js: http://baagoe.org/en/w/index.php/Better_random_numbers_for_javascript

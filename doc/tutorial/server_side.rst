@@ -3,8 +3,10 @@
 Step 4: Server-Side Code
 ========================
 
-Now, let's work a bit on the server-side. First, we need to import the
+Now, let's code a bit on the server-side. First, we need to import the
 required components of Kaylee::
+
+  # monte_carlo_pi.py
 
   from kaylee import Project, Task
   from kaylee.errors import InvalidResultError
@@ -13,20 +15,13 @@ Next, we have to subclass ``Project`` in order for Kaylee's import system
 to recognize it::
 
   class MonteCarloPiProject(Project):
-      auto_filter = True
-
-I believe you're comfortable with the first line, but what does
-``auto_filter = True`` do? If you read the :ref:`firststeps` guide then
-you should be acquainted with Kaylee *filters* a bit. That is how you
-turn them on in a ``Project`` or a ``Controller``. I decided to keep it that
-way because "Explicit is better that implicit" and by-default the filters
-are off.
+      ...
 
 Before we continue with the code, lets first think, what kind of configuration
-is required in order to initialize the project? As has been discussed in the
+is required in order to initialize the project? As it was discussed in the
 :ref:`project requirements <tutorial-requirements-configuration>` and
 implemented on the :ref:`client side <tutorial-client-side>`, we need
-the amount of random points and the URL of ``alea.js`` script to pass to
+the amount of random points and the URL of ``alea.js`` script to be passed to
 the client and the amount of tasks to execute on the server::
 
   def __init__(self, *args, **kwargs):
@@ -57,12 +52,12 @@ Next, lets implement two basic abstract methods of Kaylee Project::
           raise StopIteration()
 
 As you can see, ``__next__()`` in conjunction with ``__getitem__()`` yields
-a :py:class:``task <Task>`` object with numerical id derived from
+a :py:class:`task <Task>` object with numerical id derived from
 ``self._tasks_counter``.
 
 The next important part of every project is the :py:meth:`Project.normalize`
 method. It is used to verify and normalize the results returned by the client.
-In the case of our project we extract the calculated value of PI from the
+In case of our project the calculated value of PI is extracted from the
 parsed JSON object (dictionary)::
 
   def normalize(self, data):
@@ -74,7 +69,7 @@ parsed JSON object (dictionary)::
 
 And finally, :py:meth:`Project.store_results` - the method which stores
 the distributed computation results and determines whether all required
-data is gathered and the application is completed::
+data is collected and the application is completed::
 
   def store_result(self, task_id, data):
       super(MonteCarloPiProject, self).store_result(task_id, data)
@@ -82,10 +77,10 @@ data is gathered and the application is completed::
           self.completed = True
           self._announce_results()
 
-Here, we call ``Project.store_result()`` because it simply stores the results
-to the predefined storage (don't worry we'll speak about it just a bit later)
-and then checks whether the project is completed.
-Ups, almost missed the part which announces the final results::
+Here, ``Project.store_result()`` is called, which stores the results to
+the predefined storage (we'll speak about them a bit later) and then
+checks whether the project is completed.
+Ah, almost missed the part which announces the final results::
 
   def _announce_results(self):
       mid_pi = ( sum(res[0] for res in self.storage.values()) /
@@ -96,11 +91,10 @@ Ups, almost missed the part which announces the final results::
 That is the message you're going to see in Kaylee's front-end shell
 (or the logs).
 
-I belive you have already figured out that the code above goes to
-``monte_carlo_pi.coffee``. But we still need to import the project in
+The last step to do with the code: we still need to import the project in
 ``__init__.py`` for Kaylee to find it::
 
   from .monte_carlo_pi import MonteCarloPiProject
 
-And we are done with the server side! Let's find out how an application can
-be found by Kaylee in :ref:`tutorial-configuration`.
+
+Continue with :ref:`tutorial-configuration`.

@@ -8,12 +8,13 @@ Pre-requirements
 
 Kaylee is based on the following technologies:
 
-* `Python 2.7 <http://python.org>`_ is required to run Kaylee server.
-* `CoffeeScript <http://coffeescript.org>`_ is required only if working with
-   Kaylee sources, e.g. for compiling client and projects if they are
-   written in CoffeeScript.
-* HTML5 Web Workers support is required in browsers in order to run the
-  client side of Kaylee and the projects.
+* `Python 2.7 <http://python.org>`_. Kaylee is mainly written in Python.
+* `CoffeeScript <http://coffeescript.org>`_. The client side of Kaylee is
+  written in CoffeeScript which compiles to JavaScript. It is strongly
+  recommended to write Kaylee projects in CoffeeScript.
+* HTML5 Web Workers. This technology enables executing JavaScript code in
+  parallel with a browser's main JavaScript even loop. Kaylee client
+  executes projects code in a web worker.
 
 Kaylee also requires a server front-end to run. The out-of-the box support
 is available for:
@@ -85,12 +86,13 @@ You can install Kaylee front-end(s) as well::
 Demo
 ----
 To test whether you have install Kaylee successfully, let's run
-a demo "Hash cracker" application.
+a demo "Hash cracker" application. Download the demo archive
+from http://github.com/BasicWolf/kaylee/downloads and extract
+it to a directory under the virtualenv in which Kaylee is installed.
 
 To start the demo activate the virtual environment, run
-``python demo/run.py`` from the package and open the browser with the
-corresponding address and port (e.g. the default address of Flask is
-http://127.0.0.1:5000).
+``python demo/run.py`` and open a browser page on the following URL:
+http://127.0.0.1:5000.
 
 If everything was successful you should see a page with a black rectangle
 in the middle which represents an "echo" console. Don't worry, it is a part

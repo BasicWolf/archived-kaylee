@@ -3,7 +3,7 @@
 Step 3: Client-Side Code
 ========================
 
-As you may already know, that the client-side of Kaylee is written in
+As you may already know, the client-side of Kaylee is written in
 `CoffeeScript <http://coffeescript.org/>`_. But there is nothing
 that prevents you from writing the project in pure JavaScript!
 Yet, for simplicity and clarity we are going to use CoffeeScript.
@@ -13,7 +13,7 @@ everybody.
 
 The client-side code of Kaylee projects basically consists of two callbacks
 in ``pj`` namespace: :js:func:`pj.init(kl_config, app_config) <pj.init>` and
-:js:func:`pj.on_task_received(task) <pj.on_task_recieved>`.
+:js:func:`pj.on_task_received(task) <pj.on_task_received>`.
 The ``pj.init()`` callback initializes projects (e.g. imports 3d party libraries,
 setups configuration etc.). Its arguments are global Kaylee and application
 configurations. It is called after the project script is fully loaded::
@@ -47,5 +47,7 @@ the :js:func:`task_completed() <klw.task_completed>` function from
 :ref:`Kaylee Worker API <client_workerapi>`.
 
 If you are comfortable with the code above, just copy-paste it to
-``js/monte_carlo_pi.coffee`` and be ready to move to
-:ref:`tutorial-server-side`.
+``js/monte_carlo_pi.coffee``.
+
+
+Continue with :ref:`tutorial-server-side`.
