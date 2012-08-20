@@ -85,14 +85,15 @@ class Controller(object):
     collects results and stores them back to project.
 
     An instance of ``Controller`` with bound ``project`` and ``storages``
-    forms an **Application**.
-    Usually controllers are not instantiated by a user directly (TODO)
+    forms an **Application**. Kaylee :meth:`loader <loder.load>` automatically
+    initializes controllers if the :config:`APPLICATIONS` TODO.
     Controller supports auto filters. (TODO)
 
     :param app_name: Application name.
-    :param project: Bound project instance.
-    :param storage: Internal storage instance which may be used to store
-                    intermediate results before storing to project.
+    :param project: Bound project.
+    :param storage: Internal storage which is used to store intermediate
+                    (temporal) results before storing them to a permanent
+                    storage.
     :type app_name: string
     :type project: :class:`Project`
     :type storage: :class:`TemporalStorage`
@@ -142,6 +143,18 @@ class Controller(object):
         :param data: JSON-parsed results of the task performed by the node.
         :type data: dict or list
         """
+
+    def store_result(self, task_id, data):
+        """Stores the results to permanent storage. Ignores ``data == None``
+        values.
+
+        :param task_id: ID of the task
+        :param data: Task results.
+        :type data: dict or list (parsed JSON)
+        """
+        if data is not None:
+            self.project.storage.add(task_id, data)
+
 
     @property
     def completed(self):
