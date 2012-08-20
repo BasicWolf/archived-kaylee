@@ -13,7 +13,6 @@ class DummyProject(Project):
     def __getitem__(self, val):
         return val
 
-
 class DummyController(Controller):
     def __init__(self, *args, **kwargs):
         super(DummyController, self).__init__(*args, **kwargs)

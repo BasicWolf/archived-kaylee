@@ -81,6 +81,7 @@ def load(config):
 
     return Kaylee(registry, apps, **config)
 
+
 def load_applications(config):
     """TODO"""
 
@@ -91,9 +92,11 @@ def load_applications(config):
             apps.append(controller)
     return apps
 
+
 def _load_registry(conf):
     regcls = _registry_classes[conf['REGISTRY']['name']]
     return regcls(**conf['REGISTRY']['config'])
+
 
 def refresh(config):
     """TODO: document me"""
@@ -146,12 +149,14 @@ def _get_classes(classes, cls):
         ret[c.__name__] = c
     return ret
 
+
 def _get_classes_from_module(*modules):
     ret = []
     for mod in modules:
         ret.extend(list( attr for attr in mod.__dict__.values()
                          if inspect.isclass(attr) ))
     return ret
+
 
 def _load_project_storage(conf):
     if not 'storage' in conf['project']:
@@ -160,6 +165,7 @@ def _load_project_storage(conf):
     pscls = _pstorage_classes[psname]
     return pscls(**conf['project']['storage'].get('config', {}))
 
+
 def _load_temporal_storage(conf):
     if not 'storage' in conf['controller']:
         return None
@@ -167,12 +173,14 @@ def _load_temporal_storage(conf):
     tscls = _tstorage_classes[tsname]
     return tscls(**conf['controller']['storage'].get('config', {}))
 
+
 def _load_project(conf):
     pname = conf['project']['name']
     pcls = _project_classes[pname]
     pj_config = conf['project'].get('config', {})
     pj_storage = _load_project_storage(conf)
     return pcls(storage=pj_storage, **pj_config)
+
 
 def _load_controller(conf):
             # initialize objects

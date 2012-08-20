@@ -35,7 +35,7 @@ class SimpleController(Controller):
         return task
 
     def accept_result(self, node, data):
-        self.store_result(node.task_id, data)
+        self.project.store_result(node.task_id, data)
         self._tasks_pool.remove(node.task_id)
         if self.project.completed:
             self.completed = True
@@ -115,7 +115,7 @@ class ResultsComparatorController(Controller):
         return True
 
     def _add_result(self, task_id, data):
-        self.store_result(task_id, data)
+        self.project.store_result(task_id, data)
         # check if application has collected all the results
         # and can switch to the "COMPLETED" state
         if self.project.completed:

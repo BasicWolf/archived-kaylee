@@ -40,9 +40,9 @@ def ignore_null_result(f):
               and :meth:`Project.store_result`.
     """
     @wraps(f)
-    def wrapper(self, data):
+    def wrapper(self, task_id, data):
         if data is not None:
-            return f(self, data)
+            return f(self, task_id, data)
         return None
     return wrapper
 
@@ -62,6 +62,7 @@ class Project(object):
     auto_filters = {
         '__next__' : [depleted_guard, ],
         'normalize' : [ignore_null_result, ],
+        'store_result' : [ignore_null_result, ],
        }
 
 
@@ -104,6 +105,15 @@ class Project(object):
     def __getitem__(self, task_id):
         """Returns task with the required id."""
 
+    def store_result(self, task_id, data):
+        """Stores the results to the permanent storage.
+
+        :param task_id: Task ID.
+        :param data: Task results.
+        :type data: dict or list (parsed JSON)
+        """
+        self.storage.add(task_id, data)
+
     @property
     def depleted(self):
         """Indicates if current project instance has run out of new tasks."""
@@ -128,11 +138,12 @@ class Project(object):
         else:
             self._state &= ~COMPLETED
 
-    def normalize(self, data):
-        """Normalizes and validates the reply from a node.
+    def normalize(self, task_id, data):
+        """Normalizes and validates a task solution.
 
-        :param data: the data to be validated and/or normalized.
-        :throws ValueError: in case of invalid result.
+        :param task_id: Task ID to which the data is related.
+        :param data: the solution to be validated and/or normalized.
+        :throws ValueError: in case of invalid data.
         :return: normalized data.
         """
         return data

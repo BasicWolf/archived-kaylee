@@ -57,7 +57,7 @@ def normalize_result_filter(f):
     """
     @wraps(f)
     def wrapper(self, node, data):
-        data = self.project.normalize(data)
+        data = self.project.normalize(node.task_id, data)
         return f(self, node, data)
     return wrapper
 
@@ -143,18 +143,6 @@ class Controller(object):
         :param data: JSON-parsed results of the task performed by the node.
         :type data: dict or list
         """
-
-    def store_result(self, task_id, data):
-        """Stores the results to permanent storage. Ignores ``data == None``
-        values.
-
-        :param task_id: ID of the task
-        :param data: Task results.
-        :type data: dict or list (parsed JSON)
-        """
-        if data is not None:
-            self.project.storage.add(task_id, data)
-
 
     @property
     def completed(self):

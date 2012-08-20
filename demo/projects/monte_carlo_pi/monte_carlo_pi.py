@@ -22,7 +22,7 @@ class MonteCarloPiProject(Project):
         else:
             raise StopIteration()
 
-    def normalize(self, data):
+    def normalize(self, task_id, data):
         try:
             return data['pi']
         except KeyError:
