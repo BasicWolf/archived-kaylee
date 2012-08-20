@@ -3,12 +3,14 @@ import re
 import importlib
 from datetime import timedelta
 from abc import ABCMeta
+
 from .errors import KayleeError
 
 
 NO_FILTERS = 0x0
 BASE_FILTERS = 0x2
 CONFIG_FILTERS = 0x4
+
 
 def parse_timedelta(s):
     try:

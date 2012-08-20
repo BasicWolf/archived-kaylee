@@ -50,9 +50,8 @@ class ResultsComparatorController(Controller):
     is passed to the project. The results are discarded if they don't
     match and the calculations for the task starts again.
 
-    :param results_count_threshold: The amount of results associated with
-                                    certain task to be collected before
-                                    running the comparison routine.
+    :param results_count_threshold: The amount of task results to be collected
+                                    before running the comparison routine.
     """
     def __init__(self, *args, **kwargs):
         super(ResultsComparatorController, self).__init__(*args, **kwargs)

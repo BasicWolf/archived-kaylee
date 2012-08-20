@@ -6,7 +6,6 @@ from kaylee.contrib import (MemoryTemporalStorage,
                             MemoryPermanentStorage,
                             MemoryNodesRegistry)
 
-
 _test_REGISTRY = {
     'name' : 'MemoryNodesRegistry',
     'config' : {
@@ -40,6 +39,7 @@ class TestConfigWithApps(object):
                 },
           }
         ]
+
     PROJECTS_DIR = PROJECTS_DIR
 
 class KayleeLoaderTests(KayleeTest):
@@ -70,14 +70,14 @@ class KayleeLoaderTests(KayleeTest):
         config = dict(TestConfigWithApps.__dict__)
         loader.refresh(config)
         apps = loader.load_applications(config)
-        self.assertIsInstance(apps, dict)
+        self.assertIsInstance(apps, list)
         self.assertEqual(len(apps), 1)
 
-        app = apps['dummy.1']
+        app = apps[0]
         self.assertEqual(app.__class__.__name__, 'DummyController')
         self.assertEqual(app.project.__class__.__name__, 'DummyProject')
-        # self.assertIsInstance(app.storage, MemoryTemporalStorage)
-        # self.assertIsInstance(app.project.storage, MemoryPermanentStorage)
+        self.assertIsInstance(app.storage, MemoryTemporalStorage)
+        #self.assertIsInstance(app.project.storage, MemoryPermanentStorage)
 
     def test_load_registry(self):
         config = dict(TestConfig.__dict__)

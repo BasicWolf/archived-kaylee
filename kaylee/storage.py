@@ -64,7 +64,7 @@ class PermanentStorage(object):
 
     @abstractmethod
     def add(self, task_id, result):
-        """Stores the result associated with task."""
+        """Stores the task result."""
 
     @abstractmethod
     def keys(self):

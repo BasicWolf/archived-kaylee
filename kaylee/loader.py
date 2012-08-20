@@ -82,25 +82,13 @@ def load(config):
     return Kaylee(registry, apps, **config)
 
 def load_applications(config):
-    """Loads Kaylee objects.
+    """TODO"""
 
-    :returns: Nodes configuration, nodes storage and applications.
-    :rtype: (dict, :class:`NodesRegistry`, :class:`Applcations`)
-    """
-
-    apps = {}
+    apps = []
     if 'APPLICATIONS' in config:
         for conf in config['APPLICATIONS']:
-            app_name = conf['name']
-            if not isinstance(app_name, basestring):
-                raise KayleeError('Configuration error: app name {} is not a string'
-                                  .format(app_name))
-
-            # initialize objects
-            project = _load_project(conf)
-            controller = _load_controller(conf, app_name, project)
-            # initialize store controller to local apps dict
-            apps[app_name] = controller
+            controller = _load_controller(conf)
+            apps.append(controller)
     return apps
 
 def _load_registry(conf):
@@ -186,9 +174,12 @@ def _load_project(conf):
     pj_storage = _load_project_storage(conf)
     return pcls(storage=pj_storage, **pj_config)
 
-def _load_controller(conf, app_name, project):
+def _load_controller(conf):
+            # initialize objects
     cname = conf['controller']['name']
     ccls = _controller_classes[cname]
+    app_name = conf['name']
+    project = _load_project(conf)
     tstorage = _load_temporal_storage(conf)
     cobj = ccls(app_name, project, tstorage,
                 **conf['controller'].get('config', {}))

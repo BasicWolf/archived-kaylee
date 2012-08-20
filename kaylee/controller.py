@@ -84,7 +84,8 @@ class Controller(object):
     is a layer that binds projects and nodes. It dispatches tasks to nodes,
     collects results and stores them back to project.
 
-    In Kaylee a controller with bound project is called an **Application**.
+    An instance of ``Controller`` with bound ``project`` and ``storages``
+    forms an **Application**.
     Usually controllers are not instantiated by a user directly (TODO)
     Controller supports auto filters. (TODO)
 
@@ -153,3 +154,6 @@ class Controller(object):
             self._state |= COMPLETED
         else:
             self._state &= ~COMPLETED
+
+    def __hash__(self):
+        return hash(self.app_name)

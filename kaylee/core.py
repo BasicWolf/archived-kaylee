@@ -58,19 +58,22 @@ class Kaylee(object):
     data. Note that it is the job of a particular front-end to set the
     response content-type to "application/json".
 
-    An instance of :class:`Kaylee` should not be created by a user.
-    It is created automatically and can be used via proxy follows::
-
-      from kaylee import kl
+    A convenient way of creating ``Kaylee`` object is via :meth:`loader.load`
+    factory method.
 
     :param registry: an instance of :class:`NodesRegistry`.
-    :param applications: an instance of :class:`Applications` object.
-    :param kwargs: Kaylee configuration arguments
+    :param applications: a list of applications (:class:`Controller`
+                         instances).
+    :param kwargs: Kaylee configuration arguments.
     """
     def __init__(self, registry, applications = None, **kwargs):
+        #: An instance of :class:`Config` with Kaylee configuration parsed
+        #: from ``**kwargs``. The configuration parameters are accessed as
+        #: follows:::
+        #: kl.config.CONFIG_PARAMETER
         self.config = Config(**kwargs)
         self._registry = registry
-        self._applications = Applications(applications) or Applications({})
+        self._applications = Applications(applications) or Applications([])
 
     @json_error_handler
     def register(self, remote_host):
@@ -198,12 +201,12 @@ class Kaylee(object):
 
     @property
     def applications(self):
-        """TODO"""
+        """Loaded applications (an instance of :class:`Applications`)."""
         return self._applications
 
     @property
     def registry(self):
-        """TODO"""
+        """Active nodes registry (an instance of :class:`NodesRegistry`)."""
         return self._registry
 
     def _json_action(self, action, data = ''):
@@ -211,6 +214,7 @@ class Kaylee(object):
 
 
 class Config(object):
+    """Kaylee Configuration repository."""
     fields = ['AUTO_GET_ACTION',
               'WORKER_SCRIPT',
               ]
@@ -238,8 +242,8 @@ class Config(object):
 
 class Applications(object):
     def __init__(self, controllers):
-        self._controllers = controllers
-        self.names = list(sorted(controllers.keys()))
+        self._controllers = {c.app_name : c for c in controllers}
+        self.names = sorted(self._controllers.keys())
 
     def __getitem__(self, key):
         return self._controllers[key]

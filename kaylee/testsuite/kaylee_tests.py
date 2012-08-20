@@ -10,50 +10,35 @@ from kaylee.contrib import (MemoryTemporalStorage,
 
 from projects.dummy_project.dummy import DummyProject, DummyController
 
-# from kaylee import (NodeID, Node, Kaylee, KayleeError, Applications, )
-# from kaylee.loader import _load_kaylee_objects, _load, LazySettings
+import test_config
 
+from kaylee import NodeID, Node, Kaylee, KayleeError, loader
 
 # from datetime import datetime
 
-
-
-
 class KayleeTests(KayleeTest):
-    def test_init_kaylee(self):
-        project = DummyProject()
-        storage = MemoryTemporalStorage()
-        app_storage = MemoryPermanentStorage()
-        controller = DummyController('dummy_app', project, storage, app_storage)
-        apps = Applications({'dummy_app' : controller})
-        kl = Kaylee({}, MemoryNodesRegistry(timeout = '2h'), apps)
-        self.assertIn('dummy_app', kl.applications)
-        self.assertIsInstance(kl.registry, MemoryNodesRegistry)
+    def test_register_unregister(self):
+        kl = loader.load(test_config)
+        node_json_config = kl.register('127.0.0.1')
+        node_config = json.loads(node_json_config)
+        self.assertEqual(len(node_config), 3)
+        self.assertIn('node_id', node_config)
+        self.assertIn('config', node_config)
+        self.assertIn('applications', node_config)
 
-#     def test_register_unregister(self):
-#         kl = _load(Settings2)
-#         node_json_config = kl.register('127.0.0.1')
-#         node_config = json.loads(node_json_config)
-#         self.assertEqual(len(node_config), 3)
-#         self.assertIn('node_id', node_config)
-#         self.assertIn('config', node_config)
-#         self.assertIn('applications', node_config)
+        nid = NodeID(node_id = node_config['node_id'])
+        self.assertIn(nid, kl.registry)
+        self.assertIn(node_config['node_id'], kl.registry)
 
-#         nid = NodeID(node_id = node_config['node_id'])
-#         self.assertIn(nid, kl.registry)
-#         self.assertIn(node_config['node_id'], kl.registry)
+        kl.unregister(nid)
+        self.assertNotIn(nid, kl.registry)
 
-#         kl.unregister(nid)
-#         self.assertNotIn(nid, kl.registry)
-
-#     def test_subscribe_unsubscribe(self):
-#         # todo: this should be in test_init()
-#         # todo: write test_loader and then use Settings to initialize Kaylee here
-#         kl = _load(Settings2)
-#         app = kl.applications['dummy.1']
-#         node_json_config = kl.register('127.0.0.1')
-#         node_config = json.loads(node_json_config)
-#         node_id = node_config['node_id']
+    # def test_subscribe_unsubscribe(self):
+    #     kl = loader.load(test_config)
+    #     app = kl.applications['dummy.1']
+    #     node_json_config = kl.register('127.0.0.1')
+    #     node_config = json.loads(node_json_config)
+    #     node_id = node_config['node_id']
 
 #         # test node.subscribe
 #         app_json_config = kl.subscribe(node_id, 'dummy.1')
