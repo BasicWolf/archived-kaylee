@@ -14,9 +14,9 @@ def setup():
     sys.path.insert(0, os.path.join(cur_dir, '../'))
 
     import kaylee
-    kaylee.setup(os.path.join(cur_dir, 'kl_demo_settings.py'))
+    kaylee.setup(os.path.join(cur_dir, 'demo_config.py'))
 
-    # module mock
+    # module mock 
     class KayleeDemo(object):
         FRONTEND_TEMPLATES_DIR = os.path.join(cur_dir, 'build/templates')
         FRONTEND_STATIC_DIR = os.path.join(cur_dir, 'build/static')

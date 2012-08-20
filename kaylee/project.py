@@ -147,7 +147,7 @@ class Project(object):
         :type data: dict or list
         """
         if data is not None:
-            self.storage[task_id] = data
+            self.storage.add(task_id, data)
 
 
 class TaskMeta(type):

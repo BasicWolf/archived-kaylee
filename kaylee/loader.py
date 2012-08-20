@@ -36,12 +36,9 @@ class LazyKaylee(LazyObject):
         if isinstance(obj, Kaylee):
             self._wrapped = obj
         else:
-            try:
-                self._wrapped = load(obj)
-            except TypeError:
-                raise TypeError('obj must be an instance of {} or '
-                                'a Kaylee config object, not {}'
-                                .format(Kaylee.__name__, type(obj).__name__))
+            raise TypeError('obj must be an instance of {} or '
+                            'a Kaylee config object, not {}'
+                            .format(Kaylee.__name__, type(obj).__name__))
 
 
 def load(config):

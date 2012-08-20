@@ -31,4 +31,4 @@ kl = loader.LazyKaylee()
 
 
 def setup(config):
-    kl._setup(config)
+    kl._setup(loader.load(config))

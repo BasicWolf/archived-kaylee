@@ -10,46 +10,50 @@ class TemporalStorage(object):
     all Nodes finish computation, an instance of
     TemporalStorage should be used.
 
-    Note that this storage is purely controller-specific. A particular
-    controller may not use a temporal storage at all.
+    Note that using this storage is to be decided by a controller.
+    A controller may not need a temporal storage at all.
     """
     __metaclass__ = ABCMeta
 
     @abstractmethod
     def add(self, node_id, task_id, result):
-        """Stores the results associated with task computed by a node."""
+        """Stores the task result returned by a node."""
 
     @abstractmethod
     def remove(self, node_id, task_id):
-        """Removes the result associated with task computed by given node
-        from the storage."""
+        """Removes a particular task result returned by a defined node from
+        the storage."""
 
     @abstractmethod
     def clear(self):
         """Removes all results from the storage."""
 
     @abstractmethod
+    def keys(self):
+        """Returns an iterator object of the storage keys."""
+
+    @abstractmethod
+    def values(self):
+        """Returns an iterator object of the storage values."""
+
+    @abstractmethod
     def __len__(self):
         """Returns the total amount of results in the storage."""
 
     @abstractmethod
-    def __setitem__(self, task_id, results):
-        """Stores the results associated with task."""
-
-    @abstractmethod
     def __getitem__(self, task_id):
-        """Returns the results associated with task.
+        """Returns the task results.
 
-        :rtype:  { node_id : result, ...} dict
+        :rtype:  (node_id : result) ... iterator
         """
 
     @abstractmethod
     def __delitem__(self, task_id):
-        """Removes all results associated with task."""
+        """Removes all task results."""
 
     @abstractmethod
     def __contains__(self, task_id):
-        """Checks if there are any results associated with task."""
+        """Checks if there are any task results in the storage."""
 
 
 class PermanentStorage(object):
@@ -59,36 +63,36 @@ class PermanentStorage(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
+    def add(self, task_id, result):
+        """Stores the result associated with task."""
+
+    @abstractmethod
+    def keys(self):
+        """Returns an iterator object of the storage keys."""
+
+    @abstractmethod
+    def values(self):
+        """Returns an iterator object of the storage values."""
+
+    @abstractmethod
     def __len__(self):
         """Returns the total amount of results in the storage."""
 
     @abstractmethod
     def __getitem__(self, task_id):
-        """Returns the results associated with task.
+        """Returns the task results.
 
         :rtype: list
         """
 
     @abstractmethod
-    def __setitem__(self, task_id, result):
-        """Stores the results of the given task."""
-
-    @abstractmethod
     def __delitem__(self, task_id):
-        """Removes the results of the given task."""
+        """Removes the task results."""
 
     @abstractmethod
     def __contains__(self, task_id):
-        """Checks if results of the task are in the storage."""
+        """Checks if there are any task results in the storage."""
 
     @abstractmethod
     def __iter__(self):
         """Returns the iterator object of the storage."""
-
-    @abstractmethod
-    def keys(self):
-        """Returns an iterator object of the storage's keys."""
-
-    @abstractmethod
-    def values(self):
-        """Returns an iterator object of the storage's values."""
