@@ -6,7 +6,10 @@ Configuration Options
 This section describes Kaylee configuration options.
 For information on setting up Kaylee, please see :ref:`loading`.
 
-.. _config-APPLICATIONS:
+.. config:: APPLICATIONS
 
-.. py:data:: APPLICATIONS
+APPLICATIONS
+------------
+
+Info on APPLICATIONS
 

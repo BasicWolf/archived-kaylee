@@ -16,10 +16,14 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
+cur_dir = os.path.dirname(__file__)
+
+local_path = lambda p: os.path.abspath(os.path.join(cur_dir, p))
 #sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('../kaylee'))
-sys.path.insert(0, os.path.abspath('../'))
-sys.path.append(os.path.abspath('_themes'))
+sys.path.insert(0, local_path('../kaylee'))
+sys.path.insert(0, local_path('../'))
+sys.path.insert(0, local_path('_themes'))
+sys.path.insert(0, local_path("_ext"))
 
 # -- General configuration -----------------------------------------------------
 
@@ -28,7 +32,8 @@ sys.path.append(os.path.abspath('_themes'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx', 'sphinx.ext.pngmath']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
+              'sphinx.ext.pngmath', 'kaylee_sphinx']
 # 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.pngmath', 'sphinx.ext.viewcode'
 
 # Add any paths that contain templates here, relative to this directory.

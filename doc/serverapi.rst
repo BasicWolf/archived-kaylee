@@ -76,7 +76,6 @@ Storage Objects
    .. automethod:: __delitem__
    .. automethod:: __getitem__
    .. automethod:: __len__
-   .. automethod:: __setitem__
 
 .. autoclass:: PermanentStorage
    :members:
@@ -86,7 +85,6 @@ Storage Objects
    .. automethod:: __getitem__
    .. automethod:: __iter__
    .. automethod:: __len__
-   .. automethod:: __setitem__
 
 
 .. _fitlers_api:

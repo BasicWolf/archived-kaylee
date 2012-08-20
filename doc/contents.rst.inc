@@ -26,6 +26,10 @@ method, this part of the documentation is for you.
 
    clientapi
    serverapi
+
+.. toctree::
+   :maxdepth: 1
+
    config
 
 Additional Notes

@@ -12,9 +12,8 @@ prepared and how Kaylee object is loaded.
 
 Configuration
 -------------
-Kaylee configuration is an object which holds some config parameters.
-For example: the :ref:`applications <config-APPLICATIONS>`, worker
-script URI etc.
+Kaylee configuration is an object which holds some :ref:`config <config>`
+parameters. For example: the applications, worker script URI etc.
 
 There are several ways of defining Kaylee configuration:
 

@@ -55,8 +55,7 @@ inside the ``app_mc_pi_1`` dictionary.::
         'name' : 'SimpleController',
     }
 
-The last step is to add the application to the :ref:`APPLICATIONS
-<config-APPLICATIONS>`
+The last step is to add the application to the :config:`APPLICATIONS`
 configuration field. Please make sure that you have only the ``app_mc_pi_1``
 application in the list (this is due to the client-side demo behaviour which
 picks up the first available application).
