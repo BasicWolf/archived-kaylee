@@ -14,7 +14,7 @@ Kaylee is based on the following technologies:
   recommended to write Kaylee projects in CoffeeScript.
 * HTML5 Web Workers. This technology enables executing JavaScript code in
   parallel with a browser's main JavaScript even loop. Kaylee client
-  executes projects code in a web worker.
+  executes projects' code in a web worker.
 
 Kaylee also requires a server front-end to run. The out-of-the box support
 is available for:
@@ -41,7 +41,7 @@ the versions of those libraries can break the application.
 Also, what if you can't install packages into the global
 ``site-packages`` directory?  For instance, on a shared host.
 
-In all these cases, ``virtualenv`` can help you.  It creates an
+In all these cases, `virtualenv`_ can help you.  It creates an
 environment that has its own installation directories, that doesn't
 share libraries with other virtualenv environments (and optionally
 doesn't access the globally installed libraries either).
@@ -110,7 +110,9 @@ Congratulations! You've just cracked a salted MD5 hash.
 If you scroll the console on the web page
 to the top, you'll see the steps of project's initialization process.
 Finally, check out the shell, you may notice a message from Kaylee
-which says what the cracked hash key was::
+which says what the cracked hash key was:
+
+.. code-block:: none
 
   * Running on http://127.0.0.1:5000/
   * Restarting with reloader
@@ -128,5 +130,8 @@ which says what the cracked hash key was::
   The cracked hash key is: kl
   ...
 
-.. _Flask: http://flask.pocoo.org/
-.. _Django: http://djangoproject.com/
+Continue with :ref:`firststeps`.
+
+.. _Flask: http://flask.pocoo.org
+.. _Django: http://djangoproject.com
+.. _virtualenv: http://www.virtualenv.org

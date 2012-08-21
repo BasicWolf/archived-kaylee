@@ -18,8 +18,9 @@ class SimpleController(Controller):
                 task = next(self.project)
             except StopIteration:
                 # at this point, project.depleted is expected
-                # to become 'True'
-                pass
+                # to be 'True'
+                assert self.project.depleted, ('StopIteration was raised but '
+                                               'Project.depleted is False.')
 
         if self.project.depleted:
             try:

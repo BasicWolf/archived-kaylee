@@ -42,7 +42,7 @@ class HashCrackerProject(Project):
         raise ValueError('Invalid hash key')
 
     def store_result(self, task_id, data):
-        super(MonteCarloPiProject, self).store_result(task_id, data)
+        super(HashCrackerProject, self).store_result(task_id, data)
         if len(self.storage) == 1:
             # it is enough to have a single result to complete the project
             self.completed = True

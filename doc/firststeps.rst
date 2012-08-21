@@ -11,9 +11,9 @@ of technical details.
 Server and Nodes
 ----------------
 
-Kaylee is divided in two parts: the server-side Python brains which controls
-the tasks distribution and results collection and the client-side
-(browser-side) JavaScript Nodes which do the dirty computation work.
+Kaylee is divided in two parts: the server-side Python brains which control
+the tasks distribution, the results (solutions) collection and the
+client-side Nodes communication processes.
 
 The server performs the following routines:
 
@@ -24,17 +24,12 @@ The server performs the following routines:
   * Subscribes the nodes to applications. During the subscription process
     the node loads and initializes the project script(s).
   * Dispatches the tasks to the nodes. At this stage the subscribed nodes
-    receive the tasks, solve them and return the results back.
+    receive the tasks, solve them and send the solution back to the server.
   * Collects the results from the nodes. Kaylee decides whether the results
     are satisfactory and stores them to a permanent storage.
 
-There are multiple simple and complex sub-routines and we will talk about
-them later.
-
 Kaylee Nodes utilize the new HTML5 Web Workers [1]_ standard in order to
 avoid interfering with browser's main JavaScript event loop.
-After registering and subscribing to Kaylee application, a Node has a single
-job to do: solve the given tasks and report the results.
 
 .. _firststep_projects_and_tasks:
 
@@ -44,7 +39,7 @@ Projects and Tasks
 
 Kaylee tries to free users of routines related to distributed computation
 as much as possible. Still, a user needs to write the server-side Python code
-which will generate the data for computation and receive and validate the
+which yields the data for computation, the code to receive and validate the
 results and the client-side code which will compute and solve the tasks
 provided by the server.
 In Kaylee's terms the server and client-side code is written in the scope
@@ -59,7 +54,7 @@ code::
   t2 = project[t.id]
 
 should generate ``t`` and ``t2`` with identical data, so that in cases where
-the computation algorithm is not based on a random factor(s), the results of
+the computation algorithm is not based on a random factor(s), the solution of
 ``t`` and ``t2`` agree.
 
 The client-side of a project contains the code which actually solves the
@@ -77,7 +72,7 @@ conditions. Each of this instances will work as a separate Kaylee
 Controllers
 -----------
 A controller is an object which stands between the outer Kaylee interface
-and a project. Controller keeps the track of subscribed nodes, decides
+and a project. A controller keeps the track of subscribed nodes, decides
 what kind of task every node will recieve and how the results are collected.
 
 Why do we need controllers at all? Why not communicate directly with projects?
@@ -85,8 +80,8 @@ It is simple: the world on the other side of Kaylee is not perfect. You can
 never be sure whether a node with assigned task will return the results
 (as it can disconnect without notifying Kaylee) or the results will be correct
 at all. A controller can be designed to send the same task to multiple
-nodes instead of a single one. That kind redundancy is the fee for
-the results integrity and accuracy.
+nodes instead of a single one. That kind of redundancy is the fee for the
+results' integrity and accuracy.
 
 Implementing controllers is easy as there are only two methods to implement:
 ``get_task(self, node)`` and ``accept_result(self, node, data)`` (for more
@@ -95,24 +90,22 @@ details see :py:class:`Controller API <Controller>`).
 
 Auto Filters
 ------------
-Auto-filtering is yet another feature in Kaylee which allows to write less
-code. Filters are Python decorators which can be automatically applied to
-implementation of Controllers' and Projects' abstract methods. For example
-the :py:func:`depleted_guard <kaylee.project.depleted_guard>` filter sets
-project's *depleted* flag if ``project.__next__()`` raises
-:py:exc:`StopIteration`.
-
+Auto-filtering is yet another feature of Kaylee's "write less do more"
+principle. Filters are Python decorators which can be automatically
+applied to Controllers' and Projects' methods. They take care of
+the ``Client <-> Server <-> Controller <-> Project`` interface specifics
+and let the user to concentrate on the actual code.
 
 Storages
 --------
-As we speak of the tasks' results you may wonder, how the results are
+As we speak of the tasks' solutions you may wonder, how these results are
 maintained on the server? Kaylee provides abstract storage interfaces
 for both :py:class:`temporal <TemporalStorage>` and
 :py:class:`permanent <PermanentStorage>`) storages.
-This allows to use any kind of storage solutions: from simple
+This allows using any kind of storage solutions: from simple
 in-memory objects to relational or NoSQL databases.
 
-The difference between the interfaces is that controller refers to
+The difference between the interfaces is that controllers refer to
 the results by both ``node id`` and ``task id``. On the other hand a project
 knows nothing about the nodes and thus refers to the results by ``task id``
 only.
@@ -132,10 +125,10 @@ Applications
 ------------
 By combining controllers storages and projects users form Kaylee
 `Applications`. Speaking in technical terms, an application
-is a combination of a project, a controller and storage *objects*.
-which are not shareable among the applications.
-In run-time, Kaylee Application is an instance of the
-:py:class:`Controller` class.
+is an instance of :class:`Controller` class with bound :class:`Project`,
+:class:`TemporalStorage` and :class:`PermanentStorage` objects.
 
+
+Continue with :ref:`tutorial`.
 
 .. [1] http://www.w3schools.com/html5/html5_webworkers.asp
