@@ -13,13 +13,13 @@ Kaylee Object
 
 .. autoclass:: Kaylee
 
-   .. automethod:: register(self, remote_host)
-   .. automethod:: unregister(self, node_id)
-   .. automethod:: subscribe(self, node_id, application)
-   .. automethod:: unsubscribe(self, node_id)
-   .. automethod:: get_action(self, node_id)
-   .. automethod:: accept_result(self, node_id, data)
-   .. automethod:: clean(self)
+   .. automethod:: register(remote_host)
+   .. automethod:: unregister(node_id)
+   .. automethod:: subscribe(node_id, application)
+   .. automethod:: unsubscribe(node_id)
+   .. automethod:: get_action(node_id)
+   .. automethod:: accept_result(node_id, data)
+   .. automethod:: clean()
    .. :inherited-members:
 
 
@@ -49,8 +49,8 @@ Project and Task Objects
 .. autoclass:: Project
    :members:
 
-   .. automethod:: __next__
-   .. automethod:: __getitem__
+   .. automethod:: __next__()
+   .. automethod:: __getitem__()
 
 .. autoclass:: Task
    :members:
@@ -63,7 +63,11 @@ Controller Object
 -----------------
 
 .. autoclass:: Controller
-   :members:
+
+   .. automethod:: accept_result(node, data)
+   .. autoattribute:: completed
+   .. automethod:: get_task(node)
+   .. automethod:: subscribe(node)
 
 
 Storage Objects
@@ -81,7 +85,6 @@ Storage Objects
    :members:
 
    .. automethod:: __contains__
-   .. automethod:: __delitem__
    .. automethod:: __getitem__
    .. automethod:: __iter__
    .. automethod:: __len__
@@ -95,7 +98,8 @@ Filters
 .. py:class:: kaylee.util.AutoFilterABCMeta
 
    The Abstract Base Metaclass which also adds auto filters functionality.
-   Maintains ``auto_filter`` and ``auto_filters`` attributes of the class.
+   Maintains ``auto_filter`` and ``auto_filters`` attributes of the class
+   (see :ref:`auto_filters`).
 
    .. _api_auto_filter:
 

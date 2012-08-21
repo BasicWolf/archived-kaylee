@@ -65,8 +65,7 @@ def failed_result_filter(f):
     """The filter is meant to be used in "decision search" projects which
     supposed to deliver a single correct result.
     It converts the ``{ '__kl_result__' : False }`` result to ``None``,
-    which is by-default ignored by the projects' results storage routine
-    due to automatic filtering via :func:`kaylee.project.ignore_null_result`.
+    which should be ignored by projects' :meth:`Project.store_result` routine.
     """
     @wraps(f)
     def wrapper(self, node, data):
@@ -80,20 +79,19 @@ def failed_result_filter(f):
 
 
 class Controller(object):
-    """The Controller is one of the main parts of Kaylee. A controller
-    is a layer that binds projects and nodes. It dispatches tasks to nodes,
-    collects results and stores them back to project.
+    """Controller is one of the main parts of Kaylee. A controller
+    is a layer that binds projects and nodes. It dispatches the project tasks
+    to nodes, and collects the results.
 
-    An instance of ``Controller`` with bound ``project`` and ``storages``
-    forms an **Application**. Kaylee :meth:`loader <loder.load>` automatically
-    initializes controllers if the :config:`APPLICATIONS` TODO.
-    Controller supports auto filters. (TODO)
+    A controller, a project, a temporal and permanenet storages altogether
+    form a *Kaylee Application*.
+
+    Metaclass: :class:`AutoFilterABCMeta <kaylee.util.AutoFilterABCMeta>`.
 
     :param app_name: Application name.
     :param project: Bound project.
-    :param storage: Internal storage which is used to store intermediate
-                    (temporal) results before storing them to a permanent
-                    storage.
+    :param storage: Internal storage for storing intermediate (temporal)
+                    results before storing them to a permanent storage.
     :type app_name: string
     :type project: :class:`Project`
     :type storage: :class:`TemporalStorage`
@@ -119,7 +117,7 @@ class Controller(object):
 
     @app_completed_guard
     def subscribe(self, node):
-        """Subscribes a node for bound project.
+        """Subscribes a node for current application.
 
         :param node: A registered node.
         :type node: :class:`Node`
@@ -140,7 +138,7 @@ class Controller(object):
         """Accepts and processes results from a node.
 
         :param node: Active Kaylee Node from which the results are received.
-        :param data: JSON-parsed results of the task performed by the node.
+        :param data: JSON-parsed task results.
         :type data: dict or list
         """
 

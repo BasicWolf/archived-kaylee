@@ -4,11 +4,6 @@ from abc import ABCMeta, abstractmethod
 
 class TemporalStorage(object):
     """The interface for applications' temporal results storage.
-    Consider a situation, when a controller gives the same task to
-    several nodes and the end result would be the mean value of
-    the returned results. To store these temporal results unless
-    all Nodes finish computation, an instance of
-    TemporalStorage should be used.
 
     Note that using this storage is to be decided by a controller.
     A controller may not need a temporal storage at all.
@@ -84,10 +79,6 @@ class PermanentStorage(object):
 
         :rtype: list
         """
-
-    @abstractmethod
-    def __delitem__(self, task_id):
-        """Removes the task results."""
 
     @abstractmethod
     def __contains__(self, task_id):

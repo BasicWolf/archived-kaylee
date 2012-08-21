@@ -34,7 +34,7 @@ def depleted_guard(f):
     return wrapper
 
 def ignore_null_result(f):
-    """Ignores ``None`` result by **not** calling the wrapped method.
+    """Ignores ``None`` data by **not** calling the wrapped method.
 
     .. note:: This is a base filter applied to :meth:`Project.normalize`
               and :meth:`Project.store_result`.
@@ -49,12 +49,12 @@ def ignore_null_result(f):
 
 class Project(object):
     """Base class for Kaylee projects. Essentialy a Project is an
-    iterator that yields Kaylee Tasks.
+    iterator that yields Kaylee :class:`Tasks <Task>`.
 
-    Every :class:`Task` has a unique id and a project should be able
-    to return the same task by given id if required.
+    Every task has a unique ID and a project should be able
+    to return the same task by the given id if required.
 
-    Project supports auto filters. (TODO)
+    Metaclass: :class:`AutoFilterABCMeta <kaylee.util.AutoFilterABCMeta>`.
     """
 
     __metaclass__ = AutoFilterABCMeta
@@ -68,11 +68,11 @@ class Project(object):
 
     def __init__(self, storage = None, *args, **kwargs):
         #: A dictionary with configuration
-        #: details used by every client-side node. For example, it can
-        #: contain a path to the javascript file with project's
-        #: client-side logic. That path will be later used by Kaylee's
-        #: client engine to load and start calculations on client.
-        #: TODO
+        #: details used by every client-side node. By-default it
+        #: contains a URL of the script with project's client-side
+        #: logic. If the project is loaded via a configuration object
+        #: ``client_config`` is extended by ``project.config`` section's
+        #: value (see :ref:`loading`).
         self.client_config = {
             'script' : kwargs['script'],
             }
@@ -86,16 +86,15 @@ class Project(object):
     @abstractmethod
     def __next__(self):
         """
-        Returns the next task. In case if ``__next__()`` throws
-        :exc:`StopIteration`, it means that there will be no more
+        Returns the next task. The :exc:`StopIteration` exception thrown
+        by ``__next__()`` indicates that there will be no more
         new tasks from the project, but the bound controller can still
-        refer to old tasks via project[task_id]. After :exc:`StopIteration`
-        has been thrown, :attr:`depleted` **must** be set (by the project or
-        via filter) to `True`.
-        In case that :class:`Controller` does not intercept or re-throw
-        :exc:`StopIteration`, :class:`Kaylee` catches and interprets it as
-        "no need to involve the bound node in any further calculations for
-        the application".
+        refer to old tasks via ``project[task_id]``. After :exc:`StopIteration`
+        has been thrown, :attr:`Project.depleted` *must* be set (by the project
+        or via auto filter) to ``True``.
+        If the controller does not intercept or re-throws :exc:`StopIteration`,
+        Kaylee catches and interprets it as *"no need to involve the bound node
+        in any further calculations for the application"*.
 
         :throws: StopIteration
         :returns: an instance of :class:`Task`
@@ -116,7 +115,9 @@ class Project(object):
 
     @property
     def depleted(self):
-        """Indicates if current project instance has run out of new tasks."""
+        """Indicates if current project instance has run out of new tasks
+        (see :meth:`Project.__next__`).
+        """
         return self._state & DEPLETED
 
     @depleted.setter
@@ -128,7 +129,7 @@ class Project(object):
 
     @property
     def completed(self):
-        """Indicates if current project instance was completed."""
+        """Indicates whether the project was completed."""
         return self._state & COMPLETED
 
     @completed.setter
@@ -139,11 +140,11 @@ class Project(object):
             self._state &= ~COMPLETED
 
     def normalize(self, task_id, data):
-        """Normalizes and validates a task solution.
+        """Normalizes and validates a solution.
 
-        :param task_id: Task ID to which the data is related.
+        :param task_id: the ID of the task.
         :param data: the solution to be validated and/or normalized.
-        :throws ValueError: in case of invalid data.
+        :throws ValueError: if the data is invalid.
         :return: normalized data.
         """
         return data
@@ -174,7 +175,7 @@ class Task(object):
     """
     Base class for Kaylee projects' tasks. This class is meant to be
     inherited in users' projects if additional attributes-to-be-serialized
-    are required. When serialized, Task.id is converted to string,
+    are required. When serialized, ``Task.id`` is converted to string,
     whereas other attributes' values are stored unmodified.
     For example::
 

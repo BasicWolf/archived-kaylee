@@ -66,10 +66,6 @@ class MemoryPermanentStorage(PermanentStorage):
     def __len__(self):
         return self._count
 
-    def __delitem__(self, task_id):
-        self._count -= len(self._d[task_id])
-        del self._d[task_id]
-
     def __getitem__(self, task_id):
         return self._d[task_id]
 
