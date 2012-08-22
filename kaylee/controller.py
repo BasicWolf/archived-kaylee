@@ -35,8 +35,7 @@ def app_completed_guard(f):
        set object's :attr:`Controller.completed` value to ``True``.
        The :exc:`StopApplication` is then re-raised.
 
-    .. note:: This is a base filter applied to
-              :meth:`Controller.get_task`.
+    .. note:: This is a base filter applied to :meth:`Controller.get_task`.
     """
     @wraps(f)
     def wrapper(self, *args, **kwargs):
@@ -52,8 +51,8 @@ def app_completed_guard(f):
 def normalize_result_filter(f):
     """The filter normalizes the data before passing it further.
 
-    .. note:: This is a base filter applied to
-              :meth:`Controller.accept_result`.
+    .. note:: This is a base filter applied to :meth:`
+              Controller.accept_result`.
     """
     @wraps(f)
     def wrapper(self, node, data):

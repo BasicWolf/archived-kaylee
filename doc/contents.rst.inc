@@ -8,6 +8,7 @@ instructions for deployment of Kaylee.
 .. toctree::
    :maxdepth: 2
 
+   foreword
    installation
    firststeps
    tutorial/index

@@ -18,7 +18,7 @@ __version__ = '0.1dev'
 
 import os
 
-from .core import Kaylee
+from .core import Kaylee, Applications
 from .node import Node, NodeID, NodesRegistry
 from .storage import (TemporalStorage,
                       PermanentStorage )

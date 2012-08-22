@@ -1,5 +1,7 @@
 .. _auto_filters:
 
+.. module:: kaylee
+
 Auto Filters
 ============
 
@@ -35,7 +37,9 @@ have to worry about the minor tasks described above.
 Configuring
 -----------
 Configuring filters is very easy. Just add the ``filters`` section to the
-application's controller's configuration::
+application's controller's configuration:
+
+.. code-block:: python
 
   ...
   'controller' : {
@@ -45,14 +49,15 @@ application's controller's configuration::
       }
   }
 
-Here, meth:`accept_result <Controller.accept_result>` is the name of the
-decorated method and :func:`kaylee.controller.failed_result_filter` is
-the filter (Python decorator) applied to the method.
+Here, :meth:`accept_result <Controller.accept_result>` is the name
+of the decorated method and :func:`kaylee.controller.failed_result_filter`
+is the filter (Python decorator) applied to the method.
 
 
 Defining in a class
 -------------------
-Let's take a look at :class:`Conroller` class::
+Let's take a look at the source code of the :class:`Project`
+class::
 
   from util import BASE_FILTERS, CONFIG_FILTERS
 
@@ -67,14 +72,14 @@ Let's take a look at :class:`Conroller` class::
           'store_result' : [ignore_null_result, ],
          }
 
-Here, :ref:`auto_filter <api_auto_filter>` is a binary-flag attribute which
-defines the auto-decorating process behaviour.
+Here, :ref:`auto_filter <api_auto_filter>` is a binary-flag attribute
+which defines the auto-decorating process behaviour.
 The **base filters** are the filters defined in a superclass and
 **config filters** are the filters defined in configuration.
 ``Project`` is the base class for user projects, thereby all the projects
-will be automatically decorated by ``Project's auto_filters`` and the filters
-defined in config. To change that behaviour the user has to define the
-``auto_filter`` attribute with desired value, e.g.::
+will be automatically decorated by ``Project.auto_filters`` and the
+filters defined in config. To change that behaviour the user has to define
+the ``auto_filter`` attribute with desired value, e.g.::
 
   class MyProject(kaylee.Project):
       auto_filter = CONFIG_FILTERS
@@ -82,4 +87,5 @@ defined in config. To change that behaviour the user has to define the
 The :ref:`auto_filters <api_auto_filters>` attribute defines the filters
 bound to the methods of the class. In the example above the
 both :meth:`Project.normalize` and :meth:`Project.store_result` methods
-are decorated by :func:`ignore_null_result` filter.
+are decorated by the :func:`ignore_null_result
+<kaylee.project.ignore_null_result>` filter.

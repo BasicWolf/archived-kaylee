@@ -53,13 +53,15 @@ def json_error_handler(f):
 
 
 class Kaylee(object):
-    """The Kaylee class serves as a proxy between WSGI framework and Kaylee
+    """The Kaylee class serves as a layer between WSGI framework and Kaylee
     applications. It handles requests from clients and returns JSON-formatted
-    data. Note that it is the job of a particular front-end to set the
-    response content-type to "application/json".
+    data.
 
-    A convenient way of creating ``Kaylee`` object is via :meth:`loader.load`
-    factory method.
+    .. note:: It is the job of a particular front-end to set the
+              response content-type to "application/json".
+
+    A convenient way of creating ``Kaylee`` object is via
+    :meth:`kaylee.loader.load` factory.
 
     :param registry: an instance of :class:`NodesRegistry`.
     :param applications: a list of applications (:class:`Controller`
@@ -73,7 +75,7 @@ class Kaylee(object):
         #: kl.config.CONFIG_PARAMETER
         self.config = Config(**kwargs)
         self._registry = registry
-        self._applications = Applications(applications) or Applications([])
+        self._applications = Applications(applications) or Applications.empty()
 
     @json_error_handler
     def register(self, remote_host):
@@ -201,7 +203,7 @@ class Kaylee(object):
 
     @property
     def applications(self):
-        """Loaded applications (an instance of :class:`Applications`)."""
+        """Loaded applications dictionary-like container."""
         return self._applications
 
     @property
@@ -241,19 +243,29 @@ class Config(object):
 
 
 class Applications(object):
+    """A container for active Kaylee applications.
+
+    :param controllers: A list of :class:`Controller` objects.
+    """
     def __init__(self, controllers):
         self._controllers = {c.app_name : c for c in controllers}
         self.names = sorted(self._controllers.keys())
 
-    def __getitem__(self, key):
+    def __getitem__(self, name):
+        """Gets an application (an instance of :class:`Controller`)
+        by its name.
+        """
         return self._controllers[key]
 
-    def __contains__(self, key):
-        return key in self._controllers
+    def __contains__(self, name):
+        """Checks if the container contains application with requested
+        name."""
+        return name in self._controllers
 
     def __len__(self):
+        """Returns the amount of applications in the container."""
         return len(self._controllers)
 
     @staticmethod
     def empty():
-        return Applications({})
+        return Applications([])

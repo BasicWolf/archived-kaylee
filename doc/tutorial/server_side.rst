@@ -60,7 +60,7 @@ method. It is used to verify and normalize the results returned by the client.
 In case of our project the calculated value of PI is extracted from the
 parsed JSON object (dictionary)::
 
-  def normalize(self, data):
+  def normalize(self, task_id, data):
       try:
           return data['pi']
       except KeyError:

@@ -32,25 +32,29 @@ class Node(object):
     A Node object contains information about a node which was registered
     by :class:`Kaylee`.
 
-    :param node_id: an instance of :class:`NodeID` or a string parsable to
+    :param node_id: an instance of :class:`NodeID` or a string parsable by
                     :class:`NodeID`
     """
     __slots__ = ('id', '_task_id', 'subscription_timestamp', 'task_timestamp',
-                 'controller')
+                 'application')
 
     def __init__(self, node_id):
         if not isinstance(node_id, NodeID):
             raise TypeError('node_id must be an instance of {}, not {}'
                             .format(NodeID.__name__,  type(node_id).__name__ ))
-        #: an instance of :class:`NodeID`
+        #: An instance of :class:`NodeID`
         self.id = node_id
-        #: a :class:`datetime.datetime` instance which tracks the time
+
+        #: A :class:`datetime.datetime` instance which tracks the time
         #: when a node has subscribed to an application.
         self.subscription_timestamp = None
-        #: a :class:`datetime.datetime` instance which tracks the time
+
+        #: A :class:`datetime.datetime` instance which tracks the time
         #: of a node receiving its last to-compute task.
         self.task_timestamp = None
-        #: application's :class:`Controller` instance.
+
+        #: Application which communicates with the node.
+        #: It is an instance of :class:`Controller`.
         self.controller = None
 
         self._task_id = None
@@ -73,6 +77,7 @@ class Node(object):
 
     @property
     def task_id(self):
+        """The ID of the task being solved by the node."""
         return self._task_id
 
     @task_id.setter
@@ -87,7 +92,8 @@ class Node(object):
 class NodeID(object):
     """
     NodeID is a 10-bytes long ID generated from current UNIX time,
-    remote host and counter. The format is::
+    remote host identifier and internal incremental counter.
+    The format is::
 
     [UNIX time (4)][counter (2)][remote host identifier hash (4)]
 
@@ -273,7 +279,7 @@ class NodesRegistry(object):
     as Python collection or as complex as MongoDB or memcached - that is
     for the user to choose.
     The implementation of NodesRegistry should accept and return
-    :class:`Node` objects. (TODO: see Mem...)
+    :class:`Node` objects.
     """
     __metaclass__ = ABCMeta
 

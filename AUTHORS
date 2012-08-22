@@ -1,10 +1,12 @@
 Kaylee is written and maintained by Zaur Nasibov.
 
 Development Lead
-````````````````
+****************
+
 - Zaur Nasibov <zaur@znasibov.info>
 
-Authors of the third-party code used in the project (see NOTICE for details)
-````````````````````````````````````````````````````````````````````````````
+Authors of the third-party code used in the project
+***************************************************
+
 - Armin Ronacher
 - 10gen, Inc.

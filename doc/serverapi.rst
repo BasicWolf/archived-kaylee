@@ -13,14 +13,18 @@ Kaylee Object
 
 .. autoclass:: Kaylee
 
-   .. automethod:: register(remote_host)
-   .. automethod:: unregister(node_id)
-   .. automethod:: subscribe(node_id, application)
-   .. automethod:: unsubscribe(node_id)
-   .. automethod:: get_action(node_id)
    .. automethod:: accept_result(node_id, data)
+   .. autoattribute:: applications
    .. automethod:: clean()
+   .. automethod:: get_action(node_id)
+   .. automethod:: register(remote_host)
+   .. autoattribute:: registry
+   .. automethod:: subscribe(node_id, application)
+   .. automethod:: unregister(node_id)
+   .. automethod:: unsubscribe(node_id)
+
    .. :inherited-members:
+
 
 
 Node Objects
