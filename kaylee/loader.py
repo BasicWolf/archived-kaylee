@@ -8,6 +8,7 @@
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
 """
+
 import os
 import imp
 import importlib
@@ -83,8 +84,6 @@ def load(config):
 
 
 def load_applications(config):
-    """TODO"""
-
     apps = []
     if 'APPLICATIONS' in config:
         for conf in config['APPLICATIONS']:
@@ -99,7 +98,6 @@ def _load_registry(conf):
 
 
 def refresh(config):
-    """TODO: document me"""
     global _contrib_classes, _controller_classes, _registry_classes, \
         _pstorage_classes, _tstorage_classes, _project_classes
 

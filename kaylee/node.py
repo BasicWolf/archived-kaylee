@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# NodeID class is based on the code from pymongo package.
-# See NOTICE for more details
 """
     kaylee.node
     ~~~~~~~~~~~
 
     Implements Kaylee server-side node classes.
+    The NodeID class is partially based on the code from pymongo package.
+    See NOTICE for more details
 
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
@@ -20,7 +20,6 @@ from datetime import datetime
 from abc import ABCMeta, abstractmethod
 
 from .errors import InvalidNodeIDError, NodeUnsubscribedError
-from .tz_util import utc
 
 #: The hex string formatted NodeID regular expression pattern which
 #: can be used in e.g. web frameworks' URL dispatchers.
@@ -36,7 +35,7 @@ class Node(object):
                     :class:`NodeID`
     """
     __slots__ = ('id', '_task_id', 'subscription_timestamp', 'task_timestamp',
-                 'application')
+                 'controller')
 
     def __init__(self, node_id):
         if not isinstance(node_id, NodeID):
@@ -231,10 +230,9 @@ class NodeID(object):
     def timestamp(self):
         """A timezone-aware :class:`datetime.datetime` instance representing
         the current NodeID's generation time. It is precise to a second.
-        # TODO: what the heck?
         """
         t = struct.unpack(">i", self._id[0:4])[0]
-        return datetime.fromtimestamp(t, utc)
+        return datetime.fromtimestamp(t)
 
     def __str__(self):
         """Hex representation of the  NodeID"""

@@ -1,4 +1,14 @@
 # -*- coding: utf-8 -*-
+"""
+    kaylee.storage
+    ~~~~~~~~~~~~~~
+
+    This module provides Kaylee storages' interfaces. 
+
+    :copyright: (c) 2012 by Zaur Nasibov.
+    :license: MIT, see LICENSE for more details.
+"""
+
 from abc import ABCMeta, abstractmethod
 
 

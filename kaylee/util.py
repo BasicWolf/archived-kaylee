@@ -1,4 +1,14 @@
 # -*- coding: utf-8 -*-
+"""
+    kaylee.util
+    ~~~~~~~~~~~~~~
+
+    The module contains common Kaylee routines and classes.
+
+    :copyright: (c) 2012 by Zaur Nasibov.
+    :license: MIT, see LICENSE for more details.
+"""
+
 import re
 import importlib
 from datetime import timedelta

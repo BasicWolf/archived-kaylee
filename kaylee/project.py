@@ -8,6 +8,7 @@
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
 """
+
 from abc import abstractmethod
 from copy import copy
 from functools import wraps

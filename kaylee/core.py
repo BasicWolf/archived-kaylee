@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    kaylee.kaylee
+    kaylee.core
     ~~~~~~~~~~~~~~~~~
 
     This module implements Kaylee's lower level front-end which could
@@ -9,6 +9,7 @@
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
 """
+
 import sys
 import json
 import traceback
@@ -255,7 +256,7 @@ class Applications(object):
         """Gets an application (an instance of :class:`Controller`)
         by its name.
         """
-        return self._controllers[key]
+        return self._controllers[name]
 
     def __contains__(self, name):
         """Checks if the container contains application with requested

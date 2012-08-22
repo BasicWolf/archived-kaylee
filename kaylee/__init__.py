@@ -3,7 +3,7 @@
     kaylee
     ~~~~~~
 
-    Kaylee is distributed computing framework.
+    Kaylee is distributed and volunteer computing framework.
 
     It implements all the functionality required to distribute computation
     among nodes and collect the results. Kaylee aims to let a user

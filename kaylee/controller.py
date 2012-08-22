@@ -8,6 +8,7 @@
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
 """
+
 import re
 from abc import abstractmethod, abstractproperty
 from datetime import datetime

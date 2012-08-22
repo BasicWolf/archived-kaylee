@@ -1,9 +1,9 @@
 .. _auto_filters:
 
-.. module:: kaylee
-
 Auto Filters
 ============
+
+.. module:: kaylee
 
 The internal Kaylee data flows are passed through Controllers and Projects.
 Every result received by controller is checked for consistency, validated

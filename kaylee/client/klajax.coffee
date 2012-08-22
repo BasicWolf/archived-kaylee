@@ -1,4 +1,14 @@
-# This file is meant to be compiled as a part of kaylee.coffee
+###
+    klajax.coffee
+    ~~~~~~~~~~~~~
+
+    This is the base file of Kaylee client-side module.
+    It contains a small AJAX library used in a browser's
+    main JavaScript event loop.
+
+    :copyright: (c) 2012 by Zaur Nasibov.
+    :license: MIT, see LICENSE for more details.
+###
 
 kl.ajax = (url, method, data, success = (()->), error = (() ->) ) ->
     req = new XMLHttpRequest();
