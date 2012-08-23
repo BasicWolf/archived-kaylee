@@ -10,7 +10,7 @@ run Kaylee :ref:`demo` which will guarantee that you will be able to run
 the tutorial application.
 
 In case you'd like to get the whole source code of the tutorial application
-at once, you'd have to visit the following repository:
+at once, visit the following repository:
 http://github.com/BasicWolf/kaylee-tutorial-app
 
 .. toctree::

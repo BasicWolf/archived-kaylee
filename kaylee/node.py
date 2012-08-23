@@ -20,6 +20,7 @@ from datetime import datetime
 from abc import ABCMeta, abstractmethod
 
 from .errors import InvalidNodeIDError, NodeUnsubscribedError
+from .util import parse_timedelta
 
 #: The hex string formatted NodeID regular expression pattern which
 #: can be used in e.g. web frameworks' URL dispatchers.
@@ -273,23 +274,29 @@ class NodeID(object):
 class NodesRegistry(object):
     """
     The interface for registered nodes storage. A NodesRegistry is a place
-    where Kaylee keeps information about active Nodes. It can be as simple
+    where Kaylee keeps information about active  Nodes. It can be as simple
     as Python collection or as complex as MongoDB or memcached - that is
     for the user to choose.
-    The implementation of NodesRegistry should accept and return
-    :class:`Node` objects.
+
+    :param timeout: Nodes timeout. Used by :meth:`clean` to determine if a
+                    node is obsolete.
+                    Format: ``1d 12h 10m 5s``, e.g. ``"12h"``; ``"1d 10m"``
+                    etc.
+    :type timeout: str
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, *args, **kwargs):
-        pass
+    def __init__(self, timeout = '30m', *args, **kwargs):
+        #: Nodes timeout. Parsed from constructors ``timeout`` argument.
+        #: Type: :class:`datetime.timedelta`.
+        self.timeout = parse_timedelta(timeout)
 
     @abstractmethod
     def add(self, node):
-        """Adds node to storage."""
+        """Adds node to the storage."""
 
     @abstractmethod
-    def clean(self, node):
+    def clean(self):
         """Removes the obsolete nodes from the storage."""
 
     @abstractmethod
@@ -298,7 +305,10 @@ class NodesRegistry(object):
 
     @abstractmethod
     def __delitem__(self, node):
-        """Removes the node from the storage."""
+        """Removes the node from the storage.
+
+        :param node: an instance of :class:`Node` or a valid node id.
+        """
 
     @abstractmethod
     def __getitem__(self, node_id):
@@ -306,5 +316,7 @@ class NodesRegistry(object):
 
     @abstractmethod
     def __contains__(self, node):
-        """Checks if the storage contains the node."""
+        """Checks if the storage contains the node.
 
+        :param node: an instance of :class:`Node` or a valid node id.
+        """

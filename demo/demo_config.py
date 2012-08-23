@@ -5,10 +5,9 @@ import os
 REGISTRY = {
     'name' : 'MemoryNodesRegistry',
     'config' : {
-        # timeout format: 1d 12h 10m 5s, e.g. "12h"; "1d 10m" etc.
-        'timeout' : '12h'
-        },
-    }
+        'timeout' : '30m'
+    },
+}
 
 PROJECTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                             'projects'))
@@ -45,32 +44,6 @@ app_hash_cracker_1 = {
         }
     }
 
-app_mc_pi_1 = {
-    'name' : 'mc_pi.1',
-    'description' : 'Find value of Pi via the Monte-Carlo method.',
-    'project' : {
-        'name' : 'MonteCarloPiProject',
-        'config' : {
-            'script' : '/static/js/projects/monte_carlo_pi/monte_carlo_pi.js',
-            'alea_script' : '/static/js/projects/monte_carlo_pi/alea.js',
-            'random_points' : 100000,
-            'tasks_count' : 10
-            },
-        'storage' : {
-            'name' : 'MemoryPermanentStorage',
-            }
-        },
-    'controller' : {
-        'name' : 'ResultsComparatorController',
-        'config' : {
-            'results_count_threshold' : 2,
-            },
-        'storage' : {
-            'name' : 'MemoryTemporalStorage',
-            },
-        },
-    }
-
-#APPLICATIONS = [app_hash_cracker_1]
-APPLICATIONS = [app_mc_pi_1, ]
+APPLICATIONS = [app_hash_cracker_1]
+#APPLICATIONS = [app_mc_pi_1, ]
 #APPLICATIONS = [app_mc_pi_1, app_hash_cracker_1]

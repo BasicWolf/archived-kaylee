@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
     kaylee.util
-    ~~~~~~~~~~~~~~
+    ~~~~~~~~~~~
 
     The module contains common Kaylee routines and classes.
 

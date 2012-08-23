@@ -3,6 +3,8 @@
 Configuration Options
 =====================
 
+.. module:: kaylee
+
 This section describes Kaylee configuration options.
 For information on setting up Kaylee, see :ref:`loading`.
 
@@ -11,23 +13,22 @@ For information on setting up Kaylee, see :ref:`loading`.
 APPLICATIONS
 ------------
 
-The ``APPLICATIONS`` list contains the applications' configuration loaded
-by Kaylee.
-The format is:
+A list which contains the applications' configurations loaded
+by Kaylee. The format is:
 
 .. code-block:: python
 
   APPLICATIONS = [
-     { app1 },
-     { app2 },
-     { ...  }
+     app1,
+     app2,
+     { ...  },
   ]
 
 Every ``app`` is a Python dictionary with application configuration:
 
 .. code-block:: python
 
-  {
+  app1 = {
       'name' : 'Application name',
       'description' : 'Application description',
       'project' : { ... },
@@ -40,18 +41,18 @@ Project and controller configuration are also Python dictionaries:
 
   'project' : {
       'name' : 'ProjectClassName',
-      'config' : { ...  },
-      'filters' : { ... },
+      'config' : { ...  },             # optional
+      'filters' : { ... },             # optional
   }
 
   'controller' : {
       'name' : 'ControllerClassName',
-      'config' : { ... },
-      'filters' : { ... },
+      'config' : { ... },              # optional
+      'filters' : { ... },             # optional
   }
 
 Project and Controller ``config`` sections define the dictionary
-which is passed as ``**kwargs`` during class initialization:
+which is passed as ``**kwargs`` during class initialization.
 
 .. code-block:: python
 
@@ -60,10 +61,77 @@ which is passed as ``**kwargs`` during class initialization:
       'opt2' : 10,
   }
 
-The filters are defined as the following dictionary
+The filters are defined as the following dictionary.
 (for more information see :ref:`auto_filters`):
 
 .. code-block:: python
 
-  { method_name : ["filter_function_name_1", ...] }
+  {
+      method_name_1 : ["filter_function_name_x", ...],
+      method_name_2 : ["filter_function_name_x", ...],
+  }
 
+Both ``config`` and ``filters`` fields are optional.
+It means that there is no need to add any of them if e.g. configuration
+or filters are not required.
+
+
+.. config:: PROJECTS_DIR
+
+PROJECTS_DIR
+------------
+
+Defines a directory in which Kaylee searches for user projects, for
+example:
+
+``/home/user/.kaylee/projects/``.
+
+
+.. config:: REGISTRY
+
+REGISTRY
+--------
+
+Python dict with :class:`Nodes Registry <NodesRegistry>` configuration.
+Format::
+
+  REGISTRY = {
+      'name' : 'RegistryClassName',
+      'config' : {
+        # timeout format: 1d 12h 10m 5s, e.g. "12h"; "1d 10m" etc.
+        'timeout' : '12h'
+      },
+  }
+
+
+.. config:: WORKER_SCRIPT
+
+WORKER_SCRIPT
+-------------
+
+Contains the absoulte URL of Kaylee Worker script, for example:
+
+``http://exaple.com/static/js/kaylee/klworker.js``.
+
+Rationale:
+
+  According to `W3C's reference`_, "When the ``Worker(scriptURL)`` constructor
+  is invoked, the user agent must run the following steps:
+
+  1. Resolve the scriptURL argument relative to the entry script's **base URL**,
+     when the method is invoked.
+
+  2. ...
+
+The *base URL* of the entry script (
+``http://exaple.com/static/js/kaylee/kaylee.js``) is the domain name part
+of it (``http://example.com/``). Thus it is not possible to get the
+latter part of the script location (``static/js/kaylee``) without certain
+code hacks.
+
+This option is available in order to avoid any hacks required of
+``kaylee.js`` to resolve ``klworker.js`` script's location.
+
+
+
+.. _`W3C's reference`: http://www.w3.org/TR/workers/#dom-worker

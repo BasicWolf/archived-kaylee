@@ -1,5 +1,5 @@
 # Define the names of the projects here
-PROJECTS = monte_carlo_pi hash_cracker
+PROJECTS = hash_cracker
 
 # Create project directories' paths
 PJ_DIRS = $(addprefix projects/, $(PROJECTS) )

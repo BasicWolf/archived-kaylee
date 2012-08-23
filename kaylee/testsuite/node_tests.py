@@ -2,7 +2,6 @@ import unittest
 from datetime import datetime, timedelta
 from kaylee import Node, NodeID
 from kaylee.errors import InvalidNodeIDError
-from kaylee.tz_util import utc
 from kaylee.testsuite import KayleeTest, load_tests
 
 
@@ -75,8 +74,9 @@ class NodeIDTests(KayleeTest):
     def test_dates(self):
         n1 = NodeID.for_host('127.0.0.1')
         t1 = n1.timestamp
-        utcnow = datetime.now(utc)
-        self.assertTrue(utcnow - t1 <= timedelta(seconds = 3))
+        now = datetime.now()
+        self.assertTrue(timedelta(seconds = 0) <= now - t1
+                        <= timedelta(seconds = 3))
 
     def test_hashability(self):
         n1 = NodeID.for_host('127.0.0.1')
