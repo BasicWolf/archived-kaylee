@@ -90,7 +90,7 @@ exclude_patterns = ['_build']
 #show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'flask_theme_support.FlaskyStyle'
+pygments_style = 'kaylee_theme_support.KayleeStyle'
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []

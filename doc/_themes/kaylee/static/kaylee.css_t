@@ -1,9 +1,9 @@
 /*
- * flasky.css_t
+ * kaylee.css_t
  * ~~~~~~~~~~~~
  *
- * :copyright: Copyright 2010 by Armin Ronacher.
- * :license: Flask Design License, see LICENSE for details.
+ * :copyright: Copyright 2012 by Zaur Nasibov.
+ * :license: MIT
  */
 
 {% set page_width = '980px' %}
@@ -12,6 +12,7 @@
 {% set _margin_top = 60 %}
 {% set margin_top = _margin_top ~ 'px' %}
 {% set color_black = '#292929' %}
+{% set color_link = '#026099' %}
  
 @import url("basic.css");
  
@@ -84,7 +85,7 @@ div.related {
  
 div.sphinxsidebar a {
     text-decoration: none;
-    border-bottom: 1px dotted #004B6B;
+    border-bottom: 1px dotted {{ color_link }};
 }
 
 div.sphinxsidebar a:hover {
@@ -157,7 +158,7 @@ div.sphinxsidebar input {
 /* -- body styles ----------------------------------------------------------- */
  
 a {
-    color: #004B6B;
+    color: {{ color_link }};
     text-decoration: underline;
 }
  
@@ -401,7 +402,7 @@ tt.xref, a tt {
 
 a.reference {
     text-decoration: none;
-    border-bottom: 1px dotted #004B6B;
+    border-bottom: 1px dotted {{ color_link }};
 }
 
 a.reference:hover {
@@ -418,7 +419,7 @@ a.footnote-reference {
     text-decoration: none;
     font-size: 0.7em;
     vertical-align: top;
-    border-bottom: 1px dotted #004B6B;
+    border-bottom: 1px dotted {{ color_link }};
 }
 
 a.footnote-reference:hover {
