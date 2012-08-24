@@ -1,16 +1,16 @@
 from setuptools import setup, find_packages
 
-version = __import__('kaylee').get_version()
+version = __import__('kaylee').__version__
 
 setup(
     name = 'Kaylee',
     version = version,
     url = 'http://github.com/basicwolf/kaylee',
-    license = 'MIT',
+    license = 'LICENSE',
     author = 'Zaur Nasibov',
     author_email = 'zaur@znasibov.info',
     description = 'A distributed and crowd computing framework',
-    long_description = open('README.rst').read(),
+    long_description = open('README').read(),
     packages = ['kaylee', 'kaylee.contrib', 'kaylee.testsuite'],
     scripts = ['kaylee/bin/kaylee-copy-client.py'],
     zip_safe = False,
@@ -26,7 +26,6 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: JavaScript',
-        'Programming Language :: CoffeeScript',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: System :: Distributed Computing',
