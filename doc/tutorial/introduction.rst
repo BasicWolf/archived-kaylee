@@ -17,7 +17,7 @@ Thus, the ratio of the area of the square to the are of the circle is:
   \frac{1 \cdot 1}{\pi \cdot 0.5^2 } =
   \frac{4}{\pi}
 
-And we can derive the value of PI as follows:
+The value of PI can be derived as follows:
 
 .. math::
   \pi = 4 \frac{S_{\mathrm{circle}}}{S_{\mathrm{square}}}
@@ -31,9 +31,9 @@ Let's fill the square with a small amount of random x and y coordinate points:
    :width: 320
    :height: 320
 
-The green points are inside the circle, but on the picture there
-isn't that many of them. Imagine if have filled the square with millions
-or even a billion of points. The picture above becomes:
+The green points are those inside the circle, and the red ones are outside.
+Imagine filling the same square with millions or even billions of points.
+The picture becomes:
 
 .. image:: ../_static/monte-carlo2.png
    :align: center
@@ -42,23 +42,23 @@ or even a billion of points. The picture above becomes:
    :width: 320
    :height: 320
 
-You may have noticed that the green points have covered almost all the area
-of the circle and all points together have covered the are of the square.
-We can now approximate equation :eq:`firsteq` as follows:
+The green points have covered almost all the area of the circle and all
+points together have covered the are of the square. The equation
+:eq:`firsteq` can now be approximated as follows:
 
 .. math::
   \pi = 4 \frac{{\mathrm{Number\ of\ points\ in\ circle}}}
                {{\mathrm{Total\ number\ of\ points}}}
 
-From this equation we can also state that the bigger is the number of
+The equation leads to an idea that the bigger is the number of the
 generated random points the better is the approximation of PI.
-And it is the reason we would like to use distributed computation to find
-the value of PI: if one node generates e.g. 10 million random random points
-in a second then ten nodes can generate billion random numbers in just
+That is the reason why distributed computation can be used to find
+the value of PI: if one node generates 10 million random random points
+in a second then ten nodes would generate billion random numbers in just
 10 seconds!
 
-Of course, you can do that on your own computer! But hey, this is just a task
-small enough to learn building Kaylee apps :)
+Of course that can be done on your own computer! But this is just a small
+problem enough to learn building Kaylee apps :)
 
 
 Continue with :ref:`tutorial-project-structure`.

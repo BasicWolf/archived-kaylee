@@ -78,7 +78,7 @@ will end up in it::
 
 You can install Kaylee front-end(s) as well::
 
-  $ pip install flask
+  $ pip install flask django
 
 
 .. _demo:
