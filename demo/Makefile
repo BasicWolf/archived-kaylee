@@ -11,7 +11,7 @@ KL_CLIENT_DIR = $(KL_BUILD_DIR)/static/js/kaylee
 
 all: demo
 
-demo: static client $(PJ_DIRS) src/klconsole.js src/kldemo.js
+demo: static client demo_js $(PJ_DIRS) 
 
 static:
 	mkdir -p $(KL_BUILD_DIR)
@@ -20,10 +20,12 @@ static:
 	cp -r templates $(KL_BUILD_DIR)
 
 client:
-	python ../kaylee/bin/kaylee-copy-client.py -l $(KL_CLIENT_DIR)
+	kaylee-copy-client.py $(KL_CLIENT_DIR)
 
 $(PJ_DIRS):
 	$(MAKE) $(MAKECMDGOALS) -C $@
+
+demo_js: src/klconsole.js src/kldemo.js
 
 src/klconsole.js: src/klconsole.coffee
 	coffee -j src/klconsole.js -c src/klconsole.coffee

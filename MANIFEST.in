@@ -1,6 +1,2 @@
-include README.rst CHANGES LICENSE NOTICE AUTHORS run-tests.py
+include README CHANGES LICENSE NOTICE AUTHORS run-tests.py
 recursive-include kaylee/client *.js
-prune docs/_build
-recursive-include docs *
-recursive-exclude docs *.pyc
-recursive-exclude docs *.pyo
