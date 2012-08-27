@@ -6,10 +6,8 @@ Step 3: Client-Side Code
 As you may already know, the client-side of Kaylee is written in
 `CoffeeScript <http://coffeescript.org/>`_. But there is nothing
 that prevents you from writing the project in pure JavaScript!
-Yet, for simplicity and clarity we are going to use CoffeeScript.
-Mastering the basics of CoffeeScript takes less than 10 minutes
-and even without that, the project code should be simple and clear to
-everybody.
+Mastering the basics of CoffeeScript takes less than 30 minutes
+and that is the language used in the tutorial application.
 
 The client-side code of Kaylee projects basically consists of two callbacks
 in ``pj`` namespace: :js:func:`pj.init(kl_config, app_config) <pj.init>` and
@@ -46,8 +44,8 @@ Here, we implement the Monte-Carlo PI algorithm and return the result via
 the :js:func:`task_completed() <klw.task_completed>` function from
 :ref:`Kaylee Worker API <client_workerapi>`.
 
-If you are comfortable with the code above, just copy-paste it to
-``js/monte_carlo_pi.coffee``.
+If you are comfortable with the code above, copy-paste it to
+``monte_carlo_pi/js/monte_carlo_pi.coffee``.
 
 
 Continue with :ref:`tutorial-server-side`.

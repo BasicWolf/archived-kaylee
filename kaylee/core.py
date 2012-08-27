@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
     kaylee.core
-    ~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~
 
     This module implements Kaylee's lower level front-end which could
     be easily used with any web framework.

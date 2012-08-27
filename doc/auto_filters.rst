@@ -70,7 +70,7 @@ class::
          '__next__' : [depleted_guard, ],
           'normalize' : [ignore_null_result, ],
           'store_result' : [ignore_null_result, ],
-         }
+      }
 
 Here, :ref:`auto_filter <api_auto_filter>` is a binary-flag attribute
 which defines the auto-decorating process behaviour.
@@ -85,7 +85,7 @@ the ``auto_filter`` attribute with desired value, e.g.::
       auto_filter = CONFIG_FILTERS
 
 The :ref:`auto_filters <api_auto_filters>` attribute defines the filters
-bound to the methods of the class. In the example above the
-both :meth:`Project.normalize` and :meth:`Project.store_result` methods
+bound to the methods of the class. In the example above both
+:meth:`Project.normalize` and :meth:`Project.store_result` methods
 are decorated by the :func:`ignore_null_result
 <kaylee.project.ignore_null_result>` filter.

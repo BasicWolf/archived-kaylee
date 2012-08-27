@@ -17,12 +17,12 @@ to recognize it::
   class MonteCarloPiProject(Project):
       ...
 
-Before we continue with the code, lets first think, what kind of configuration
-is required in order to initialize the project? As it was discussed in the
-:ref:`project requirements <tutorial-requirements-configuration>` and
-implemented on the :ref:`client side <tutorial-client-side>`, we need
-the amount of random points and the URL of ``alea.js`` script to be passed to
-the client and the amount of tasks to execute on the server::
+Before continuing with the code, lets first think, what kind of
+configuration is required in order to initialize the project? As it was
+discussed in :ref:`tutorial-requirements` and implemented in
+:ref:`tutorial-client-side`, the configuration consists of the amount
+of random points and the URL of ``alea.js`` script to be passed to the
+client and the amount of tasks to execute on the server::
 
   def __init__(self, *args, **kwargs):
       super(MonteCarloPiProject, self).__init__(*args, **kwargs)
@@ -37,9 +37,9 @@ the client and the amount of tasks to execute on the server::
 
 Here, the :py:attr:`Project.client_config` attribute is the configuration
 object sent to the client and ``self.tasks_count`` and ``self._tasks_counter``
-are the attributes related to amount of tasks to be executed.
+are the attributes related to the amount of tasks to be executed.
 
-Next, lets implement two basic abstract methods of Kaylee Project::
+Next, let's implement two basic abstract methods of Kaylee Project::
 
   def __getitem__(self, task_id):
       return Task(task_id)
@@ -55,10 +55,10 @@ As you can see, ``__next__()`` in conjunction with ``__getitem__()`` yields
 a :py:class:`task <Task>` object with numerical id derived from
 ``self._tasks_counter``.
 
-The next important part of every project is the :py:meth:`Project.normalize`
-method. It is used to verify and normalize the results returned by the client.
-In case of our project the calculated value of PI is extracted from the
-parsed JSON object (dictionary)::
+The next important part of every project is the :py:meth:`normalize
+<Project.normalize>` method. It is used to verify and normalize the results
+returned by the client. In this case the calculated value of PI is
+extracted from the parsed JSON object (dictionary)::
 
   def normalize(self, task_id, data):
       try:
@@ -67,7 +67,7 @@ parsed JSON object (dictionary)::
           raise InvalidResultError(data, '"pi" key was not found')
 
 
-And finally, :py:meth:`Project.store_results` - the method which stores
+And finally, :py:meth:`Project.store_result` - the method which stores
 the distributed computation results and determines whether all required
 data is collected and the application is completed::
 
@@ -77,24 +77,21 @@ data is collected and the application is completed::
           self.completed = True
           self._announce_results()
 
-Here, ``Project.store_result()`` is called, which stores the results to
-the predefined storage (we'll speak about them a bit later) and then
-checks whether the project is completed.
+
 Ah, almost missed the part which announces the final results::
 
   def _announce_results(self):
-      mid_pi = ( sum(res[0] for res in self.storage.values()) /
-                 len(self.storage) )
+      mid_pi = (sum(res[0] for res in self.storage.values()) /
+                len(self.storage))
       print('The  value of PI computed by the Monte-Carlo method is: {}'
             .format(mid_pi))
 
-That is the message you're going to see in Kaylee's front-end shell
-(or the logs).
+That is the message you're going to see in Kaylee's front-end shell or
+logs.
 
-The last step to do with the code: we still need to import the project in
-``__init__.py`` for Kaylee to find it::
+The last step to do with the code: the project is still has to be imported
+in ``__init__.py`` in order for Kaylee to be able to find it::
 
   from .monte_carlo_pi import MonteCarloPiProject
-
 
 Continue with :ref:`tutorial-configuration`.

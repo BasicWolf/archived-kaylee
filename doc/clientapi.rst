@@ -308,6 +308,7 @@ AJAX
    :param error: callback invoked in of request failure.
 
 
+
 .. [1] http://en.wikipedia.org/wiki/Web_worker
 .. [2] http://www.w3schools.com/html5/html5_webworkers.asp
 

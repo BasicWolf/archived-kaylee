@@ -17,9 +17,10 @@ http://github.com/BasicWolf/kaylee-tutorial-app
    :maxdepth: 1
 
    introduction
-   structure
    requirements
+   structure
    client_side
    server_side
    configuration
+   compiling
    running

@@ -1,27 +1,26 @@
 .. _tutorial-project-structure:
 
-Step 1: Project Structure
+Step 2: Project Structure
 =========================
 
-Kaylee utilizes recursive Makefile techniques to automate Kaylee client,
-projects and demo building process. The ``demo/projects`` directory contains
-all the demo projects with ``*.py`` and ``*.coffee`` and/or ``*.js`` files.
-So, first of all let's create `monte_carlo_pi` directory in ``demo/projects/``.
-It will also serve as a Python package thus, we'll need the ``__init__.py``
-in it. Another good idea is to leave the ``__init__.py`` with as few lines of
-code as possible and to write the code in a separate ``monte_carlo_pi.py``
-file.
-Finally we will need a place to store the client-side code of the project,
-e.g. ``js`` sub-directory. It will contain the ``monte_carlo_pi.coffee`` and
-possibly 3d-party libraries required for the project.
-The structure of the project directory should now look as following::
+The ``demo/projects`` directory contains all the demo projects with
+their ``*.py``, ``*.coffee`` and ``*.js`` files. First of all create
+the `monte_carlo_pi` directory in ``demo/projects/``. Add ``__init__.py``
+to indicate that it is a Python package and ``monte_carlo_pi.py`` which
+will contain the project code. The ``js`` sub-directory contains the
+client-side of the project: ``monte_carlo_pi.coffee`` and ``alea.js``
+library (`download alea.js <../_static/alea.js>`_).
+Kaylee utilizes recursive make techniques to automate Kaylee projects
+and demo building process. For this a ``Makefile`` file is required.
 
-  monte_carlo_pi/
+The structure of the project directory should look as following::
+
+  demo/projects/monte_carlo_pi/
   |
   |--js/
   |  |
   |  --monte_carlo_pi.coffee
-  |  --(3d-party js libraries)
+  |  --alea.js
   |
   |--__init__.py
   |--monte_carlo_pi.py
@@ -29,4 +28,4 @@ The structure of the project directory should now look as following::
   |--Makefile
 
 
-Continue with :ref:`tutorial-requirements`.
+Continue with :ref:`tutorial-client-side`.

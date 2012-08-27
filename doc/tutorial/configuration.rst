@@ -6,10 +6,13 @@ Step 5: Configuring the Application
 Kaylee has numerous ways of loading the configuration. One of the
 convenient ways is to load it from a ``.py`` file. The
 ``demo/demo_config.py`` file used for demo configuration can be as well used
-to configure our application.
+to configure the tutorial application.
 The applications are defined in a Python dictionary-like or JSON-like
 manner. First of all, the application needs a unique name and a description:
-::
+
+.. code-block:: python
+
+  # demo/demo_config.py
 
   app_mc_pi_1 = {
       'name' : 'mc_pi.1',
@@ -18,8 +21,10 @@ manner. First of all, the application needs a unique name and a description:
       ...
   }
 
-Now, lets add the project configuration. Note, that it is still an entry in
-``app_mc_pi_1`` dict::
+Now, let's write the project configuration. Note, that we are still filling
+the ``app_mc_pi_1`` dict:
+
+.. code-block:: python
 
   'project' : {
       'name' : 'MonteCarloPiProject',
@@ -28,28 +33,29 @@ Now, lets add the project configuration. Note, that it is still an entry in
           'alea_script' : '/static/js/projects/monte_carlo_pi/alea.js',
           'random_points' : 1000000,
           'tasks_count' : 10
-          },
+      },
       'storage' : {
           'name' : 'MemoryPermanentStorage',
-          }
-      },
+      }
+  },
 
 .. module:: kaylee
 
-The ``name`` entry indicated the Python class (Kaylee Project subclass) used
-in this application (``MonteCarloPiProject``).
-The ``config`` contains the keyword arguments passed to
-``Project.__init__()``. The ``storage`` entry defines the
-:py:class:`permanent storage <PermanentStorage>` to which the results are
-saved. The :py:class:`MemoryPermanentStorage
-<kaylee.contrib.MemoryPermanentStorage>`
-is a simple in-memory storage from :ref:`kaylee.contrib <contrib>`.
+The ``name`` entry indicates the Python class (:py:class:`kaylee.Project`
+subclass) used in the application. The ``config`` contains the keyword
+arguments passed to ``Project.__init__()``. The ``storage`` entry defines
+the :py:class:`permanent storage <PermanentStorage>` to which the results
+are saved. Here, :py:class:`MemoryPermanentStorage
+<kaylee.contrib.MemoryPermanentStorage>` is a simple in-memory storage from
+:ref:`kaylee.contrib <contrib>` package.
 
-The final piece of the configuration is the controller and its temporal results
-storage. To keep things simple, lets use :py:class:`SimpleController
-<kaylee.contrib.SimpleController>` from ``kaylee.contrib``.
-Note that this is also the part of the application configuration and recides
-inside the ``app_mc_pi_1`` dictionary.::
+The final piece of the configuration is the controller. To keep things
+simple, let's use :py:class:`SimpleController
+<kaylee.contrib.SimpleController>` from ``kaylee.contrib``. Note that this
+is also the part of the application configuration and recides
+inside the ``app_mc_pi_1`` dictionary:
+
+.. code-block:: python
 
     'controller' : {
         'name' : 'SimpleController',
@@ -63,8 +69,4 @@ picks up the first available application).
 
   APPLICATIONS = [app_mc_pi_1 ]
 
-That's it! You are now ready to launch the application to compute PI via
-distributed calculations.
-
-
-Continue with  :ref:`tutorial-running`.
+Continue with  :ref:`tutorial-compiling`.

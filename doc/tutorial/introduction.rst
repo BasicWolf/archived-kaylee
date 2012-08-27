@@ -61,4 +61,4 @@ Of course that can be done on your own computer! But this is just a small
 problem enough to learn building Kaylee apps :)
 
 
-Continue with :ref:`tutorial-project-structure`.
+Continue with :ref:`tutorial-requirements`.
