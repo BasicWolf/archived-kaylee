@@ -114,8 +114,9 @@ div.sphinxsidebar h4 {
     color: #FF8000;
     font-size: 24px;
     font-weight: normal;
-    margin: 0 0 5px 0;
-    padding: 0;
+    margin: 0 0 5px 0; 
+    border-bottom: 1px solid #FF8000;
+    line-height:1.2em;
 }
 
 div.sphinxsidebar h4 {
