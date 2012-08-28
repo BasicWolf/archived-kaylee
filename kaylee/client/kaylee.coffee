@@ -39,10 +39,10 @@ kl.api =
                kl.server_raised_error.trigger)
         return null
 
-    send_results : (results) ->
+    send_result : (results) ->
         kl.post("/kaylee/actions/#{kl.node_id}", results,
             ((action_data) ->
-                kl.results_sent.trigger(results)
+                kl.result_sent.trigger(results)
                 kl.action_received.trigger(action_data)
             ),
             kl._default_server_error_handler
@@ -72,9 +72,9 @@ kl.get_action = () ->
         kl.api.get_action()
     return null
 
-kl.send_results = (data) ->
+kl.send_result = (data) ->
     if kl.app.subscribed
-        kl.api.send_results(data)
+        kl.api.send_result(data)
     return null
 
 kl._message_to_worker = (msg, data = {}) ->
@@ -132,7 +132,7 @@ on_task_received = (data) ->
     return null
 
 on_task_completed = (data) ->
-    kl.send_results(data)
+    kl.send_result(data)
     return null
 
 # worker event handlers
@@ -159,7 +159,7 @@ kl.task_received = new Event(on_task_received)
 kl.task_completed = new Event(on_task_completed)
 kl.log = new Event()
 kl.worker_raised_error = new Event()
-kl.results_sent = new Event()
+kl.result_sent = new Event()
 kl.server_raised_error = new Event()
 
 window.kl = kl;

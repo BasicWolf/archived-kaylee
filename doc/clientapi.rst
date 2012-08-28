@@ -79,7 +79,7 @@ Core
    * :js:attr:`register <kl.api.register>`
    * :js:attr:`subscribe <kl.api.subscribe>`
    * :js:attr:`get_action <kl.api.get_action>`
-   * :js:attr:`send_results <kl.api.send_results>`
+   * :js:attr:`send_result <kl.api.send_result>`
 
    Each of these calls corresponds to a particular method of the
    :py:class:`Kaylee` object on the server side. The default (TODO)
@@ -112,10 +112,10 @@ Core
       Gets next available action (see :py:meth:`Kaylee.get_action`).
       Triggers :js:func:`kl.action_received`.
 
-   .. js:attribute:: kl.api.send_results(data)
+   .. js:attribute:: kl.api.send_result(data)
 
       Sends task results to the server (see :py:meth:`Kaylee.accept_result`).
-      Triggers :js:func:`kl.results_sent` **and** in case that Kaylee
+      Triggers :js:func:`kl.result_sent` **and** in case that Kaylee
       immediately returns a new action :js:func:`kl.action_received`.
 
 .. js:attribute:: kl.app
@@ -163,9 +163,9 @@ Core
    requirements (e.g. availability of web workers) tests.
 
 
-.. js:function:: kl.send_results(data)
+.. js:function:: kl.send_result(data)
 
-   Invokes :js:attr:`kl.api.send_results`.
+   Invokes :js:attr:`kl.api.send_result`.
 
 
 .. js:function:: kl.subscribe(app_name)
@@ -247,7 +247,7 @@ Events
    Triggered when Kaylee worker finishes importing a project required
    by an application (this includes successful call to :js:func:`pj.init`).
 
-.. js:function:: kl.results_sent(results)
+.. js:function:: kl.result_sent(results)
 
    Triggered when Kaylee acknowledge the receipt of the task results.
 

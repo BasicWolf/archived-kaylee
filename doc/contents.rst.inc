@@ -13,6 +13,7 @@ instructions for deployment of Kaylee.
    firststeps
    tutorial/index
    loading
+   default-communication
    auto_filters
    contrib
 
@@ -36,9 +37,11 @@ method, this part of the documentation is for you.
 Additional Notes
 ----------------
 
-Design notes, legal information and changelog are here for the interested.
+..
+   Design notes, legal information and changelog are here for the interested.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    license
+   authors
