@@ -14,7 +14,7 @@ from copy import copy
 from functools import wraps
 
 from .util import AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS
-
+from .errors import KayleeError
 
 DEPLETED = 0x2
 COMPLETED = 0x4
@@ -210,6 +210,17 @@ class Task(object):
         """
         if attributes is None:
             attributes = self.serializable
+
+        enc_attributes = [attr for attr in attributes if attr.startswith('#')]
+
+        if len(enc_attributes) > 0:
+            from . import kl
+            # some attributes have to be encrypted
+
+            if kl.config.SECRET_KEY is None:
+                raise KayleeError('SECRET_KEY is not defined.')
+            
+
         return { attr : getattr(self, attr) for attr in attributes }
 
     def __str__(self):

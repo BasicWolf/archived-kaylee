@@ -218,16 +218,18 @@ class Kaylee(object):
 
 class Config(object):
     """Kaylee Configuration repository."""
-    fields = ['AUTO_GET_ACTION',
-              'WORKER_SCRIPT',
-              ]
+    client_data = [
+        'AUTO_GET_ACTION',
+        'WORKER_SCRIPT',
+    ]
 
     def __init__(self, **kwargs):
         self._dirty = True
         self._cached_dict = {}
 
         self.AUTO_GET_ACTION = kwargs.get('AUTO_GET_ACTION', True)
-        self.WORKER_SCRIPT = kwargs['WORKER_SCRIPT']
+        self.WORKER_SCRIPT = kwargs.get('WORKER_SCRIPT', None)
+        self.SECRET_KEY = kwargs.get('SECRET_KEY', None)
 
     def __setattr__(self, name, value):
         if name != '_dirty':
@@ -238,7 +240,8 @@ class Config(object):
 
     def to_dict(self):
         if self._dirty:
-            self._cached_dict = { k : getattr(self, k) for k in self.fields }
+            self._cached_dict = { k : getattr(self, k)
+                                  for k in self.client_data }
             self._dirty = False
         return self._cached_dict
 

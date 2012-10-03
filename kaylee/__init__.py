@@ -18,6 +18,9 @@ __version__ = '0.1'
 
 import os
 
+from . import loader
+kl = loader.LazyKaylee()
+
 from .core import Kaylee, Applications
 from .node import Node, NodeID, NodesRegistry
 from .storage import (TemporalStorage,
@@ -25,10 +28,6 @@ from .storage import (TemporalStorage,
 from .controller import Controller
 from .project import Project, Task
 from .errors import KayleeError
-
-from . import loader
-kl = loader.LazyKaylee()
-
 
 def setup(config):
     kl._setup(loader.load(config))

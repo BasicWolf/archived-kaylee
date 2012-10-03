@@ -15,9 +15,6 @@ import importlib
 import inspect
 import types
 
-import kaylee.contrib.controllers
-import kaylee.contrib.storages
-import kaylee.contrib.registries
 from .core import Kaylee
 from .errors import KayleeError
 from .util import LazyObject, import_object, CONFIG_FILTERS
@@ -40,7 +37,6 @@ class LazyKaylee(LazyObject):
             raise TypeError('obj must be an instance of {} or '
                             'a Kaylee config object, not {}'
                             .format(Kaylee.__name__, type(obj).__name__))
-
 
 def load(config):
     """Loads Kaylee.
@@ -102,9 +98,9 @@ def refresh(config):
         _pstorage_classes, _tstorage_classes, _project_classes
 
     from . import storage, controller, project, node
-    _contrib_classes = _get_classes_from_module(kaylee.contrib.controllers,
-                                                kaylee.contrib.storages,
-                                                kaylee.contrib.registries)
+    import kaylee.contrib
+
+    _contrib_classes = _get_classes_from_module(kaylee.contrib)
     _controller_classes = _get_classes(_contrib_classes, controller.Controller)
     _registry_classes = _get_classes(_contrib_classes, node.NodesRegistry)
     _pstorage_classes = _get_classes(_contrib_classes,
