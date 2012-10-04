@@ -9,9 +9,15 @@
     :license: MIT, see LICENSE for more details.
 """
 
+import cPickle as pickle
+from base64 import b64encode, b64decode
+from hmac import new as hmac
+from hashlib import sha1, sha256
 from abc import abstractmethod
 from copy import copy
 from functools import wraps
+
+from Crypto.Cipher import AES
 
 from .util import AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS
 from .errors import KayleeError
@@ -208,20 +214,68 @@ class Task(object):
         :param attributes: A custom list of attributes which overrides
                            ``self.serializable``.
         """
+        result = {}
         if attributes is None:
             attributes = self.serializable
 
-        enc_attributes = [attr for attr in attributes if attr.startswith('#')]
+        res = { attr : getattr(self, attr) for attr in attributes }
 
-        if len(enc_attributes) > 0:
-            from . import kl
-            # some attributes have to be encrypted
+        # process session attributes, if any
+        sess_attributes = [attr for attr in attributes if attr.startswith('#')]
+        if len(sess_attributes) > 0:
+            res['__kaylee_task_session__'] = self.encrypt(sess_attributes)
+        return res
 
-            if kl.config.SECRET_KEY is None:
-                raise KayleeError('SECRET_KEY is not defined.')
-            
+    def encrypt(self, attributes):
+        from . import kl
+        mac = hmac(kl.config.SECRET_KEY, None, sha1)
+        encryption_key = hashlib.sha256(kl.config.SECRET_KEY).digest()
+        encryptor = AES.new(encryption_key, AES.MODE_CBC)
 
-        return { attr : getattr(self, attr) for attr in attributes }
+        result = []
+        for attr, value in sorted(attributes):
+            result.append(self._encrypt_attr(attr, value, encryptor))
+            mac.update('|' + result[-1])
+
+        return '{}?{}'.format(b64encode(mac.digest()), '&'.join(result))
+
+    @classmethod
+    def decrypt(d):
+        from . import kl
+        base64_hash, data = string.split('?', 1)
+        mac = hmac(kl.config.SECRET_KEY, None, sha1)
+
+        decryption_key = hashlib.sha256(kl.config.SECRET_KEY).digest()
+        decryptor = AES.new(decryption_key, AES.MODE_CBC)
+
+        result = {}
+        for item in data.split('&'):
+            mac.update('|' + item)
+            attr, val = self._decrypt_attr(item, decryptor)
+            result[attr] = val
+
+        safe_str_cmp(client_hash, mac.digest()):
+
+    @classmethod
+    def _encrypt_attr(attr, val, encryptor):
+        BLOCK_SIZE = 32
+        PADDING = ' '
+        # one-liner to sufficiently pad the text to be encrypted
+        pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
+
+        val = pickle.dumps(val, pickle.HIGHEST_PROTOCOL)
+        val = '{}={}'.format(attr, val)
+        val = encryptor.encrypt(pad(val))
+        val = b64encode(val)
+        return val
+
+    @classmethod
+    def _decrypt_attr(data, decryptor):
+        data = b64decode(data)
+        data = decryptor.decrypt(data).rstript(' ')
+        attr, val = data.split('=', 1)
+        val = pickle.loads(val)
+        return attr, val
 
     def __str__(self):
         return 'Task: ' + '; '.join('{0}: {1}'.format(attr, getattr(self, attr))
