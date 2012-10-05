@@ -143,3 +143,21 @@ class AutoFilterABCMeta(ABCMeta):
 
     def __init__(mcs, name, bases, dct):
         super(AutoFilterABCMeta, mcs).__init__(name, bases, dct)
+
+
+def get_secret_key(key = None):
+    if key is not None:
+        return key
+    else:
+        from kaylee import kl
+        if kl._wrapped:
+            key = kl.config.SECRET_KEY
+            if key is None:
+                raise KayleeError('SECRET_KEY configuration option is not'
+                                  ' defined.')
+            return key
+        else:
+            raise KayleeError('Cannot locate a valid secret key.')
+
+
+

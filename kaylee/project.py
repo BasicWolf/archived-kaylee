@@ -21,7 +21,8 @@ from copy import deepcopy
 
 from Crypto.Cipher import AES
 
-from .util import AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS
+from .util import (AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS,
+                   get_secret_key)
 from .errors import KayleeError
 
 DEPLETED = 0x2
@@ -209,7 +210,7 @@ class Task(object):
     def __init__(self, task_id):
         self.id = str(task_id)
 
-    def serialize(self, attributes = None):
+    def serialize(self, attributes = None, secret_key = None):
         """
         Serializes object attributes to dict.
 
@@ -226,13 +227,15 @@ class Task(object):
         # process session attributes, if any
         sess_attributes = [attr[1:] for attr in attributes if attr.startswith('#')]
         if len(sess_attributes) > 0:
-            res['__kaylee_task_session__'] = self.encrypt(sess_attributes)
+            res['__kaylee_task_session__'] = self.encrypt(sess_attributes,
+                                                          secret_key)
         return res
 
-    def encrypt(self, attributes):
-        from . import kl
-        mac = hmac(kl.config.SECRET_KEY, None, sha1)
-        encryption_key = sha256(kl.config.SECRET_KEY).digest()
+    def encrypt(self, attributes, secret_key = None):
+        secret_key = get_secret_key(secret_key)
+
+        mac = hmac(secret_key, None, sha1)
+        encryption_key = sha256(secret_key).digest()
 
         iv = ''.join(chr(random.randint(0, 0xFF)) for i in xrange(16))
         encryptor = AES.new(encryption_key, AES.MODE_CBC, iv)
@@ -247,7 +250,7 @@ class Task(object):
         return '{}?{}'.format(b64encode(mac.digest()), '&'.join(result))
 
     @staticmethod
-    def deserialize(d):
+    def deserialize(d, secret_key = None):
         result = {}
 
         if isinstance(d, dict):
@@ -257,14 +260,14 @@ class Task(object):
         else:
             s = d
 
-        from . import kl
+        secret_key = get_secret_key(secret_key)
         base64_hash, data = s.split('?', 1)
-        mac = hmac(kl.config.SECRET_KEY, None, sha1)
+        mac = hmac(secret_key, None, sha1)
 
         iv, data = data.split('&', 1)
         iv = b64decode(iv)
 
-        decryption_key = sha256(kl.config.SECRET_KEY).digest()
+        decryption_key = sha256(secret_key).digest()
         decryptor = AES.new(decryption_key, AES.MODE_CBC, iv)
 
         for item in data.split('&'):
@@ -297,6 +300,7 @@ class Task(object):
         attr, val = data.split('=', 1)
         val = pickle.loads(val)
         return attr, val
+
 
     def __str__(self):
         return 'Task: ' + '; '.join('{0}: {1}'.format(attr, getattr(self, attr))

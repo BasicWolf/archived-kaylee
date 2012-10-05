@@ -229,7 +229,7 @@ class Config(object):
 
         self.AUTO_GET_ACTION = kwargs.get('AUTO_GET_ACTION', True)
         self.WORKER_SCRIPT = kwargs.get('WORKER_SCRIPT', None)
-        self._secret_key = kwargs.get('SECRET_KEY', None)
+        self.SECRET_KEY = kwargs.get('SECRET_KEY', None)
 
     def __setattr__(self, name, value):
         if name != '_dirty':
@@ -245,11 +245,6 @@ class Config(object):
             self._dirty = False
         return self._cached_dict
 
-    @property
-    def SECRET_KEY(self):
-        if self._secret_key is None:
-            raise KayleeError('SECRET_KEY is not defined.')
-        return self._secret_key
 
 class Applications(object):
     """A container for active Kaylee applications.

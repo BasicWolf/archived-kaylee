@@ -45,7 +45,6 @@ class KayleeUtilTests(KayleeTest):
             def x_plus(self, val):
                 self.x += val
 
-
         class MyLazyObject(LazyObject):
             def _setup(self, obj = None):
                 self._wrapped = NonLazy() if obj is None else obj

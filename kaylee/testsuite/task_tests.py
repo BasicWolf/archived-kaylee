@@ -3,6 +3,7 @@ import kaylee
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.errors import KayleeError
 
+
 class TaskSimpleFields(kaylee.Task):
     serializable = ['f1', 'f2']
 
@@ -34,38 +35,24 @@ class TaskTests(KayleeTest):
 
     def test_secret_key_config_check(self):
         # Checks if KayleeError raised when SECRET_KEY is not defined
-        import test_config
-        from kaylee import setup, kl
-        secret_key = test_config.SECRET_KEY
-
-        del test_config.SECRET_KEY
-        setup(test_config)
-
         t1 = TaskSessionFields(1, 10, 'someval')
         self.assertRaises(KayleeError, t1.serialize)
 
-    def test_session_serialize(self):
-        import test_config
-        from kaylee import setup, kl
-        setup(test_config)
 
+    def test_session_serialize(self):
         t1 = TaskSessionFields(1, 10, 'someval')
-        d = t1.serialize()
+        d = t1.serialize(secret_key='abc')
         self.assertIn('__kaylee_task_session__', d)
         val = d['__kaylee_task_session__']
         self.assertGreater(len(val), 0)
         self.assertEqual(val.count('&'), 2)
 
     def test_session_deserialize(self):
-        import test_config
-        from kaylee import setup, kl
-        setup(test_config)
-
         t1 = TaskSessionFields(1, 10, 'someval')
-        d1 = t1.serialize()
+        d1 = t1.serialize(secret_key='abc')
 
         # check if deserialization works in general
-        d2 = TaskSessionFields.deserialize(d1)
+        d2 = TaskSessionFields.deserialize(d1, secret_key='abc')
         self.assertEqual(len(d2), 3)
         self.assertEqual(d2['f1'], t1.f1)
         self.assertEqual(d2['f2'], t1.f2)
@@ -73,7 +60,7 @@ class TaskTests(KayleeTest):
 
         # test if deserialization works for a string
         s = d1['__kaylee_task_session__']
-        d3 = TaskSessionFields.deserialize(s)
+        d3 = TaskSessionFields.deserialize(s, secret_key='abc')
         self.assertEqual(len(d3), 2)
         self.assertEqual(d3['f1'], t1.f1)
         self.assertEqual(d3['f2'], t1.f2)
