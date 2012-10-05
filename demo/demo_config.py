@@ -13,6 +13,8 @@ PROJECTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                             'projects'))
 WORKER_SCRIPT = '/static/js/kaylee/klworker.js'
 
+SECRET_KEY = '1234ABCabc!@{}xyz&%*'
+
 ## User applications ##
 #######################
 

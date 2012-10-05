@@ -249,6 +249,7 @@ class Config(object):
     def SECRET_KEY(self):
         if self._secret_key is None:
             raise KayleeError('SECRET_KEY is not defined.')
+        return self._secret_key
 
 class Applications(object):
     """A container for active Kaylee applications.

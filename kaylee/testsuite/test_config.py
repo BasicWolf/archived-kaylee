@@ -5,6 +5,7 @@ WORKER_SCRIPT = '/static/js/kaylee/klworker.js'
 
 PROJECTS_DIR = PROJECTS_DIR
 
+SECRET_KEY = 'aJD2fn;1340913)*(!!&$)(#&<AHFB12b'
 
 REGISTRY = {
     'name' : 'MemoryNodesRegistry',

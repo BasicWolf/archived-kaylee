@@ -9,6 +9,7 @@
     :license: MIT, see LICENSE for more details.
 """
 
+import random
 import cPickle as pickle
 from base64 import b64encode, b64decode
 from hmac import new as hmac
@@ -16,6 +17,7 @@ from hashlib import sha1, sha256
 from abc import abstractmethod
 from copy import copy
 from functools import wraps
+from copy import deepcopy
 
 from Crypto.Cipher import AES
 
@@ -218,10 +220,11 @@ class Task(object):
         if attributes is None:
             attributes = self.serializable
 
-        res = { attr : getattr(self, attr) for attr in attributes }
+        res = { attr : getattr(self, attr) for attr in attributes
+                if not attr.startswith('#') }
 
         # process session attributes, if any
-        sess_attributes = [attr for attr in attributes if attr.startswith('#')]
+        sess_attributes = [attr[1:] for attr in attributes if attr.startswith('#')]
         if len(sess_attributes) > 0:
             res['__kaylee_task_session__'] = self.encrypt(sess_attributes)
         return res
@@ -229,34 +232,52 @@ class Task(object):
     def encrypt(self, attributes):
         from . import kl
         mac = hmac(kl.config.SECRET_KEY, None, sha1)
-        encryption_key = hashlib.sha256(kl.config.SECRET_KEY).digest()
-        encryptor = AES.new(encryption_key, AES.MODE_CBC)
+        encryption_key = sha256(kl.config.SECRET_KEY).digest()
 
-        result = []
-        for attr, value in sorted(attributes):
-            result.append(self._encrypt_attr(attr, value, encryptor))
+        iv = ''.join(chr(random.randint(0, 0xFF)) for i in xrange(16))
+        encryptor = AES.new(encryption_key, AES.MODE_CBC, iv)
+
+        b64_iv = b64encode(iv)
+        result = [b64_iv]      # store initialization vector
+        for attr in sorted(attributes):
+            value = getattr(self, attr)
+            result.append(Task._encrypt_attr(attr, value, encryptor))
             mac.update('|' + result[-1])
 
         return '{}?{}'.format(b64encode(mac.digest()), '&'.join(result))
 
-    @classmethod
-    def decrypt(d):
+    @staticmethod
+    def deserialize(d):
+        result = {}
+
+        if isinstance(d, dict):
+            s = d['__kaylee_task_session__']
+            result = deepcopy(d)
+            del result['__kaylee_task_session__']
+        else:
+            s = d
+
         from . import kl
-        base64_hash, data = string.split('?', 1)
+        base64_hash, data = s.split('?', 1)
         mac = hmac(kl.config.SECRET_KEY, None, sha1)
 
-        decryption_key = hashlib.sha256(kl.config.SECRET_KEY).digest()
-        decryptor = AES.new(decryption_key, AES.MODE_CBC)
+        iv, data = data.split('&', 1)
+        iv = b64decode(iv)
 
-        result = {}
+        decryption_key = sha256(kl.config.SECRET_KEY).digest()
+        decryptor = AES.new(decryption_key, AES.MODE_CBC, iv)
+
         for item in data.split('&'):
             mac.update('|' + item)
-            attr, val = self._decrypt_attr(item, decryptor)
+            attr, val = Task._decrypt_attr(item, decryptor)
             result[attr] = val
 
-        safe_str_cmp(client_hash, mac.digest()):
+        if b64decode(base64_hash) == mac.digest():
+            return result
+        else:
+            raise KayleeError('Session attribute signature verification failed.')
 
-    @classmethod
+    @staticmethod
     def _encrypt_attr(attr, val, encryptor):
         BLOCK_SIZE = 32
         PADDING = ' '
@@ -269,10 +290,10 @@ class Task(object):
         val = b64encode(val)
         return val
 
-    @classmethod
+    @staticmethod
     def _decrypt_attr(data, decryptor):
         data = b64decode(data)
-        data = decryptor.decrypt(data).rstript(' ')
+        data = decryptor.decrypt(data).rstrip(' ')
         attr, val = data.split('=', 1)
         val = pickle.loads(val)
         return attr, val

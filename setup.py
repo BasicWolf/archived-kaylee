@@ -1,3 +1,5 @@
+#!/usr/bin/env python 
+
 import os
 from distutils.command.install_data import install_data
 from distutils.command.install import INSTALL_SCHEMES
