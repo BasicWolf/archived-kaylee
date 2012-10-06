@@ -21,7 +21,7 @@ from contextlib import closing
 from functools import wraps
 
 from .node import Node, NodeID
-from .errors import KayleeError, InvalidResultError
+from .errors import KayleeError, InvalidResultError, ProjectDepletedError
 
 log = logging.getLogger(__name__)
 
@@ -163,7 +163,7 @@ class Kaylee(object):
         try:
             data = node.get_task().serialize()
             return self._json_action('task', data)
-        except StopIteration as e:
+        except ProjectDepletedError as e:
             self.unsubscribe(node)
             return self._json_action('unsubscribe',
                 'The node has been automatically unsubscribed: {}.'.format(e))

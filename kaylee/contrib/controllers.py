@@ -1,5 +1,5 @@
 from kaylee import Controller
-from kaylee.errors import StopApplication
+from kaylee.errors import StopApplication, ProjectDepletedError
 
 class SimpleController(Controller):
     """
@@ -15,11 +15,11 @@ class SimpleController(Controller):
     def get_task(self, node):
         if not self.project.depleted:
             try:
-                task = next(self.project)
-            except StopIteration:
+                task = self.project.get_next_task()
+            except ProjectDepletedError:
                 # at this point, project.depleted is expected
                 # to be 'True'
-                assert self.project.depleted, ('StopIteration was raised but '
+                assert self.project.depleted, ('ProjectDepletedError was raised but '
                                                'Project.depleted is False.')
 
         if self.project.depleted:
@@ -62,15 +62,15 @@ class ResultsComparatorController(Controller):
     def get_task(self, node):
         if not self.project.depleted:
             try:
-                task = next(self.project)
-            except StopIteration:
+                task = self.project.get_next_task()
+            except ProjectDepletedError:
                 # at this point, project.depleted is expected
                 # to become 'True'
                 if not self.project.depleted:
                     raise KayleeError(
                         'A major Kaylee project error has occured: '
-                        'project.__next__ raised StopIteration, but '
-                        'project.depleted is not "True".')
+                        'project.get_next_task raised ProjectDepletedError, '
+                        'but project.depleted is not "True".')
 
         if self.project.depleted:
             try:
@@ -86,8 +86,8 @@ class ResultsComparatorController(Controller):
 
 
         if node.id in self.storage[task.id]:
-            raise StopIteration('Node has already completed task #{}'
-                                .format(task.id))
+            raise ProjectDepletedError('Node has already completed task #{}'
+                                       .format(task.id))
         return task
 
     def accept_result(self, node, data):

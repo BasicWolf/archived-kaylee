@@ -22,7 +22,7 @@ class HashCrackerProject(Project):
         self._tasks_counter = -1
 
 
-    def __next__(self):
+    def get_next_task(self):
         if self._tasks_counter < self.tasks_count:
             self._tasks_counter += 1
             return self[self._tasks_counter]

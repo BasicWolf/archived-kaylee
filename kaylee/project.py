@@ -23,22 +23,22 @@ from Crypto.Cipher import AES
 
 from .util import (AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS,
                    get_secret_key)
-from .errors import KayleeError
+from .errors import KayleeError, ProjectDepletedError
 
 DEPLETED = 0x2
 COMPLETED = 0x4
 
 def depleted_guard(f):
-    """Catches :exc:`StopIteration`, sets ``project.depleted`` to
+    """Catches :exc:`ProjectDepletedError`, sets ``project.depleted`` to
     ``True`` and re-throws the error.
 
-    .. note:: This is a base filter applied to :meth:`Project.__next__`.
+    .. note:: This is a base filter applied to :meth:`Project.get_next_task`.
     """
     @wraps(f)
     def wrapper(self, *args, **kwargs):
         try:
             return f(self, *args, **kwargs)
-        except StopIteration as e:
+        except ProjectDepletedError as e:
             self.depleted = True
             raise e
     return wrapper
@@ -70,7 +70,7 @@ class Project(object):
     __metaclass__ = AutoFilterABCMeta
     auto_filter = BASE_FILTERS | CONFIG_FILTERS
     auto_filters = {
-        '__next__' : [depleted_guard, ],
+        'get_next_task' : [depleted_guard, ],
         'normalize' : [ignore_null_result, ],
         'store_result' : [ignore_null_result, ],
        }
@@ -89,24 +89,20 @@ class Project(object):
         self.storage = storage
         self._state = 0
 
-    def next(self):
-        """Same as :meth:`__next__` ."""
-        return self.__next__()
-
     @abstractmethod
-    def __next__(self):
+    def get_next_task(self):
         """
-        Returns the next task. The :exc:`StopIteration` exception thrown
-        by ``__next__()`` indicates that there will be no more
+        Returns the next task. The :exc:`ProjectDepletedError` exception
+        thrown by ``get_next_task()`` indicates that there will be no more
         new tasks from the project, but the bound controller can still
-        refer to old tasks via ``project[task_id]``. After :exc:`StopIteration`
-        has been thrown, :attr:`Project.depleted` *must* be set (by the project
-        or via auto filter) to ``True``.
-        If the controller does not intercept or re-throws :exc:`StopIteration`,
+        refer to the old tasks via ``project[task_id]``. After
+        :exc:`ProjectDepletedError` has been thrown, :attr:`Project.depleted`
+        *must* be set (by the project or via auto filter) to ``True``.
+        If the controller does not intercept or re-throws :exc:`ProjectDepletedError`,
         Kaylee catches and interprets it as *"no need to involve the bound node
         in any further calculations for the application"*.
 
-        :throws: StopIteration
+        :throws: ProjectDepletedError
         :returns: an instance of :class:`Task`
         """
 
@@ -126,7 +122,7 @@ class Project(object):
     @property
     def depleted(self):
         """Indicates if current project instance has run out of new tasks
-        (see :meth:`Project.__next__`).
+        (see :meth:`Project.get_next_task`).
         """
         return self._state & DEPLETED
 
