@@ -1,12 +1,12 @@
 ###
-    klutil.coffee
-    ~~~~~~~~~~~~~
-
-    This is the base file of Kaylee client-side module.
-    It contains the common code used by Kaylee.
-
-    :copyright: (c) 2012 by Zaur Nasibov.
-    :license: MIT, see LICENSE for more details.
+#    klutil.coffee
+#    ~~~~~~~~~~~~~
+#
+#    This is the base file of Kaylee client-side module.
+#    It contains the common code used by Kaylee.
+#
+#    :copyright: (c) 2012 by Zaur Nasibov.
+#    :license: MIT, see LICENSE for more details.
 ###
 
 kl = {}

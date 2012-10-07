@@ -1,11 +1,11 @@
 ###
-    klworker.coffee
-    ~~~~~~~~~~~~~~~
-
-    This is the base file of Kaylee client-side Web Worker module.
-
-    :copyright: (c) 2012 by Zaur Nasibov.
-    :license: MIT, see LICENSE for more details.
+#    klworker.coffee
+#    ~~~~~~~~~~~~~~~
+#
+#    This is the base file of Kaylee client-side Web Worker module.
+#
+#    :copyright: (c) 2012 by Zaur Nasibov.
+#    :license: MIT, see LICENSE for more details.
 ###
 
 klw = {} # Kaylee worker namespace

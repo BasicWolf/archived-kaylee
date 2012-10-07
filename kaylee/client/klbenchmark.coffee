@@ -1,12 +1,12 @@
 ###
-    klbenchmark.coffee
-    ~~~~~~~~~~~~~~~~~~
-
-    This is the base file of Kaylee client-side module.
-    It contains a benchmark executer function.
-
-    :copyright: (c) 2012 by Zaur Nasibov.
-    :license: MIT, see LICENSE for more details.
+#    klbenchmark.coffee
+#    ~~~~~~~~~~~~~~~~~~
+#
+#    This is the base file of Kaylee client-side module.
+#    It contains a benchmark executer function.
+#
+#    :copyright: (c) 2012 by Zaur Nasibov.
+#    :license: MIT, see LICENSE for more details.
 ###
 
 

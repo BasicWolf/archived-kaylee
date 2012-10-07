@@ -1,11 +1,11 @@
 ###
-    kaylee.coffee
-    ~~~~~~~~~~~~~
-
-    This is the base file of Kaylee client-side module.
-
-    :copyright: (c) 2012 by Zaur Nasibov.
-    :license: MIT, see LICENSE for more details.
+#    kaylee.coffee
+#    ~~~~~~~~~~~~~
+#
+#    This is the base file of Kaylee client-side module.
+#
+#    :copyright: (c) 2012 by Zaur Nasibov.
+#    :license: MIT, see LICENSE for more details.
 ###
 
 ## Variables and interfaces defined in Kaylee namespace:
@@ -125,6 +125,7 @@ on_action_received = (data) ->
     switch data.action
         when 'task' then kl.task_received.trigger(data.data)
         when 'unsubscribe' then kl.node_unsubscibed.trigger(data.data)
+        else alert("Unknown action: #{data.action}")
     return null
 
 on_task_received = (data) ->
@@ -158,8 +159,8 @@ kl.action_received = new Event(on_action_received)
 kl.task_received = new Event(on_task_received)
 kl.task_completed = new Event(on_task_completed)
 kl.log = new Event()
-kl.worker_raised_error = new Event()
 kl.result_sent = new Event()
-kl.server_raised_error = new Event()
+kl.worker_raised_error = new Event(kl.error)
+kl.server_raised_error = new Event(kl.error)
 
 window.kl = kl;

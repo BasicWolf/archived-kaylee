@@ -1,13 +1,13 @@
 ###
-    klajax.coffee
-    ~~~~~~~~~~~~~
-
-    This is the base file of Kaylee client-side module.
-    It contains a small AJAX library used in a browser's
-    main JavaScript event loop.
-
-    :copyright: (c) 2012 by Zaur Nasibov.
-    :license: MIT, see LICENSE for more details.
+#    klajax.coffee
+#    ~~~~~~~~~~~~~
+#
+#    This is the base file of Kaylee client-side module.
+#    It contains a small AJAX library used in a browser's
+#    main JavaScript event loop.
+#
+#    :copyright: (c) 2012 by Zaur Nasibov.
+#    :license: MIT, see LICENSE for more details.
 ###
 
 kl.ajax = (url, method, data, success = (()->), error = (() ->) ) ->
@@ -23,7 +23,6 @@ kl.ajax = (url, method, data, success = (()->), error = (() ->) ) ->
             req.setRequestHeader("Connection", "close");
         when "GET"
             if data?
-                alert data
                 dl = []
                 for key, val of data
                     dl.push(key + '=' + encodeURIComponent(val))
