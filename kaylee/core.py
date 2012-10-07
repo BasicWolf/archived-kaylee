@@ -21,12 +21,16 @@ from contextlib import closing
 from functools import wraps
 
 from .node import Node, NodeID
-from .errors import KayleeError, InvalidResultError, ProjectDepletedError
+from .errors import KayleeError, InvalidResultError
 
 log = logging.getLogger(__name__)
 
 #: Returns the results of :function:`json.dumps` in compact encoding
 json.dumps = partial(json.dumps, separators=(',', ':'))
+
+ACTION_TASK = 'task'
+ACTION_UNSUBSCRIBE = 'unsubscribe'
+ACTION_PASS = 'pass'
 
 
 def json_error_handler(f):
@@ -160,13 +164,15 @@ class Kaylee(object):
         :type node_id: string
         """
         node = self._registry[node_id]
-        try:
-            data = node.get_task().serialize()
-            return self._json_action('task', data)
-        except ProjectDepletedError as e:
+        task = node.get_task()
+        if task is not None:
+            return self._json_action(ACTION_TASK, task.serialize())
+        else:
             self.unsubscribe(node)
-            return self._json_action('unsubscribe',
-                'The node has been automatically unsubscribed: {}.'.format(e))
+            return self._json_action(
+                ACTION_UNSUBSCRIBE,
+                'The node has been automatically unsubscribed: '
+                'the application is completed.')
 
     @json_error_handler
     def accept_result(self, node_id, data):
@@ -195,7 +201,7 @@ class Kaylee(object):
 
         if self.config.AUTO_GET_ACTION:
             return self.get_action(node.id)
-        return self._json_action('pass')
+        return self._json_action(ACTION_PASS)
 
 
     def clean(self):

@@ -15,7 +15,6 @@ from datetime import datetime
 from functools import wraps
 
 from .util import AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS
-from .errors import StopApplication
 
 #: The Application name regular expression pattern which can be used in
 #: e.g. web frameworks' URL dispatchers.
@@ -31,22 +30,23 @@ def app_completed_guard(f):
     """The filter handles two cases of completed Kaylee application:
 
     1. First, it checks if the application has already completed and
-       in that case raises :exc:`StopApplication`.
+       in that case immediately returns ``None``.
     2. Second, it wraps ``f`` in ``try..except`` block in order to
        set object's :attr:`Controller.completed` value to ``True``.
-       The :exc:`StopApplication` is then re-raised.
+       After that ``None`` is returned.
 
     .. note:: This is a base filter applied to :meth:`Controller.get_task`.
     """
     @wraps(f)
     def wrapper(self, *args, **kwargs):
+        print self.completed
         if self.completed:
-            raise StopApplication(self.app_name)
-        try:
-            return f(self, *args, **kwargs)
-        except StopApplication as e:
+            return None
+        ret = f(self, *args, **kwargs)
+        if ret is None:
             self.completed = True
-            raise e
+            return None
+        return ret
     return wrapper
 
 def normalize_result_filter(f):
@@ -128,10 +128,7 @@ class Controller(object):
 
     @abstractmethod
     def get_task(self, node):
-        """Returns a task for a node.
-
-        :throws errors.StopApplication:
-        """
+        """Returns a task for a node."""
 
     @abstractmethod
     def accept_result(self, node, data):
@@ -145,7 +142,7 @@ class Controller(object):
     @property
     def completed(self):
         """Indicates if application was completed."""
-        return self._state & COMPLETED
+        return self._state & COMPLETED == COMPLETED
 
     @completed.setter
     def completed(self, val):

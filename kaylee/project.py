@@ -23,25 +23,7 @@ from Crypto.Cipher import AES
 
 from .util import (AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS,
                    get_secret_key)
-from .errors import KayleeError, ProjectDepletedError
-
-DEPLETED = 0x2
-COMPLETED = 0x4
-
-def depleted_guard(f):
-    """Catches :exc:`ProjectDepletedError`, sets ``project.depleted`` to
-    ``True`` and re-throws the error.
-
-    .. note:: This is a base filter applied to :meth:`Project.get_next_task`.
-    """
-    @wraps(f)
-    def wrapper(self, *args, **kwargs):
-        try:
-            return f(self, *args, **kwargs)
-        except ProjectDepletedError as e:
-            self.depleted = True
-            raise e
-    return wrapper
+from .errors import KayleeError
 
 def ignore_null_result(f):
     """Ignores ``None`` data by **not** calling the wrapped method.
@@ -70,7 +52,6 @@ class Project(object):
     __metaclass__ = AutoFilterABCMeta
     auto_filter = BASE_FILTERS | CONFIG_FILTERS
     auto_filters = {
-        'get_next_task' : [depleted_guard, ],
         'normalize' : [ignore_null_result, ],
         'store_result' : [ignore_null_result, ],
        }
@@ -87,28 +68,25 @@ class Project(object):
             'script' : kwargs['script'],
             }
         self.storage = storage
-        self._state = 0
+        #: Indicates whether the project was completed.
+        self.completed = False
 
     @abstractmethod
     def get_next_task(self):
         """
-        Returns the next task. The :exc:`ProjectDepletedError` exception
-        thrown by ``get_next_task()`` indicates that there will be no more
-        new tasks from the project, but the bound controller can still
-        refer to the old tasks via ``project[task_id]``. After
-        :exc:`ProjectDepletedError` has been thrown, :attr:`Project.depleted`
-        *must* be set (by the project or via auto filter) to ``True``.
-        If the controller does not intercept or re-throws :exc:`ProjectDepletedError`,
-        Kaylee catches and interprets it as *"no need to involve the bound node
-        in any further calculations for the application"*.
+        Returns the next task. The returned ``None`` value indicates that
+        there will be no more new tasks from the project, but the bound
+        controller can still refer to the old tasks via ``project[task_id]``.
 
-        :throws: ProjectDepletedError
-        :returns: an instance of :class:`Task`
+        :returns: an instance of :class:`Task` or ``None``.
         """
 
     @abstractmethod
     def __getitem__(self, task_id):
-        """Returns task with the required id."""
+        """Returns a task with the required id.
+
+        :rtype: :class:`Task`
+        """
 
     def store_result(self, task_id, data):
         """Stores the results to the permanent storage.
@@ -119,32 +97,6 @@ class Project(object):
         """
         self.storage.add(task_id, data)
 
-    @property
-    def depleted(self):
-        """Indicates if current project instance has run out of new tasks
-        (see :meth:`Project.get_next_task`).
-        """
-        return self._state & DEPLETED
-
-    @depleted.setter
-    def depleted(self, val):
-        if val:
-            self._state |= DEPLETED
-        else:
-            self._state &= ~DEPLETED
-
-    @property
-    def completed(self):
-        """Indicates whether the project was completed."""
-        return self._state & COMPLETED
-
-    @completed.setter
-    def completed(self, val):
-        if val:
-            self._state |= COMPLETED
-        else:
-            self._state &= ~COMPLETED
-
     def normalize(self, task_id, data):
         """Normalizes and validates a solution.
 
@@ -154,6 +106,7 @@ class Project(object):
         :return: normalized data.
         """
         return data
+
 
 class TaskMeta(type):
     """

@@ -22,15 +22,6 @@ class NodeUnsubscribedError(KayleeError):
     def __init__(self, node):
         KayleeError.__init__(self, 'Node {} is not subscribed'.format(node))
 
-class ProjectDepletedError(KayleeError):
-    pass
-
-class StopApplication(ProjectDepletedError):
-    def __init__(self, app_name):
-        super(StopApplication, self).__init__(
-            'All calculations for application {} were completed'
-            .format(app_name))
-
 class InvalidResultError(ValueError, KayleeError):
     def __init__(self, result, why = ''):
         super(InvalidResultError, self).__init__(

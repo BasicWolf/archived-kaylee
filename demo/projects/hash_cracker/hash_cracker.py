@@ -27,7 +27,7 @@ class HashCrackerProject(Project):
             self._tasks_counter += 1
             return self[self._tasks_counter]
         else:
-            raise StopIteration()
+            return None
 
     def __getitem__(self, task_id):
         return HashCrackerTask(task_id, self.hash_to_crack, self.salt)
@@ -45,8 +45,8 @@ class HashCrackerProject(Project):
         super(HashCrackerProject, self).store_result(task_id, data)
         if len(self.storage) == 1:
             # it is enough to have a single result to complete the project
-            self.completed = True
             self._announce_results()
+            self.completed = True
 
     def _announce_results(self):
         key = list(self.storage.values())[0][0]

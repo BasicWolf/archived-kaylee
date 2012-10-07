@@ -1,5 +1,4 @@
 from kaylee import Controller
-from kaylee.errors import StopApplication, ProjectDepletedError
 
 class SimpleController(Controller):
     """
@@ -11,25 +10,19 @@ class SimpleController(Controller):
     def __init__(self, *args, **kwargs):
         super(SimpleController, self).__init__(*args, **kwargs)
         self._tasks_pool = set()
+        self._project_depleted = False
 
     def get_task(self, node):
-        if not self.project.depleted:
-            try:
-                task = self.project.get_next_task()
-            except ProjectDepletedError:
-                # at this point, project.depleted is expected
-                # to be 'True'
-                assert self.project.depleted, ('ProjectDepletedError was raised but '
-                                               'Project.depleted is False.')
+        task = self.project.get_next_task()
 
-        if self.project.depleted:
+        if task is None:
             try:
                 tp_id = self._tasks_pool.pop()
                 task = self.project[tp_id]
             except KeyError:
                 # project depleted and nothing in the pool,
-                # looks like the application has completed.
-                raise StopApplication(self.app_name)
+                # looks like the application is completed.
+                return None
 
         node.task_id = task.id
         self._tasks_pool.add(task.id)
@@ -79,7 +72,7 @@ class ResultsComparatorController(Controller):
             except KeyError:
                 # project depleted and nothing in the pool,
                 # looks like the application has completed.
-                raise StopApplication(self.app_name)
+                return None
 
         node.task_id = task.id
         self._tasks_pool.add(task.id)
