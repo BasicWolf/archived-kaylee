@@ -1,5 +1,6 @@
+import string
 from kaylee.testsuite import KayleeTest, load_tests
-from kaylee.util import parse_timedelta, LazyObject
+from kaylee.util import parse_timedelta, LazyObject, random_string
 from kaylee import KayleeError
 
 class KayleeUtilTests(KayleeTest):
@@ -57,5 +58,44 @@ class KayleeUtilTests(KayleeTest):
         self.assertEqual(lo.x, 10)
         lo.x_plus(40)
         self.assertEqual(lo.x, 50)
+
+
+    def test_random_string(self):
+        # test length
+        s = random_string(5)
+        self.assertEqual(len(s), 5)
+        s = random_string(0)
+        self.assertEqual(len(s), 0)
+        s = random_string(100)
+        self.assertEqual(len(s), 100)
+
+        # test 'alphabet' argument
+        s = random_string(10, 'a')
+        self.assertEqual(s, 'a'*10)
+
+        # test other arguments
+        s = random_string(30, uppercase=False, lowercase=False)
+        for c in s:
+            self.assertIn(c, string.digits)
+
+        s = random_string(30, lowercase=False, digits=False)
+        for c in s:
+            self.assertIn(c, string.ascii_uppercase)
+
+        s = random_string(30, uppercase=False, digits=False)
+        for c in s:
+            self.assertIn(c, string.ascii_lowercase)
+
+        # test 'extra' argument
+        s = random_string(30, uppercase=False, lowercase=False, digits=False,
+                          extra='123')
+        for c in s:
+            self.assertIn(c, '123')
+
+        extra = '1234567890'
+        s = random_string(1000, uppercase=False, digits=False, extra=extra)
+        for c in s:
+            self.assertIn(c, string.ascii_lowercase + extra)
+
 
 kaylee_suite = load_tests([KayleeUtilTests, ])

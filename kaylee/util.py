@@ -11,6 +11,8 @@
 
 import re
 import importlib
+import random
+import string
 from datetime import timedelta
 from abc import ABCMeta
 
@@ -160,4 +162,17 @@ def get_secret_key(key = None):
             raise KayleeError('Cannot locate a valid secret key.')
 
 
+def random_string(length, alphabet = None, lowercase = True, uppercase = True,
+                  digits = True, extra = ''):
+    if alphabet is not None:
+        src = alphabet
+    else:
+        src = extra
+        if lowercase:
+            src += string.ascii_lowercase
+        if uppercase:
+            src += string.ascii_uppercase
+        if digits:
+            src += string.digits
 
+    return ''.join(random.choice(src) for x in xrange(length))
