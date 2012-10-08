@@ -42,6 +42,7 @@ def app_completed_guard(f):
     def wrapper(self, *args, **kwargs):
         if self.completed:
             raise ApplicationCompletedError(self.name)
+
         try:
             return f(self, *args, **kwargs)
         except ApplicationCompletedError as e:
@@ -65,7 +66,7 @@ def failed_result_filter(f):
     """The filter is meant to be used in "decision search" projects which
     supposed to deliver a single correct result.
     It converts the ``{ '__kl_result__' : False }`` result to ``None``,
-    which should be ignored by projects' :meth:`Project.store_result` routine.
+    which can be ignored by :meth:`Project.store_result` routine.
     """
     @wraps(f)
     def wrapper(self, node, data):

@@ -27,10 +27,14 @@ class InvalidResultError(ValueError, KayleeError):
         super(InvalidResultError, self).__init__(
             'Invalid result "{}": {}'.format(result, why))
 
-class ApplicationCompletedError(KayleeError):
+class NodeRejectedError(KayleeError):
+    def __init__(self):
+        super(NodeRejectedError, self).__init__('The node was rejected.')
+
+class ApplicationCompletedError(NodeRejectedError):
     def __init__(self, name):
-        KayleeError.__init__(self, 'The application "{}" has been completed.'
-                             .format(name))
+        super(NodeRejectedError, self).__init__(
+            'The application "{}" has been completed.'.format(name))
 
 class KayleeWarning(UserWarning):
     pass

@@ -1,5 +1,5 @@
 from kaylee import Controller
-from kaylee.errors import ApplicationCompletedError
+from kaylee.errors import ApplicationCompletedError, NodeRejectedError
 
 class SimpleController(Controller):
     """
@@ -67,7 +67,7 @@ class ResultsComparatorController(Controller):
         self._tasks_pool.add(task.id)
 
         if node.id in self.storage[task.id]:
-            raise ApplicationCompletedError(self.name)
+            raise NodeRejectedError()
         return task
 
     def accept_result(self, node, data):

@@ -17,8 +17,8 @@ class HashCrackerProject(Project):
             'hashes_per_task' : self.hashes_per_task,
         })
 
-        self.tasks_count = (len(self.alphabet) ** self.key_length
-                            / self.hashes_per_task + 1)
+        self.tasks_count = ((len(self.alphabet) ** self.key_length)
+                            // self.hashes_per_task + 1)
         self._tasks_counter = -1
 
 

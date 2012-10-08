@@ -21,7 +21,7 @@ from contextlib import closing
 from functools import wraps
 
 from .node import Node, NodeID
-from .errors import KayleeError, InvalidResultError, ApplicationCompletedError
+from .errors import KayleeError, InvalidResultError, NodeRejectedError
 
 log = logging.getLogger(__name__)
 
@@ -164,9 +164,10 @@ class Kaylee(object):
         :type node_id: string
         """
         node = self._registry[node_id]
+
         try:
             return self._json_action(ACTION_TASK, node.get_task().serialize())
-        except ApplicationCompletedError as e:
+        except NodeRejectedError as e:
             return self._json_action(ACTION_UNSUBSCRIBE,
                                      'The node has been automatically '
                                      'unsubscribed: {}'.format(e))
