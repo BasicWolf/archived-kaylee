@@ -1,4 +1,5 @@
 from kaylee import Controller
+from kaylee.errors import ApplicationCompletedError
 
 class SimpleController(Controller):
     """
@@ -14,7 +15,6 @@ class SimpleController(Controller):
 
     def get_task(self, node):
         task = self.project.get_next_task()
-
         if task is None:
             try:
                 tp_id = self._tasks_pool.pop()
@@ -22,7 +22,7 @@ class SimpleController(Controller):
             except KeyError:
                 # project depleted and nothing in the pool,
                 # looks like the application is completed.
-                return None
+                raise ApplicationCompletedError(self.name)
 
         node.task_id = task.id
         self._tasks_pool.add(task.id)
@@ -53,34 +53,21 @@ class ResultsComparatorController(Controller):
         self._tasks_pool = set()
 
     def get_task(self, node):
-        if not self.project.depleted:
-            try:
-                task = self.project.get_next_task()
-            except ProjectDepletedError:
-                # at this point, project.depleted is expected
-                # to become 'True'
-                if not self.project.depleted:
-                    raise KayleeError(
-                        'A major Kaylee project error has occured: '
-                        'project.get_next_task raised ProjectDepletedError, '
-                        'but project.depleted is not "True".')
-
-        if self.project.depleted:
+        task = self.project.get_next_task()
+        if task is None:
             try:
                 tp_id = self._tasks_pool.pop()
                 task = self.project[tp_id]
             except KeyError:
                 # project depleted and nothing in the pool,
                 # looks like the application has completed.
-                return None
+                raise ApplicationCompletedError(self.name)
 
         node.task_id = task.id
         self._tasks_pool.add(task.id)
 
-
         if node.id in self.storage[task.id]:
-            raise ProjectDepletedError('Node has already completed task #{}'
-                                       .format(task.id))
+            raise ApplicationCompletedError(self.name)
         return task
 
     def accept_result(self, node, data):

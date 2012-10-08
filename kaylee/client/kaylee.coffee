@@ -26,8 +26,8 @@ kl.api =
                kl.server_raised_error.trigger)
         return null
 
-    subscribe : (app_name) ->
-        kl.post("/kaylee/apps/#{app_name}/subscribe/#{kl.node_id}",
+    subscribe : (name) ->
+        kl.post("/kaylee/apps/#{name}/subscribe/#{kl.node_id}",
                 null,
                 kl.node_subscribed.trigger,
                 kl.server_raised_error.trigger)
@@ -57,14 +57,14 @@ kl.register = () ->
                "requirements.")
     return null
 
-kl.subscribe = (app_name) ->
+kl.subscribe = (name) ->
     kl.app = {
         name : name
         config : null
         worker : null
         subscribed : false
     }
-    kl.api.subscribe(app_name)
+    kl.api.subscribe(name)
     return null
 
 kl.get_action = () ->

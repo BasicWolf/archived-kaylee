@@ -15,6 +15,7 @@ from datetime import datetime
 from functools import wraps
 
 from .util import AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS
+from .errors import ApplicationCompletedError
 
 #: The Application name regular expression pattern which can be used in
 #: e.g. web frameworks' URL dispatchers.
@@ -30,23 +31,22 @@ def app_completed_guard(f):
     """The filter handles two cases of completed Kaylee application:
 
     1. First, it checks if the application has already completed and
-       in that case immediately returns ``None``.
+       in that case immediately throws :exc:`ApplicationCompletedError`.
     2. Second, it wraps ``f`` in ``try..except`` block in order to
        set object's :attr:`Controller.completed` value to ``True``.
-       After that ``None`` is returned.
+       After that :exc:`ApplicationCompletedError` is re-raised.
 
     .. note:: This is a base filter applied to :meth:`Controller.get_task`.
     """
     @wraps(f)
     def wrapper(self, *args, **kwargs):
-        print self.completed
         if self.completed:
-            return None
-        ret = f(self, *args, **kwargs)
-        if ret is None:
+            raise ApplicationCompletedError(self.name)
+        try:
+            return f(self, *args, **kwargs)
+        except ApplicationCompletedError as e:
             self.completed = True
-            return None
-        return ret
+            raise e
     return wrapper
 
 def normalize_result_filter(f):
@@ -88,11 +88,11 @@ class Controller(object):
 
     Metaclass: :class:`AutoFilterABCMeta <kaylee.util.AutoFilterABCMeta>`.
 
-    :param app_name: Application name.
+    :param name: Application name.
     :param project: Bound project.
     :param storage: Internal storage for storing intermediate (temporal)
                     results before storing them to a permanent storage.
-    :type app_name: string
+    :type name: string
     :type project: :class:`Project`
     :type storage: :class:`TemporalStorage`
     """
@@ -106,11 +106,11 @@ class Controller(object):
 
     _app_name_re = re.compile('^{}$'.format(app_name_pattern))
 
-    def __init__(self, app_name, project, storage = None, *args, **kwargs):
-        if Controller._app_name_re.match(app_name) is None:
+    def __init__(self, name, project, storage = None, *args, **kwargs):
+        if Controller._app_name_re.match(name) is None:
             raise ValueError('Invalid application name: {}'
-                             .format(app_name))
-        self.app_name = app_name
+                             .format(name))
+        self.name = name
         self.project = project
         self.storage = storage
         self._state = ACTIVE
@@ -152,4 +152,4 @@ class Controller(object):
             self._state &= ~COMPLETED
 
     def __hash__(self):
-        return hash(self.app_name)
+        return hash(self.name)

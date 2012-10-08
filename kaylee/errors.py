@@ -27,6 +27,11 @@ class InvalidResultError(ValueError, KayleeError):
         super(InvalidResultError, self).__init__(
             'Invalid result "{}": {}'.format(result, why))
 
+class ApplicationCompletedError(KayleeError):
+    def __init__(self, name):
+        KayleeError.__init__(self, 'The application "{}" has been completed.'
+                             .format(name))
+
 class KayleeWarning(UserWarning):
     pass
 

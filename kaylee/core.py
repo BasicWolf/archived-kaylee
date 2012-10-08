@@ -21,7 +21,7 @@ from contextlib import closing
 from functools import wraps
 
 from .node import Node, NodeID
-from .errors import KayleeError, InvalidResultError
+from .errors import KayleeError, InvalidResultError, ApplicationCompletedError
 
 log = logging.getLogger(__name__)
 
@@ -164,15 +164,12 @@ class Kaylee(object):
         :type node_id: string
         """
         node = self._registry[node_id]
-        task = node.get_task()
-        if task is not None:
-            return self._json_action(ACTION_TASK, task.serialize())
-        else:
-            self.unsubscribe(node)
-            return self._json_action(
-                ACTION_UNSUBSCRIBE,
-                'The node has been automatically unsubscribed: '
-                'the application is completed.')
+        try:
+            return self._json_action(ACTION_TASK, node.get_task().serialize())
+        except ApplicationCompletedError as e:
+            return self._json_action(ACTION_UNSUBSCRIBE,
+                                     'The node has been automatically '
+                                     'unsubscribed: {}'.format(e))
 
     @json_error_handler
     def accept_result(self, node_id, data):
@@ -258,7 +255,7 @@ class Applications(object):
     :param controllers: A list of :class:`Controller` objects.
     """
     def __init__(self, controllers):
-        self._controllers = {c.app_name : c for c in controllers}
+        self._controllers = {c.name : c for c in controllers}
         self.names = sorted(self._controllers.keys())
 
     def __getitem__(self, name):
