@@ -230,13 +230,13 @@ class Task(object):
             raise KayleeError('Session attribute signature verification failed.')
 
     @staticmethod
-    def _encrypt_attr(attr, val, encryptor):
+    def _encrypt_attr(attr, value, encryptor):
         BLOCK_SIZE = 32
         PADDING = ' '
         # one-liner to sufficiently pad the text to be encrypted
         pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
 
-        val = pickle.dumps(val, pickle.HIGHEST_PROTOCOL)
+        val = pickle.dumps(value, pickle.HIGHEST_PROTOCOL)
         val = '{}={}'.format(attr, val)
         val = encryptor.encrypt(pad(val))
         val = b64encode(val)
@@ -244,9 +244,9 @@ class Task(object):
 
     @staticmethod
     def _decrypt_attr(data, decryptor):
-        data = b64decode(data)
-        data = decryptor.decrypt(data).rstrip(' ')
-        attr, val = data.split('=', 1)
+        tdata = b64decode(data)
+        tdata = decryptor.decrypt(tdata).rstrip(' ')
+        attr, val = tdata.split('=', 1)
         val = pickle.loads(val)
         return attr, val
 
