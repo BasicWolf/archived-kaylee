@@ -53,4 +53,31 @@ app_hash_cracker_1 = {
         }
     }
 
+
+app_human_ocr_1 = {
+    'name' : 'human_ocr.1',
+    'description' : 'Involves a human in image recognition',
+    'project' : {
+        'name' : 'HumanOCRProject',
+        'config' : {
+            'script'    : '/static/js/projects/hash_cracker/human_ocr.js',
+            'img_dir_url' : '/static/tmp/human_ocr/',
+            'img_dir'     : os.path.join(STATIC_DIR, 'tmp/human_ocr/'),
+            'font_path' : ('/usr/share/fonts/truetype/ttf-dejavu/'
+                           'DejaVuSans.ttf'),
+        },
+        'storage' : {
+            'name' : 'MemoryPermanentStorage',
+        },
+    },
+    'controller' : {
+        'name' : 'SimpleController',
+        'filters' : {
+            'accept_result' : ['kaylee.controller.failed_result_filter', ] ,
+        }
+    }
+}
+
+
+
 APPLICATIONS = [app_hash_cracker_1]

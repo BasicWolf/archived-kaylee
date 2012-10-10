@@ -136,7 +136,7 @@ on_task_completed = (data) ->
     kl.send_result(data)
     return null
 
-# worker event handlers
+# Kaylee worker event handlers
 on_worker_message = (data) ->
     msg = data.msg
     mdata = data.data
