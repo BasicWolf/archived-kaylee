@@ -81,7 +81,7 @@ will be automatically decorated by ``Project.auto_filters`` and the
 filters defined in config. To change that behaviour the user has to define
 the ``auto_filter`` attribute with desired value, e.g.::
 
-  class MyProject(kaylee.Project):
+  class MyProject(kaylee.AutoProject):
       auto_filter = CONFIG_FILTERS
 
 The :ref:`auto_filters <api_auto_filters>` attribute defines the filters

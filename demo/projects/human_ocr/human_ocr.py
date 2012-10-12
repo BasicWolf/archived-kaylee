@@ -4,12 +4,12 @@ import random
 import tempfile
 import Image, ImageFont, ImageDraw
 
-import kaylee
+from kaylee import ManualProject, Task
 from kaylee.util import random_string
 
 LIPSUM = "Lorem ipsum dolor sit amet"
 
-class HumanOCRProject(kaylee.Project):
+class HumanOCRProject(ManualProject):
     def __init__(self, *args, **kwargs):
         super(HumanOCRProject, self).__init__(*args, **kwargs)
         self.font_path = kwargs['font_path']
@@ -21,7 +21,7 @@ class HumanOCRProject(kaylee.Project):
         self._tasks_counter = -1
 
 
-    def get_next_task(self):
+    def next_task(self):
         if self._tasks_counter < self.tasks_count:
             self._tasks_counter += 1
             return self[self._tasks_counter]
@@ -34,7 +34,7 @@ class HumanOCRProject(kaylee.Project):
                             self.img_url_dir)
 
 
-class HumanOCRTask(kaylee.Task):
+class HumanOCRTask(Task):
     serializable = ['#random_string']
 
     def __init__(self, task_id, text, font_path, img_dir, img_url_dir):

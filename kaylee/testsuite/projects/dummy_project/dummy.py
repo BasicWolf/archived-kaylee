@@ -6,7 +6,7 @@ class DummyProject(Project):
         self.x = 0
         self.client_config = { 'dummy_key' : 'dummy_value' }
 
-    def get_next_task(self):
+    def next_task(self):
         self.x += 1
         return self.x
 

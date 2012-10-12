@@ -41,16 +41,16 @@ kl.ajax = (url, method, data, success = (()->), error = (() ->) ) ->
                 error('INVALID_STATE_ERR')
             else
                 error(req.response)
-        return null
+        return
 
     req.send(data);
-    return null
+    return
 
 kl.post = (url, data, success, error) ->
     _success = (resp_data) ->
         if resp_data.error? then error(resp_data.error) else success(resp_data)
     kl.ajax(url, 'POST', data, _success, error)
-    return null
+    return
 
 kl.get = (url, data, success, error) ->
     # remap the arguments in case that the first argument is
@@ -64,4 +64,20 @@ kl.get = (url, data, success, error) ->
     _success = (resp_data) ->
         if resp_data.error? then error(resp_data.error) else success(resp_data)
     kl.ajax(url, 'GET', data, _success, error)
-    return null
+    return
+
+kl.include = (url, success, error) ->
+    doc = document.getElementsByTagName('head')[0]
+    js = document.createElement('script')
+    js.setAttribute('type', 'text/javascript')
+    js.setAttribute('src', file)
+
+    js.onerror = (msg) ->
+        error?(msg)
+
+    js.onreadystatechange = () ->
+        if js.readyState == 'complete'
+            success?()
+
+    doc.appendChild(js)
+    return

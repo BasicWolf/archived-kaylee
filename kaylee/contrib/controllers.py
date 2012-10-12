@@ -14,7 +14,7 @@ class SimpleController(Controller):
         self._project_depleted = False
 
     def get_task(self, node):
-        task = self.project.get_next_task()
+        task = self.project.next_task()
         if task is None:
             try:
                 tp_id = self._tasks_pool.pop()
@@ -53,7 +53,7 @@ class ResultsComparatorController(Controller):
         self._tasks_pool = set()
 
     def get_task(self, node):
-        task = self.project.get_next_task()
+        task = self.project.next_task()
         if task is None:
             try:
                 tp_id = self._tasks_pool.pop()

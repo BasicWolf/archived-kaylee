@@ -26,7 +26,7 @@ from .node import Node, NodeID, NodesRegistry
 from .storage import (TemporalStorage,
                       PermanentStorage )
 from .controller import Controller
-from .project import Project, Task
+from .project import Task, Project
 from .errors import KayleeError
 
 def setup(config):

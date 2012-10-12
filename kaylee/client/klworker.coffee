@@ -9,7 +9,7 @@
 ###
 
 klw = {} # Kaylee worker namespace
-pj = {}  # Project namespace
+pj = {}  # Local project namespace
 
 addEventListener('message', ((e) ->
     msg = e.data.msg
@@ -25,7 +25,7 @@ klw.post_message = (msg, data = {}) ->
     postMessage({'msg' : msg, 'data' : data})
 
 klw.import_project = (kwargs) ->
-    importScripts(kwargs.app_config.script)
+    importScripts(kwargs.app_config.__kl_project_script__)
     pj.init(kwargs.kl_config, kwargs.app_config)
     klw.post_message('project_imported')
 

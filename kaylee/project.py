@@ -8,22 +8,24 @@
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
 """
-
 import random
 import cPickle as pickle
+from abc import abstractmethod
 from base64 import b64encode, b64decode
 from hmac import new as hmac
 from hashlib import sha1, sha256
-from abc import abstractmethod
-from copy import copy
 from functools import wraps
 from copy import deepcopy
-
 from Crypto.Cipher import AES
 
 from .util import (AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS,
                    get_secret_key)
 from .errors import KayleeError
+
+AUTO_MODE = 0x2
+MANUAL_MODE = 0x4
+
+### Auto filters ###
 
 def ignore_null_result(f):
     """Ignores ``None`` data by **not** calling the wrapped method.
@@ -38,17 +40,18 @@ def ignore_null_result(f):
         return None
     return wrapper
 
+#######
+
 
 class Project(object):
-    """Base class for Kaylee projects. Essentialy a Project is an
-    iterator that yields Kaylee :class:`Tasks <Task>`.
-
-    Every task has a unique ID and a project should be able
-    to return the same task by the given id if required.
+    """Kaylee Projects abstract base class.
 
     Metaclass: :class:`AutoFilterABCMeta <kaylee.util.AutoFilterABCMeta>`.
-    """
 
+    :param script: The URL of the project's client part (\*.js file).
+    :param storage: Permanent results storage.
+    :type storage: :class:`PermanentStorage`
+    """
     __metaclass__ = AutoFilterABCMeta
     auto_filter = BASE_FILTERS | CONFIG_FILTERS
     auto_filters = {
@@ -56,23 +59,26 @@ class Project(object):
         'store_result' : [ignore_null_result, ],
        }
 
+    #: Project mode.
+    mode = AUTO_MODE
 
-    def __init__(self, storage = None, *args, **kwargs):
+    def __init__(self, script, storage, *args, **kwargs):
         #: A dictionary with configuration
-        #: details used by every client-side node. By-default it
-        #: contains a URL of the script with project's client-side
-        #: logic. If the project is loaded via a configuration object
-        #: ``client_config`` is extended by ``project.config`` section's
-        #: value (see :ref:`loading`).
+        #: details used by every client-side node. If the project is loaded
+        #: via a configuration object ``client_config`` is extended by
+        #: ``project.config`` section's value (see :ref:`loading`).
         self.client_config = {
-            'script' : kwargs['script'],
+            '__kl_project_script__' : script,
+            '__kl_project_mode__'   : self.mode,
             }
+        #: Project's permanent results storage (an instance of
+        #: :class:`PermanentStorage` subclass).
         self.storage = storage
         #: Indicates whether the project was completed.
         self.completed = False
 
     @abstractmethod
-    def get_next_task(self):
+    def next_task(self):
         """
         Returns the next task. The returned ``None`` value indicates that
         there will be no more new tasks from the project, but the bound
@@ -111,6 +117,9 @@ class Project(object):
 class AutoProject(Project):
     """The base class for Projects which have the calculations automated and
     executed in HTML5 web worker."""
+    def __init__(self, *args, **kwargs):
+        super(AutoProject, self).__init__(*args, **kwargs)
+        self.client_config['__kl_project_type__'] = 'auto'
 
 
 class ManualProject(Project):
@@ -118,7 +127,7 @@ class ManualProject(Project):
     HTML5 web worker calculations (e.g. human interaction)."""
     def __init__(self, *args, **kwargs):
         super(ManualProject, self).__init__(*args, **kwargs)
-
+        self.client_config['__kl_project_type__'] = 'manual'
 
 
 class TaskMeta(type):
@@ -189,7 +198,7 @@ class Task(object):
         # process session attributes, if any
         sess_attributes = [attr[1:] for attr in attributes if attr.startswith('#')]
         if len(sess_attributes) > 0:
-            res['__kaylee_task_session__'] = self.encrypt(sess_attributes,
+            res['__kl_task_session__'] = self.encrypt(sess_attributes,
                                                           secret_key)
         return res
 
@@ -216,9 +225,9 @@ class Task(object):
         result = {}
 
         if isinstance(d, dict):
-            s = d['__kaylee_task_session__']
+            s = d['__kl_task_session__']
             result = deepcopy(d)
-            del result['__kaylee_task_session__']
+            del result['__kl_task_session__']
         else:
             s = d
 

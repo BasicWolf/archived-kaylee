@@ -50,11 +50,10 @@ Node Objects
 Project and Task Objects
 ------------------------
 
-.. autoclass:: Project
+.. autoclass:: kaylee.Project
    :members:
 
-   .. automethod:: __next__()
-   .. automethod:: __getitem__()
+   .. automethod:: __getitem__
 
 .. autoclass:: Task
    :members:
@@ -151,7 +150,5 @@ Controller filters
 
 Project filters
 ...............
-
-.. autofunction:: kaylee.project.depleted_guard
 
 .. autofunction:: kaylee.project.ignore_null_result

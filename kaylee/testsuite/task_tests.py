@@ -42,8 +42,8 @@ class TaskTests(KayleeTest):
     def test_session_serialize(self):
         t1 = TaskSessionFields(1, 10, 'someval')
         d = t1.serialize(secret_key='abc')
-        self.assertIn('__kaylee_task_session__', d)
-        val = d['__kaylee_task_session__']
+        self.assertIn('__kl_task_session__', d)
+        val = d['__kl_task_session__']
         self.assertGreater(len(val), 0)
         self.assertEqual(val.count('&'), 2)
 
@@ -59,7 +59,7 @@ class TaskTests(KayleeTest):
         self.assertEqual(d2['id'], t1.id)
 
         # test if deserialization works for a string
-        s = d1['__kaylee_task_session__']
+        s = d1['__kl_task_session__']
         d3 = TaskSessionFields.deserialize(s, secret_key='abc')
         self.assertEqual(len(d3), 2)
         self.assertEqual(d3['f1'], t1.f1)

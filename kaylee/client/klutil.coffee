@@ -21,18 +21,18 @@ class Event
     constructor : (handler = null) ->
         @handlers = []
         @handlers.push(handler) if handler?
-        return null
+        return
 
     trigger : (args...) =>
         for c in @handlers
             c(args...)
-        return null
+        return
 
     bind : (handler) =>
         @handlers.push(handler)
-        return null
+        return
 
     unbind : (handler) =>
         @handlers[t..t] = [] if (t = @handlers.indexOf(handler)) > -1
-        return null
+        return
 kl.Event = Event
