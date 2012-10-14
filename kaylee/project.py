@@ -113,23 +113,6 @@ class Project(object):
         """
         return data
 
-
-class AutoProject(Project):
-    """The base class for Projects which have the calculations automated and
-    executed in HTML5 web worker."""
-    def __init__(self, *args, **kwargs):
-        super(AutoProject, self).__init__(*args, **kwargs)
-        self.client_config['__kl_project_type__'] = 'auto'
-
-
-class ManualProject(Project):
-    """The base class for the Projects which involve other than automated
-    HTML5 web worker calculations (e.g. human interaction)."""
-    def __init__(self, *args, **kwargs):
-        super(ManualProject, self).__init__(*args, **kwargs)
-        self.client_config['__kl_project_type__'] = 'manual'
-
-
 class TaskMeta(type):
     """
     The metaclass for :class:`Task`. Adds **serializable**

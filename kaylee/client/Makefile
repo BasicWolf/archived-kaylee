@@ -1,5 +1,5 @@
 TARGETS = kaylee.js klworker.js
-KL_COFFEE = klutil.coffee kaylee.coffee klajax.coffee klbenchmark.coffee
+KL_COFFEE = klutil.coffee klajax.coffee klbenchmark.coffee kaylee.coffee 
 
 ifeq ($(origin KL_BUILD_DIR), environment)
 KL_JS_DIR = $(KL_BUILD_DIR)/static/js/kaylee

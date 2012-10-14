@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
 import os
 
+CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
+STATIC_DIR = os.path.join(CURRENT_DIR, 'static')
+
+
+PROJECTS_DIR = os.path.join(CURRENT_DIR, 'projects')
+WORKER_SCRIPT = '/static/js/kaylee/klworker.js'
+
+SECRET_KEY = '1234ABCabc!@{}xyz&%*'
+
 
 REGISTRY = {
     'name' : 'MemoryNodesRegistry',
@@ -9,11 +18,6 @@ REGISTRY = {
     },
 }
 
-PROJECTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                            'projects'))
-WORKER_SCRIPT = '/static/js/kaylee/klworker.js'
-
-SECRET_KEY = '1234ABCabc!@{}xyz&%*'
 
 ## User applications ##
 #######################
@@ -60,7 +64,7 @@ app_human_ocr_1 = {
     'project' : {
         'name' : 'HumanOCRProject',
         'config' : {
-            'script'    : '/static/js/projects/hash_cracker/human_ocr.js',
+            'script'    : '/static/js/projects/human_ocr/human_ocr.js',
             'img_dir_url' : '/static/tmp/human_ocr/',
             'img_dir'     : os.path.join(STATIC_DIR, 'tmp/human_ocr/'),
             'font_path' : ('/usr/share/fonts/truetype/ttf-dejavu/'
@@ -80,4 +84,5 @@ app_human_ocr_1 = {
 
 
 
+# APPLICATIONS = [app_human_ocr_1]
 APPLICATIONS = [app_hash_cracker_1]

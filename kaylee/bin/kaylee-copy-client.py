@@ -22,7 +22,7 @@ def main():
 
     args = parser.parse_args()
 
-
+    client_dir = get_client_dir()
     if args.build:
         p = subprocess.Popen('make', cwd=client_dir, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)

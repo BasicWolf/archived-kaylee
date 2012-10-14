@@ -12,9 +12,9 @@ $(document).ready( () ->
     kl.task_received.bind(on_task_received)
     kl.task_completed.bind(on_task_completed)
     kl.result_sent.bind(on_result_sent)
-    kl.worker_raised_error.bind(on_worker_error)
+    kl.client_error.bind(on_client_error)
     kl.log.bind(on_log)
-    kl.server_raised_error.bind(on_server_error)
+    kl.server_error.bind(on_server_error)
     kl.register()
 )
 
@@ -52,8 +52,8 @@ on_task_completed = (data) ->
 on_result_sent = () ->
     kl.console.print("The result has been sent to the server.")
 
-on_worker_error = (e) ->
-    kl.console.print("<span class='cerr'>WORKER ERROR:</span> Line #{e.lineno} in
+on_client_error = (e) ->
+    kl.console.print("<span class='cerr'>CLIENT ERROR:</span> Line #{e.lineno} in
                       #{e.filename}: #{e.message}")
 
 on_server_error = (message) ->

@@ -4,12 +4,15 @@ import random
 import tempfile
 import Image, ImageFont, ImageDraw
 
-from kaylee import ManualProject, Task
+from kaylee import Project, Task
+from kaylee.project import MANUAL_MODE
 from kaylee.util import random_string
 
 LIPSUM = "Lorem ipsum dolor sit amet"
 
-class HumanOCRProject(ManualProject):
+class HumanOCRProject(Project):
+    mode = MANUAL_MODE
+
     def __init__(self, *args, **kwargs):
         super(HumanOCRProject, self).__init__(*args, **kwargs)
         self.font_path = kwargs['font_path']
@@ -17,7 +20,7 @@ class HumanOCRProject(ManualProject):
         self.img_dir_url = kwargs['img_dir_url']
 
         self.lipsum_words = LIPSUM.split(' ')
-        self.tasks_count = len(lipsum_words)
+        self.tasks_count = len(self.lipsum_words)
         self._tasks_counter = -1
 
 
@@ -63,4 +66,3 @@ class HumanOCRTask(Task):
 
         draw.point(noise, (255, 255, 255))
         draw.text((0, 0), text, font=font, fill="#000000")
-

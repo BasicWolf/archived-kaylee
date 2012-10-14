@@ -10,7 +10,7 @@
 #    :license: MIT, see LICENSE for more details.
 ###
 
-kl.ajax = (url, method, data, success = (()->), error = (() ->) ) ->
+kl.ajax = (url, method, data, success = (()->), fail = (() ->) ) ->
     req = new XMLHttpRequest();
 
     switch method
@@ -34,50 +34,48 @@ kl.ajax = (url, method, data, success = (()->), error = (() ->) ) ->
         if req.readyState == 4
             if req.status == 200 and req.response?
                 if req.response.error?
-                    error(req.response.error)
+                    fail(req.response.error)
                 else
                     success(req.response)
             else if !req.response?
-                error('INVALID_STATE_ERR')
+                fail('INVALID_STATE_ERR')
             else
-                error(req.response)
+                fail(req.response)
         return
 
     req.send(data);
     return
 
-kl.post = (url, data, success, error) ->
+kl.post = (url, data, success, fail) ->
     _success = (resp_data) ->
-        if resp_data.error? then error(resp_data.error) else success(resp_data)
-    kl.ajax(url, 'POST', data, _success, error)
+        if resp_data.error? then fail(resp_data.error) else success(resp_data)
+    kl.ajax(url, 'POST', data, _success, fail)
     return
 
-kl.get = (url, data, success, error) ->
+kl.get = (url, data, success, fail) ->
     # remap the arguments in case that the first argument is
     # the success callback.
     if arguments.length >= 2
         if kl.util.is_function(data)
-            error = success
+            fail = success
             success = data
             data = null
 
     _success = (resp_data) ->
-        if resp_data.error? then error(resp_data.error) else success(resp_data)
-    kl.ajax(url, 'GET', data, _success, error)
+        if resp_data.error? then fail(resp_data.error) else success(resp_data)
+    kl.ajax(url, 'GET', data, _success, fail)
     return
 
-kl.include = (url, success, error) ->
+kl.include = (url, success, fail) ->
     doc = document.getElementsByTagName('head')[0]
     js = document.createElement('script')
     js.setAttribute('type', 'text/javascript')
-    js.setAttribute('src', file)
+    js.setAttribute('src', url)
+    doc.appendChild(js)
 
     js.onerror = (msg) ->
-        error?(msg)
+        fail?(msg)
+    js.onload = () ->
+        success?()
 
-    js.onreadystatechange = () ->
-        if js.readyState == 'complete'
-            success?()
-
-    doc.appendChild(js)
     return

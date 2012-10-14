@@ -26,8 +26,11 @@ klw.post_message = (msg, data = {}) ->
 
 klw.import_project = (kwargs) ->
     importScripts(kwargs.app_config.__kl_project_script__)
-    pj.init(kwargs.kl_config, kwargs.app_config)
-    klw.post_message('project_imported')
+    pj.init(kwargs.kl_config, kwargs.app_config,
+            () -> klw.post_message('project_imported'),
+            (data) -> klw.post_error('__klw_error__', data)
+    )
+
 
 klw.task_completed = (res) ->
     klw.post_message('task_completed', res)

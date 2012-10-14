@@ -1,5 +1,5 @@
 # Define the names of the projects here
-PROJECTS = hash_cracker
+PROJECTS = hash_cracker human_ocr
 
 # Create project directories' paths
 PJ_DIRS = $(addprefix projects/, $(PROJECTS) )
@@ -8,6 +8,12 @@ PJ_DIRS = $(addprefix projects/, $(PROJECTS) )
 export KL_BUILD_DIR = $(CURDIR)/build
 export PJ_RES_DIR = $(KL_BUILD_DIR)/static/js/projects
 KL_CLIENT_DIR = $(KL_BUILD_DIR)/static/js/kaylee
+
+ifdef LOCALBUILD
+	CLIENT_FLAGS = -b
+else
+	CLIENT_FLAGS = 
+endif
 
 all: demo
 
@@ -20,7 +26,7 @@ static:
 	cp -r templates $(KL_BUILD_DIR)
 
 client:
-	kaylee-copy-client.py $(KL_CLIENT_DIR)
+	kaylee-copy-client.py $(CLIENT_FLAGS) $(KL_CLIENT_DIR)
 
 $(PJ_DIRS):
 	$(MAKE) $(MAKECMDGOALS) -C $@

@@ -1,6 +1,7 @@
-pj.init = (kl_config, app_config) ->
+pj.init = (kl_config, app_config, success, fail) ->
     importScripts(app_config.md5_script)
     pj.config = app_config
+    success()
     return
 
 

@@ -17,8 +17,8 @@
 #     worker : null # Worker object
 #     subscribed : false
 
-AUTO_MODE = 0x2
-MANUAL_MODE = 0x4
+kl.AUTO_MODE = 0x2
+kl.MANUAL_MODE = 0x4
 
 kl.config = {}
 # The MANUAL_MODE project's namespace.
@@ -29,20 +29,20 @@ kl.api =
     register : () ->
         kl.get("/kaylee/register",
                kl.node_registered.trigger,
-               kl.server_raised_error.trigger)
+               kl.server_error.trigger)
         return
 
     subscribe : (name) ->
         kl.post("/kaylee/apps/#{name}/subscribe/#{kl.node_id}",
                 null,
                 kl.node_subscribed.trigger,
-                kl.server_raised_error.trigger)
+                kl.server_error.trigger)
         return
 
     get_action : () ->
         kl.get("/kaylee/actions/#{kl.node_id}",
                kl.action_received.trigger,
-               kl.server_raised_error.trigger)
+               kl.server_error.trigger)
         return
 
     send_result : (results) ->
@@ -88,7 +88,7 @@ kl._message_to_worker = (msg, data = {}) ->
     return
 
 kl._default_server_error_handler = (err) ->
-    kl.server_raised_error.trigger(err)
+    kl.server_error.trigger(err)
     switch(err)
         when 'INVALID_STATE_ERR'
             @get_action() if kl.app.subscribed
@@ -104,13 +104,13 @@ on_node_registered = (data) ->
 on_node_subscribed = (config) ->
     kl.app.config = config
     switch config.__kl_project_mode__
-        when AUTO_MODE
+        when kl.AUTO_MODE
             kl.app.worker.terminate() if kl.app.worker?
 
             worker = new Worker(kl.config.WORKER_SCRIPT)
             kl.app.worker = worker
             worker.onmessage = (e) -> worker_message_handler(e)
-            worker.onerror = kl.worker_raised_error.trigger
+            worker.onerror = kl.client_error.trigger
             kl._message_to_worker('import_project', {
                 'kl_config' : kl.config,
                 'app_config' : kl.app.config,
@@ -118,15 +118,15 @@ on_node_subscribed = (config) ->
 
             kl.app.subscribed = true
 
-        when MANUAL_MODE
-            kl.include(config.__kl_project_script__, () ->
-                pj.init(kl.config, kl.app.config)
+        when kl.MANUAL_MODE
+            kl.include(config.__kl_project_script__,
+                       () ->  pj.init(kl.config, kl.app.config,
+                                      kl.project_imported,
+                                      kl.client.trigger)
             )
         else
             kl.error('Unknown kaylee Project mode')
-
     return
-
 
 
 on_node_unsubscibed = (data) ->
@@ -154,7 +154,6 @@ on_task_completed = (data) ->
     kl.send_result(data)
     return
 
-
 # Kaylee worker event handlers
 worker_message_handler = (event) ->
     data = event.data
@@ -162,7 +161,8 @@ worker_message_handler = (event) ->
     mdata = data.data
     switch msg
         when '__klw_log__' then kl.log.trigger(mdata)
-        when 'project_imported' then kl.project_imported.trigger(mdata)
+        when '__klw_error__' then kl.client_error.trigger(mdata)
+        when 'project_imported' then kl.project_imported.trigger()
         when 'task_completed' then kl.task_completed.trigger(mdata)
     return
 
@@ -178,7 +178,5 @@ kl.task_completed = new Event(on_task_completed)
 kl.log = new Event()
 kl.result_sent = new Event()
 kl.error = new Event()
-kl.worker_raised_error = new Event(kl.error)
-kl.server_raised_error = new Event(kl.error)
-
-window.kl = kl;
+kl.client_error = new Event(kl.error)
+kl.server_error = new Event(kl.error)

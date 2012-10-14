@@ -10,6 +10,8 @@
 ###
 
 kl = {}
+window.kl = kl;
+
 kl.util = {}
 util = kl.util
 
