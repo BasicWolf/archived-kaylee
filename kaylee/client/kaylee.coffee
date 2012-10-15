@@ -65,10 +65,15 @@ kl.register = () ->
 
 kl.subscribe = (name) ->
     kl.app = {
+        # data
         name : name
-        config : null
-        worker : null
+        config  : null
+        mode    : null       # a shortcut to config.__kl_project_mode__
+        worker  : null
         subscribed : false
+
+        # functions
+        solve   : null
     }
     kl.api.subscribe(name)
     return
@@ -88,11 +93,10 @@ kl._message_to_worker = (msg, data = {}) ->
     return
 
 kl._default_server_error_handler = (err) ->
-    kl.server_error.trigger(err)
     switch(err)
         when 'INVALID_STATE_ERR'
             @get_action() if kl.app.subscribed
-
+    kl.server_error.trigger(err)
 
 # Primary event handlers
 on_node_registered = (data) ->
@@ -102,30 +106,35 @@ on_node_registered = (data) ->
     return
 
 on_node_subscribed = (config) ->
-    kl.app.config = config
+    app = kl.app
+    app.config = config
+    app.mode = config.__kl_project_mode__
+
     switch config.__kl_project_mode__
         when kl.AUTO_MODE
-            kl.app.worker.terminate() if kl.app.worker?
-
+            app.worker.terminate() if app.worker?
             worker = new Worker(kl.config.WORKER_SCRIPT)
-            kl.app.worker = worker
+            app.worker = worker
             worker.onmessage = (e) -> worker_message_handler(e)
             worker.onerror = kl.client_error.trigger
             kl._message_to_worker('import_project', {
                 'kl_config' : kl.config,
-                'app_config' : kl.app.config,
+                'app_config' : app.config,
             })
-
-            kl.app.subscribed = true
+            app.solve = (data) -> kl._message_to_worker('solve_task', data)
+            app.subscribed = true
 
         when kl.MANUAL_MODE
             kl.include(config.__kl_project_script__,
-                       () ->  pj.init(kl.config, kl.app.config,
+                       () ->  pj.init(kl.config, app.config,
                                       kl.project_imported,
                                       kl.client.trigger)
             )
+            app.solve = pj.solve
+            app.subscribed = true
+
         else
-            kl.error('Unknown kaylee Project mode')
+            kl.exception('Unknown Kaylee Project mode')
     return
 
 
@@ -143,11 +152,11 @@ on_action_received = (data) ->
     switch data.action
         when 'task' then kl.task_received.trigger(data.data)
         when 'unsubscribe' then kl.node_unsubscibed.trigger(data.data)
-        else alert("Unknown action: #{data.action}")
+        else kl.exception("Unknown action: #{data.action}")
     return
 
 on_task_received = (data) ->
-    kl._message_to_worker('solve_task', data)
+    kl.app.solve(data)
     return
 
 on_task_completed = (data) ->
@@ -177,6 +186,6 @@ kl.task_received = new Event(on_task_received)
 kl.task_completed = new Event(on_task_completed)
 kl.log = new Event()
 kl.result_sent = new Event()
-kl.error = new Event()
-kl.client_error = new Event(kl.error)
-kl.server_error = new Event(kl.error)
+kl.client_error = new Event()
+kl.server_error = new Event()
+kl.exception = new Event()

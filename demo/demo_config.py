@@ -57,6 +57,34 @@ app_hash_cracker_1 = {
         }
     }
 
+app_hash_cracker_2 = {
+    'name' : 'hash_cracker.1',
+    'description' : 'Crack a salted hash',
+    'project' : {
+        'name' : 'HashCrackerProject',
+        'config' : {
+            'script'        : '/static/js/projects/hash_cracker/hash_cracker.js',
+            'md5_script'    : '/static/js/projects/hash_cracker/md5.js',
+            'hash_to_crack' : '71eebe6997feec5cd4d570c1b15ae786', # md5('klsalt')
+            'salt'          : 'salt',
+            'alphabet'      : 'abcdefghijklmnopqrstuvwxyz',
+            # although knowing the length of the key is a cheat,
+            # but it's fine enough for demo purposes
+            'key_length'    : 2,
+            'hashes_per_task' : 100,
+            },
+        'storage' : {
+            'name' : 'MemoryPermanentStorage',
+            },
+        },
+    'controller' : {
+        'name' : 'SimpleController',
+        'filters' : {
+            'accept_result' : ['kaylee.controller.failed_result_filter', ] ,
+            }
+        }
+    }
+
 
 app_human_ocr_1 = {
     'name' : 'human_ocr.1',
@@ -85,4 +113,5 @@ app_human_ocr_1 = {
 
 
 # APPLICATIONS = [app_human_ocr_1]
-APPLICATIONS = [app_hash_cracker_1]
+# APPLICATIONS = [app_hash_cracker_1]
+APPLICATIONS = [app_hash_cracker_2]

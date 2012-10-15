@@ -1,11 +1,10 @@
-pj.init = (kl_config, app_config, success, fail) ->
+pj.init = (kl_config, app_config) ->
     importScripts(app_config.md5_script)
     pj.config = app_config
-    success()
-    return
+    kl.project_imported
 
 
-pj.on_task_received = (data) ->
+pj.solve = (data) ->
     task_id = data.id
     hash = data.hash_to_crack
     salt = data.salt
@@ -18,6 +17,8 @@ pj.on_task_received = (data) ->
         if hash == CryptoJS.MD5("#{key}#{salt}").toString(CryptoJS.enc.Hex)
             # we have found the answer!
             klw.task_completed({'key' : key})
+#            success({'key' : key})
+#    success(false)
     klw.task_completed({'__kl_result__' : false})
     return
 
