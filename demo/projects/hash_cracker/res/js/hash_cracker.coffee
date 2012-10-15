@@ -3,7 +3,6 @@ pj.init = (kl_config, app_config) ->
     pj.config = app_config
     kl.project_imported
 
-
 pj.solve = (data) ->
     task_id = data.id
     hash = data.hash_to_crack
@@ -16,10 +15,8 @@ pj.solve = (data) ->
         klw.log("#{key}#{salt}")
         if hash == CryptoJS.MD5("#{key}#{salt}").toString(CryptoJS.enc.Hex)
             # we have found the answer!
-            klw.task_completed({'key' : key})
-#            success({'key' : key})
-#    success(false)
-    klw.task_completed({'__kl_result__' : false})
+            kl.task_completed.trigger({'key' : key})
+    kl.task_completed.trigger({'__kl_result__' : false})
     return
 
 

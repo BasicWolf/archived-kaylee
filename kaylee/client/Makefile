@@ -1,5 +1,7 @@
 TARGETS = kaylee.js klworker.js
-KL_COFFEE = klutil.coffee klajax.coffee klbenchmark.coffee kaylee.coffee 
+KL_COFFEE = klns.coffee klutil.coffee klajax.coffee klbenchmark.coffee \
+			kaylee.coffee 
+KL_WORKER_COFFEE = klns.coffee klutil.coffee klworker.coffee
 
 ifeq ($(origin KL_BUILD_DIR), environment)
 KL_JS_DIR = $(KL_BUILD_DIR)/static/js/kaylee
@@ -13,8 +15,8 @@ all: $(TARGETS)
 kaylee.js: $(KL_COFFEE)
 	coffee -j kaylee.js -c $(KL_COFFEE)
 
-klworker.js: klworker.coffee
-	coffee --bare -c klworker.coffee
+klworker.js: $(KL_WORKER_COFFEE)
+	coffee -j klworker.js --bare -c $(KL_WORKER_COFFEE)
 
 remote:
 	mkdir -p $(KL_JS_DIR)

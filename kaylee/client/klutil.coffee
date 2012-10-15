@@ -9,9 +9,6 @@
 #    :license: MIT, see LICENSE for more details.
 ###
 
-kl = {}
-window.kl = kl;
-
 kl.util = {}
 util = kl.util
 
