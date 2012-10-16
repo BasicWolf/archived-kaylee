@@ -1,7 +1,7 @@
 pj.init = (kl_config, app_config) ->
     importScripts(app_config.md5_script)
     pj.config = app_config
-    kl.project_imported
+    kl.project_imported.trigger()
 
 pj.solve = (data) ->
     task_id = data.id

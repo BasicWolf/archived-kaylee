@@ -48,8 +48,8 @@ klw.log = (message) ->
 on_project_imported = () ->
     klw.post_message('project_imported')
 
-on_task_completed = () ->
-    klw.post_message('task_completed', res)
+on_task_completed = (result) ->
+    klw.post_message('task_completed', result)
 
 kl.project_imported = new Event(on_project_imported)
 kl.task_completed = new Event(on_task_completed)
