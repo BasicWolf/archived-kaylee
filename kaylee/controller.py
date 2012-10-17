@@ -102,7 +102,7 @@ class Controller(object):
     auto_filter = BASE_FILTERS | CONFIG_FILTERS
     auto_filters = {
         'get_task' : [app_completed_guard, ],
-        'accept_result' : [normalize_result_filter, ]
+        'accept_result' : [normalize_result_filter, app_completed_guard]
         }
 
     _app_name_re = re.compile('^{}$'.format(app_name_pattern))

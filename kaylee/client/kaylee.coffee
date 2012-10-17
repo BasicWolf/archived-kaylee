@@ -11,7 +11,7 @@
 ## Variables and interfaces defined in Kaylee namespace:
 # kl.node_id : null
 
-# kl.app :
+# kl._app :
 #     name : null   # str
 #     config : null # {}
 #     worker : null # Worker object
@@ -61,7 +61,7 @@ kl.register = () ->
     return
 
 kl.subscribe = (name) ->
-    kl.app = {
+    kl._app = {
         # data
         name : name
         config  : null
@@ -76,23 +76,23 @@ kl.subscribe = (name) ->
     return
 
 kl.get_action = () ->
-    if kl.app.subscribed
+    if kl._app.subscribed
         kl.api.get_action()
     return
 
 kl.send_result = (data) ->
-    if kl.app.subscribed
+    if kl._app.subscribed
         kl.api.send_result(data)
     return
 
 kl._message_to_worker = (msg, data = {}) ->
-    kl.app.worker.postMessage({'msg' : msg, 'data' : data})
+    kl._app.worker.postMessage({'msg' : msg, 'data' : data})
     return
 
 kl._default_server_error_handler = (err) ->
     switch(err)
         when 'INVALID_STATE_ERR'
-            @get_action() if kl.app.subscribed
+            @get_action() if kl._app.subscribed
     kl.server_error.trigger(err)
 
 # Primary event handlers
@@ -103,7 +103,7 @@ on_node_registered = (data) ->
     return
 
 on_node_subscribed = (config) ->
-    app = kl.app
+    app = kl._app
     app.config = config
     app.mode = config.__kl_project_mode__
 
@@ -136,9 +136,9 @@ on_node_subscribed = (config) ->
 
 
 on_node_unsubscibed = (data) ->
-    kl.app.subscribed = false
-    kl.app.worker.terminate()
-    kl.app.worker = null;
+    kl._app.subscribed = false
+    kl._app.worker.terminate()
+    kl._app.worker = null;
     return
 
 on_project_imported = () ->
@@ -153,7 +153,7 @@ on_action_received = (data) ->
     return
 
 on_task_received = (data) ->
-    kl.app.solve(data)
+    kl._app.solve(data)
     return
 
 on_task_completed = (data) ->
@@ -166,8 +166,8 @@ worker_message_handler = (event) ->
     msg = data.msg
     mdata = data.data
     switch msg
-        when '__klw_log__' then kl.log.trigger(mdata)
-        when '__klw_error__' then kl.client_error.trigger(mdata)
+        when '__kl_log__' then kl.log.trigger(mdata)
+        when '__kl_error__' then kl.client_error.trigger(mdata)
         when 'project_imported' then kl.project_imported.trigger()
         when 'task_completed' then kl.task_completed.trigger(mdata)
     return

@@ -9,33 +9,31 @@
 #    :license: MIT, see LICENSE for more details.
 ###
 
-
 # Note that this is a WORKER script. It has no access to global
 # data, document or window objects.
 
-klw = {}    # local Kaylee worker namespace
 pj = kl.pj  # just a shortcut
 
 on_worker_event = (e) ->
     msg = e.data.msg
     mdata = e.data.data
     switch msg
-        when 'import_project' then klw.import_project(mdata)
+        when 'import_project' then import_project(mdata)
         when 'solve_task' then pj.solve(mdata)
 
 addEventListener('message', on_worker_event, false)
 
-klw.post_message = (msg, data = {}) ->
+kl.log = (s) ->
+    post_message('__kl_log__', s)
+
+post_message = (msg, data = {}) ->
     postMessage({'msg' : msg, 'data' : data})
 
-klw.import_project = (kwargs) ->
+import_project = (kwargs) ->
+    kl.config = kwargs.kl_config
     importScripts(kwargs.app_config.__kl_project_script__)
-    pj.init(kwargs.kl_config, kwargs.app_config,
-            (data) -> klw.post_error('__klw_error__', data)
-    )
-
-klw.log = (message) ->
-    klw.post_message('__klw_log__', message)
+    pj.init(kwargs.app_config,
+            (data) -> post_error('__kl_error__', data))
 
 
 # Although the events and handlers  below look alike the code
@@ -46,10 +44,10 @@ klw.log = (message) ->
 # Mostly the code below is used to keep the kaylee.coffee and
 # klworker.coffee interfaces a bit similar.
 on_project_imported = () ->
-    klw.post_message('project_imported')
+    post_message('project_imported')
 
 on_task_completed = (result) ->
-    klw.post_message('task_completed', result)
+    post_message('task_completed', result)
 
 kl.project_imported = new Event(on_project_imported)
 kl.task_completed = new Event(on_task_completed)
