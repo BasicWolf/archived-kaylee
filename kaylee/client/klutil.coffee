@@ -9,8 +9,8 @@
 #    :license: MIT, see LICENSE for more details.
 ###
 
-kl.util = {}
-util = kl.util
+util = {}
+kl.util = util
 
 util.is_function = (obj) ->
     return typeof(obj) == 'function'

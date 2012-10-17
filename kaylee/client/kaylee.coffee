@@ -21,9 +21,6 @@ kl.AUTO_MODE = 0x2
 kl.MANUAL_MODE = 0x4
 
 kl.config = {}
-# The MANUAL_MODE project's namespace.
-# (Note: AUTO_MODE project namespace is defined in klworker.coffee).
-kl.pj = {}
 
 kl.api =
     register : () ->

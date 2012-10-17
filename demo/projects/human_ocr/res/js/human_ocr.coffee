@@ -1,10 +1,8 @@
-kl = window.kl
 pj = kl.pj
 
-pj.init = (kl_config, app_config, success, fail) ->
+pj.init = (kl_config, app_config) ->
     pj._make_div()
     kl.project_imported.trigger()
-    success()
     return
 
 pj._make_div = () ->

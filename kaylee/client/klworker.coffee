@@ -9,12 +9,12 @@
 #    :license: MIT, see LICENSE for more details.
 ###
 
+
 # Note that this is a WORKER script. It has no access to global
 # data, document or window objects.
 
-klw = {} # Kaylee worker namespace
-pj = {}  # Local project namespace
-
+klw = {}    # local Kaylee worker namespace
+pj = kl.pj  # just a shortcut
 
 on_worker_event = (e) ->
     msg = e.data.msg

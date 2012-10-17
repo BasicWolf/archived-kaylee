@@ -1,5 +1,3 @@
-kl = window.kl
-
 _tasks_counter = 1
 
 $(document).ready( () ->

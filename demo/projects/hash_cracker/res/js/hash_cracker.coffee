@@ -1,3 +1,5 @@
+pj = kl.pj
+
 pj.init = (kl_config, app_config) ->
     importScripts(app_config.md5_script)
     pj.config = app_config
