@@ -1,19 +1,23 @@
-kl = window.kl
-kl.console = {}
-klc = kl.console
+window.kl_console = {}
+klc = window.kl_console
 
 klc.HALF_SIZE_STYLE = 0x2
 
+$console = null
+
 klc.init = (id) ->
-    klc.$console = $('body').append('<div id="console"></div>')
-    klc.$console.addClass('kl-console')
+    $console = $('<div id="console"></div>').appendTo($('body'))
+    $console.addClass('kl-console')
+    return
 
 klc.print = (s) ->
-    klc.$console.append("#{s}<br>")
-#   klc.$console.scrollTop(klc.$console.prop('scrollHeight'))
+    $console.append("#{s}<br>")
+#   $console.scrollTop($console.prop('scrollHeight'))
+    return
 
 klc.set_style = (s) ->
-    klc.$console.attr('class', 'kl-console')
+    $console.attr('class', 'kl-console')
     switch (s)
         when klc.HALF_SIZE_STYLE
-            klc.$console.addClass('kl-console-half-size')
+            $console.addClass('kl-console-half-size')
+    return
