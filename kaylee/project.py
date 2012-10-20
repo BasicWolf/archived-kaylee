@@ -22,8 +22,8 @@ from .util import (AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS,
                    get_secret_key)
 from .errors import KayleeError
 
-AUTO_MODE = 0x2
-MANUAL_MODE = 0x4
+AUTO_PROJECT_MODE = 0x2
+MANUAL_PROJECT_MODE = 0x4
 
 ### Auto filters ###
 
@@ -60,10 +60,10 @@ class Project(object):
        }
 
     #: Project mode.
-    mode = AUTO_MODE
+    mode = AUTO_PROJECT_MODE
 
     def __init__(self, script, storage, *args, **kwargs):
-        #: A dictionary with configuration
+        #: A dictionary wi]th configuration
         #: details used by every client-side node. If the project is loaded
         #: via a configuration object ``client_config`` is extended by
         #: ``project.config`` section's value (see :ref:`loading`).

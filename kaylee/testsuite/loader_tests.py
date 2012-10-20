@@ -16,11 +16,11 @@ _test_REGISTRY = {
 
 class TestConfig(object):
     REGISTRY = _test_REGISTRY
-    WORKER_SCRIPT = '/static/js/kaylee/klworker.js'
+    WORKER_SCRIPT_URL = '/static/js/kaylee/klworker.js'
 
 class TestConfigWithApps(object):
     REGISTRY = _test_REGISTRY
-    WORKER_SCRIPT = '/static/js/kaylee/klworker.js'
+    WORKER_SCRIPT_URL = '/static/js/kaylee/klworker.js'
     APPLICATIONS = [
         { 'name' : 'dummy.1',
           'description' : 'Dummy application',
@@ -46,25 +46,25 @@ class KayleeLoaderTests(KayleeTest):
     def test_load_config_class(self):
         kl = loader.load(TestConfig)
         self.assertIsInstance(kl, Kaylee)
-        self.assertEqual(kl.config.WORKER_SCRIPT, TestConfig.WORKER_SCRIPT)
+        self.assertEqual(kl.config.WORKER_SCRIPT_URL, TestConfig.WORKER_SCRIPT_URL)
 
     def test_load_config_dict(self):
         kl = loader.load(dict(TestConfig.__dict__))
         self.assertIsInstance(kl, Kaylee)
-        self.assertEqual(kl.config.WORKER_SCRIPT, TestConfig.WORKER_SCRIPT)
+        self.assertEqual(kl.config.WORKER_SCRIPT_URL, TestConfig.WORKER_SCRIPT_URL)
 
     def test_load_config_module(self):
         import test_config
         kl = loader.load(test_config)
         self.assertIsInstance(kl, Kaylee)
-        self.assertEqual(kl.config.WORKER_SCRIPT, test_config.WORKER_SCRIPT)
+        self.assertEqual(kl.config.WORKER_SCRIPT_URL, test_config.WORKER_SCRIPT_URL)
 
     def test_load_config_path(self):
         path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'test_config.py'))
         kl = loader.load(path)
         import test_config
         self.assertIsInstance(kl, Kaylee)
-        self.assertEqual(kl.config.WORKER_SCRIPT, test_config.WORKER_SCRIPT)
+        self.assertEqual(kl.config.WORKER_SCRIPT_URL, test_config.WORKER_SCRIPT_URL)
 
     def test_load_applications(self):
         config = dict(TestConfigWithApps.__dict__)

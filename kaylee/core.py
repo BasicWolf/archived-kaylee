@@ -222,9 +222,9 @@ class Kaylee(object):
 
 class Config(object):
     """Kaylee Configuration repository."""
-    client_data = [
+    serialized_attributes = [
         'AUTO_GET_ACTION',
-        'WORKER_SCRIPT',
+        'WORKER_SCRIPT_URL',
     ]
 
     def __init__(self, **kwargs):
@@ -232,7 +232,7 @@ class Config(object):
         self._cached_dict = {}
 
         self.AUTO_GET_ACTION = kwargs.get('AUTO_GET_ACTION', True)
-        self.WORKER_SCRIPT = kwargs.get('WORKER_SCRIPT', None)
+        self.WORKER_SCRIPT_URL = kwargs.get('WORKER_SCRIPT_URL', None)
         self.SECRET_KEY = kwargs.get('SECRET_KEY', None)
 
     def __setattr__(self, name, value):
@@ -245,7 +245,7 @@ class Config(object):
     def to_dict(self):
         if self._dirty:
             self._cached_dict = { k : getattr(self, k)
-                                  for k in self.client_data }
+                                  for k in self.serialized_attributes }
             self._dirty = False
         return self._cached_dict
 

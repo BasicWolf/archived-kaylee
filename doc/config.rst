@@ -104,10 +104,10 @@ Format::
   }
 
 
-.. config:: WORKER_SCRIPT
+.. config:: WORKER_SCRIPT_URL
 
-WORKER_SCRIPT
--------------
+WORKER_SCRIPT_URL
+-----------------
 
 Contains the absoulte URL of Kaylee Worker script, for example:
 

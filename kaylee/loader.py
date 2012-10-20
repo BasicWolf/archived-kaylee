@@ -19,6 +19,9 @@ from .core import Kaylee
 from .errors import KayleeError
 from .util import LazyObject, import_object, CONFIG_FILTERS
 
+import logging
+log = logging.getLogger(__name__)
+
 # global (current module scope) holders of classes loaded
 # via refresh()
 _contrib_classes = {}
@@ -27,6 +30,7 @@ _registry_classes = {}
 _pstorage_classes = {}
 _tstorage_classes = {}
 _project_classes = {}
+
 
 
 class LazyKaylee(LazyObject):
@@ -67,7 +71,6 @@ def load(config):
                                 types.ModuleType.__name__,
                                 basestring.__name__,
                                 type(config).__name__))
-
     try:
         refresh(config)
         registry = _load_registry(config)
@@ -132,7 +135,8 @@ def refresh(config):
                 _get_classes(mod_cls, storage.PermanentStorage))
             _tstorage_classes.update(
                 _get_classes(mod_cls, storage.TemporalStorage))
-
+    else:
+        log.warning('"PROJECTS_DIR" is not found in configuration."')
 
 def _get_classes(classes, cls):
     """Returns a {'class_name' : class} dictionary, where each class

@@ -21,7 +21,7 @@ There are several ways of defining Kaylee configuration:
 
     config = {
       'AUTO_GET_ACTION' : True,
-      'WORKER_SCRIPT' : '/static/js/kaylee/worker.js',
+      'WORKER_SCRIPT_URL' : '/static/js/kaylee/worker.js',
       ...
     }
 
@@ -29,13 +29,13 @@ There are several ways of defining Kaylee configuration:
 
     class Config(object):
         AUTO_GET_ACTION = True
-        WORKER_SCRIPT = '/static/js/kaylee/worker.js'
+        WORKER_SCRIPT_URL = '/static/js/kaylee/worker.js'
         ...
 
 * Python ``module``::
 
     AUTO_GET_ACTION = True
-    WORKER_SCRIPT = '/static/js/kaylee/worker.js'
+    WORKER_SCRIPT_URL = '/static/js/kaylee/worker.js'
 
 * An absolute *path* to a Python module file.
 

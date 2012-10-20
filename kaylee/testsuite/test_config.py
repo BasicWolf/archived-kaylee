@@ -1,7 +1,7 @@
 from kaylee.testsuite import  PROJECTS_DIR
 
 
-WORKER_SCRIPT = '/static/js/kaylee/klworker.js'
+WORKER_SCRIPT_URL = '/static/js/kaylee/klworker.js'
 
 PROJECTS_DIR = PROJECTS_DIR
 
