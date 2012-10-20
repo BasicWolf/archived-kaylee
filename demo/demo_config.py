@@ -2,11 +2,12 @@
 import os
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
-STATIC_DIR = os.path.join(CURRENT_DIR, 'static')
+BUILD_DIR = os.path.join(CURRENT_DIR, 'build/')
+STATIC_DIR = os.path.join(BUILD_DIR, 'static/')
 
+PROJECTS_DIR = os.path.join(CURRENT_DIR, 'projects/')
 
-PROJECTS_DIR = os.path.join(CURRENT_DIR, 'projects')
-WORKER_SCRIPT = '/static/js/kaylee/klworker.js'
+WORKER_SCRIPT_URL = '/static/js/kaylee/klworker.js'
 
 SECRET_KEY = '1234ABCabc!@{}xyz&%*'
 
@@ -111,7 +112,6 @@ app_human_ocr_1 = {
 }
 
 
-
-# APPLICATIONS = [app_human_ocr_1]
+APPLICATIONS = [app_human_ocr_1]
 # APPLICATIONS = [app_hash_cracker_1]
-APPLICATIONS = [app_hash_cracker_2]
+# APPLICATIONS = [app_hash_cracker_2]

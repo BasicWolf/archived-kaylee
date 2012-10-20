@@ -17,10 +17,9 @@
 #     worker : null # Worker object
 #     subscribed : false
 
-kl.AUTO_MODE = 0x2
-kl.MANUAL_MODE = 0x4
-
-kl.config = {}
+# CONSTANTS
+kl.AUTO_PROJECT_MODE = 0x2
+kl.MANUAL_PROJECT_MODE = 0x4
 
 kl.api =
     register : () ->
@@ -94,6 +93,7 @@ kl._default_server_error_handler = (err) ->
         when 'INVALID_STATE_ERR'
             @get_action() if kl._app.subscribed
     kl.server_error.trigger(err)
+    return
 
 # Primary event handlers
 on_node_registered = (data) ->
@@ -108,9 +108,9 @@ on_node_subscribed = (config) ->
     app.mode = config.__kl_project_mode__
 
     switch config.__kl_project_mode__
-        when kl.AUTO_MODE
+        when kl.AUTO_PROJECT_MODE
             app.worker.terminate() if app.worker?
-            worker = new Worker(kl.config.WORKER_SCRIPT)
+            worker = new Worker(kl.config.WORKER_SCRIPT_URL)
             app.worker = worker
             worker.onmessage = (e) -> worker_message_handler(e)
             worker.onerror = kl.client_error.trigger
@@ -118,16 +118,14 @@ on_node_subscribed = (config) ->
                 'kl_config' : kl.config,
                 'app_config' : app.config,
             })
-            app.solve = (data) -> kl._message_to_worker('solve_task', data)
             app.subscribed = true
 
-        when kl.MANUAL_MODE
+        when kl.MANUAL_PROJECT_MODE
             kl.include(config.__kl_project_script__,
                        () ->  pj.init(kl.config, app.config,
                                       kl.project_imported,
-                                      kl.client.trigger)
+                                      kl.client_error.trigger)
             )
-            app.solve = pj.solve
             app.subscribed = true
 
         else
@@ -142,6 +140,12 @@ on_node_unsubscibed = (data) ->
     return
 
 on_project_imported = () ->
+    switch kl._app.mode
+        when kl.AUTO_PROJECT_MODE
+            kl._app.solve = (data) -> kl._message_to_worker('solve_task', data)
+        when kl.MANUAL_PROJECT_MODE
+            kl._app.solve = pj.solve
+
     kl.get_action()
     return
 

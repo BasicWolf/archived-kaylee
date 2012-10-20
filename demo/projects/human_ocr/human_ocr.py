@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 import os
+import errno
 import random
 import tempfile
 import Image, ImageFont, ImageDraw
 
 from kaylee import Project, Task
-from kaylee.project import MANUAL_MODE
+from kaylee.project import MANUAL_PROJECT_MODE
 from kaylee.util import random_string
 
 LIPSUM = "Lorem ipsum dolor sit amet"
 
 class HumanOCRProject(Project):
-    mode = MANUAL_MODE
+    mode = MANUAL_PROJECT_MODE
 
     def __init__(self, *args, **kwargs):
         super(HumanOCRProject, self).__init__(*args, **kwargs)
@@ -23,6 +24,12 @@ class HumanOCRProject(Project):
         self.tasks_count = len(self.lipsum_words)
         self._tasks_counter = -1
 
+        try:
+            os.makedirs(self.img_dir)
+        except OSError as e:
+            # pass 'file exists' error
+            if e.errno != errno.EEXIST:
+                raise e
 
     def next_task(self):
         if self._tasks_counter < self.tasks_count:
@@ -34,7 +41,7 @@ class HumanOCRProject(Project):
     def __getitem__(self, task_id):
         word = self.lipsum_words[task_id]
         return HumanOCRTask(task_id, word, self.font_path, self.img_dir,
-                            self.img_url_dir)
+                            self.img_dir_url)
 
 
 class HumanOCRTask(Task):
@@ -46,23 +53,33 @@ class HumanOCRTask(Task):
         img = self._generate_image(text, font_path)
         self._save_image(img, img_dir)
 
-    def _save_image(self, image, path):
-        tempfile.mkstemp(path)
-        image.save(path)
+    def _save_image(self, image, img_dir):
+        fd, fpath = tempfile.mkstemp(suffix='.png', prefix=img_dir)
+        f = os.fdopen(fd, 'w')
+        image.save(f, 'PNG')
+        f.close()
+
+        # removing the temp file should be done via e.g. cron job
 
     def _generate_image(self, text, font_path):
         text += ' ' + self.random_string
-        font = ImageFont.truetype(self.font_path, 16)
+        font = ImageFont.truetype(font_path, 48)
         size = font.getsize(text)
-        size = (int(size[0]), int(size[1] - size[1]*0.2))
+        size = (int(size[0]), int(size[1]))
 
-        image = Image.new('RGB', size)
+        # a blank image with white background
+        image = Image.new('RGB', size, '#FFF')
         draw = ImageDraw.Draw(image)
-        noise = []
-        for x in range (0, 300):
-            for y in range (0, 300):
-                if rnd_task.random() > 0.5:
-                    noise.append((x, y))
 
-        draw.point(noise, (255, 255, 255))
-        draw.text((0, 0), text, font=font, fill="#000000")
+        draw.text((0, 0), text, font=font, fill='#000000')
+
+        # add white noise
+        noise = []
+        for x in range (0, size[0]):
+            for y in range (0, size[1]):
+                if random.random() > 0.3:
+                    noise.append((x, y))
+        draw.point(noise, '#FFF')
+
+        return image
+

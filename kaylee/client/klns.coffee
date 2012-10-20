@@ -10,7 +10,8 @@
 
 # Kaylee namespace
 kl =
-    pj : {}   # Project namespace
+    pj : {}      # Project namespace
+    config : {}  # Kaylee client configuration
 
 try
     window.kl = kl      # Main JS loop case
