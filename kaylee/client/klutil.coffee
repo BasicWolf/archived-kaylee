@@ -15,6 +15,8 @@ kl.util = util
 util.is_function = (obj) ->
     return typeof(obj) == 'function'
 
+util.ends_with = (str, suffix) ->
+    return str.indexOf(suffix, str.length - suffix.length) != -1
 
 class Event
     constructor : (handler = null) ->

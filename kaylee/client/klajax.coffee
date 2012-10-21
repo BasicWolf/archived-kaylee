@@ -68,14 +68,23 @@ kl.get = (url, data, success, fail) ->
 
 kl.include = (url, success, fail) ->
     doc = document.getElementsByTagName('head')[0]
-    js = document.createElement('script')
-    js.setAttribute('type', 'text/javascript')
-    js.setAttribute('src', url)
-    doc.appendChild(js)
 
-    js.onerror = (msg) ->
+    if util.ends_with(url, '.js')
+        js = document.createElement('script')
+        js.setAttribute('type', 'text/javascript')
+        js.setAttribute('src', url)
+        doc.appendChild(js)
+        elem = js
+    else if util.ends_with(url, '.css')
+        css = document.createElement("link")
+        css.setAttribute("rel", "stylesheet")
+        css.setAttribute("type", "text/css")
+        css.setAttribute("href", url)
+        elem = css
+
+    elem.onerror = (msg) ->
         fail?(msg)
-    js.onload = () ->
+    elem.onload = () ->
         success?()
 
     return
