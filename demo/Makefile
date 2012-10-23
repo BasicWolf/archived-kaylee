@@ -6,7 +6,7 @@ PJ_DIRS = $(addprefix projects/, $(PROJECTS) )
 
 # Define build directory and export variables for recursive make purpose
 export KL_BUILD_DIR = $(CURDIR)/build
-export PJ_RES_DIR = $(KL_BUILD_DIR)/static/js/projects
+export PJ_RES_DIR = $(KL_BUILD_DIR)/static/projects
 KL_CLIENT_DIR = $(KL_BUILD_DIR)/static/js/kaylee
 
 ifdef LOCALBUILD

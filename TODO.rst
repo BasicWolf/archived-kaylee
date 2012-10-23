@@ -1,6 +1,8 @@
 v0.2 <-- dev
 ----
 
+* serializable -> _serializable_
+
 * Update benchmark
 
 * Decide if storages should raise an error if the result has been

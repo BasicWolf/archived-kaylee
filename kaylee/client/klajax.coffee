@@ -66,25 +66,34 @@ kl.get = (url, data, success, fail) ->
     kl.ajax(url, 'GET', data, _success, fail)
     return
 
-kl.include = (url, success, fail) ->
-    doc = document.getElementsByTagName('head')[0]
+kl.include = (urls, success, fail) ->
+    if not urls instanceof Array
+        urls = [urls]   # in this case string is expected
+    count = urls.length
+    c = 0
+    failed = false
 
-    if util.ends_with(url, '.js')
-        js = document.createElement('script')
-        js.setAttribute('type', 'text/javascript')
-        js.setAttribute('src', url)
-        doc.appendChild(js)
-        elem = js
-    else if util.ends_with(url, '.css')
-        css = document.createElement("link")
-        css.setAttribute("rel", "stylesheet")
-        css.setAttribute("type", "text/css")
-        css.setAttribute("href", url)
-        elem = css
+    for url in urls
+        doc = document.getElementsByTagName('head')[0]
 
-    elem.onerror = (msg) ->
-        fail?(msg)
-    elem.onload = () ->
-        success?()
+        if util.ends_with(url, '.js')
+            js = document.createElement('script')
+            js.setAttribute('type', 'text/javascript')
+            js.setAttribute('src', url)
+            doc.appendChild(js)
+            elem = js
+        else if util.ends_with(url, '.css')
+            css = document.createElement("link")
+            css.setAttribute("rel", "stylesheet")
+            css.setAttribute("type", "text/css")
+            css.setAttribute("href", url)
+            elem = css
 
+        elem.onerror = (msg) ->
+            failed = true
+            fail?(msg)
+        elem.onload = () ->
+            c += 1
+            if c == count and not failed
+                success?()
     return

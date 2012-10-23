@@ -70,6 +70,7 @@ class Project(object):
         self.client_config = {
             '__kl_project_script__' : script,
             '__kl_project_mode__'   : self.mode,
+            '__kl_project_styles__' : kwargs.get('styles', None)
             }
         #: Project's permanent results storage (an instance of
         #: :class:`PermanentStorage` subclass).

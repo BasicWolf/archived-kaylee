@@ -29,8 +29,8 @@ app_hash_cracker_1 = {
     'project' : {
         'name' : 'HashCrackerProject',
         'config' : {
-            'script'        : '/static/js/projects/hash_cracker/hash_cracker.js',
-            'md5_script'    : '/static/js/projects/hash_cracker/md5.js',
+            'script'        : '/static/projects/hash_cracker/js/hash_cracker.js',
+            'md5_script'    : '/static/projects/hash_cracker/js/md5.js',
             'hash_to_crack' : '71eebe6997feec5cd4d570c1b15ae786', # md5('klsalt')
             'salt'          : 'salt',
             'alphabet'      : 'abcdefghijklmnopqrstuvwxyz',
@@ -64,8 +64,8 @@ app_hash_cracker_2 = {
     'project' : {
         'name' : 'HashCrackerProject',
         'config' : {
-            'script'        : '/static/js/projects/hash_cracker/hash_cracker.js',
-            'md5_script'    : '/static/js/projects/hash_cracker/md5.js',
+            'script'        : '/static/projects/hash_cracker/js/hash_cracker.js',
+            'md5_script'    : '/static/projects/hash_cracker/js/md5.js',
             'hash_to_crack' : '71eebe6997feec5cd4d570c1b15ae786', # md5('klsalt')
             'salt'          : 'salt',
             'alphabet'      : 'abcdefghijklmnopqrstuvwxyz',
@@ -93,11 +93,12 @@ app_human_ocr_1 = {
     'project' : {
         'name' : 'HumanOCRProject',
         'config' : {
-            'script'    : '/static/js/projects/human_ocr/human_ocr.js',
+            'script'      : '/static/projects/human_ocr/js/human_ocr.js',
+            'styles'      : '/static/css/projects/human_ocr/css/human_ocr.css',
             'img_dir_url' : '/static/tmp/human_ocr/',
             'img_dir'     : os.path.join(STATIC_DIR, 'tmp/human_ocr/'),
-            'font_path' : ('/usr/share/fonts/truetype/ttf-dejavu/'
-                           'DejaVuSans.ttf'),
+            'font_path'   : ('/usr/share/fonts/truetype/ttf-dejavu/'
+                             'DejaVuSans.ttf'),
         },
         'storage' : {
             'name' : 'MemoryPermanentStorage',
