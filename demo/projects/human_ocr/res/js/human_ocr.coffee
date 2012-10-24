@@ -2,7 +2,7 @@ pj = kl.pj
 
 pj.init = (kl_config, app_config) ->
     pj._make_div()
-    kl.include(app_config.styles, kl.project_imported.trigger)
+    kl.project_imported.trigger()
     return
 
 pj._make_div = () ->

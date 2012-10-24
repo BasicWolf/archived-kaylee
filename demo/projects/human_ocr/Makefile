@@ -19,7 +19,8 @@ $(LIBDIR)/$(LIB): $(LIBDIR)/$(PROJECT_NAME).coffee
 	coffee --bare -c $(LIBDIR)/$(PROJECT_NAME).coffee
 
 remote:
-	mkdir -p  $(PJ_JS_DIR)/$(PROJECT_NAME)
+	mkdir -p $(PJ_JS_DIR)
+	mkdir -p $(PJ_CSS_DIR) 
 	cp $(LIBDIR)/*.js $(PJ_JS_DIR)
 	cp $(CSSDIR)/*.css $(PJ_CSS_DIR)
 

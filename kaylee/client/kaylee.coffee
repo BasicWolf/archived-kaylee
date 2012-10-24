@@ -121,7 +121,10 @@ on_node_subscribed = (config) ->
             app.subscribed = true
 
         when kl.MANUAL_PROJECT_MODE
-            kl.include(config.__kl_project_script__,
+            include_urls = [config.__kl_project_script__]
+            if config.__kl_project_styles__
+                include_urls.push(config.__kl_project_styles__)
+            kl.include(include_urls,
                        () ->  pj.init(kl.config, app.config,
                                       kl.project_imported,
                                       kl.client_error.trigger)

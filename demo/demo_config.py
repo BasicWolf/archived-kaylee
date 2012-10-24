@@ -94,7 +94,7 @@ app_human_ocr_1 = {
         'name' : 'HumanOCRProject',
         'config' : {
             'script'      : '/static/projects/human_ocr/js/human_ocr.js',
-            'styles'      : '/static/css/projects/human_ocr/css/human_ocr.css',
+            'styles'      : '/static/projects/human_ocr/css/human_ocr.css',
             'img_dir_url' : '/static/tmp/human_ocr/',
             'img_dir'     : os.path.join(STATIC_DIR, 'tmp/human_ocr/'),
             'font_path'   : ('/usr/share/fonts/truetype/ttf-dejavu/'

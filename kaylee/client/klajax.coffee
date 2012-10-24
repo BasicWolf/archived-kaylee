@@ -66,34 +66,41 @@ kl.get = (url, data, success, fail) ->
     kl.ajax(url, 'GET', data, _success, fail)
     return
 
+
 kl.include = (urls, success, fail) ->
     if not urls instanceof Array
         urls = [urls]   # in this case string is expected
     count = urls.length
-    c = 0
+    sc = 0              # loaded scripts ('*.js' files) counter
     failed = false
 
     for url in urls
         doc = document.getElementsByTagName('head')[0]
+
+        onload = () ->
+            console.log('loaded: ')
+            console.log(@)
+            sc += 1
+            if sc == count and not failed
+                success?()
+
+        onerror = (msg) ->
+            failed = true
+            fail?(msg)
 
         if util.ends_with(url, '.js')
             js = document.createElement('script')
             js.setAttribute('type', 'text/javascript')
             js.setAttribute('src', url)
             doc.appendChild(js)
-            elem = js
+            js.onload = onload
+            js.onerror = onerror
         else if util.ends_with(url, '.css')
             css = document.createElement("link")
-            css.setAttribute("rel", "stylesheet")
-            css.setAttribute("type", "text/css")
-            css.setAttribute("href", url)
-            elem = css
-
-        elem.onerror = (msg) ->
-            failed = true
-            fail?(msg)
-        elem.onload = () ->
-            c += 1
-            if c == count and not failed
-                success?()
+            css.rel = 'stylesheet'
+            css.type = 'text/css'
+            css.href = url
+            doc.appendChild(css)
+            css.onload = onload
+            count -= 1 # don't block no matter what the status of CSS is
     return
