@@ -7,7 +7,7 @@ kaylee_blueprint = bp # just an alias for importing convenience
 
 @bp.route('/register')
 def register_node():
-    reg_data = kl.register(request.remote_addr)
+    reg_data = kl.register(request.remote_addr, request.json)
     return json_response(reg_data)
 
 @bp.route('/apps/<app_name>/subscribe/<node_id>', methods = ['POST'])

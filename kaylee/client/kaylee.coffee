@@ -22,10 +22,11 @@ kl.AUTO_PROJECT_MODE = 0x2
 kl.MANUAL_PROJECT_MODE = 0x4
 
 kl.api =
-    register : () ->
-        kl.get("/kaylee/register",
-               kl.node_registered.trigger,
-               kl.server_error.trigger)
+    register : (features) ->
+        kl.post("/kaylee/register",
+                features,
+                kl.node_registered.trigger,
+                kl.server_error.trigger)
         return
 
     subscribe : (name) ->
@@ -52,11 +53,8 @@ kl.api =
         return
 
 kl.register = () ->
-    if kl._test_node().features.worker
-        kl.api.register()
-    else
-        kl.log("Node cannot be registered: client does not meet the "
-               "requirements.")
+    features = kl._test_node()
+    kl.api.register(features)
     return
 
 kl.subscribe = (name) ->
