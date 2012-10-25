@@ -83,7 +83,7 @@ class Kaylee(object):
         self._applications = Applications(applications) or Applications.empty()
 
     @json_error_handler
-    def register(self, remote_host, node_features):
+    def register(self, remote_host):
         """Registers the remote host as Kaylee Node and returns
         JSON-formatted data with the following fields:
 
@@ -91,11 +91,8 @@ class Kaylee(object):
         * config  - global nodes configuration (see :mod:`loader` module)
         * applications - a list of Kaylee applications' names.
 
-        :param remote_host: an IP address of the remote host
-        :param node_features: node features description (e.g. WebWorker
-                              support).
+        :param remote_host: the IP address of the remote host
         :type remote_host: string
-        :type node_features: dict
         """
         node = Node(NodeID.for_host(remote_host))
         self._registry.add(node)

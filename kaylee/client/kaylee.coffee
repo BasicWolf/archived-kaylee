@@ -22,9 +22,8 @@ kl.AUTO_PROJECT_MODE = 0x2
 kl.MANUAL_PROJECT_MODE = 0x4
 
 kl.api =
-    register : (features) ->
-        kl.post("/kaylee/register",
-                features,
+    register : () ->
+        kl.get("/kaylee/register",
                 kl.node_registered.trigger,
                 kl.server_error.trigger)
         return
@@ -53,8 +52,7 @@ kl.api =
         return
 
 kl.register = () ->
-    features = kl._test_node()
-    kl.api.register(features)
+    kl.api.register()
     return
 
 kl.subscribe = (name) ->
@@ -92,6 +90,10 @@ kl._default_server_error_handler = (err) ->
             @get_action() if kl._app.subscribed
     kl.server_error.trigger(err)
     return
+
+kl.assert = (condition, message) ->
+    if condition
+        kl.exception.trigger("ASSERT: #{message}")
 
 # Primary event handlers
 on_node_registered = (data) ->
@@ -173,10 +175,10 @@ worker_message_handler = (event) ->
     switch msg
         when '__kl_log__' then kl.log.trigger(mdata)
         when '__kl_error__' then kl.client_error.trigger(mdata)
+        when '__kl_assert__' then kl.assert(mdata)
         when 'project_imported' then kl.project_imported.trigger()
         when 'task_completed' then kl.task_completed.trigger(mdata)
     return
-
 
 # Kaylee events
 kl.node_registered = new Event(on_node_registered)
@@ -186,8 +188,8 @@ kl.project_imported = new Event(on_project_imported)
 kl.action_received = new Event(on_action_received)
 kl.task_received = new Event(on_task_received)
 kl.task_completed = new Event(on_task_completed)
-kl.log = new Event()
 kl.result_sent = new Event()
+kl.log = new Event()
 kl.client_error = new Event()
 kl.server_error = new Event()
 kl.exception = new Event()

@@ -96,6 +96,8 @@ kl.include = (urls, success, fail) ->
             js.onload = onload
             js.onerror = onerror
         else if util.ends_with(url, '.css')
+            kl.assert(fail?, 'Kaylee is not able to invoke the fail()
+                callback of kl.include(..) when loading stylesheets.')
             css = document.createElement("link")
             css.rel = 'stylesheet'
             css.type = 'text/css'

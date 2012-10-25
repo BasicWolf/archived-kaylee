@@ -102,4 +102,3 @@ class ResultsComparatorController(Controller):
         if self.project.completed:
             self.completed = True
             self.storage.clear()
-
