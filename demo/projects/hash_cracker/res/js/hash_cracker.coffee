@@ -5,7 +5,7 @@ pj.init = (app_config) ->
     pj.config = app_config
     kl.project_imported.trigger()
 
-pj.solve = (data) ->
+pj.process_task = (data) ->
     task_id = data.id
     hash = data.hash_to_crack
     salt = data.salt

@@ -5,6 +5,9 @@ pj.init = (kl_config, app_config) ->
     kl.project_imported.trigger()
     return
 
+pj.process_task = (data) ->
+    return
+
 pj._make_div = () ->
     div = document.createElement('div');
     div.id = 'human_ocr';
@@ -33,5 +36,3 @@ pj._make_div = () ->
 
     return
 
-pj.on_task_received = (data) ->
-    return

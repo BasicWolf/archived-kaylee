@@ -21,6 +21,9 @@
 kl.AUTO_PROJECT_MODE = 0x2
 kl.MANUAL_PROJECT_MODE = 0x4
 
+# namespace shortcuts
+pj = kl.pj
+
 kl.api =
     register : () ->
         kl.get("/kaylee/register",
@@ -65,7 +68,7 @@ kl.subscribe = (name) ->
         subscribed : false
 
         # functions
-        solve   : null
+        process_task   : null
     }
     kl.api.subscribe(name)
     return
@@ -145,10 +148,10 @@ on_node_unsubscibed = (data) ->
 on_project_imported = () ->
     switch kl._app.mode
         when kl.AUTO_PROJECT_MODE
-            kl._app.solve = (data) -> kl._message_to_worker('solve_task', data)
+            kl._app.process_task = (data) ->
+                kl._message_to_worker('process_task', data)
         when kl.MANUAL_PROJECT_MODE
-            kl._app.solve = pj.solve
-
+            kl._app.process_task = pj.process_task
     kl.get_action()
     return
 
@@ -160,7 +163,7 @@ on_action_received = (data) ->
     return
 
 on_task_received = (data) ->
-    kl._app.solve(data)
+    kl._app.process_task(data)
     return
 
 on_task_completed = (data) ->

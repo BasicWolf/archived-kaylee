@@ -71,15 +71,13 @@ kl.include = (urls, success, fail) ->
     if not urls instanceof Array
         urls = [urls]   # in this case string is expected
     count = urls.length
-    sc = 0              # loaded scripts ('*.js' files) counter
+    sc = 0              # loaded scripts and stylesheets counter
     failed = false
 
     for url in urls
         doc = document.getElementsByTagName('head')[0]
 
         onload = () ->
-            console.log('loaded: ')
-            console.log(@)
             sc += 1
             if sc == count and not failed
                 success?()
@@ -92,9 +90,9 @@ kl.include = (urls, success, fail) ->
             js = document.createElement('script')
             js.setAttribute('type', 'text/javascript')
             js.setAttribute('src', url)
-            doc.appendChild(js)
             js.onload = onload
             js.onerror = onerror
+            doc.appendChild(js)
         else if util.ends_with(url, '.css')
             kl.assert(fail?, 'Kaylee is not able to invoke the fail()
                 callback of kl.include(..) when loading stylesheets.')
@@ -102,7 +100,6 @@ kl.include = (urls, success, fail) ->
             css.rel = 'stylesheet'
             css.type = 'text/css'
             css.href = url
-            doc.appendChild(css)
             css.onload = onload
-            count -= 1 # don't block no matter what the status of CSS is
+            doc.appendChild(css)
     return
