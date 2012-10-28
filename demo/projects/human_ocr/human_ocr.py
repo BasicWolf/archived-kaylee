@@ -43,6 +43,8 @@ class HumanOCRProject(Project):
         return HumanOCRTask(task_id, word, self.font_path, self.img_dir,
                             self.img_dir_url)
 
+    def normalize(self, task_id, data):
+        
 
 class HumanOCRTask(Task):
     serializable = ['url', '#random_string']
@@ -61,7 +63,6 @@ class HumanOCRTask(Task):
         image.save(f, 'PNG')
         f.close()
         return fpath
-
 
     def _generate_image(self, text, font_path):
         text += ' ' + self.random_string

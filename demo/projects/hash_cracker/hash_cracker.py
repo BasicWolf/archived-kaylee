@@ -32,8 +32,9 @@ class HashCrackerProject(Project):
     def __getitem__(self, task_id):
         return HashCrackerTask(task_id, self.hash_to_crack, self.salt)
 
-    def normalize(self, task_id, key):
+    def normalize(self, task_id, data):
         try:
+            key = data
             if md5(key + self.salt).hexdigest() == self.hash_to_crack:
                 return key
         except KeyError:

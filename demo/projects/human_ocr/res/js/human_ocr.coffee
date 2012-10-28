@@ -1,5 +1,3 @@
-pj = kl.pj
-
 pj.init = (kl_config, app_config) ->
     pj._make_div()
     kl.project_imported.trigger()

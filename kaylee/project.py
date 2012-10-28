@@ -182,7 +182,7 @@ class Task(object):
         # process session attributes, if any
         sess_attributes = [attr[1:] for attr in attributes if attr.startswith('#')]
         if len(sess_attributes) > 0:
-            res['__kl_task_session__'] = self.encrypt(sess_attributes,
+            res['__kl_tsd__'] = self.encrypt(sess_attributes,
                                                           secret_key)
         return res
 
@@ -209,9 +209,9 @@ class Task(object):
         result = {}
 
         if isinstance(d, dict):
-            s = d['__kl_task_session__']
+            s = d['__kl_tsd__']
             result = deepcopy(d)
-            del result['__kl_task_session__']
+            del result['__kl_tsd__']
         else:
             s = d
 

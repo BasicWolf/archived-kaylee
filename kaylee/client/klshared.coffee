@@ -20,6 +20,7 @@ kl =
 
     NO_RESULT : {'__kl_result__' : 0x2}
 
+pj = kl.pj
 
 try
     window.kl = kl      # Main JS loop case

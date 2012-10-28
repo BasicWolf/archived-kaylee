@@ -20,7 +20,9 @@ def tasks(node_id):
     if request.method == 'GET':
         return json_response( kl.get_action(node_id) )
     else:
-        next_task = kl.accept_result(node_id, request.json)
+        next_task = kl.accept_result(node_id, request.data)
+        # the reason for using request.data instead of request.json
+        # is that Kaylee expects the "raw", non-processed data
         return json_response(next_task)
 
 def json_response(s):

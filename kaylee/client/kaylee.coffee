@@ -16,9 +16,7 @@
 #     config : null # {}
 #     worker : null # Worker object
 #     subscribed : false
-
-# namespace shortcuts
-pj = kl.pj
+#     task_data  : null # current task data
 
 kl.api =
     register : () ->
@@ -62,6 +60,7 @@ kl.subscribe = (name) ->
         mode    : null       # a shortcut to config.__kl_project_mode__
         worker  : null
         subscribed : false
+        task_data : null     # current task data
 
         # functions
         process_task   : null
@@ -76,6 +75,10 @@ kl.get_action = () ->
 
 kl.send_result = (data) ->
     if kl._app.subscribed
+        # before sending the result, check whether app.task_data contains
+        # session data and attach it
+        if kl._app.task_data.__kl_tsd__?
+            data.__kl_tsd__ = kl._app.task_data.__kl_tsd__
         kl.api.send_result(data)
     return
 
@@ -159,6 +162,7 @@ on_action_received = (data) ->
     return
 
 on_task_received = (data) ->
+    kl._app.task_data = data
     kl._app.process_task(data)
     return
 

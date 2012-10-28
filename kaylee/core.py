@@ -190,9 +190,11 @@ class Kaylee(object):
         print 'the data is: ', data
         node = self._registry[node_id]
         try:
-            # parse data if it is still a JSON string
-            if isinstance(data, basestring):
-                data = json.loads(data)
+            if not isinstance(data, basestring):
+                raise ValueError('Kaylee expects the incoming data to be in '
+                                 'string format, not {}'.format(
+                                     data.__class__.__name__))
+            data = json.loads(data)
             node.accept_result(data)
         except ValueError as e:
             self.unsubscribe(node)
