@@ -6,16 +6,25 @@ pj.init = (kl_config, app_config) ->
     return
 
 pj.process_task = (data) ->
+    img =  document.getElementById('human_ocr_img');
+    img.src = "#{data.url}";
     return
+
+pj.send = () ->
+    val = document.getElementById('human_ocr_input').value
+    kl.task_completed.trigger({ 'captcha' : val })
+
+pj.refresh = () ->
+    kl.task_completed.trigger(kl.NO_RESULT)
 
 pj._make_div = () ->
     div = document.createElement('div');
     div.id = 'human_ocr';
     div.innerHTML = """
-        <table>
+        <table id="human_ocr_table">
             <tr>
-                <td>
-                    <div id="human_ocr_img_container"></div>
+                <td colspan="2">
+                    <div><img id="human_ocr_img"/></div>
                 </td>
             </tr>
 
@@ -24,7 +33,16 @@ pj._make_div = () ->
                     <input id="human_ocr_input" type="text">
                 </td>
                 <td>
-                    <button id="human_ocr_btnSend" type="button">Send</button>
+                    <button id="human_ocr_send_button"
+                            class="human_ocr_button"
+                            onclick="pj.send();">
+                        Send
+                    </button>
+                    <button id="human_ocr_refresh_button"
+                            class="human_ocr_button"
+                            onclick="pj.refresh();">
+                        Refresh
+                    </button>
                 </td>
             </tr>
         </table>
@@ -35,4 +53,3 @@ pj._make_div = () ->
         document.body.appendChild(div);
 
     return
-

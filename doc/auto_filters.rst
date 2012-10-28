@@ -45,12 +45,12 @@ application's controller's configuration:
   'controller' : {
       'name' : 'SimpleController',
       'filters' : {
-          'accept_result' : ['kaylee.controller.failed_result_filter', ] ,
+          'accept_result' : ['kaylee.controller.no_result_filter', ] ,
       }
   }
 
 Here, :meth:`accept_result <Controller.accept_result>` is the name
-of the decorated method and :func:`kaylee.controller.failed_result_filter`
+of the decorated method and :func:`kaylee.controller.no_result_filter`
 is the filter (Python decorator) applied to the method.
 
 

@@ -28,19 +28,21 @@ kl.ajax = (url, method, data, success = (()->), fail = (() ->) ) ->
                     dl.push(key + '=' + encodeURIComponent(val))
                 url += '?' + dl.join('&')
             req.open("GET", url, true);
-    req.responseType = 'json'
+#    This doesn't work in Chrome yet :(
+#    req.responseType = 'json'
 
     req.onreadystatechange = () ->
         if req.readyState == 4
-            if req.status == 200 and req.response?
-                if req.response.error?
-                    fail(req.response.error)
+            if req.status == 200 and req.responseText?
+                response = JSON.parse(req.responseText);
+                if response.error?
+                    fail(response.error)
                 else
-                    success(req.response)
-            else if !req.response?
+                    success(response)
+            else if !response?
                 fail('INVALID_STATE_ERR')
             else
-                fail(req.response)
+                fail(response)
         return
 
     req.send(data);

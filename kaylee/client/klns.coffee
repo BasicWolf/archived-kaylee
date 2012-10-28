@@ -13,6 +13,14 @@ kl =
     pj : {}      # Project namespace
     config : {}  # Kaylee client configuration
 
+
+    # CONSTANTS
+    AUTO_PROJECT_MODE : 0x2
+    MANUAL_PROJECT_MODE : 0x4
+
+    NO_RESULT : {'__kl_result__' : 0x2}
+
+
 try
     window.kl = kl      # Main JS loop case
 catch err

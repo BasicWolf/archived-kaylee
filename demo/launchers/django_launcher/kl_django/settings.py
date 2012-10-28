@@ -1,8 +1,8 @@
-import kl_demo
+import kaylee_demo
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    kl_demo.FRONTEND_STATIC_DIR,
+    kaylee_demo.FRONTEND_STATIC_DIR,
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -15,7 +15,7 @@ STATICFILES_FINDERS = (
 )
 
 TEMPLATE_DIRS = (
-    kl_demo.FRONTEND_TEMPLATES_DIR,
+    kaylee_demo.FRONTEND_TEMPLATES_DIR,
 )
 
 INSTALLED_APPS = (

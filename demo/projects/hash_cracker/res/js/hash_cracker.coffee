@@ -17,8 +17,8 @@ pj.process_task = (data) ->
         kl.log("#{key}#{salt}")
         if hash == CryptoJS.MD5("#{key}#{salt}").toString(CryptoJS.enc.Hex)
             # we have found the answer!
-            kl.task_completed.trigger({'key' : key})
-    kl.task_completed.trigger({'__kl_result__' : false})
+            kl.task_completed.trigger(key)
+    kl.task_completed.trigger(kl.NO_RESULT)
     return
 
 

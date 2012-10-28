@@ -143,7 +143,7 @@ Controller filters
 
 .. autofunction:: kaylee.controller.app_completed_guard
 
-.. autofunction:: kaylee.controller.failed_result_filter
+.. autofunction:: kaylee.controller.no_result_filter
 
 .. autofunction:: kaylee.controller.normalize_result_filter
 

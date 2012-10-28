@@ -30,7 +30,7 @@ json.dumps = partial(json.dumps, separators=(',', ':'))
 
 ACTION_TASK = 'task'
 ACTION_UNSUBSCRIBE = 'unsubscribe'
-ACTION_PASS = 'pass'
+ACTION_NOP = 'nop'
 
 
 def json_error_handler(f):
@@ -176,7 +176,7 @@ class Kaylee(object):
     def accept_result(self, node_id, data):
         """Accepts the results from the node. Returns the next action if
         :py:attr:`Config.AUTO_GET_ACTION` is True.
-        Otherwise returns "pass" action.
+        Otherwise returns the "nop" action.
         Unsubscribes the node if the returned result is invalid.
 
         :param node_id: a valid node id
@@ -185,8 +185,9 @@ class Kaylee(object):
                      stored to the application's storages.
         :type node_id: string or JSON-parsed dict/list
         :type data: string
-        :returns: a task returned by :meth:`get_action` or "pass" action.
+        :returns: a task returned by :meth:`get_action` or "nop" action.
         """
+        print 'the data is: ', data
         node = self._registry[node_id]
         try:
             # parse data if it is still a JSON string
@@ -199,7 +200,7 @@ class Kaylee(object):
 
         if self.config.AUTO_GET_ACTION:
             return self.get_action(node.id)
-        return self._json_action(ACTION_PASS)
+        return self._json_action(ACTION_NOP)
 
 
     def clean(self):

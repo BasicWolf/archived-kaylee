@@ -1,11 +1,21 @@
-div.human_ocr {
-    margin:0 auto;
-    text-align:left;
-    width:400px;
-    height:200px;
-    background-color:black;
+#human_ocr {
+    margin:20px auto;
+    width:600px;
+    height:140px;
     color:white;
     overflow: auto;
-    font-size:1.2em;
     font-family:monospace;
+}
+
+#human_ocr_table {
+    margin:auto;
+}
+
+
+#human_ocr_input {
+    font-size:1.2em;
+}
+
+.human_ocr_button {
+    font-size:1.2em;    
 }

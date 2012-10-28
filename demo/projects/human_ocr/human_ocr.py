@@ -45,21 +45,23 @@ class HumanOCRProject(Project):
 
 
 class HumanOCRTask(Task):
-    serializable = ['#random_string']
+    serializable = ['url', '#random_string']
 
     def __init__(self, task_id, text, font_path, img_dir, img_url_dir):
         super(HumanOCRTask, self).__init__(task_id)
         self.random_string = random_string(4)
         img = self._generate_image(text, font_path)
-        self._save_image(img, img_dir)
+        img_path = self._save_image(img, img_dir)
+        self.url = os.path.join(img_url_dir, os.path.basename(img_path))
 
     def _save_image(self, image, img_dir):
+        # removing the temp file should be done via e.g. cron job
         fd, fpath = tempfile.mkstemp(suffix='.png', prefix=img_dir)
         f = os.fdopen(fd, 'w')
         image.save(f, 'PNG')
         f.close()
+        return fpath
 
-        # removing the temp file should be done via e.g. cron job
 
     def _generate_image(self, text, font_path):
         text += ' ' + self.random_string

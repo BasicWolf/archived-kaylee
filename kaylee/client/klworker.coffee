@@ -19,7 +19,7 @@ on_worker_event = (e) ->
     mdata = e.data.data
     switch msg
         when 'import_project' then import_project(mdata)
-        when 'solve_task' then pj.solve_task(mdata)
+        when 'process_task' then pj.process_task(mdata)
 
 addEventListener('message', on_worker_event, false)
 

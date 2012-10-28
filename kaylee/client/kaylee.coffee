@@ -17,10 +17,6 @@
 #     worker : null # Worker object
 #     subscribed : false
 
-# CONSTANTS
-kl.AUTO_PROJECT_MODE = 0x2
-kl.MANUAL_PROJECT_MODE = 0x4
-
 # namespace shortcuts
 pj = kl.pj
 
@@ -44,10 +40,10 @@ kl.api =
                kl.server_error.trigger)
         return
 
-    send_result : (results) ->
-        kl.post("/kaylee/actions/#{kl.node_id}", results,
+    send_result : (result) ->
+        kl.post("/kaylee/actions/#{kl.node_id}", result,
             ((action_data) ->
-                kl.result_sent.trigger(results)
+                kl.result_sent.trigger(result)
                 kl.action_received.trigger(action_data)
             ),
             kl._default_server_error_handler
@@ -135,7 +131,7 @@ on_node_subscribed = (config) ->
             app.subscribed = true
 
         else
-            kl.exception('Unknown Kaylee Project mode')
+            kl.exception.trigger('Unknown Kaylee Project mode')
     return
 
 

@@ -26,6 +26,10 @@ ACTIVE = 0x2
 #: Indicates completed state of an application.
 COMPLETED = 0x4
 
+#: The { '__kl_result__' : NO_RESULT } solution returned by the node
+#: indicates that the current task was simply not solved for some
+#: reason. TODO: add link to kl.NO_RESULT
+NO_RESULT = 0x2
 
 def app_completed_guard(f):
     """The filter handles two cases of completed Kaylee application:
@@ -62,16 +66,16 @@ def normalize_result_filter(f):
         return f(self, node, data)
     return wrapper
 
-def failed_result_filter(f):
+def no_result_filter(f):
     """The filter is meant to be used in "decision search" projects which
     supposed to deliver a single correct result.
-    It converts the ``{ '__kl_result__' : False }`` result to ``None``,
+    It converts the ``{ '__kl_result__' : NO_RESULT }`` result to ``None``,
     which can be ignored by :meth:`Project.store_result` routine.
     """
     @wraps(f)
     def wrapper(self, node, data):
         try:
-            if data['__kl_result__'] == False:
+            if isinstance(data, dict) and data['__kl_result__'] == NO_RESULT:
                 data = None
         except KeyError:
             pass
