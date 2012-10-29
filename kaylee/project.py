@@ -186,6 +186,8 @@ class Task(object):
     serializable = ['id']
 
     def __init__(self, task_id):
+        #: Unique task ID in string format. Note that conversion to
+        #: string is done automatically via `str()`.
         self.id = str(task_id)
 
     def serialize(self, attributes = None, secret_key = None):
@@ -281,5 +283,6 @@ class Task(object):
 
 
     def __str__(self):
+        serializable = (attr.lstrip('#') for attr in self.serializable)
         return 'Task: ' + '; '.join('{0}: {1}'.format(attr, getattr(self, attr))
-                                    for attr in self.serializable )
+                                    for attr in serializable )

@@ -2,7 +2,11 @@
 import os
 import sys
 import unittest
+import logging
 from importlib import import_module
+
+
+logging.basicConfig(level=logging.CRITICAL)
 
 unittest.defaultTestLoader = unittest.TestLoader()
 

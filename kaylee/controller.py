@@ -72,10 +72,11 @@ def no_result_filter(f):
     It converts the ``{ '__kl_result__' : NO_RESULT }`` result to ``None``,
     which can be ignored by :meth:`Project.store_result` routine.
     """
+    NO_RESULT_ATTRIBUTE = '__kl_result__'
     @wraps(f)
     def wrapper(self, node, data):
         try:
-            if isinstance(data, dict) and data['__kl_result__'] == NO_RESULT:
+            if isinstance(data, dict) and data[NO_RESULT_ATTRIBUTE] == NO_RESULT:
                 data = None
         except KeyError:
             pass

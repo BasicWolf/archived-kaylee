@@ -96,7 +96,7 @@ kl.include = (urls, success, fail) ->
             js.onerror = onerror
             doc.appendChild(js)
         else if util.ends_with(url, '.css')
-            if not fail?
+            if fail?
                 kl.exception('Kaylee is not able to invoke the fail()
                     callback of kl.include(..) when loading stylesheets.')
                 failed = true

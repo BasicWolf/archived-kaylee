@@ -18,6 +18,8 @@
 #     subscribed : false
 #     task_data  : null # current task data
 
+kl._app = null
+
 kl.api =
     register : () ->
         kl.get("/kaylee/register",
@@ -78,12 +80,13 @@ kl.send_result = (data) ->
         # before sending the result, check whether app.task_data contains
         # session data and attach it
         if kl._app.task_data.__kl_tsd__?
-            if (typeof(data) !== 'object')
+            if typeof(data) != 'object'
                 kl.exception.trigger('Cannot attach session data to a result
                     which is not an JS object')
                 return
             data.__kl_tsd__ = kl._app.task_data.__kl_tsd__
         kl.api.send_result(data)
+        kl._app.task_data = null
     return
 
 kl._message_to_worker = (msg, data = {}) ->
@@ -141,11 +144,10 @@ on_node_subscribed = (config) ->
             kl.exception.trigger('Unknown Kaylee Project mode')
     return
 
-
 on_node_unsubscibed = (data) ->
-    kl._app.subscribed = false
-    kl._app.worker.terminate()
-    kl._app.worker = null;
+    kl._app.worker?.terminate()
+    kl._app = null
+    kl.pj = null
     return
 
 on_project_imported = () ->

@@ -16,6 +16,9 @@ class SimpleController(Controller):
     def get_task(self, node):
         task = self.project.next_task()
         if task is None:
+            tp_id = self._tasks_pool.pop()
+            task = self.project[tp_id]
+
             try:
                 tp_id = self._tasks_pool.pop()
                 task = self.project[tp_id]
@@ -26,6 +29,7 @@ class SimpleController(Controller):
 
         node.task_id = task.id
         self._tasks_pool.add(task.id)
+        print self._tasks_pool
         return task
 
     def accept_result(self, node, data):

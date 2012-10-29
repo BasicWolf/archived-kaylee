@@ -19,12 +19,13 @@ class HashCrackerProject(Project):
 
         self.tasks_count = ((len(self.alphabet) ** self.key_length)
                             // self.hashes_per_task + 1)
-        self._tasks_counter = -1
+        self._tasks_counter = 0
 
     def next_task(self):
         if self._tasks_counter < self.tasks_count:
+            task = self[self._tasks_counter]
             self._tasks_counter += 1
-            return self[self._tasks_counter]
+            return task
         else:
             return None
 
