@@ -25,6 +25,8 @@ from .errors import KayleeError
 AUTO_PROJECT_MODE = 0x2
 MANUAL_PROJECT_MODE = 0x4
 
+SESSION_DATA_ATTRIBUTE = '__kl_tsd__'
+
 ### Auto filters ###
 
 def ignore_null_result(f):
@@ -39,6 +41,27 @@ def ignore_null_result(f):
             return f(self, task_id, data)
         return None
     return wrapper
+
+def attach_session_data(f):
+    """Automatically decrypts session data and attaches it to the results.
+
+    The filter can be effectively applied to Project.normalize() in order to
+    handle the project tasks' session data. The filter works as follows:
+
+    1. Get encrypted session data from the incoming results (dict)
+    2. Decrypt session data -> dict
+    3. Update the results with the session data
+    4. Remove the encrypted session data from the results dict.
+    """
+    @wraps(f)
+    def wrapper(self, task_id, data):
+        if not isinstance(data, dict):
+            raise ValueError('Cannot attach session data to a non-dict result')
+        sd = Task.deserialize(data[SESSION_DATA_ATTRIBUTE])
+        data.update(sd)
+        return f(self, task_id, data)
+    return wrapper
+
 
 #######
 
@@ -182,7 +205,7 @@ class Task(object):
         # process session attributes, if any
         sess_attributes = [attr[1:] for attr in attributes if attr.startswith('#')]
         if len(sess_attributes) > 0:
-            res['__kl_tsd__'] = self.encrypt(sess_attributes,
+            res[SESSION_DATA_ATTRIBUTE] = self.encrypt(sess_attributes,
                                                           secret_key)
         return res
 
@@ -209,9 +232,9 @@ class Task(object):
         result = {}
 
         if isinstance(d, dict):
-            s = d['__kl_tsd__']
+            s = d[SESSION_DATA_ATTRIBUTE]
             result = deepcopy(d)
-            del result['__kl_tsd__']
+            del result[SESSION_DATA_ATTRIBUTE]
         else:
             s = d
 

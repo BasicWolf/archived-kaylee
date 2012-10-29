@@ -21,7 +21,6 @@ class HashCrackerProject(Project):
                             // self.hashes_per_task + 1)
         self._tasks_counter = -1
 
-
     def next_task(self):
         if self._tasks_counter < self.tasks_count:
             self._tasks_counter += 1
@@ -32,13 +31,9 @@ class HashCrackerProject(Project):
     def __getitem__(self, task_id):
         return HashCrackerTask(task_id, self.hash_to_crack, self.salt)
 
-    def normalize(self, task_id, data):
-        try:
-            key = data
-            if md5(key + self.salt).hexdigest() == self.hash_to_crack:
-                return key
-        except KeyError:
-            raise ValueError('Required data is missing')
+    def normalize(self, task_id, key):
+        if md5(key + self.salt).hexdigest() == self.hash_to_crack:
+            return key
         raise ValueError('Invalid hash key')
 
     def store_result(self, task_id, data):

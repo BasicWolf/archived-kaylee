@@ -53,7 +53,7 @@ app_hash_cracker_1 = {
             'name' : 'MemoryTemporalStorage',
             },
         'filters' : {
-            'accept_result' : ['kaylee.controller.no_result_filter', ] ,
+            'accept_result' : ['kaylee.controller.no_result_filter', ],
             }
         }
     }
@@ -113,6 +113,6 @@ app_human_ocr_1 = {
 }
 
 
-# APPLICATIONS = [app_human_ocr_1]
+APPLICATIONS = [app_human_ocr_1]
 # APPLICATIONS = [app_hash_cracker_1]
-APPLICATIONS = [app_hash_cracker_2]
+# APPLICATIONS = [app_hash_cracker_2]

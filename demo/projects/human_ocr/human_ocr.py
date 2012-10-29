@@ -6,7 +6,7 @@ import tempfile
 import Image, ImageFont, ImageDraw
 
 from kaylee import Project, Task
-from kaylee.project import MANUAL_PROJECT_MODE
+from kaylee.project import MANUAL_PROJECT_MODE, attach_session_data
 from kaylee.util import random_string
 
 LIPSUM = "Lorem ipsum dolor sit amet"
@@ -42,9 +42,12 @@ class HumanOCRProject(Project):
         word = self.lipsum_words[task_id]
         return HumanOCRTask(task_id, word, self.font_path, self.img_dir,
                             self.img_dir_url)
-
+    @attach_session_data
     def normalize(self, task_id, data):
-        
+        if data['captcha'].lower() != data['random_string'].lower():
+            
+        return data
+
 
 class HumanOCRTask(Task):
     serializable = ['url', '#random_string']

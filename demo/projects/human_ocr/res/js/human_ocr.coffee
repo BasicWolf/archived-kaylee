@@ -1,3 +1,5 @@
+pj = kl.pj
+
 pj.init = (kl_config, app_config) ->
     pj._make_div()
     kl.project_imported.trigger()
@@ -8,12 +10,17 @@ pj.process_task = (data) ->
     img.src = "#{data.url}";
     return
 
-pj.send = () ->
+pj._send = () ->
     val = document.getElementById('human_ocr_input').value
     kl.task_completed.trigger({ 'captcha' : val })
+    pj._clear_input()
 
-pj.refresh = () ->
+pj._refresh = () ->
     kl.task_completed.trigger(kl.NO_RESULT)
+    pj._clear_input()
+
+pj._clear_input = () ->
+    document.getElementById('human_ocr_input').value = ''
 
 pj._make_div = () ->
     div = document.createElement('div');
@@ -28,17 +35,19 @@ pj._make_div = () ->
 
             <tr>
                 <td>
-                    <input id="human_ocr_input" type="text">
+                    <input id="human_ocr_input"
+                           type="text"
+                           onKeyPress="{if (event.keyCode==13) pj._send(); }">
                 </td>
                 <td>
                     <button id="human_ocr_send_button"
                             class="human_ocr_button"
-                            onclick="pj.send();">
+                            onclick="pj._send();">
                         Send
                     </button>
                     <button id="human_ocr_refresh_button"
                             class="human_ocr_button"
-                            onclick="pj.refresh();">
+                            onclick="pj._refresh();">
                         Refresh
                     </button>
                 </td>

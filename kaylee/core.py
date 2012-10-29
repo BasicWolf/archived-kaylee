@@ -187,7 +187,6 @@ class Kaylee(object):
         :type data: string
         :returns: a task returned by :meth:`get_action` or "nop" action.
         """
-        print 'the data is: ', data
         node = self._registry[node_id]
         try:
             if not isinstance(data, basestring):

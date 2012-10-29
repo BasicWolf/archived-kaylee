@@ -74,7 +74,7 @@ kl.include = (urls, success, fail) ->
         urls = [urls]   # in this case string is expected
     count = urls.length
     sc = 0              # loaded scripts and stylesheets counter
-    failed = false
+    failed = false      # indicates whether the inclusion process failed or not
 
     for url in urls
         doc = document.getElementsByTagName('head')[0]
@@ -96,8 +96,11 @@ kl.include = (urls, success, fail) ->
             js.onerror = onerror
             doc.appendChild(js)
         else if util.ends_with(url, '.css')
-            kl.assert(fail?, 'Kaylee is not able to invoke the fail()
-                callback of kl.include(..) when loading stylesheets.')
+            if not fail?
+                kl.exception('Kaylee is not able to invoke the fail()
+                    callback of kl.include(..) when loading stylesheets.')
+                failed = true
+                return
             css = document.createElement("link")
             css.rel = 'stylesheet'
             css.type = 'text/css'
