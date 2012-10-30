@@ -26,10 +26,20 @@ ACTIVE = 0x2
 #: Indicates completed state of an application.
 COMPLETED = 0x4
 
-#: The { '__kl_result__' : NO_RESULT } solution returned by the node
+#  TODO: add link to kl.NO_SOLUTION
+
+#: The { '__kl_result__' : NO_SOLUTION } result returned by the node
+#: indicates that no solution was found for the given task. The controller
+#: must take this information into account (see :func:`kl_result_filter`)
+NO_SOLUTION = 0x2
+
+#: The { '__kl_result__' : NEXT_TASK } solution returned by the node
 #: indicates that the current task was simply not solved for some
-#: reason. TODO: add link to kl.NO_RESULT
-NO_RESULT = 0x2
+#: reason, there are no results to accept and the node is asking for
+#: the next task.
+NEXT_TASK = 0x4
+
+KL_RESULT = '__kl_result__'
 
 def app_completed_guard(f):
     """The filter handles two cases of completed Kaylee application:
@@ -66,17 +76,17 @@ def normalize_result_filter(f):
         return f(self, node, data)
     return wrapper
 
-def no_result_filter(f):
+def kl_result_filter(f):
     """The filter is meant to be used in "decision search" projects which
     supposed to deliver a single correct result.
-    It converts the ``{ '__kl_result__' : NO_RESULT }`` result to ``None``,
+    It converts the ``{ '__kl_result__' : NO_SOLUTION }`` result to ``None``,
     which can be ignored by :meth:`Project.store_result` routine.
     """
-    NO_RESULT_ATTRIBUTE = '__kl_result__'
+    KL_RESULT = '__kl_result__'
     @wraps(f)
     def wrapper(self, node, data):
         try:
-            if isinstance(data, dict) and data[NO_RESULT_ATTRIBUTE] == NO_RESULT:
+            if isinstance(data, dict) and data[KL_RESULT] == NO_SOLUTION:
                 data = None
         except KeyError:
             pass

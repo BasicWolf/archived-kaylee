@@ -17,8 +17,10 @@ kl =
     # CONSTANTS
     AUTO_PROJECT_MODE : 0x2
     MANUAL_PROJECT_MODE : 0x4
+    SESSION_DATA_ATTRIBUTE : '__kl_tsd__'
 
     NO_RESULT : {'__kl_result__' : 0x2}
+    NEXT_TASK : {'__kl_result__' : 0x4}
 
 pj = kl.pj
 
