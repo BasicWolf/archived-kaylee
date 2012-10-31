@@ -79,13 +79,13 @@ kl.send_result = (data) ->
     if kl._app.subscribed
         # before sending the result, check whether app.task_data contains
         # session data and attach it
-        if SESSION_DATA_ATTRIBUTE in kl._app.task_data
+        if kl.SESSION_DATA_ATTRIBUTE in kl._app.task_data
             if typeof(data) != 'object'
                 kl.exception.trigger('Cannot attach session data to a result
                     which is not an JS object')
                 return
-            data[SESSION_DATA_ATTRIBUTE] = \
-                kl._app.task_data[SESSION_DATA_ATTRIBUTE]
+            data[kl.SESSION_DATA_ATTRIBUTE] = \
+                kl._app.task_data[kl.SESSION_DATA_ATTRIBUTE]
         kl.api.send_result(data)
         kl._app.task_data = null
     return

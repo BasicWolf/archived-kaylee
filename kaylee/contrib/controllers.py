@@ -29,10 +29,10 @@ class SimpleController(Controller):
 
         node.task_id = task.id
         self._tasks_pool.add(task.id)
-        print self._tasks_pool
         return task
 
     def accept_result(self, node, data):
+        print data
         self.project.store_result(node.task_id, data)
         self._tasks_pool.remove(node.task_id)
         if self.project.completed:

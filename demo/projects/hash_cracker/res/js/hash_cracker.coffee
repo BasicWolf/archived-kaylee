@@ -18,7 +18,7 @@ pj.process_task = (data) ->
         if hash == CryptoJS.MD5("#{key}#{salt}").toString(CryptoJS.enc.Hex)
             # we have found the answer!
             kl.task_completed.trigger(key)
-    kl.task_completed.trigger(kl.NO_RESULT)
+    kl.task_completed.trigger(kl.NO_SOLUTION)
     return
 
 
