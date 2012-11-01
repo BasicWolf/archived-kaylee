@@ -77,20 +77,29 @@ def normalize_result_filter(f):
     return wrapper
 
 def kl_result_filter(f):
-    """The filter is meant to be used in "decision search" projects which
-    supposed to deliver a single correct result.
-    It converts the ``{ '__kl_result__' : NO_SOLUTION }`` result to ``None``,
-    which can be ignored by :meth:`Project.store_result` routine.
+    """The filter is designed to be used in "decision search" projects which
+    imply that not every task has a correct solution, or solution exists at
+    all.
+    The filter searches for ``'__kl_result__'`` key in the result and acts
+    according to the bound value:
+
+    * :data:`NO_SOLUTION` : The result passed to the decorated function is
+      turned to `None`. It can be ignored by :meth:`Project.store_result`
+      routine.
     """
-    KL_RESULT = '__kl_result__'
     @wraps(f)
     def wrapper(self, node, data):
         try:
-            if isinstance(data, dict) and data[KL_RESULT] == NO_SOLUTION:
-                data = None
-        except KeyError:
-            pass
-        return f(self, node, data)
+            kl_result = data['__kl_result__']
+        except (KeyError, TypeError):
+            return f(self, node, data)
+
+        if kl_result == NO_SOLUTION:
+            data = None
+            return f(self, node, data)
+        elif kl_result == NEXT_TASK:
+            return
+
     return wrapper
 
 

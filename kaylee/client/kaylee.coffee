@@ -79,7 +79,7 @@ kl.send_result = (data) ->
     if kl._app.subscribed
         # before sending the result, check whether app.task_data contains
         # session data and attach it
-        if kl.__kl_tsd__ in kl._app.task_data
+        if kl._app.task_data.__kl_tsd__?
             if typeof(data) != 'object'
                 kl.exception.trigger('Cannot attach session data to a result
                     which is not an JS object')

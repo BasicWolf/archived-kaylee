@@ -54,19 +54,6 @@ def import_object(name):
         raise ImportError('Object {} was not found in module {}'
                           .format(objname, modname))
 
-# TODO: kldebug should support methods
-# def kldebug(f):
-#     def wrapper(*args, **kwargs):
-#         sargs = ', '.join(str(arg) for arg in args)
-#         skwargs = ', '.join('{} = {}'.format(key, val)
-#                             for key, val in kwargs.items())
-
-#         ret = f(*args, **kwargs)
-#         print('{}({}, {}) --> {}'.format(f.__name__, sargs, skwargs, ret))
-#         return ret
-#     return wrapper
-
-
 def new_method_proxy(func):
     def inner(self, *args):
         try:

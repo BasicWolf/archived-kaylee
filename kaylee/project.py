@@ -190,7 +190,7 @@ class Task(object):
         #: string is done automatically via `str()`.
         self.id = str(task_id)
 
-    def serialize(self, attributes = None, secret_key = None):
+    def serialize(self, attributes=None, secret_key=None):
         """
         Serializes object attributes to dict.
 
@@ -211,7 +211,7 @@ class Task(object):
                                                           secret_key)
         return res
 
-    def encrypt(self, attributes, secret_key = None):
+    def encrypt(self, attributes, secret_key=None):
         secret_key = get_secret_key(secret_key)
 
         mac = hmac(secret_key, None, sha1)
@@ -230,7 +230,7 @@ class Task(object):
         return '{}?{}'.format(b64encode(mac.digest()), '&'.join(result))
 
     @staticmethod
-    def deserialize(d, secret_key = None):
+    def deserialize(d, secret_key=None):
         result = {}
 
         if isinstance(d, dict):
