@@ -24,11 +24,9 @@ from Crypto.Cipher import AES
 from .errors import KayleeError
 
 
-NO_FILTERS = 0x0
+NO_AUTO_FILTERS = 0x0
 BASE_FILTERS = 0x2
 CONFIG_FILTERS = 0x4
-
-SESSION_DATA_ATTRIBUTE = '__kl_tsd__'
 
 def parse_timedelta(s):
     try:

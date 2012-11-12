@@ -31,10 +31,9 @@ class HashCrackerProject(Project):
 
     def __getitem__(self, task_id):
         return {
-            'id' : task_id,
             'hash_to_crack' : self.hash_to_crack,
             'salt' : self.salt
-            }
+        }
 
     def normalize_result(self, task_id, key):
         if md5(key + self.salt).hexdigest() == self.hash_to_crack:

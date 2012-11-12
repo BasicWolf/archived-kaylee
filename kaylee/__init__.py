@@ -29,5 +29,12 @@ from .controller import Controller
 from .project import Project
 from .errors import KayleeError
 
+
 def setup(config):
-    kl._setup(loader.load(config))
+    if config is not None:
+        # In this case we are trying to load Kaylee from the given config
+        kl._setup(loader.load(config))
+    else:
+        # In this case the user probably(!) asks us to "release" Kaylee
+        # instance from the proxy.
+        kl._setup(None)

@@ -37,6 +37,9 @@ class LazyKaylee(LazyObject):
     def _setup(self, obj = None):
         if isinstance(obj, Kaylee):
             self._wrapped = obj
+        elif obj is None:
+            self._wrapped = None # release the object
+            log.debug('Releasing {}'.format(obj))
         else:
             raise TypeError('obj must be an instance of {} or '
                             'a Kaylee config object, not {}'
@@ -125,8 +128,8 @@ def refresh(config):
             try:
                 pymod = importlib.import_module(sub_dir)
             except ImportError as e:
-                raise ImportError('Unable to import project package {}: {}'
-                                  .format(sub_dir, e))
+                raise ImportError('Unable to import project package: {}'
+                                  .format(e))
             mod_cls = _get_classes_from_module(pymod)
             _project_classes.update(_get_classes(mod_cls, project.Project))
             _controller_classes.update(_get_classes(mod_cls, controller.Controller))

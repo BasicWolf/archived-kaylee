@@ -25,6 +25,8 @@ KL_PROJECT_MODE = '__kl_project_mode__'
 KL_PROJECT_SCRIPT = '__kl_project_script__'
 KL_PROJECT_STYLES = '__kl_project_styles__'
 
+SESSION_DATA_ATTRIBUTE = '__kl_tsd__'
+
 ### Auto filters ###
 
 def ignore_null_result(f):
@@ -39,6 +41,7 @@ def ignore_null_result(f):
             return f(self, task_id, data)
         return None
     return wrapper
+
 
 def attach_session_data(f):
     """Automatically decrypts session data and attaches it to the results.
@@ -62,6 +65,33 @@ def attach_session_data(f):
     return wrapper
 
 
+def attach_task_id_to_returned_value(f):
+    """TODOC, TODO:TEST"""
+    @wraps(f)
+    def wrapper(self, task_id):
+        res = f(self, task_id)
+        res['id'] = task_id
+        return res
+    return wrapper
+
+
+def returns_session_data(f):
+    """TODOC, TODO:TEST"""
+    @wraps(f)
+    def wrapper(self, task_id):
+        task = f(self, task_id)
+        hashed_data = { key : task[key] for key in task
+                        if key.startswith('#') }
+        # encrypt and attach data to the task
+        task[SESSION_DATA_ATTRIBUTE] = encrypt(hashed_data)
+        # remove the just encrypted key-value pairs, as they are
+        # no longer required
+        for key in hashed_data:
+            del task[key]
+        return task
+    return wrapper
+
+
 class Project(object):
     """Kaylee Projects abstract base class.
 
@@ -76,7 +106,8 @@ class Project(object):
     auto_filters = {
         'normalize_result' : [ignore_null_result, ],
         'store_result' : [ignore_null_result, ],
-       }
+        '__getitem__' : [attach_task_id_to_returned_value, ],
+    }
 
     #: Project mode.
     mode = AUTO_PROJECT_MODE

@@ -39,10 +39,23 @@ class HumanOCRProject(Project):
         else:
             return None
 
+    @returns_session_data
     def __getitem__(self, task_id):
         word = self.lipsum_words[int(task_id)]
-        return HumanOCRTask(task_id, word, self.font_path, self.img_dir,
-                            self.img_dir_url)
+        random_string = random_string(4)
+        img = self._generate_image(word, random_string, self.font_path)
+        img_path = self._save_image(img, self.img_dir)
+        url = os.path.join(self.img_dir_url, os.path.basename(img_path))
+
+        return {
+            'url' : url,
+            '#random_string' : random_string,
+            # note the first "#" character in key. In conjunction with
+            # @returns_session_data filter ... TODOC attaching encrypted data
+        }
+
+# class HumanOCRTask(Task):
+#     serializable = ['url', '#random_string']
 
     @attach_session_data
     def normalize(self, task_id, data):
@@ -62,43 +75,37 @@ class HumanOCRProject(Project):
         print('The OCR results are: {}'.format(list(self.storage.values())))
 
 
+    ## Task generation routines ##
 
-# class HumanOCRTask(Task):
-#     serializable = ['url', '#random_string']
 
-#     def __init__(self, task_id, text, font_path, img_dir, img_url_dir):
-#         super(HumanOCRTask, self).__init__(task_id)
-#         self.random_string = random_string(4)
-#         img = self._generate_image(text, font_path)
-#         img_path = self._save_image(img, img_dir)
-#         self.url = os.path.join(img_url_dir, os.path.basename(img_path))
+    def _save_image(self, image, img_dir):
+        # removing the temp file should be done via e.g. cron job
+        fd, fpath = tempfile.mkstemp(suffix='.png', prefix=img_dir)
+        f = os.fdopen(fd, 'w')
+        image.save(f, 'PNG')
+        f.close()
+        return fpath
 
-#     def _save_image(self, image, img_dir):
-#         # removing the temp file should be done via e.g. cron job
-#         fd, fpath = tempfile.mkstemp(suffix='.png', prefix=img_dir)
-#         f = os.fdopen(fd, 'w')
-#         image.save(f, 'PNG')
-#         f.close()
-#         return fpath
+    def _generate_image(self, text, random_string, font_path):
+        text += ' ' + random_string
+        font = ImageFont.truetype(font_path, 48)
+        size = font.getsize(text)
+        size = (int(size[0]), int(size[1]))
 
-#     def _generate_image(self, text, font_path):
-#         text += ' ' + self.random_string
-#         font = ImageFont.truetype(font_path, 48)
-#         size = font.getsize(text)
-#         size = (int(size[0]), int(size[1]))
+        # a blank image with white background
+        image = Image.new('RGB', size, '#FFF')
+        draw = ImageDraw.Draw(image)
 
-#         # a blank image with white background
-#         image = Image.new('RGB', size, '#FFF')
-#         draw = ImageDraw.Draw(image)
+        draw.text((0, 0), text, font=font, fill='#000000')
 
-#         draw.text((0, 0), text, font=font, fill='#000000')
+        # add white noise
+        noise = []
+        for x in range (0, size[0]):
+            for y in range (0, size[1]):
+                if random.random() > 0.3:
+                    noise.append((x, y))
+        draw.point(noise, '#FFF')
 
-#         # add white noise
-#         noise = []
-#         for x in range (0, size[0]):
-#             for y in range (0, size[1]):
-#                 if random.random() > 0.3:
-#                     noise.append((x, y))
-#         draw.point(noise, '#FFF')
+        return image
 
-#         return image
+
