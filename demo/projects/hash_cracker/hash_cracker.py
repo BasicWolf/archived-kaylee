@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from hashlib import md5
-from kaylee import Project, Task
+from kaylee import Project
 
 class HashCrackerProject(Project):
     def __init__(self, *args, **kwargs):
@@ -30,9 +30,13 @@ class HashCrackerProject(Project):
             return None
 
     def __getitem__(self, task_id):
-        return HashCrackerTask(task_id, self.hash_to_crack, self.salt)
+        return {
+            'id' : task_id,
+            'hash_to_crack' : self.hash_to_crack,
+            'salt' : self.salt
+            }
 
-    def normalize(self, task_id, key):
+    def normalize_result(self, task_id, key):
         if md5(key + self.salt).hexdigest() == self.hash_to_crack:
             return key
         raise ValueError('Invalid hash key')
@@ -47,13 +51,3 @@ class HashCrackerProject(Project):
     def _announce_results(self):
         key = list(self.storage.values())[0][0]
         print('The cracked hash key is: {}'.format(key))
-
-
-
-class HashCrackerTask(Task):
-    serializable = ['hash_to_crack', 'salt']
-
-    def __init__(self, task_id, hash_to_crack, salt):
-        super(HashCrackerTask, self).__init__(task_id)
-        self.hash_to_crack = hash_to_crack
-        self.salt = salt

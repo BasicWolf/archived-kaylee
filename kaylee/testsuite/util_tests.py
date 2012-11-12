@@ -1,6 +1,7 @@
 import string
 from kaylee.testsuite import KayleeTest, load_tests
-from kaylee.util import parse_timedelta, LazyObject, random_string
+from kaylee.util import (parse_timedelta, LazyObject, random_string, encrypt,
+                         decrypt, get_secret_key)
 from kaylee import KayleeError
 
 class KayleeUtilTests(KayleeTest):
@@ -96,6 +97,42 @@ class KayleeUtilTests(KayleeTest):
         s = random_string(1000, uppercase=False, digits=False, extra=extra)
         for c in s:
             self.assertIn(c, string.ascii_lowercase + extra)
+
+    def test_get_secret_key(self):
+        sk = get_secret_key('abc')
+        self.assertEqual(sk, 'abc')
+
+        # test when config is not loaded
+        self.assertRaises(KayleeError, get_secret_key)
+
+        # test loading from config
+        import test_config
+        from kaylee import kl, setup
+        setup(test_config)
+        sk = get_secret_key()
+        self.assertEqual(sk, test_config.SECRET_KEY)
+
+        # test if default parameter works after previous call
+        sk = get_secret_key('abc')
+        self.assertEqual(sk, 'abc')
+
+        # test for proper behaviour after releasing the object from proxy
+        setup(None)
+        self.assertRaises(KayleeError, get_secret_key)
+
+        # and the final test :)
+        sk = get_secret_key('abc')
+        self.assertEqual(sk, 'abc')
+
+    def test_encrypt_decrypt(self):
+        d1 = {'f1' : 'val1', 'f2' : 20}
+        s1 = encrypt(d1, secret_key='abc')
+        d1_d = decrypt(s1, secret_key='abc')
+        self.assertEqual(d1, d1_d)
+
+        # test if incorrect signature raises KayleeError
+        s2 = s1[3:] # pad the signature
+        self.assertRaises(KayleeError, decrypt, s1)
 
 
 kaylee_suite = load_tests([KayleeUtilTests, ])

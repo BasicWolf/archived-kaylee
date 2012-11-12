@@ -125,8 +125,8 @@ def refresh(config):
             try:
                 pymod = importlib.import_module(sub_dir)
             except ImportError as e:
-                raise ImportError('Unable to import project package: {}'
-                                  .format(e))
+                raise ImportError('Unable to import project package {}: {}'
+                                  .format(sub_dir, e))
             mod_cls = _get_classes_from_module(pymod)
             _project_classes.update(_get_classes(mod_cls, project.Project))
             _controller_classes.update(_get_classes(mod_cls, controller.Controller))

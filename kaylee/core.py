@@ -166,7 +166,7 @@ class Kaylee(object):
         node = self._registry[node_id]
 
         try:
-            return self._json_action(ACTION_TASK, node.get_task().serialize())
+            return self._json_action(ACTION_TASK, node.get_task())
         except NodeRejectedError as e:
             return self._json_action(ACTION_UNSUBSCRIBE,
                                      'The node has been automatically '

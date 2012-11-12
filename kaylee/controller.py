@@ -72,7 +72,7 @@ def normalize_result_filter(f):
     """
     @wraps(f)
     def wrapper(self, node, data):
-        data = self.project.normalize(node.task_id, data)
+        data = self.project.normalize_result(node.task_id, data)
         return f(self, node, data)
     return wrapper
 

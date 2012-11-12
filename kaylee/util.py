@@ -13,8 +13,13 @@ import re
 import importlib
 import random
 import string
+import cPickle as pickle
 from datetime import timedelta
 from abc import ABCMeta
+from base64 import b64encode, b64decode
+from hmac import new as hmac
+from hashlib import sha1, sha256
+from Crypto.Cipher import AES
 
 from .errors import KayleeError
 
@@ -23,6 +28,7 @@ NO_FILTERS = 0x0
 BASE_FILTERS = 0x2
 CONFIG_FILTERS = 0x4
 
+SESSION_DATA_ATTRIBUTE = '__kl_tsd__'
 
 def parse_timedelta(s):
     try:
@@ -54,7 +60,8 @@ def import_object(name):
         raise ImportError('Object {} was not found in module {}'
                           .format(objname, modname))
 
-def new_method_proxy(func):
+
+def _new_method_proxy(func):
     def inner(self, *args):
         try:
             return func(self._wrapped, *args)
@@ -75,12 +82,12 @@ class LazyObject(object):
     def __init__(self):
         self._wrapped = None
 
-    __getattr__ = new_method_proxy(getattr)
+    __getattr__ = _new_method_proxy(getattr)
 
     def __setattr__(self, name, value):
-        if name == "_wrapped":
+        if name == '_wrapped':
             # Assign to __dict__ to avoid infinite __setattr__ loops.
-            self.__dict__["_wrapped"] = value
+            self.__dict__['_wrapped'] = value
         else:
             try:
                 setattr(self._wrapped, name, value)
@@ -89,8 +96,8 @@ class LazyObject(object):
                 setattr(self._wrapped, name, value)
 
     def __delattr__(self, name):
-        if name == "_wrapped":
-            raise TypeError("Cannot delete _wrapped.")
+        if name == '_wrapped':
+            raise TypeError('Cannot delete _wrapped.')
         try:
             delattr(self._wrapped, name)
         except AttributeError:
@@ -99,7 +106,7 @@ class LazyObject(object):
 
     def _setup(self, obj = None):
         """
-        Must be implemented by sub-classes to initialise the wrapped object.
+        Must be implemented by sub-classes to initialize the wrapped object.
 
         :param obj: An optional object to wrap. Note that checking the object
                     type and wrapping it must be done in the sub class as well.
@@ -107,7 +114,7 @@ class LazyObject(object):
         raise NotImplementedError
 
     # introspection support:
-    __dir__ = new_method_proxy(dir)
+    __dir__ = _new_method_proxy(dir)
 
 
 
@@ -134,21 +141,6 @@ class AutoFilterABCMeta(ABCMeta):
         super(AutoFilterABCMeta, mcs).__init__(name, bases, dct)
 
 
-def get_secret_key(key = None):
-    if key is not None:
-        return key
-    else:
-        from kaylee import kl
-        if kl._wrapped:
-            key = kl.config.SECRET_KEY
-            if key is None:
-                raise KayleeError('SECRET_KEY configuration option is not'
-                                  ' defined.')
-            return key
-        else:
-            raise KayleeError('Cannot locate a valid secret key.')
-
-
 def random_string(length, alphabet = None, lowercase = True, uppercase = True,
                   digits = True, extra = ''):
     if alphabet is not None:
@@ -163,3 +155,88 @@ def random_string(length, alphabet = None, lowercase = True, uppercase = True,
             src += string.digits
 
     return ''.join(random.choice(src) for x in xrange(length))
+
+
+
+
+
+#------------- Object attributes encryption --------------------#
+
+def get_secret_key(key = None):
+    if key is not None:
+        return key
+    else:
+        from kaylee import kl
+        if kl._wrapped is not None:
+            key = kl.config.SECRET_KEY
+            if key is None:
+                raise KayleeError('SECRET_KEY configuration option is not'
+                                  ' defined.')
+            return key
+        else:
+            raise KayleeError('Cannot locate a valid secret key.')
+
+def encrypt(data, secret_key=None):
+    """Encrypt the data and return its base64 representation.
+
+    :param data: Data to encrypt. The data is pickled prior to encryption.
+    :param secret_key: A secret key to use.
+    :type data: dict
+    :type secret_key: str
+    """
+    secret_key = get_secret_key(secret_key)
+
+    mac = hmac(secret_key, None, sha1)
+    encryption_key = sha256(secret_key).digest()
+
+    iv = ''.join(chr(random.randint(0, 0xFF)) for i in xrange(16))
+    encryptor = AES.new(encryption_key, AES.MODE_CBC, iv)
+
+    b64_iv = b64encode(iv)
+    result = [b64_iv]      # store initialization vector
+    for key, val in data.iteritems():
+        result.append(_encrypt_attr(key, val, encryptor))
+        mac.update('|' + result[-1])
+
+    return '{}?{}'.format(b64encode(mac.digest()), '&'.join(result))
+
+def decrypt(s, secret_key=None):
+    secret_key = get_secret_key(secret_key)
+    base64_hash, data = s.split('?', 1)
+    mac = hmac(secret_key, None, sha1)
+
+    iv, data = data.split('&', 1)
+    iv = b64decode(iv)
+
+    decryption_key = sha256(secret_key).digest()
+    decryptor = AES.new(decryption_key, AES.MODE_CBC, iv)
+
+    res = {}
+    for item in data.split('&'):
+        mac.update('|' + item)
+        attr, val = _decrypt_attr(item, decryptor)
+        res[attr] = val
+
+    if b64decode(base64_hash) == mac.digest():
+        return res
+    else:
+        raise KayleeError('Encrypted data signature verification failed.')
+
+def _encrypt_attr(attr, value, encryptor):
+    BLOCK_SIZE = 32
+    PADDING = ' '
+    # one-liner to sufficiently pad the text to be encrypted
+    pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
+
+    val = pickle.dumps(value, pickle.HIGHEST_PROTOCOL)
+    val = '{}={}'.format(attr, val)
+    val = encryptor.encrypt(pad(val))
+    val = b64encode(val)
+    return val
+
+def _decrypt_attr(data, decryptor):
+    tdata = b64decode(data)
+    tdata = decryptor.decrypt(tdata).rstrip(' ')
+    attr, val = tdata.split('=', 1)
+    val = pickle.loads(val)
+    return attr, val

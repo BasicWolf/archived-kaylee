@@ -24,8 +24,9 @@ class SimpleController(Controller):
                 # looks like the application is completed.
                 raise ApplicationCompletedError(self.name)
 
-        node.task_id = task.id
-        self._tasks_pool.add(task.id)
+        task_id = task['id']
+        node.task_id = task_id
+        self._tasks_pool.add(task_id)
         return task
 
     def accept_result(self, node, data):
