@@ -43,7 +43,7 @@ def ignore_null_result(f):
     return wrapper
 
 
-def attach_session_data(f):
+def accepts_session_data(f):
     """Automatically decrypts session data and attaches it to the results.
 
     The filter can be effectively applied to Project.normalize_result() in
@@ -59,7 +59,7 @@ def attach_session_data(f):
     def wrapper(self, task_id, data):
         if not isinstance(data, dict):
             raise ValueError('Cannot attach session data to a non-dict result')
-        sd = deserialize(data[SESSION_DATA_ATTRIBUTE])
+        sd = decrypt(data[SESSION_DATA_ATTRIBUTE])
         data.update(sd)
         return f(self, task_id, data)
     return wrapper

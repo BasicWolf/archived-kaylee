@@ -6,7 +6,8 @@ import tempfile
 import Image, ImageFont, ImageDraw
 
 from kaylee import Project
-from kaylee.project import MANUAL_PROJECT_MODE, attach_session_data
+from kaylee.project import (MANUAL_PROJECT_MODE, accepts_session_data,
+                            returns_session_data)
 from kaylee.util import random_string
 
 LIPSUM = "Lorem ipsum"
@@ -42,25 +43,22 @@ class HumanOCRProject(Project):
     @returns_session_data
     def __getitem__(self, task_id):
         word = self.lipsum_words[int(task_id)]
-        random_string = random_string(4)
-        img = self._generate_image(word, random_string, self.font_path)
+        rstr = random_string(4)
+        img = self._generate_image(word, rstr, self.font_path)
         img_path = self._save_image(img, self.img_dir)
         url = os.path.join(self.img_dir_url, os.path.basename(img_path))
 
         return {
             'url' : url,
-            '#random_string' : random_string,
+            '#random_string' : rstr,
             # note the first "#" character in key. In conjunction with
             # @returns_session_data filter ... TODOC attaching encrypted data
         }
 
-# class HumanOCRTask(Task):
-#     serializable = ['url', '#random_string']
-
-    @attach_session_data
-    def normalize(self, task_id, data):
+    @accepts_session_data
+    def normalize_result(self, task_id, data):
         words = data['captcha'].split()
-        if words[1].lower() != data['random_string'].lower():
+        if words[1].lower() != data['#random_string'].lower():
             raise ValueError('Invalid control parameter value')
         return words[0]
 
@@ -75,9 +73,8 @@ class HumanOCRProject(Project):
         print('The OCR results are: {}'.format(list(self.storage.values())))
 
 
-    ## Task generation routines ##
-
-
+    # Task generation routines
+    # ------------------------
     def _save_image(self, image, img_dir):
         # removing the temp file should be done via e.g. cron job
         fd, fpath = tempfile.mkstemp(suffix='.png', prefix=img_dir)
