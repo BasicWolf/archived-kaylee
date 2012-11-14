@@ -14,13 +14,16 @@ pj._send = () ->
     val = document.getElementById('human_ocr_input').value
     kl.task_completed.trigger({ 'captcha' : val })
     pj._clear_input()
+    return
 
 pj._refresh = () ->
     kl.task_completed.trigger(kl.NO_RESULT)
     pj._clear_input()
+    return
 
 pj._clear_input = () ->
     document.getElementById('human_ocr_input').value = ''
+    return
 
 pj._make_div = () ->
     div = document.createElement('div');
