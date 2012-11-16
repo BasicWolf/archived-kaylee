@@ -10,7 +10,7 @@ from kaylee.project import (MANUAL_PROJECT_MODE, accepts_session_data,
                             returns_session_data)
 from kaylee.util import random_string
 
-LIPSUM = "Lorem ipsum"
+LIPSUM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 
 class HumanOCRProject(Project):
     mode = MANUAL_PROJECT_MODE
