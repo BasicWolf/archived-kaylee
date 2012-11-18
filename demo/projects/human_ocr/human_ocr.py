@@ -10,7 +10,7 @@ from kaylee.project import (MANUAL_PROJECT_MODE, accepts_session_data,
                             returns_session_data)
 from kaylee.util import random_string
 
-LIPSUM = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+LIPSUM = "Lorem ipsum"
 
 class HumanOCRProject(Project):
     mode = MANUAL_PROJECT_MODE
@@ -22,7 +22,7 @@ class HumanOCRProject(Project):
         self.img_dir_url = kwargs['img_dir_url']
 
         self.lipsum_words = LIPSUM.split(' ')
-        self.tasks_count = len(self.lipsum_words)
+        self.tasks_count = len(self.lipsum_words) * 3
         self._tasks_counter = 0
 
         try:
@@ -34,7 +34,7 @@ class HumanOCRProject(Project):
 
     def next_task(self):
         if self._tasks_counter < self.tasks_count:
-            task = self[self._tasks_counter]
+            task = self[self._tasks_counter % len(self.lipsum_words)]
             self._tasks_counter += 1
             return task
         else:
@@ -64,7 +64,7 @@ class HumanOCRProject(Project):
 
     def store_result(self, task_id, data):
         super(HumanOCRProject, self).store_result(task_id, data)
-        if len(self.storage) == len(self.lipsum_words):
+        if len(self.storage) == self.tasks_count:
             # it is enough to have a single result to complete the project
             self._announce_results()
             self.completed = True
@@ -104,5 +104,3 @@ class HumanOCRProject(Project):
         draw.point(noise, '#FFF')
 
         return image
-
-
