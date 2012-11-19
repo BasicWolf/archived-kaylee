@@ -147,16 +147,15 @@ class Project(object):
         :rtype: :class:`Task`
         """
 
+    @abstractmethod
     def normalize_result(self, task_id, data):
-        """Normalizes and validates a solution.
+        """Normalizes and validates a result.
 
         :param task_id: the ID of the task.
-        :param data: the solution to be validated and/or normalized.
+        :param data: the result to be validated and/or normalized.
         :throws ValueError: if the data is invalid.
         :return: normalized data.
         """
-        return data
-
 
     def store_result(self, task_id, data):
         """Stores the results to the permanent storage.
