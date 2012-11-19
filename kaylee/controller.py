@@ -142,13 +142,12 @@ class Controller(object):
 
     @app_completed_guard
     def subscribe(self, node):
-        """Subscribes a node for current application.
+        """Subscribes the node for current application.
 
         :param node: A registered node.
         :type node: :class:`Node`
         """
-        node.controller = self
-        node.subscription_timestamp = datetime.now()
+        node.subscribe(self)
         return self.project.client_config
 
     @abstractmethod

@@ -19,7 +19,7 @@ import hashlib
 from datetime import datetime
 from abc import ABCMeta, abstractmethod
 
-from .errors import InvalidNodeIDError, NodeUnsubscribedError
+from .errors import warn, InvalidNodeIDError, NodeUnsubscribedError
 from .util import parse_timedelta
 
 #: The hex string formatted NodeID regular expression pattern which
@@ -36,7 +36,7 @@ class Node(object):
                     :class:`NodeID`
     """
     __slots__ = ('id', '_task_id', 'subscription_timestamp', 'task_timestamp',
-                 'controller')
+                 '_controller', 'errors_count')
 
     def __init__(self, node_id):
         if not isinstance(node_id, NodeID):
@@ -57,9 +57,19 @@ class Node(object):
         #: It is an instance of :class:`Controller`.
         self.controller = None
 
+        #: A total amount of node-related errors caught by the core
+        self.errors_count = 0
+
         self._task_id = None
 
+    def subscribe(self, controller):
+        self.controller = controller
+        self.subscription_timestamp = datetime.now()
+
     def unsubscribe(self):
+        if self.controller is None:
+            warn('Node.unsubscribe() is called for a non-subscribed node.')
+
         self.subscription_timestamp = None
         self.task_timestamp = None
         self.controller = None
