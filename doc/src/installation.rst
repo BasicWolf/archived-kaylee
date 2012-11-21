@@ -10,11 +10,11 @@ Kaylee is based on the following technologies:
 
 * `Python 2.7 <http://python.org>`_. Kaylee is mainly written in Python.
 * `CoffeeScript <http://coffeescript.org>`_. The client side of Kaylee is
-  written in CoffeeScript which compiles to JavaScript. It is strongly
+  written in CoffeeScript which compiles into JavaScript. It is strongly
   recommended to write Kaylee projects in CoffeeScript.
 * HTML5 Web Workers. This technology enables executing JavaScript code in
-  parallel with a browser's main JavaScript even loop. Kaylee client
-  executes projects' code in a web worker.
+  parallel with the browser's main JavaScript event loop. Kaylee client
+  is able to execute user project's code in a web worker.
 
 Kaylee also requires a server front-end to run. The out-of-the box support
 is available for:

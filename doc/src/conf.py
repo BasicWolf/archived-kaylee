@@ -20,10 +20,10 @@ cur_dir = os.path.dirname(__file__)
 
 local_path = lambda p: os.path.abspath(os.path.join(cur_dir, p))
 #sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, local_path('../kaylee'))
-sys.path.insert(0, local_path('../'))
+sys.path.insert(0, local_path('../../kaylee'))
+sys.path.insert(0, local_path('../../'))
 sys.path.insert(0, local_path('_themes'))
-sys.path.insert(0, local_path("_ext"))
+sys.path.insert(0, local_path('_ext'))
 
 # -- General configuration -----------------------------------------------------
 

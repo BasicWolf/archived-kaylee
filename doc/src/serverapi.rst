@@ -47,19 +47,13 @@ Node Objects
    .. automethod:: __contains__
 
 
-Project and Task Objects
-------------------------
+Project Object
+--------------
 
 .. autoclass:: kaylee.Project
    :members:
 
    .. automethod:: __getitem__
-
-.. autoclass:: Task
-   :members:
-..    :inherited-members:
-
-.. autoclass:: kaylee.project.TaskMeta
 
 
 Controller Object
@@ -143,12 +137,16 @@ Controller filters
 
 .. autofunction:: kaylee.controller.app_completed_guard
 
-.. autofunction:: kaylee.controller.no_result_filter
-
 .. autofunction:: kaylee.controller.normalize_result_filter
 
+.. autofunction:: kaylee.controller.kl_result_filter
 
 Project filters
 ...............
 
 .. autofunction:: kaylee.project.ignore_null_result
+
+.. autofunction:: kaylee.project.accepts_session_data
+
+.. autofunction:: kaylee.project.attach_task_id_to_returned_value
+
