@@ -27,6 +27,8 @@ KL_PROJECT_STYLES = '__kl_project_styles__'
 
 SESSION_DATA_ATTRIBUTE = '__kl_tsd__'
 
+TASK_ID_ATTRIBUTE = 'id'
+
 ### Auto filters ###
 
 def ignore_null_result(f):

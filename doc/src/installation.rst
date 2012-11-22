@@ -96,8 +96,8 @@ http://127.0.0.1:5000.
 
 If everything was successful you should see a page with a black rectangle
 in the middle which represents an "echo" console. Don't worry, it is a part
-of the demo, not Kaylee in general. In a few seconds something weird will
-happen and at last you will see something like this:
+of the demo, not Kaylee in general. In few seconds something weird will
+be happening and at last you will see something like this:
 
 .. image:: _static/demo2.png
    :align: center

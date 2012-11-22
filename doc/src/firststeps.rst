@@ -22,20 +22,17 @@ The server performs the following routines:
     a unique :py:class:`node id <NodeID>`. The information about the nodes
     is maintained on the server via an instance of :py:class:`NodesRegistry`.
   * Subscribes the nodes to applications. During the subscription process
-    the node loads and initializes the project script(s).
+    the node loads and initializes the project client-side Scripture's(s).
   * Dispatches the tasks to the nodes. At this stage the subscribed nodes
-    receive the tasks, solve them and send the solution back to the server.
+    receive the tasks, solve them and send the results back to the server.
   * Collects the results from the nodes. Kaylee decides whether the results
     are satisfactory and stores them to a permanent storage.
-
-Kaylee Nodes utilize the new HTML5 Web Workers [1]_ standard in order to
-avoid interfering with browser's main JavaScript event loop.
 
 .. _firststep_projects_and_tasks:
 
 
-Projects and Tasks
-------------------
+Projects, Tasks and Solutions
+-----------------------------
 
 Kaylee tries to free users of routines related to distributed computation
 as much as possible. Still, a user needs to write the server-side Python code
@@ -44,9 +41,17 @@ results and the client-side code which will compute and solve the tasks
 provided by the server.
 In Kaylee's terms the server and client-side code is written in the scope
 of a single *Project*.
-A :py:class:`Project` is an iterator-like object (it is initialized
-for iteration only once) which returns :py:class:`Task` objects on every
-``next(project)`` call. Every task **must** have a unique ID which can be
+A :py:class:`Project` is a task-yielding and solutions-accepting object.
+A **task** is Python json-serializable dict with an obligatory ``id`` field,
+e.g.::
+
+    task = {
+        'id' : 'a10',
+        'speed' : 50,
+        'distance' : 200,
+    }
+
+
 used to generate the same task if required. This means that the following
 code::
 

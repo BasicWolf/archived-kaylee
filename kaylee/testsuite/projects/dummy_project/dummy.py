@@ -6,6 +6,9 @@ class DummyProject(Project):
         self.x = 0
         self.client_config = { 'dummy_key' : 'dummy_value' }
 
+    def normalize_result(self, data):
+        return data
+
     def next_task(self):
         self.x += 1
         return self.x
@@ -22,3 +25,5 @@ class DummyController(Controller):
 
     def accept_result(self, node, data):
         self.results.add(node.id, node.task_id, data)
+
+    

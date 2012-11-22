@@ -36,7 +36,7 @@ class Node(object):
                     :class:`NodeID`
     """
     __slots__ = ('id', '_task_id', 'subscription_timestamp', 'task_timestamp',
-                 '_controller', 'errors_count')
+                 'controller', 'errors_count')
 
     def __init__(self, node_id):
         if not isinstance(node_id, NodeID):
@@ -57,7 +57,7 @@ class Node(object):
         #: It is an instance of :class:`Controller`.
         self.controller = None
 
-        #: A total amount of node-related errors caught by the core
+        #: The amount of node-related errors set by the controller.
         self.errors_count = 0
 
         self._task_id = None
