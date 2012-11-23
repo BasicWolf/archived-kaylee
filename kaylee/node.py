@@ -57,7 +57,7 @@ class Node(object):
         #: It is an instance of :class:`Controller`.
         self.controller = None
 
-        #: The amount of node-related errors set by the controller.
+        #: Node-related errors counter (set by the bound controller).
         self.errors_count = 0
 
         self._task_id = None

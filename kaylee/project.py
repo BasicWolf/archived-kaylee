@@ -100,8 +100,6 @@ class Project(object):
     Metaclass: :class:`AutoFilterABCMeta <kaylee.util.AutoFilterABCMeta>`.
 
     :param script: The URL of the project's client part (\*.js file).
-    :param storage: Permanent results storage.
-    :type storage: :class:`PermanentStorage`
     """
     __metaclass__ = AutoFilterABCMeta
     auto_filter = BASE_FILTERS | CONFIG_FILTERS
@@ -114,7 +112,7 @@ class Project(object):
     #: Project mode.
     mode = AUTO_PROJECT_MODE
 
-    def __init__(self, script, storage, *args, **kwargs):
+    def __init__(self, script, *args, **kwargs):
         #: A dictionary wi]th configuration
         #: details used by every client-side node. If the project is loaded
         #: via a configuration object ``client_config`` is extended by
@@ -124,9 +122,6 @@ class Project(object):
             KL_PROJECT_MODE   : self.mode,
             KL_PROJECT_STYLES : kwargs.get('styles', None)
         }
-        #: Project's permanent results storage (an instance of
-        #: :class:`PermanentStorage` subclass).
-        self.storage = storage
         #: Indicates whether the project was completed.
         self.completed = False
 
@@ -159,11 +154,14 @@ class Project(object):
         :return: normalized data.
         """
 
-    def store_result(self, task_id, data):
-        """Stores the results to the permanent storage.
+    def result_stored(self, task_id, data, storage):
+        """A callback invoked by the bound project's controller when
+        a result is successfully stored to a permanent storage.
 
         :param task_id: Task ID.
         :param data: Task results.
+        :param storage: Application's permanent results storage
         :type data: dict or list (parsed JSON)
+        :type storage: :class:`PermanentStorage`
         """
         self.storage.add(task_id, data)

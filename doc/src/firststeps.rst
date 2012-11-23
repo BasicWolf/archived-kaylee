@@ -34,14 +34,19 @@ The server performs the following routines:
 Projects, Tasks and Solutions
 -----------------------------
 
-Kaylee tries to free users of routines related to distributed computation
-as much as possible. Still, a user needs to write the server-side Python code
-which yields the data for computation, the code to receive and validate the
-results and the client-side code which will compute and solve the tasks
-provided by the server.
+Kaylee tries to free its users of routines related to the distributed
+computation as much as possible. Still, a user needs to write the
+server-side Python code which yields the data for computation, the code
+to receive and validate the results and the client-side code which will
+compute and solve the tasks provided by the server.
 In Kaylee's terms the server and client-side code is written in the scope
 of a single *Project*.
-A :py:class:`Project` is a task-yielding and solutions-accepting object.
+A :py:class:`Project` is a task-yielding and results-accepting object::
+
+    task = project.next_task()
+
+    project.normalize_result(result's)
+
 A **task** is Python json-serializable dict with an obligatory ``id`` field,
 e.g.::
 
