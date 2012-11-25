@@ -79,7 +79,7 @@ kl.send_result = (data) ->
     if kl._app.subscribed
         if not data?
             kl.exception.trigger('Cannot send data: '
-                'the value is "undefined"')
+                'the value is empty.')
             return
         # before sending the result, check whether app.task_data contains
         # session data and attach it

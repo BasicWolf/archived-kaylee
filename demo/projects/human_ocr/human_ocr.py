@@ -6,8 +6,8 @@ import tempfile
 import Image, ImageFont, ImageDraw
 
 from kaylee import Project
-from kaylee.project import (MANUAL_PROJECT_MODE, accepts_session_data,
-                            returns_session_data)
+from kaylee.project import MANUAL_PROJECT_MODE
+from kaylee.filters import accepts_session_data, returns_session_data
 from kaylee.util import random_string
 
 LIPSUM = "Lorem ipsum"
@@ -49,6 +49,7 @@ class HumanOCRProject(Project):
         url = os.path.join(self.img_dir_url, os.path.basename(img_path))
 
         return {
+            'id' : task_id,
             'url' : url,
             '#random_string' : rstr,
             # note the first "#" character in key. In conjunction with
@@ -62,14 +63,13 @@ class HumanOCRProject(Project):
             raise ValueError('Invalid control parameter value')
         return words[0]
 
-    def store_result(self, task_id, data):
-        super(HumanOCRProject, self).store_result(task_id, data)
-        if len(self.storage) == self.tasks_count:
+    def result_stored(self, task_id, data, storage):
+        if len(storage) == self.tasks_count:
             # it is enough to have a single result to complete the project
-            self._announce_results()
+            self._announce_results(storage)
             self.completed = True
 
-    def _announce_results(self):
+    def _announce_results(self, storage):
         print('The OCR results are: {}'.format(list(self.storage.values())))
 
 

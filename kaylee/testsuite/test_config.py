@@ -23,10 +23,10 @@ APPLICATIONS = [
       'controller' : {
             'name' :'DummyController',
             'config' : {},
-            'storage' : {
+            'temporal_storage' : {
                 'name' : 'MemoryTemporalStorage',
                 },
-            'app_storage' : {
+            'permanent_storage' : {
                 'name' : 'MemoryPermanentStorage',
                 },
             },

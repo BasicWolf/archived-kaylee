@@ -10,88 +10,17 @@
 """
 
 from abc import abstractmethod
-from functools import wraps
-from copy import deepcopy
 
-from .util import (AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS,
-                   get_secret_key, encrypt, decrypt)
+from .util import AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS
 from .errors import KayleeError
+from .filters import ignore_null_result
+
 
 AUTO_PROJECT_MODE = 0x2
 MANUAL_PROJECT_MODE = 0x4
-
-KL_RESULT = '__kl_result__'
 KL_PROJECT_MODE = '__kl_project_mode__'
 KL_PROJECT_SCRIPT = '__kl_project_script__'
 KL_PROJECT_STYLES = '__kl_project_styles__'
-
-SESSION_DATA_ATTRIBUTE = '__kl_tsd__'
-
-TASK_ID_ATTRIBUTE = 'id'
-
-### Auto filters ###
-
-def ignore_null_result(f):
-    """Ignores ``None`` data by **not** calling the wrapped method.
-
-    .. note:: This is a base filter applied to :meth:`Project.normalize_result`
-              and :meth:`Project.store_result`.
-    """
-    @wraps(f)
-    def wrapper(self, task_id, data):
-        if data is not None:
-            return f(self, task_id, data)
-        return None
-    return wrapper
-
-
-def accepts_session_data(f):
-    """Automatically decrypts session data and attaches it to the results.
-
-    The filter can be effectively applied to Project.normalize_result() in
-    order to handle the project tasks' session data. The filter works as
-    follows:
-
-    1. Get encrypted session data from the incoming results (dict)
-    2. Decrypt session data -> dict
-    3. Update the results with the session data
-    4. Remove the encrypted session data from the results dict.
-    """
-    @wraps(f)
-    def wrapper(self, task_id, data):
-        if not isinstance(data, dict):
-            raise ValueError('Cannot attach session data to a non-dict result')
-        sd = decrypt(data[SESSION_DATA_ATTRIBUTE])
-        data.update(sd)
-        return f(self, task_id, data)
-    return wrapper
-
-
-def attach_task_id_to_returned_value(f):
-    """TODOC, TODO:TEST"""
-    @wraps(f)
-    def wrapper(self, task_id):
-        res = f(self, task_id)
-        res['id'] = task_id
-        return res
-    return wrapper
-
-
-def returns_session_data(f):
-    """TODOC, TODO:TEST"""
-    @wraps(f)
-    def wrapper(self, task_id):
-        task = f(self, task_id)
-        hashed_data = { key : task[key] for key in task
-                        if key.startswith('#') }
-        # encrypt and attach data to the task
-        task[SESSION_DATA_ATTRIBUTE] = encrypt(hashed_data)
-        # remove the just encrypted key-value pairs, as they are
-        # no longer required
-        for key in hashed_data:
-            del task[key]
-        return task
-    return wrapper
 
 
 class Project(object):
@@ -105,8 +34,6 @@ class Project(object):
     auto_filter = BASE_FILTERS | CONFIG_FILTERS
     auto_filters = {
         'normalize_result' : [ignore_null_result, ],
-        'store_result' : [ignore_null_result, ],
-        '__getitem__' : [attach_task_id_to_returned_value, ],
     }
 
     #: Project mode.
@@ -164,4 +91,4 @@ class Project(object):
         :type data: dict or list (parsed JSON)
         :type storage: :class:`PermanentStorage`
         """
-        self.storage.add(task_id, data)
+        pass

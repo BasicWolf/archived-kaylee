@@ -30,10 +30,11 @@ class SimpleController(Controller):
         return task
 
     def accept_result(self, node, data):
-        self.project.store_result(node.task_id, data)
+        self.store_result(node.task_id, data)
         self._tasks_pool.remove(node.task_id)
         if self.project.completed:
             self.completed = True
+
 
 
 class ResultsComparatorController(Controller):
@@ -64,31 +65,32 @@ class ResultsComparatorController(Controller):
                 # looks like the application has completed.
                 raise ApplicationCompletedError(self.name)
 
-        node.task_id = task.id
-        self._tasks_pool.add(task.id)
+        task_id = task['id']
+        node.task_id = task_id
+        self._tasks_pool.add(task_id)
 
-        if node.id in self.storage[task.id]:
+        if node.id in self.temporal_storage[task_id]:
             raise NodeRejectedError()
         return task
 
     def accept_result(self, node, data):
         task_id = node.task_id
         # 'results' computed for the task by various nodes
-        results = self.storage[task_id]
+        results = self.temporal_storage[task_id]
         if len(results) == self._results_count_threshold - 1:
             if self._results_are_equal(data, results):
-                del self.storage[task_id]
+                del self.temporal_storage[task_id]
                 self._tasks_pool.remove(task_id)
-                self._add_result(task_id, data)
+                self.store_result(task_id, data)
             else:
                 # Something is wrong with either current result or any result
                 # which was received previously. At this point we discard all
                 # results associated with task_id and task_id remains in
                 # tasks_pool.
-                del self.storage[task_id]
+                del self.temporal_storage[task_id]
             node.task_id = None
         else:
-            self.storage.add(node.id, task_id, data)
+            self.temporal_storage.add(node.id, task_id, data)
 
     def _results_are_equal(self, r0, res):
         for node_id, res in res.iteritems():
@@ -96,10 +98,9 @@ class ResultsComparatorController(Controller):
                 return False
         return True
 
-    def _add_result(self, task_id, data):
-        self.project.store_result(task_id, data)
-        # check if application has collected all the results
-        # and can switch to the "COMPLETED" state
+
+    def store_result(self, task_id, data):
+        super(ResultsComparatorController, self).store_result(task_id, data)
         if self.project.completed:
             self.completed = True
-            self.storage.clear()
+            self.temporal_storage.clear()

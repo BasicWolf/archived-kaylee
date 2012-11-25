@@ -38,25 +38,25 @@ app_hash_cracker_1 = {
             # but it's fine enough for demo purposes
             'key_length'    : 2,
             'hashes_per_task' : 100,
-            },
-        'storage' : {
-            'name' : 'MemoryPermanentStorage',
-            },
         },
+    },
     'controller' : {
         # 'name' : 'SimpleController',
         'name' : 'ResultsComparatorController',
         'config' : {
             'results_count_threshold' : 2
-            },
-        'storage' : {
+        },
+        'temporal_storage' : {
             'name' : 'MemoryTemporalStorage',
-            },
+        },
+        'permanent_storage' : {
+            'name' : 'MemoryPermanentStorage',
+        },
         'filters' : {
-            'accept_result' : ['kaylee.controller.kl_result_filter', ],
-            }
+            'accept_result' : ['kaylee.filters.kl_result_filter', ],
         }
     }
+}
 
 app_hash_cracker_2 = {
     'name' : 'hash_cracker.1',
@@ -73,18 +73,18 @@ app_hash_cracker_2 = {
             # but it's fine enough for demo purposes
             'key_length'    : 2,
             'hashes_per_task' : 100,
-            },
-        'storage' : {
-            'name' : 'MemoryPermanentStorage',
-            },
+        },
         },
     'controller' : {
         'name' : 'SimpleController',
         'filters' : {
-            'accept_result' : ['kaylee.controller.kl_result_filter', ] ,
-            }
-        }
+            'accept_result' : ['kaylee.filters.kl_result_filter', ] ,
+        },
+        'permanent_storage' : {
+            'name' : 'MemoryPermanentStorage',
+        },
     }
+}
 
 
 app_human_ocr_1 = {
@@ -100,14 +100,14 @@ app_human_ocr_1 = {
             'font_path'   : ('/usr/share/fonts/truetype/ttf-dejavu/'
                              'DejaVuSans.ttf'),
         },
-        'storage' : {
-            'name' : 'MemoryPermanentStorage',
-        },
     },
     'controller' : {
         'name' : 'SimpleController',
+       'permanent_storage' : {
+            'name' : 'MemoryPermanentStorage',
+        },
         'filters' : {
-            'accept_result' : ['kaylee.controller.kl_result_filter', ] ,
+            'accept_result' : ['kaylee.filters.kl_result_filter', ] ,
         }
     }
 }

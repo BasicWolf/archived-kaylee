@@ -22,23 +22,24 @@ class TestConfigWithApps(object):
     REGISTRY = _test_REGISTRY
     WORKER_SCRIPT_URL = '/static/js/kaylee/klworker.js'
     APPLICATIONS = [
-        { 'name' : 'dummy.1',
-          'description' : 'Dummy application',
-          'project' : {
+        {
+            'name' : 'dummy.1',
+            'description' : 'Dummy application',
+            'project' : {
                 'name' : 'DummyProject',
-                },
-          'controller' : {
+            },
+            'controller' : {
                 'name' :'DummyController',
                 'config' : {},
-                'storage' : {
+                'temporal_storage' : {
                     'name' : 'MemoryTemporalStorage',
-                    },
-                'app_storage' : {
-                    'name' : 'MemoryPermanentStorage',
-                    },
                 },
-          }
-        ]
+                'permanent_storage' : {
+                    'name' : 'MemoryPermanentStorage',
+                },
+            },
+        }
+    ]
 
     PROJECTS_DIR = PROJECTS_DIR
 
@@ -76,7 +77,8 @@ class KayleeLoaderTests(KayleeTest):
         app = apps[0]
         self.assertEqual(app.__class__.__name__, 'DummyController')
         self.assertEqual(app.project.__class__.__name__, 'DummyProject')
-        self.assertIsInstance(app.storage, MemoryTemporalStorage)
+        self.assertIsInstance(app.temporal_storage, MemoryTemporalStorage)
+        self.assertIsInstance(app.permanent_storage, MemoryPermanentStorage)
         #self.assertIsInstance(app.project.storage, MemoryPermanentStorage)
 
     def test_load_registry(self):

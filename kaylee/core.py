@@ -22,7 +22,6 @@ from functools import wraps
 
 from .node import Node, NodeID
 from .errors import KayleeError, InvalidResultError, NodeRejectedError
-from .project import TASK_ID_ATTRIBUTE
 
 log = logging.getLogger(__name__)
 
@@ -168,10 +167,6 @@ class Kaylee(object):
 
         try:
             task = node.get_task()
-            if TASK_ID_ATTRIBUTE not in task:
-                raise KeyError('{} was not found in task: {}'.format(
-                        TASK_ID_ATTRIBUTE, task))
-
             return self._json_action(ACTION_TASK, task)
         except NodeRejectedError as e:
             return self._json_action(ACTION_UNSUBSCRIBE,

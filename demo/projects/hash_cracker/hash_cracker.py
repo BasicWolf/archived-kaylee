@@ -31,6 +31,7 @@ class HashCrackerProject(Project):
 
     def __getitem__(self, task_id):
         return {
+            'id' : task_id,
             'hash_to_crack' : self.hash_to_crack,
             'salt' : self.salt
         }
@@ -40,13 +41,12 @@ class HashCrackerProject(Project):
             return key
         raise ValueError('Invalid hash key')
 
-    def store_result(self, task_id, data):
-        super(HashCrackerProject, self).store_result(task_id, data)
-        if len(self.storage) == 1:
+    def result_stored(self, task_id, data, storage):
+        if len(storage) == 1:
             # it is enough to have a single result to complete the project
-            self._announce_results()
+            self._announce_results(storage)
             self.completed = True
 
-    def _announce_results(self):
-        key = list(self.storage.values())[0][0]
+    def _announce_results(self, storage):
+        key = list(storage.values())[0][0]
         print('The cracked hash key is: {}'.format(key))

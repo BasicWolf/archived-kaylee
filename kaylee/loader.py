@@ -128,8 +128,8 @@ def refresh(config):
             try:
                 pymod = importlib.import_module(sub_dir)
             except ImportError as e:
-                raise ImportError('Unable to import project package: {}'
-                                  .format(e))
+                raise ImportError('Unable to import project package "{}": {}'
+                                  .format(sub_dir, e))
             mod_cls = _get_classes_from_module(pymod)
             _project_classes.update(_get_classes(mod_cls, project.Project))
             _controller_classes.update(_get_classes(mod_cls, controller.Controller))
@@ -159,38 +159,38 @@ def _get_classes_from_module(*modules):
     return ret
 
 
-def _load_project_storage(conf):
-    if not 'storage' in conf['project']:
-        return None
-    psname = conf['project']['storage']['name']
+def _load_permanent_storage(conf):
+    psconf = conf['controller']['permanent_storage']
+    psname = psconf['name']
     pscls = _pstorage_classes[psname]
-    return pscls(**conf['project']['storage'].get('config', {}))
+    return pscls(**psconf.get('config', {}))
 
 
 def _load_temporal_storage(conf):
-    if not 'storage' in conf['controller']:
+    if not 'temporal_storage' in conf['controller']:
         return None
-    tsname = conf['controller']['storage']['name']
+    tsconf = conf['controller']['temporal_storage']
+    tsname = tsconf['name']
     tscls = _tstorage_classes[tsname]
-    return tscls(**conf['controller']['storage'].get('config', {}))
+    return tscls(**tsconf.get('config', {}))
 
 
 def _load_project(conf):
     pname = conf['project']['name']
     pcls = _project_classes[pname]
     pj_config = conf['project'].get('config', {})
-    pj_storage = _load_project_storage(conf)
-    return pcls(storage=pj_storage, **pj_config)
+    return pcls(**pj_config)
 
 
 def _load_controller(conf):
-            # initialize objects
+    # initialize objects
     cname = conf['controller']['name']
     ccls = _controller_classes[cname]
     app_name = conf['name']
     project = _load_project(conf)
+    pstorage = _load_permanent_storage(conf)
     tstorage = _load_temporal_storage(conf)
-    cobj = ccls(app_name, project, tstorage,
+    cobj = ccls(app_name, project, pstorage, tstorage,
                 **conf['controller'].get('config', {}))
 
     if not ccls.auto_filter & CONFIG_FILTERS:

@@ -25,5 +25,3 @@ class DummyController(Controller):
 
     def accept_result(self, node, data):
         self.results.add(node.id, node.task_id, data)
-
-    
