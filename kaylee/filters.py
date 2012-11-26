@@ -47,6 +47,7 @@ def normalize_result_filter(f):
     """The filter normalizes the data before passing it further.
 
     *Signature*: ``(self, node, data)``
+
     .. note:: This is a base filter applied to :meth:`
               Controller.accept_result`.
     """

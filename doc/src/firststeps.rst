@@ -36,16 +36,14 @@ Projects, Tasks and Solutions
 
 Kaylee tries to free its users of routines related to the distributed
 computation as much as possible. Still, a user needs to write the
-server-side Python code which yields the data for computation, the code
-to receive and validate the results and the client-side code which will
+server-side Python code which yields the data for computation, receives
+and validates the results and the client-side code which will
 compute and solve the tasks provided by the server.
 In Kaylee's terms the server and client-side code is written in the scope
 of a single *Project*.
-A :py:class:`Project` is a task-yielding and results-accepting object::
+A :py:class:`Project` yields tasks via a simple call::
 
     task = project.next_task()
-
-    project.normalize_result(result's)
 
 A **task** is Python json-serializable dict with an obligatory ``id`` field,
 e.g.::
@@ -57,15 +55,16 @@ e.g.::
     }
 
 
-used to generate the same task if required. This means that the following
-code::
+The ``id`` field is used to generate the same task if required. This means
+that the following code::
 
-  t = next(project)
-  t2 = project[t.id]
+  t1 = project.next_task()
+  t2 = project[t1['id']]
+  t1 == t2
 
-should generate ``t`` and ``t2`` with identical data, so that in cases where
-the computation algorithm is not based on a random factor(s), the solution of
-``t`` and ``t2`` agree.
+should always be true, so that in cases where the computation algorithm is
+not based on a random factor(s), the solution of ``t1`` and ``t2`` agree
+as well.
 
 The client-side of a project contains the code which actually solves the
 given tasks (see :ref:`clientapi`). To keep things simple the communication
@@ -91,20 +90,18 @@ never be sure whether a node with assigned task will return the results
 (as it can disconnect without notifying Kaylee) or the results will be correct
 at all. A controller can be designed to send the same task to multiple
 nodes instead of a single one. That kind of redundancy is the fee for the
-results' integrity and accuracy.
-
-Implementing controllers is easy as there are only two methods to implement:
-``get_task(self, node)`` and ``accept_result(self, node, data)`` (for more
-details see :py:class:`Controller API <Controller>`).
+results' integrity and accuracy. For more details see
+:py:class:`Controller API <Controller>`).
 
 
 Auto Filters
 ------------
 Auto-filtering is yet another feature of Kaylee's "write less do more"
 principle. Filters are Python decorators which can be automatically
-applied to Controllers' and Projects' methods. They take care of
-the ``Client <-> Server <-> Controller <-> Project`` interface specifics
-and let the user to concentrate on the actual code.
+applied to Controllers' and Projects' methods. They help to automate
+lots of data integrity checks and conversions in any part of the
+the ``Client <-> Server <-> Controller <-> Project`` inter-communication.
+For example, the :py:func:`
 
 Storages
 --------

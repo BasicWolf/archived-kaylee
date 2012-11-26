@@ -132,21 +132,16 @@ Filters
             }
 
 
-Controller filters
-..................
+Filters
+.......
 
-.. autofunction:: kaylee.controller.app_completed_guard
+.. autofunction:: kaylee.filters.app_completed_guard
 
-.. autofunction:: kaylee.controller.normalize_result_filter
+.. autofunction:: kaylee.filters.normalize_result_filter
 
-.. autofunction:: kaylee.controller.kl_result_filter
+.. autofunction:: kaylee.filters.kl_result_filter
 
-Project filters
-...............
+.. autofunction:: kaylee.filters.ignore_null_result
 
-.. autofunction:: kaylee.project.ignore_null_result
-
-.. autofunction:: kaylee.project.accepts_session_data
-
-.. autofunction:: kaylee.project.attach_task_id_to_returned_value
+.. autofunction:: kaylee.filters.accepts_session_data
 
