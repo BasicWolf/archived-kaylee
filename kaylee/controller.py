@@ -15,7 +15,7 @@ from datetime import datetime
 
 from .util import AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS
 from .errors import ApplicationCompletedError
-from .filters import (normalize_result_filter, app_completed_guard,
+from .filters import (normalize_result, app_completed_guard,
                       ignore_null_result)
 
 #: The Application name regular expression pattern which can be used in
@@ -54,7 +54,7 @@ class Controller(object):
     auto_filter = BASE_FILTERS | CONFIG_FILTERS
     auto_filters = {
         'get_task' : [app_completed_guard, ],
-        'accept_result' : [normalize_result_filter, app_completed_guard],
+        'accept_result' : [normalize_result, app_completed_guard],
         'store_result' : [ignore_null_result],
     }
 

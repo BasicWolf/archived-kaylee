@@ -1,13 +1,18 @@
+.. _communication:
+
+Kaylee communication
+====================
+
 .. _default-communication:
 
-Default Communication API
-=========================
+Default API
+...........
 
 Although Kaylee comes with a default communication API, a user is free to
-communicate with Kaylee any way possible as long as the transferred data is
-kept in JSON format. The default API is implemented on both server
+communicate with Kaylee in any way possible as long as the transferred data
+is kept in JSON format. The default API is implemented on both server
 (:ref:`contrib front-ends <contrib_front_ends>`) and client side
-(:js:attr:`kl.api`) is provided below.
+(:js:attr:`kl.api`) is described below.
 
 .. module:: kaylee
 
@@ -62,4 +67,15 @@ Post Data   Calculation results.
 
 
 
+Tasks and results data flow
+...........................
 
+As it has been mentioned many times, Kaylee communicates via JSON. On 
+server-side a task data returned by a ``Project`` is a ``dict`` with at
+least an ``id`` key in it. The value of ``task['id']`` is a *string*::
+
+  { 'id' : 't1' }
+
+
+\
+\

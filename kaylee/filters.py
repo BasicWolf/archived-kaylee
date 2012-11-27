@@ -43,7 +43,7 @@ def app_completed_guard(f):
             raise e
     return wrapper
 
-def normalize_result_filter(f):
+def normalize_result(f):
     """The filter normalizes the data before passing it further.
 
     *Signature*: ``(self, node, data)``

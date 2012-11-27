@@ -137,7 +137,7 @@ Filters
 
 .. autofunction:: kaylee.filters.app_completed_guard
 
-.. autofunction:: kaylee.filters.normalize_result_filter
+.. autofunction:: kaylee.filters.normalize_result
 
 .. autofunction:: kaylee.filters.kl_result_filter
 

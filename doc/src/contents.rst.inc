@@ -13,7 +13,7 @@ instructions for deployment of Kaylee.
    firststeps
    tutorial/index
    loading
-   default-communication
+   communication
    auto_filters
    contrib
 

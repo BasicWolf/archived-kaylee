@@ -101,7 +101,13 @@ principle. Filters are Python decorators which can be automatically
 applied to Controllers' and Projects' methods. They help to automate
 lots of data integrity checks and conversions in any part of the
 the ``Client <-> Server <-> Controller <-> Project`` inter-communication.
-For example, the :py:func:`
+For example, the
+:py:func:`normalize_result <kaylee.filters.normalize_result>` filter
+takes care of calling result normalization and validation routines before
+passing it do the decorated function. And all the methods implementing
+:py:meth:`Contoller.accept_result` are usually decorated automatically,
+so that a user gets already validated and normalized result.
+
 
 Storages
 --------
@@ -112,29 +118,26 @@ for both :py:class:`temporal <TemporalStorage>` and
 This allows using any kind of storage solutions: from simple
 in-memory objects to relational or NoSQL databases.
 
-The difference between the interfaces is that controllers refer to
-the results by both ``node id`` and ``task id``. On the other hand a project
-knows nothing about the nodes and thus refers to the results by ``task id``
-only.
+The difference between these interfaces is that controllers temporally refer
+to the results by both ``node id`` and ``task id``. On the other hand there
+is no need to keep the node ID information when the result has been confirmed.
 It is also important to remember that :py:class:`TemporalStorage`
 stores a single result per node per task which may be discarded, while
-:py:class:`PermanentStorage` permanently stores one or multiple results
-per task.
-
+:py:class:`PermanentStorage` permanently stores a single result per
+``task_id``.
 Is it necessary to use a temporal controller storage? Of course not!
 If the controller does not need to keep the intermediate results it can
-pass them right to the project.
+store them right to the permanent result.
 
 .. _firststep_application:
 
 
 Applications
 ------------
-By combining controllers storages and projects users form Kaylee
+By combining controllers, storages and projects users create Kaylee
 `Applications`. Speaking in technical terms, an application
 is an instance of :class:`Controller` class with bound :class:`Project`,
 :class:`TemporalStorage` and :class:`PermanentStorage` objects.
-
 
 Continue with :ref:`tutorial`.
 
