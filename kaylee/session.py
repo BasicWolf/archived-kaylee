@@ -7,18 +7,38 @@ from Crypto.Cipher import AES
 from .util import get_secret_key
 
 
+
 class SessionDataManager(object):
-    def store(self, node, task_data):
+    def store(self, node, task):
+        """TODOC"""
         pass
 
-    def restore(self, node, result_data):
+    def restore(self, node, result):
+        """TODOC"""
         pass
+
+    def _get_hashed_data(self, task):
+        """TODOC"""
+        return = { key : task[key] for key in task
+                   if key.startswith('#') }
 
 
 class JSONSessionDataManager(SessionDataManager):
+    SESSION_DATA_ATTRIBUTE = '__kl_tsd__'
 
-    def store(self, node, task_data):
-        
+    def store(self, node, task):
+        hashed_data = self._get_hashed_data(task)
+        task[self.SESSION_DATA_ATTRIBUTE] = \
+            self._encrypt(hashed_data, self.secret_key)
+        for key in hashed_data:
+            del task[key]
+        return task
+
+    def restore(self, node, result):
+        sd = _decrypt(result[SESSION_DATA_ATTRIBUTE])
+        del result[SESSION_DATA_ATTRIBUTE]
+        result.update(sd)
+        return result
 
     @classmethod
     def _encrypt(cls, data, secret_key):

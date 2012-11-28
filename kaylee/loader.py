@@ -15,22 +15,27 @@ import importlib
 import inspect
 import types
 
+import kaylee.contrib
 from .core import Kaylee
 from .errors import KayleeError
 from .util import LazyObject, import_object, CONFIG_FILTERS
+from . import storage, controller, project, node, session
 
 import logging
 log = logging.getLogger(__name__)
 
-# global (current module scope) holders of classes loaded
-# via refresh()
-_contrib_classes = {}
-_controller_classes = {}
-_registry_classes = {}
-_pstorage_classes = {}
-_tstorage_classes = {}
-_project_classes = {}
+# global (current module scope) holder of classes loaded
+# via refresh() and retrieved via _get_class()
+_classes = {}
 
+_classes_types = [
+    project.Project,
+    controller.Controller,
+    node.NodesRegistry,
+    storage.PermanentStorage,
+    storage.TemporalStorage,
+    session.JSONSessionDataManager,
+]
 
 
 class LazyKaylee(LazyObject):
@@ -44,6 +49,7 @@ class LazyKaylee(LazyObject):
             raise TypeError('obj must be an instance of {} or '
                             'a Kaylee config object, not {}'
                             .format(Kaylee.__name__, type(obj).__name__))
+
 
 def load(config):
     """Loads Kaylee.
@@ -77,7 +83,7 @@ def load(config):
     try:
         refresh(config)
         registry = _load_registry(config)
-        apps = load_applications(config)
+        apps = _load_applications(config)
     except (KeyError, AttributeError) as e:
         raise KayleeError('Config error or object was not found: "{}"'
                           .format(e.args[0]))
@@ -85,7 +91,34 @@ def load(config):
     return Kaylee(registry, apps, **config)
 
 
-def load_applications(config):
+def refresh(config):
+    # load classes from contrib (non-refreshable)
+    _update_classes(kaylee.contrib)
+
+    # load classes from project modules (refreshable for new modules only)
+    if 'PROJECTS_DIR' in config:
+        path = config['PROJECTS_DIR']
+        for mod in _projects_modules(path):
+            _update_classes(mod)
+    else:
+        log.warning('"PROJECTS_DIR" is not found in configuration."')
+
+
+def _load_registry(conf):
+    regcls = _registry_classes[conf['REGISTRY']['name']]
+    return regcls(**conf['REGISTRY']['config'])
+
+
+def _load_session_data_manager(config):
+    if 'SESSION_DATA_MANAGER' not in config:
+        return None
+    clsname = config['SESSION_DATA_MANAGER']['name']
+    sdmcls = _session_data_manager_classes[clsname]
+    sdm_config = conf['SESSION_DATA_MANAGER'].get('config', {})
+    return sdmcls(**sdm_config)
+
+
+def _load_applications(config):
     apps = []
     if 'APPLICATIONS' in config:
         for conf in config['APPLICATIONS']:
@@ -94,52 +127,31 @@ def load_applications(config):
     return apps
 
 
-def _load_registry(conf):
-    regcls = _registry_classes[conf['REGISTRY']['name']]
-    return regcls(**conf['REGISTRY']['config'])
+def _project_modules(path):
+    """A generator which yields python modules found by given path."""
+    for sub_dir in os.listdir(path):
+        PDIR_PATH = os.path.join(PDIR, sub_dir)
+        if not os.path.isdir(PDIR_PATH):
+            continue
+        if '__init__.py' not in os.listdir(PDIR_PATH):
+            continue
+
+        # looks like a python module
+        try:
+            pymod = importlib.import_module(sub_dir)
+        except ImportError as e:
+            raise ImportError('Unable to import project package "{}": {}'
+                              .format(sub_dir, e))
+        yield pymod
 
 
-def refresh(config):
-    global _contrib_classes, _controller_classes, _registry_classes, \
-        _pstorage_classes, _tstorage_classes, _project_classes
+def _update_classes(module):
+    """Updates the global _classes variable by the classes found in module."""
+    global _classes
+    for cls in  _get_classes_from_module(module):
+        for cls_type in _classes_types:
+            _classes.update(_get_classes(cls_type))
 
-    from . import storage, controller, project, node
-    import kaylee.contrib
-
-    _contrib_classes = _get_classes_from_module(kaylee.contrib)
-    _controller_classes = _get_classes(_contrib_classes, controller.Controller)
-    _registry_classes = _get_classes(_contrib_classes, node.NodesRegistry)
-    _pstorage_classes = _get_classes(_contrib_classes,
-                                     storage.PermanentStorage)
-    _tstorage_classes = _get_classes(_contrib_classes, storage.TemporalStorage)
-
-    # load classes from project modules
-    _project_classes = {}
-    if 'PROJECTS_DIR' in config:
-        PDIR = config['PROJECTS_DIR']
-        for sub_dir in os.listdir(PDIR):
-            PDIR_PATH = os.path.join(PDIR, sub_dir)
-            if not os.path.isdir(PDIR_PATH):
-                continue
-            if '__init__.py' not in os.listdir(PDIR_PATH):
-                continue
-
-            # looks like a python module
-            try:
-                pymod = importlib.import_module(sub_dir)
-            except ImportError as e:
-                raise ImportError('Unable to import project package "{}": {}'
-                                  .format(sub_dir, e))
-            mod_cls = _get_classes_from_module(pymod)
-            _project_classes.update(_get_classes(mod_cls, project.Project))
-            _controller_classes.update(_get_classes(mod_cls, controller.Controller))
-            _registry_classes.update(_get_classes(mod_cls, node.NodesRegistry))
-            _pstorage_classes.update(
-                _get_classes(mod_cls, storage.PermanentStorage))
-            _tstorage_classes.update(
-                _get_classes(mod_cls, storage.TemporalStorage))
-    else:
-        log.warning('"PROJECTS_DIR" is not found in configuration."')
 
 def _get_classes(classes, cls):
     """Returns a {'class_name' : class} dictionary, where each class
@@ -152,6 +164,11 @@ def _get_classes(classes, cls):
 
 
 def _get_classes_from_module(*modules):
+    """TODOC
+
+    :returns: a list of classes loaded from the modules
+    :rtype: list
+    """
     ret = []
     for mod in modules:
         ret.extend(list( attr for attr in mod.__dict__.values()
@@ -161,8 +178,8 @@ def _get_classes_from_module(*modules):
 
 def _load_permanent_storage(conf):
     psconf = conf['controller']['permanent_storage']
-    psname = psconf['name']
-    pscls = _pstorage_classes[psname]
+    clsname = psconf['name']
+    pscls = _pstorage_classes[clsname]
     return pscls(**psconf.get('config', {}))
 
 
@@ -170,22 +187,22 @@ def _load_temporal_storage(conf):
     if not 'temporal_storage' in conf['controller']:
         return None
     tsconf = conf['controller']['temporal_storage']
-    tsname = tsconf['name']
-    tscls = _tstorage_classes[tsname]
+    clsname = tsconf['name']
+    tscls = _tstorage_classes[clsname]
     return tscls(**tsconf.get('config', {}))
 
 
 def _load_project(conf):
-    pname = conf['project']['name']
-    pcls = _project_classes[pname]
+    clsname = conf['project']['name']
+    pcls = _project_classes[clsname]
     pj_config = conf['project'].get('config', {})
     return pcls(**pj_config)
 
 
 def _load_controller(conf):
     # initialize objects
-    cname = conf['controller']['name']
-    ccls = _controller_classes[cname]
+    clsname = conf['controller']['name']
+    ccls = _controller_classes[clsname]
     app_name = conf['name']
     project = _load_project(conf)
     pstorage = _load_permanent_storage(conf)

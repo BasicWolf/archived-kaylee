@@ -17,7 +17,7 @@ NEXT_TASK = 0x4
 
 KL_RESULT = '__kl_result__'
 
-SESSION_DATA_ATTRIBUTE = '__kl_tsd__'
+
 
 def app_completed_guard(f):
     """The filter handles two cases of completed Kaylee application:
@@ -43,6 +43,7 @@ def app_completed_guard(f):
             raise e
     return wrapper
 
+
 def normalize_result(f):
     """The filter normalizes the data before passing it further.
 
@@ -56,6 +57,7 @@ def normalize_result(f):
         data = self.project.normalize_result(node.task_id, data)
         return f(self, node, data)
     return wrapper
+
 
 def kl_result_filter(f):
     """The filter is designed to be used in "decision search" projects which
@@ -100,55 +102,3 @@ def ignore_null_result(f):
             return f(self, task_id, data)
         return None
     return wrapper
-
-
-def accepts_session_data(f):
-    """Automatically decrypts session data and attaches it to the results.
-
-    The filter can be effectively applied to Project.normalize_result() in
-    order to handle the project tasks' session data. The filter works as
-    follows:
-
-    1. Get encrypted session data from the incoming results (dict)
-    2. Decrypt session data -> dict
-    3. Update the results with the session data
-    4. Remove the encrypted session data from the results dict.
-
-    *Signature*: ``(self, task_id, data)``
-    """
-    @wraps(f)
-    def wrapper(self, task_id, data):
-        if not isinstance(data, dict):
-            raise ValueError('Cannot attach session data to a non-dict result')
-        sd = _decrypt(data[SESSION_DATA_ATTRIBUTE])
-        data.update(sd)
-        return f(self, task_id, data)
-    return wrapper
-
-
-# def attach_task_id_to_returned_value(f):
-#     """TODOC, TODO:TEST"""
-#     @wraps(f)
-#     def wrapper(self, task_id):
-#         res = f(self, task_id)
-#         res['id'] = task_id
-#         return res
-#     return wrapper
-
-
-def returns_session_data(f):
-    """TODOC, TODO:TEST"""
-    @wraps(f)
-    def wrapper(self, task_id):
-        task = f(self, task_id)
-        hashed_data = { key : task[key] for key in task
-                        if key.startswith('#') }
-        # encrypt and attach data to the task
-        task[SESSION_DATA_ATTRIBUTE] = _encrypt(hashed_data)
-        # remove the just encrypted key-value pairs, as they are
-        # no longer required
-        for key in hashed_data:
-            del task[key]
-        return task
-    return wrapper
-

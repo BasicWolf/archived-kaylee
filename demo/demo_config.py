@@ -19,6 +19,11 @@ REGISTRY = {
     },
 }
 
+SESSION_DATA_MANAGER = {
+    'name' : 'JSONSessionDataManager',
+    'config' : {}
+}
+
 
 ## User applications ##
 #######################
@@ -90,7 +95,6 @@ app_hash_cracker_2 = {
 app_human_ocr_1 = {
     'name' : 'human_ocr.1',
     'description' : 'Involves a human in image recognition',
-    'session_manager' : 'local',
     'project' : {
         'name' : 'HumanOCRProject',
         'config' : {
