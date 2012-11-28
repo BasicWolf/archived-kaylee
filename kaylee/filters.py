@@ -1,6 +1,6 @@
 from functools import wraps
 
-from .util import encrypt, decrypt
+from .session import _encrypt, _decrypt
 from .errors import ApplicationCompletedError
 
 #  TODO: add link to kl.NO_SOLUTION
@@ -120,7 +120,7 @@ def accepts_session_data(f):
     def wrapper(self, task_id, data):
         if not isinstance(data, dict):
             raise ValueError('Cannot attach session data to a non-dict result')
-        sd = decrypt(data[SESSION_DATA_ATTRIBUTE])
+        sd = _decrypt(data[SESSION_DATA_ATTRIBUTE])
         data.update(sd)
         return f(self, task_id, data)
     return wrapper
@@ -144,7 +144,7 @@ def returns_session_data(f):
         hashed_data = { key : task[key] for key in task
                         if key.startswith('#') }
         # encrypt and attach data to the task
-        task[SESSION_DATA_ATTRIBUTE] = encrypt(hashed_data)
+        task[SESSION_DATA_ATTRIBUTE] = _encrypt(hashed_data)
         # remove the just encrypted key-value pairs, as they are
         # no longer required
         for key in hashed_data:

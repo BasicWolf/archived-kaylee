@@ -74,7 +74,7 @@ app_hash_cracker_2 = {
             'key_length'    : 2,
             'hashes_per_task' : 100,
         },
-        },
+    },
     'controller' : {
         'name' : 'SimpleController',
         'filters' : {
@@ -90,6 +90,7 @@ app_hash_cracker_2 = {
 app_human_ocr_1 = {
     'name' : 'human_ocr.1',
     'description' : 'Involves a human in image recognition',
+    'session_manager' : 'local',
     'project' : {
         'name' : 'HumanOCRProject',
         'config' : {
@@ -103,7 +104,7 @@ app_human_ocr_1 = {
     },
     'controller' : {
         'name' : 'SimpleController',
-       'permanent_storage' : {
+        'permanent_storage' : {
             'name' : 'MemoryPermanentStorage',
         },
         'filters' : {

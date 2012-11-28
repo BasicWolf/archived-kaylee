@@ -36,7 +36,7 @@ class Node(object):
                     :class:`NodeID`
     """
     __slots__ = ('id', '_task_id', 'subscription_timestamp', 'task_timestamp',
-                 'controller', 'errors_count')
+                 'controller', 'errors_count', 'session_data')
 
     def __init__(self, node_id):
         if not isinstance(node_id, NodeID):
@@ -59,6 +59,9 @@ class Node(object):
 
         #: Node-related errors counter (set by the bound controller).
         self.errors_count = 0
+
+        #: Binary session data.
+        self.session_data = None
 
         self._task_id = None
 
