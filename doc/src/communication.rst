@@ -70,9 +70,9 @@ Post Data   Calculation results.
 Tasks and results data flow
 ...........................
 
-As it has been mentioned many times, Kaylee communicates via JSON. On 
-server-side a task data returned by a ``Project`` is a ``dict`` with at
-least an ``id`` key in it. The value of ``task['id']`` is a *string*::
+As it has been mentioned many times, Kaylee communicates via JSON. On
+server-side a task data returned by a ``Project`` is a ``dict`` with a
+mandatory ``id`` key in it. The type of ``task['id']`` is *string*::
 
   { 'id' : 't1' }
 

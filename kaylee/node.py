@@ -78,23 +78,11 @@ class Node(object):
     def get_task(self):
         if self.controller is None:
             raise NodeUnsubscribedError(self)
-
-        if not isinstance(dict, task):
-            raise TypeError('task must be an instance of {} not {}'
-                            ' {}'.format(basestring.__name__,
-                                         NodeID.__name__,
-                                         Node.__name__,
-                                         type(node).__name__))
-
-            raise ValueError('')
-           not isinstance(task['id'], basestring):
-            'The task is not a dict: {}'.format(task)
-        assert 'id' in task, \
-            'The "id" key was not found in task: {}'.format(task))
-        assert isinstance(task['id'], basestring), \
-            "task['id'] is not a string."
-
-        return self.controller.get_task(self)
+        task = self.controller.get_task(self)
+        if not isinstance(str, task['id']):
+            raise TypeError('task must be an instance of dict not {}'
+                            .format(type(task).__name__))
+        return task
 
     def accept_result(self, data):
         if self.controller is None:
