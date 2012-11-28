@@ -79,9 +79,7 @@ class Node(object):
         if self.controller is None:
             raise NodeUnsubscribedError(self)
         task = self.controller.get_task(self)
-        if not isinstance(str, task['id']):
-            raise TypeError('task must be an instance of dict not {}'
-                            .format(type(task).__name__))
+        task['id'] = str(task['id'])
         return task
 
     def accept_result(self, data):
