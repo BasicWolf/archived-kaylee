@@ -14,6 +14,7 @@ import imp
 import importlib
 import inspect
 import types
+from collections import defaultdict
 
 import kaylee.contrib
 from .core import Kaylee
@@ -26,15 +27,15 @@ log = logging.getLogger(__name__)
 
 # global (current module scope) holder of classes loaded
 # via refresh() and retrieved via _get_class()
-_classes = {}
+_classes = None # set in refresh()
 
-_classes_types = [
+_loadable_base_classes = [
     project.Project,
     controller.Controller,
     node.NodesRegistry,
     storage.PermanentStorage,
     storage.TemporalStorage,
-    session.JSONSessionDataManager,
+    session.SessionDataManager,
 ]
 
 
@@ -82,8 +83,8 @@ def load(config):
                                 type(config).__name__))
     try:
         refresh(config)
-        registry = _load_registry(config)
-        apps = _load_applications(config)
+        registry = load_registry(config)
+        apps = load_applications(config)
     except (KeyError, AttributeError) as e:
         raise KayleeError('Config error or object was not found: "{}"'
                           .format(e.args[0]))
@@ -92,6 +93,10 @@ def load(config):
 
 
 def refresh(config):
+    global _classes
+    # reset classes
+    _classes = defaultdict(dict)
+
     # load classes from contrib (non-refreshable)
     _update_classes(kaylee.contrib)
 
@@ -104,21 +109,22 @@ def refresh(config):
         log.warning('"PROJECTS_DIR" is not found in configuration."')
 
 
-def _load_registry(conf):
-    regcls = _registry_classes[conf['REGISTRY']['name']]
-    return regcls(**conf['REGISTRY']['config'])
+def load_registry(config):
+    clsname = config['REGISTRY']['name']
+    regcls = _classes[node.NodesRegistry][clsname]
+    return regcls(**config['REGISTRY']['config'])
 
 
-def _load_session_data_manager(config):
+def load_session_data_manager(config):
     if 'SESSION_DATA_MANAGER' not in config:
         return None
     clsname = config['SESSION_DATA_MANAGER']['name']
-    sdmcls = _session_data_manager_classes[clsname]
+    sdmcls = _classes[session.SessionDataManager][clsname]
     sdm_config = conf['SESSION_DATA_MANAGER'].get('config', {})
     return sdmcls(**sdm_config)
 
 
-def _load_applications(config):
+def load_applications(config):
     apps = []
     if 'APPLICATIONS' in config:
         for conf in config['APPLICATIONS']:
@@ -127,13 +133,13 @@ def _load_applications(config):
     return apps
 
 
-def _project_modules(path):
+def _projects_modules(path):
     """A generator which yields python modules found by given path."""
     for sub_dir in os.listdir(path):
-        PDIR_PATH = os.path.join(PDIR, sub_dir)
-        if not os.path.isdir(PDIR_PATH):
+        pdir_path = os.path.join(path, sub_dir)
+        if not os.path.isdir(pdir_path):
             continue
-        if '__init__.py' not in os.listdir(PDIR_PATH):
+        if '__init__.py' not in os.listdir(pdir_path):
             continue
 
         # looks like a python module
@@ -148,38 +154,32 @@ def _project_modules(path):
 def _update_classes(module):
     """Updates the global _classes variable by the classes found in module."""
     global _classes
-    for cls in  _get_classes_from_module(module):
-        for cls_type in _classes_types:
-            _classes.update(_get_classes(cls_type))
+    _valid_subclass = lambda c, bc: issubclass (c, bc) and c is not bc
+
+    classes_from_module = _get_classes_from_module(module)
+    for base_class in _loadable_base_classes:
+        # update _classes[base_class] with
+        # { class_name : class } pairs, where `class` is a subclass of
+        # `base_class`
+        name_class_pairs = { c.__name__ : c for c in classes_from_module
+                             if _valid_subclass(c, base_class) }
+        _classes[base_class].update(name_class_pairs)
 
 
-def _get_classes(classes, cls):
-    """Returns a {'class_name' : class} dictionary, where each class
-    is a subclass of the given cls argument.
-    """
-    ret = {}
-    for c in (c for c in classes if issubclass (c, cls) and c is not cls ):
-        ret[c.__name__] = c
-    return ret
-
-
-def _get_classes_from_module(*modules):
+def _get_classes_from_module(module):
     """TODOC
 
     :returns: a list of classes loaded from the modules
     :rtype: list
     """
-    ret = []
-    for mod in modules:
-        ret.extend(list( attr for attr in mod.__dict__.values()
-                         if inspect.isclass(attr) ))
-    return ret
+    return [attr for attr in module.__dict__.values()
+            if inspect.isclass(attr)]
 
 
 def _load_permanent_storage(conf):
     psconf = conf['controller']['permanent_storage']
     clsname = psconf['name']
-    pscls = _pstorage_classes[clsname]
+    pscls = _classes[storage.PermanentStorage][clsname]
     return pscls(**psconf.get('config', {}))
 
 
@@ -188,13 +188,13 @@ def _load_temporal_storage(conf):
         return None
     tsconf = conf['controller']['temporal_storage']
     clsname = tsconf['name']
-    tscls = _tstorage_classes[clsname]
+    tscls = _classes[storage.TemporalStorage][clsname]
     return tscls(**tsconf.get('config', {}))
 
 
 def _load_project(conf):
     clsname = conf['project']['name']
-    pcls = _project_classes[clsname]
+    pcls = _classes[project.Project][clsname]
     pj_config = conf['project'].get('config', {})
     return pcls(**pj_config)
 
@@ -202,7 +202,7 @@ def _load_project(conf):
 def _load_controller(conf):
     # initialize objects
     clsname = conf['controller']['name']
-    ccls = _controller_classes[clsname]
+    ccls = _classes[controller.Controller][clsname]
     app_name = conf['name']
     project = _load_project(conf)
     pstorage = _load_permanent_storage(conf)

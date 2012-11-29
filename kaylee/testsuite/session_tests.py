@@ -12,7 +12,7 @@ class KayleeSessionTests(KayleeTest):
 
         # test if incorrect signature raises KayleeError
         s2 = s1[3:] # pad the signature
-        self.assertRaises(KayleeError, decrypt, s1)
+        self.assertRaises(KayleeError, _decrypt, s2, secret_key='abc')
 
 
 kaylee_suite = load_tests([KayleeSessionTests, ])

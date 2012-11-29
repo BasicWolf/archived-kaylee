@@ -1,4 +1,4 @@
-from kaylee import Controller
+from kaylee.controller import Controller
 from kaylee.errors import ApplicationCompletedError, NodeRejectedError
 
 class SimpleController(Controller):

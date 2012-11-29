@@ -18,6 +18,12 @@ class TestConfig(object):
     REGISTRY = _test_REGISTRY
     WORKER_SCRIPT_URL = '/static/js/kaylee/klworker.js'
 
+    SESSION_DATA_MANAGER = {
+        'name' : 'JSONSessionDataManager',
+        'config' : {}
+    }
+
+
 class TestConfigWithApps(object):
     REGISTRY = _test_REGISTRY
     WORKER_SCRIPT_URL = '/static/js/kaylee/klworker.js'
@@ -50,7 +56,7 @@ class KayleeLoaderTests(KayleeTest):
         self.assertEqual(kl.config.WORKER_SCRIPT_URL, TestConfig.WORKER_SCRIPT_URL)
 
     def test_load_config_dict(self):
-        kl = loader.load(dict(TestConfig.__dict__))
+        kl = loader.load(TestConfig.__dict__)
         self.assertIsInstance(kl, Kaylee)
         self.assertEqual(kl.config.WORKER_SCRIPT_URL, TestConfig.WORKER_SCRIPT_URL)
 
@@ -68,7 +74,7 @@ class KayleeLoaderTests(KayleeTest):
         self.assertEqual(kl.config.WORKER_SCRIPT_URL, test_config.WORKER_SCRIPT_URL)
 
     def test_load_applications(self):
-        config = dict(TestConfigWithApps.__dict__)
+        config = TestConfigWithApps.__dict__
         loader.refresh(config)
         apps = loader.load_applications(config)
         self.assertIsInstance(apps, list)
@@ -82,10 +88,16 @@ class KayleeLoaderTests(KayleeTest):
         #self.assertIsInstance(app.project.storage, MemoryPermanentStorage)
 
     def test_load_registry(self):
-        config = dict(TestConfig.__dict__)
+        config = TestConfig.__dict__
         loader.refresh(config)
-        reg = loader._load_registry(config)
+        reg = loader.load_registry(config)
         self.assertIsInstance(reg, MemoryNodesRegistry)
+
+    def test_load_session_data_manager(self):
+        config = TestConfig.__dict__
+        loader.refresh(config)
+        sdm = loader.load_session_data_manager(config)
+        self.assertIsInstance(sdm, JSONSessionDataManager)
 
     def test_load_kaylee(self):
         kl = loader.load(TestConfigWithApps)
