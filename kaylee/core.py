@@ -68,19 +68,29 @@ class Kaylee(object):
     A convenient way of creating ``Kaylee`` object is via
     :meth:`kaylee.loader.load` factory.
 
-    :param registry: an instance of :class:`NodesRegistry`.
+    :param registry: active nodes registry
+    :param session_data_manager: global session data manager
     :param applications: a list of applications (:class:`Controller`
                          instances).
     :param kwargs: Kaylee configuration arguments.
+    :type registry: :class:`NodesRegistry`
+    :type session_data_manager: :class:`SessionDataManager` or None
+    :type applications: list
     """
-    def __init__(self, registry, applications = None, **kwargs):
+    def __init__(self, registry, session_data_manager = None,
+                 applications = None, **kwargs):
         #: An instance of :class:`Config` with Kaylee configuration parsed
         #: from ``**kwargs``. The configuration parameters are accessed as
         #: follows:::
         #: kl.config.CONFIG_PARAMETER
         self.config = Config(**kwargs)
-        self._registry = registry
-        self._applications = Applications(applications) or Applications.empty()
+        #: Active nodes registry (an instance of :class:`NodesRegistry`).
+        self.registry = registry
+        self.session_data_manager = session_data_manager
+        if applications is not None:
+            self._applications = Applications(applications)
+        else:
+            self._applications = Applications.empty()
 
     @json_error_handler
     def register(self, remote_host):
@@ -95,7 +105,7 @@ class Kaylee(object):
         :type remote_host: string
         """
         node = Node(NodeID.for_host(remote_host))
-        self._registry.add(node)
+        self.registry.add(node)
         return json.dumps ({ 'node_id' : str(node.id),
                              'config' : self.config.to_dict(),
                              'applications' : self._applications.names } )
@@ -108,7 +118,7 @@ class Kaylee(object):
         :param node_id: a valid node id
         :type node_id: string
         """
-        del self._registry[node_id]
+        del self.registry[node_id]
 
     @json_error_handler
     def subscribe(self, node_id, application):
@@ -124,7 +134,7 @@ class Kaylee(object):
         :returns: jsonified node configuration
         """
         try:
-            node = self._registry[node_id]
+            node = self.registry[node_id]
         except KeyError:
             raise KayleeError('Node "{}" is not registered'.format(node_id))
 
@@ -141,7 +151,7 @@ class Kaylee(object):
         :param node_id: a valid node id
         :type node_id: string
         """
-        self._registry[node_id].unsubscribe()
+        self.registry[node_id].unsubscribe()
 
     @json_error_handler
     def get_action(self, node_id):
@@ -163,10 +173,11 @@ class Kaylee(object):
         :param node_id: a valid node id
         :type node_id: string
         """
-        node = self._registry[node_id]
+        node = self.registry[node_id]
 
         try:
             task = node.get_task()
+            self._store_session(node, task)
             return self._json_action(ACTION_TASK, task)
         except NodeRejectedError as e:
             return self._json_action(ACTION_UNSUBSCRIBE,
@@ -188,13 +199,14 @@ class Kaylee(object):
         :type data: string
         :returns: a task returned by :meth:`get_action` or "nop" action.
         """
-        node = self._registry[node_id]
+        node = self.registry[node_id]
         try:
             if not isinstance(data, basestring):
                 raise ValueError('Kaylee expects the incoming data to be in '
                                  'string format, not {}'.format(
                                      data.__class__.__name__))
             data = json.loads(data)
+            self._restore_session(node, data)
             node.accept_result(data)
         except ValueError as e:
             self.unsubscribe(node)
@@ -204,20 +216,22 @@ class Kaylee(object):
             return self.get_action(node.id)
         return self._json_action(ACTION_NOP)
 
-
     def clean(self):
         """Removes outdated nodes from Kaylee's nodes storage."""
-        self._registry.clean()
+        self.registry.clean()
+
+    def _store_session(self, node, task):
+        if self.session_data_manager is not None:
+            self.session_data_manager.store(node, task)
+
+    def _restore_session(self, node, result):
+        if self.session_data_manager is not None:
+            self.session_data_manager.restore(node, result)
 
     @property
     def applications(self):
         """Loaded applications dictionary-like container."""
         return self._applications
-
-    @property
-    def registry(self):
-        """Active nodes registry (an instance of :class:`NodesRegistry`)."""
-        return self._registry
 
     def _json_action(self, action, data = ''):
         return json.dumps( { 'action' : action, 'data' : data } )

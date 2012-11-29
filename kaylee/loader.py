@@ -59,7 +59,6 @@ def load(config):
     :type config: dict, class, module or absolute Python module path.
     :returns: Kaylee object.
     """
-
     # check if python module path
     if isinstance(config, basestring):
         config = imp.load_source('kl_config', config)
@@ -84,12 +83,15 @@ def load(config):
     try:
         refresh(config)
         registry = load_registry(config)
+        sdm = load_session_data_manager(config)
         apps = load_applications(config)
     except (KeyError, AttributeError) as e:
         raise KayleeError('Config error or object was not found: "{}"'
                           .format(e.args[0]))
-
-    return Kaylee(registry, apps, **config)
+    return Kaylee(registry = registry,
+                  session_data_manager = sdm,
+                  applications = apps,
+                  **config)
 
 
 def refresh(config):
@@ -99,7 +101,8 @@ def refresh(config):
 
     # load classes from contrib (non-refreshable)
     _update_classes(kaylee.contrib)
-
+    # load session data managers
+    _update_classes(kaylee.session)
     # load classes from project modules (refreshable for new modules only)
     if 'PROJECTS_DIR' in config:
         path = config['PROJECTS_DIR']
@@ -117,10 +120,11 @@ def load_registry(config):
 
 def load_session_data_manager(config):
     if 'SESSION_DATA_MANAGER' not in config:
+        log.info('No session data manager loaded')
         return None
     clsname = config['SESSION_DATA_MANAGER']['name']
     sdmcls = _classes[session.SessionDataManager][clsname]
-    sdm_config = conf['SESSION_DATA_MANAGER'].get('config', {})
+    sdm_config = config['SESSION_DATA_MANAGER'].get('config', {})
     return sdmcls(**sdm_config)
 
 
@@ -130,6 +134,9 @@ def load_applications(config):
         for conf in config['APPLICATIONS']:
             controller = _load_controller(conf)
             apps.append(controller)
+        log.info('{} applications have been loaded'.format(len(apps)))
+    else:
+        log.info('No applications have been loaded')
     return apps
 
 

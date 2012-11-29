@@ -27,6 +27,9 @@ class SessionDataManager(object):
 class JSONSessionDataManager(SessionDataManager):
     SESSION_DATA_ATTRIBUTE = '__kl_tsd__'
 
+    def __init__(self, *args, **kwargs):
+        self._secret_key = None
+
     def store(self, node, task):
         hashed_data = self._get_hashed_data(task)
         task[self.SESSION_DATA_ATTRIBUTE] = \
@@ -36,11 +39,16 @@ class JSONSessionDataManager(SessionDataManager):
         return task
 
     def restore(self, node, result):
-        sd = _decrypt(result[SESSION_DATA_ATTRIBUTE])
-        del result[SESSION_DATA_ATTRIBUTE]
+        sd = _decrypt(result[self.SESSION_DATA_ATTRIBUTE], self.secret_key)
+        del result[self.SESSION_DATA_ATTRIBUTE]
         result.update(sd)
         return result
 
+    @property
+    def secret_key(self):
+        if self._secret_key is None:
+            self._secret_key = get_secret_key()
+        return self._secret_key
 
 
 def _encrypt(data, secret_key):
@@ -99,6 +107,7 @@ def _encrypt_attr(attr, value, encryptor):
     val = encryptor.encrypt(pad(val))
     val = b64encode(val)
     return val
+
 
 def _decrypt_attr(data, decryptor):
     tdata = b64decode(data)

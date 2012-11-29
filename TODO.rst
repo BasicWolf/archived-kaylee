@@ -1,14 +1,18 @@
 v0.2 <-- dev
 ----
 
-* serializable -> _serializable_
+* Add node registry update()
+
+* Add node.dirty
 
 * Update benchmark
 
 * Decide if storages should raise an error if the result has been
   submitted previously.
 
-. Rename "task results" -> "task solutions"
+# serializable -> _serializable_
+
+# Rename "task results" -> "task solutions"
 
 + Modify Storages API, so that PermanentStorage and TemporalStorage
   interfaces look the same.

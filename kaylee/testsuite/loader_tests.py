@@ -1,3 +1,7 @@
+#
+# Comments to dict(Class.__dict__) wrapping: __dict__ is a dictproxy,
+#
+
 from kaylee.testsuite import KayleeTest, load_tests, PROJECTS_DIR
 
 import os
@@ -5,6 +9,7 @@ from kaylee import loader, Kaylee
 from kaylee.contrib import (MemoryTemporalStorage,
                             MemoryPermanentStorage,
                             MemoryNodesRegistry)
+from kaylee.session import JSONSessionDataManager
 
 _test_REGISTRY = {
     'name' : 'MemoryNodesRegistry',
@@ -56,7 +61,7 @@ class KayleeLoaderTests(KayleeTest):
         self.assertEqual(kl.config.WORKER_SCRIPT_URL, TestConfig.WORKER_SCRIPT_URL)
 
     def test_load_config_dict(self):
-        kl = loader.load(TestConfig.__dict__)
+        kl = loader.load(dict(TestConfig.__dict__))
         self.assertIsInstance(kl, Kaylee)
         self.assertEqual(kl.config.WORKER_SCRIPT_URL, TestConfig.WORKER_SCRIPT_URL)
 
@@ -74,7 +79,7 @@ class KayleeLoaderTests(KayleeTest):
         self.assertEqual(kl.config.WORKER_SCRIPT_URL, test_config.WORKER_SCRIPT_URL)
 
     def test_load_applications(self):
-        config = TestConfigWithApps.__dict__
+        config = dict(TestConfigWithApps.__dict__)
         loader.refresh(config)
         apps = loader.load_applications(config)
         self.assertIsInstance(apps, list)
@@ -88,13 +93,13 @@ class KayleeLoaderTests(KayleeTest):
         #self.assertIsInstance(app.project.storage, MemoryPermanentStorage)
 
     def test_load_registry(self):
-        config = TestConfig.__dict__
+        config = dict(TestConfig.__dict__)
         loader.refresh(config)
         reg = loader.load_registry(config)
         self.assertIsInstance(reg, MemoryNodesRegistry)
 
     def test_load_session_data_manager(self):
-        config = TestConfig.__dict__
+        config = dict(TestConfig.__dict__)
         loader.refresh(config)
         sdm = loader.load_session_data_manager(config)
         self.assertIsInstance(sdm, JSONSessionDataManager)

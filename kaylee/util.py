@@ -158,4 +158,5 @@ def get_secret_key(key = None):
                                   ' defined.')
             return key
         else:
-            raise KayleeError('Cannot locate a valid secret key.')
+            raise KayleeError('Cannot locate a valid secret key because '
+                              'Kaylee is not ready yet.')
