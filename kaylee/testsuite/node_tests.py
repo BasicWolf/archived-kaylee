@@ -97,4 +97,41 @@ class NodeTests(KayleeTest):
         self.assertRaises(TypeError, Node, 100)
         self.assertRaises(TypeError, Node, 'abc')
 
+    def test_dirty(self):
+        nid = NodeID.for_host('127.0.0.1')
+        node = Node(nid)
+        self.assertFalse(node.dirty)
+
+        node.subscribe(None)
+        self.assertTrue(node.dirty)
+        node.dirty = False
+
+        node.task_id = 123
+        self.assertTrue(node.dirty)
+        node.dirty = False
+
+        node.session_data = '123'
+        self.assertTrue(node.dirty)
+        node.dirty = False
+
+    def test_get_set_properties(self):
+        nid = NodeID.for_host('127.0.0.1')
+        node = Node(nid)
+
+        node.session_data = 'sd1'
+        self.assertEqual(node.session_data, 'sd1')
+
+        node.subscribe('ctr2')
+        now = datetime.now()
+        self.assertTrue(timedelta(seconds = 0) <= now - node.subscription_timestamp
+                        <= timedelta(seconds = 3))
+        self.assertEqual(node.controller, 'ctr2')
+
+        node.task_id = 'tid789'
+        now = datetime.now()
+        self.assertTrue(timedelta(seconds = 0) <= now - node.task_timestamp
+                        <= timedelta(seconds = 3))
+        self.assertEqual(node.task_id, 'tid789')
+
+
 kaylee_suite = load_tests([NodeTests, NodeIDTests, ])

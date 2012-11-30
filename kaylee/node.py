@@ -58,13 +58,17 @@ class Node(object):
         self.dirty = True
 
     def unsubscribe(self):
-        if self.controller is None:
+        if self._controller is None:
             warn('Node.unsubscribe() is called for a non-subscribed node.')
 
         self._subscription_timestamp = None
         self._task_timestamp = None
         self._controller = None
         self._task_id = None
+        self._dirty = True
+
+        #: Indicates that one of the Node attributes (except ID) has been
+        #: changed. ``Node.dirty`` has to be set to ``False`` manually.
         self.dirty = True
 
     def get_task(self):
@@ -80,39 +84,18 @@ class Node(object):
         self.controller.accept_result(self, data)
 
     @property
-    def subscription_timestamp(self):
-        """A :class:`datetime.datetime` instance which tracks the time
-        when a node has subscribed to an application."""
-        return self._subscription_timestamp
-
-    @property
-    def task_timestamp(self):
-        """A :class:`datetime.datetime` instance which tracks the time
-        of a node receiving its last to-compute task."""
-        return self._task_timestamp
-
-    @task_timestamp.setter
-    def task_timestamp(self, val):
-        self._task_timestamp = val
-        self.dirty = True
-
-    @property
     def controller(self):
         """Application which communicates with the node.
         It is an instance of :class:`Controller`."""
         return self._controller
-
-    @controller.setter(self):
-    def controller(self, val):
-        self._controller = val
-        self.dirty = True
 
     @property
     def session_data(self):
         """Binary session data (if any)."""
         return self._session_data
 
-    @session_data.setter(self, val):
+    @session_data.setter
+    def session_data(self, val):
         self._session_data = val
         self.dirty = True
 
@@ -124,7 +107,20 @@ class Node(object):
     @task_id.setter
     def task_id(self, val):
         self._task_id = val
-        self.task_timestamp = datetime.now()
+        self._task_timestamp = datetime.now()
+        self.dirty = True
+
+    @property
+    def subscription_timestamp(self):
+        """A :class:`datetime.datetime` instance which tracks the time
+        when a node has subscribed to an application."""
+        return self._subscription_timestamp
+
+    @property
+    def task_timestamp(self):
+        """A :class:`datetime.datetime` instance which tracks the time
+        of a node receiving its last to-compute task."""
+        return self._task_timestamp
 
     def __hash__(self):
         return hash(self.id)
@@ -338,7 +334,8 @@ class NodesRegistry(object):
 
     @abstractmethod
     def update(self, node):
-        """Updates previously added "dirty" nodes. There is no need to update a node if ``node.dirty == False``.
+        """Updates previously added "dirty" nodes. There is no need to
+        update a node if ``node.dirty == False``.
 
         :throws: KeyError in case node is not found in registry.
         """
