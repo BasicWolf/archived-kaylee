@@ -9,6 +9,14 @@ class MemoryNodesRegistry(NodesRegistry):
     def add(self, node):
         self._d[node.id] = node
 
+    def update(self, node):
+        # a very naive and simple update
+        if node.id in self._d and node.dirty:
+            self._d[node.id] = node
+        else:
+            raise KeyError('Cannot update node in registry: '
+                           'node {} was not found'.format(node))
+
     def clean(self):
         nodes_to_clean = (node for node in self._d.iteritems()
                           if datetime.now() - node.id.timestamp > self.timeout)

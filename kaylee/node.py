@@ -35,8 +35,8 @@ class Node(object):
     :param node_id: an instance of :class:`NodeID` or a string parsable by
                     :class:`NodeID`
     """
-    __slots__ = ('id', '_task_id', 'subscription_timestamp', 'task_timestamp',
-                 'controller', 'errors_count', 'session_data')
+    # __slots__ = ('id', '_task_id', 'subscription_timestamp', 'task_timestamp',
+    #              'controller', 'errors_count', 'session_data')
 
     def __init__(self, node_id):
         if not isinstance(node_id, NodeID):
@@ -45,38 +45,27 @@ class Node(object):
         #: An instance of :class:`NodeID`
         self.id = node_id
 
-        #: A :class:`datetime.datetime` instance which tracks the time
-        #: when a node has subscribed to an application.
-        self.subscription_timestamp = None
-
-        #: A :class:`datetime.datetime` instance which tracks the time
-        #: of a node receiving its last to-compute task.
-        self.task_timestamp = None
-
-        #: Application which communicates with the node.
-        #: It is an instance of :class:`Controller`.
-        self.controller = None
-
-        #: Node-related errors counter (set by the bound controller).
-        self.errors_count = 0
-
-        #: Binary session data.
-        self.session_data = None
-
+        self.dirty = False
+        self._subscription_timestamp = None
+        self._task_timestamp = None
+        self._controller = None
+        self._session_data = None
         self._task_id = None
 
     def subscribe(self, controller):
-        self.controller = controller
-        self.subscription_timestamp = datetime.now()
+        self._controller = controller
+        self._subscription_timestamp = datetime.now()
+        self.dirty = True
 
     def unsubscribe(self):
         if self.controller is None:
             warn('Node.unsubscribe() is called for a non-subscribed node.')
 
-        self.subscription_timestamp = None
-        self.task_timestamp = None
-        self.controller = None
+        self._subscription_timestamp = None
+        self._task_timestamp = None
+        self._controller = None
         self._task_id = None
+        self.dirty = True
 
     def get_task(self):
         if self.controller is None:
@@ -89,6 +78,43 @@ class Node(object):
         if self.controller is None:
             raise NodeUnsubscribedError(self)
         self.controller.accept_result(self, data)
+
+    @property
+    def subscription_timestamp(self):
+        """A :class:`datetime.datetime` instance which tracks the time
+        when a node has subscribed to an application."""
+        return self._subscription_timestamp
+
+    @property
+    def task_timestamp(self):
+        """A :class:`datetime.datetime` instance which tracks the time
+        of a node receiving its last to-compute task."""
+        return self._task_timestamp
+
+    @task_timestamp.setter
+    def task_timestamp(self, val):
+        self._task_timestamp = val
+        self.dirty = True
+
+    @property
+    def controller(self):
+        """Application which communicates with the node.
+        It is an instance of :class:`Controller`."""
+        return self._controller
+
+    @controller.setter(self):
+    def controller(self, val):
+        self._controller = val
+        self.dirty = True
+
+    @property
+    def session_data(self):
+        """Binary session data (if any)."""
+        return self._session_data
+
+    @session_data.setter(self, val):
+        self._session_data = val
+        self.dirty = True
 
     @property
     def task_id(self):
@@ -309,6 +335,13 @@ class NodesRegistry(object):
     @abstractmethod
     def add(self, node):
         """Adds node to the storage."""
+
+    @abstractmethod
+    def update(self, node):
+        """Updates previously added "dirty" nodes. There is no need to update a node if ``node.dirty == False``.
+
+        :throws: KeyError in case node is not found in registry.
+        """
 
     @abstractmethod
     def clean(self):
