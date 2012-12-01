@@ -1,4 +1,5 @@
 import string
+from copy import deepcopy
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.node import Node, NodeID
 from kaylee.errors import KayleeError
@@ -39,6 +40,20 @@ class KayleeSessionTests(KayleeTest):
             '#s2' : [1, 2, 3],
         }
         self.assertEqual(result, expected_restored_result)
+        self.assertIsNone(node.session_data)
+
+
+        # test that session is not store in case of no session variables
+        task = {
+            'id' : 'i2'
+        }
+
+        orig_task = deepcopy(task)
+        nsdm.store(node, task)
+        self.assertIsNone(node.session_data)
+
+        nsdm.restore(node, task)
+        self.assertEqual(task, orig_task)
 
 
     def test_json_session_data_manager(self):
@@ -69,5 +84,16 @@ class KayleeSessionTests(KayleeTest):
         }
         self.assertEqual(result, expected_restored_result)
 
+        # test that session is not store in case of no session variables
+        task = {
+            'id' : 'i2'
+        }
+
+        orig_task = deepcopy(task)
+        jsdm.store(node, task)
+        self.assertEqual(task, orig_task)
+
+        jsdm.restore(node, task)
+        self.assertEqual(task, orig_task)
 
 kaylee_suite = load_tests([KayleeSessionTests, ])

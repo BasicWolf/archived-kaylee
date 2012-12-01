@@ -30,13 +30,20 @@ class SessionDataManager(object):
 
 
 class NodeSessionDataManager(SessionDataManager):
+    """TODOC"""
     def store(self, node, task):
         sdata = self._get_session_data(task)
+        if sdata == {}:
+            return task
+
         node.session_data = pickle.dumps(sdata, pickle.HIGHEST_PROTOCOL)
         self._remove_session_data_from_task(sdata.iterkeys(), task)
 
     def restore(self, node, result):
+        if node.session_data is None:
+            return
         sdata = pickle.loads(node.session_data)
+        node.session_data = None
         result.update(sdata)
 
 
@@ -74,6 +81,9 @@ class JSONSessionDataManager(SessionDataManager):
 
     def store(self, node, task):
         session_data = self._get_session_data(task)
+        if session_data == {}:
+            return task
+
         task[self.SESSION_DATA_ATTRIBUTE] =  _encrypt(session_data,
                                                       self.secret_key)
         for key in session_data:
@@ -81,6 +91,8 @@ class JSONSessionDataManager(SessionDataManager):
         return task
 
     def restore(self, node, result):
+        if self.SESSION_DATA_ATTRIBUTE not in result:
+            return result
         sd = _decrypt(result[self.SESSION_DATA_ATTRIBUTE], self.secret_key)
         del result[self.SESSION_DATA_ATTRIBUTE]
         result.update(sd)

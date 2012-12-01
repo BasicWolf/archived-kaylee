@@ -37,3 +37,10 @@ class Event
         @handlers[t..t] = [] if (t = @handlers.indexOf(handler)) > -1
         return
 kl.Event = Event
+
+
+# currently (01.12.2012) a hack, hopefully will be fixed in newer
+# versions of CoffeeScript
+class KayleeError extends Error then constructor: -> super
+
+kl.KayleeError = KayleeError

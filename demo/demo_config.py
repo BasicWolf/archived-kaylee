@@ -118,6 +118,6 @@ app_human_ocr_1 = {
 }
 
 
-APPLICATIONS = [app_human_ocr_1]
+# APPLICATIONS = [app_human_ocr_1]
 # APPLICATIONS = [app_hash_cracker_1]
-# APPLICATIONS = [app_hash_cracker_2]
+APPLICATIONS = [app_hash_cracker_2]

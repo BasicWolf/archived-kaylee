@@ -76,10 +76,13 @@ server-side a task data returned by a ``Project`` is a JSON-serializable
 
   { 'id' : 't1' }
 
-.. note:: The value of ``task['id']`` is always  automaically converted to
+.. note:: The value of ``task['id']`` is always automatically converted to
           *string*.
 
-A solution is any valid JSON-deserializable data.
+The result returned by the client side of a project should be also formatted
+in a dict-like (JavaScript object) manner::
+
+  { 'speed' : 30, 'acceleration' : 10 }
 
 
 Session data

@@ -80,16 +80,13 @@ kl.get_action = () ->
 kl.send_result = (data) ->
     if kl._app.subscribed
         if not data?
-            kl.exception.trigger('Cannot send data: '
+            throw new kl.KayleeError('Cannot send data: '
                 'the value is empty.')
-            return
+        if typeof(data) != 'object'
+            throw new kl.KayleeError('The returned result is not a JS object.')
         # before sending the result, check whether app.task_data contains
         # session data and attach it
         if SESSION_DATA_ATTRIBUTE of kl._app.task_data
-            if typeof(data) != 'object'
-                kl.exception.trigger('Cannot attach session data to a result
-                    which is not an JS object')
-                return
             data[SESSION_DATA_ATTRIBUTE] = \
                 kl._app.task_data[SESSION_DATA_ATTRIBUTE]
         kl.api.send_result(data)
@@ -109,7 +106,7 @@ kl._default_server_error_handler = (err) ->
 
 kl.assert = (condition, message) ->
     if condition
-        kl.exception.trigger("ASSERT: #{message}")
+        throw new kl.KayleeError("ASSERT: #{message}")
 
 # Primary event handlers
 on_node_registered = (data) ->
@@ -129,7 +126,7 @@ on_node_subscribed = (config) ->
             worker = new Worker(kl.config.WORKER_SCRIPT_URL)
             app.worker = worker
             worker.onmessage = (e) -> worker_message_handler(e)
-            worker.onerror = kl.client_error.trigger
+            worker.onerror = (data) -> throw new kl.KayleeError(data)
             kl._message_to_worker('import_project', {
                 'kl_config' : kl.config,
                 'app_config' : app.config,
@@ -141,14 +138,12 @@ on_node_subscribed = (config) ->
             if config.__kl_project_styles__
                 include_urls.push(config.__kl_project_styles__)
             kl.include(include_urls,
-                       () ->  pj.init(kl.config, app.config,
-                                      kl.project_imported,
-                                      kl.client_error.trigger)
+                       () -> pj.init(app.config)
             )
             app.subscribed = true
 
         else
-            kl.exception.trigger('Unknown Kaylee Project mode')
+            throw new kl.KayleeError('Unknown Kaylee Project mode')
     return
 
 on_node_unsubscibed = (data) ->
@@ -171,7 +166,7 @@ on_action_received = (data) ->
     switch data.action
         when 'task' then kl.task_received.trigger(data.data)
         when 'unsubscribe' then kl.node_unsubscibed.trigger(data.data)
-        else kl.exception("Unknown action: #{data.action}")
+        else throw new kl.KayleeError("Unknown action: #{data.action}")
     return
 
 on_task_received = (data) ->
@@ -190,7 +185,7 @@ worker_message_handler = (event) ->
     mdata = data.data
     switch msg
         when '__kl_log__' then kl.log.trigger(mdata)
-        when '__kl_error__' then kl.client_error.trigger(mdata)
+        when '__kl_error__' then throw new kl.KayleeError(mdata)
         when '__kl_assert__' then kl.assert(mdata)
         when 'project_imported' then kl.project_imported.trigger()
         when 'task_completed' then kl.task_completed.trigger(mdata)
@@ -206,6 +201,4 @@ kl.task_received = new Event(on_task_received)
 kl.task_completed = new Event(on_task_completed)
 kl.result_sent = new Event()
 kl.log = new Event()
-kl.client_error = new Event()
 kl.server_error = new Event()
-kl.exception = new Event()

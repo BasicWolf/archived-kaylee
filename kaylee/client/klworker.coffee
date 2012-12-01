@@ -32,8 +32,7 @@ post_message = (msg, data = {}) ->
 import_project = (kwargs) ->
     kl.config = kwargs.kl_config
     importScripts(kwargs.app_config.__kl_project_script__)
-    pj.init(kwargs.app_config,
-            (data) -> post_error('__kl_error__', data))
+    pj.init(kwargs.app_config)
 
 
 # Although the events and handlers  below look alike the code

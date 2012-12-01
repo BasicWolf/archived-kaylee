@@ -4,6 +4,7 @@ pj.init = (app_config) ->
     importScripts(app_config.md5_script)
     pj.config = app_config
     kl.project_imported.trigger()
+    return
 
 pj.process_task = (data) ->
     task_id = data.id
@@ -17,7 +18,7 @@ pj.process_task = (data) ->
         kl.log("#{key}#{salt}")
         if hash == CryptoJS.MD5("#{key}#{salt}").toString(CryptoJS.enc.Hex)
             # we have found the answer!
-            kl.task_completed.trigger(key)
+            kl.task_completed.trigger( {'cracked_key' : key} )
     kl.task_completed.trigger(kl.NO_SOLUTION)
     return
 

@@ -1,6 +1,6 @@
 pj = kl.pj
 
-pj.init = (kl_config, app_config) ->
+pj.init = (app_config) ->
     pj._make_div()
     kl.project_imported.trigger()
     return
@@ -28,7 +28,7 @@ pj._clear_input = () ->
 pj._make_div = () ->
     div = document.createElement('div');
     div.id = 'human_ocr';
-    div.innerHTML = """
+    div.innerHTML = '''
         <table id="human_ocr_table">
             <tr>
                 <td colspan="2">
@@ -56,7 +56,7 @@ pj._make_div = () ->
                 </td>
             </tr>
         </table>
-    """
+    '''
     if document.body.firstChild
         document.body.insertBefore(div, document.body.firstChild);
     else

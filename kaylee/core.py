@@ -210,6 +210,9 @@ class Kaylee(object):
                                  'string format, not {}'.format(
                                      data.__class__.__name__))
             data = json.loads(data)
+            if not isinstance(data, dict):
+                raise ValueError('The returned result was not parsed '
+                                 'as dict: {}'.format(data))
             self._restore_session_data(node, data)
             node.accept_result(data)
         except ValueError as e:
