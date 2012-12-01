@@ -177,7 +177,11 @@ class Kaylee(object):
 
         try:
             task = node.get_task()
-            self._store_session(node, task)
+            self._store_session_data(node, task)
+            # update node before returning a task
+            if node.dirty:
+                self.registry.update(node)
+                node.dirty = False
             return self._json_action(ACTION_TASK, task)
         except NodeRejectedError as e:
             return self._json_action(ACTION_UNSUBSCRIBE,
@@ -206,7 +210,7 @@ class Kaylee(object):
                                  'string format, not {}'.format(
                                      data.__class__.__name__))
             data = json.loads(data)
-            self._restore_session(node, data)
+            self._restore_session_data(node, data)
             node.accept_result(data)
         except ValueError as e:
             self.unsubscribe(node)
@@ -220,11 +224,11 @@ class Kaylee(object):
         """Removes outdated nodes from Kaylee's nodes storage."""
         self.registry.clean()
 
-    def _store_session(self, node, task):
+    def _store_session_data(self, node, task):
         if self.session_data_manager is not None:
             self.session_data_manager.store(node, task)
 
-    def _restore_session(self, node, result):
+    def _restore_session_data(self, node, result):
         if self.session_data_manager is not None:
             self.session_data_manager.restore(node, result)
 

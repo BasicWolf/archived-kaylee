@@ -1,7 +1,9 @@
 import string
 from kaylee.testsuite import KayleeTest, load_tests
-from kaylee import KayleeError
-from kaylee.session import _encrypt, _decrypt
+from kaylee.node import Node, NodeID
+from kaylee.errors import KayleeError
+from kaylee.session import (_encrypt, _decrypt, JSONSessionDataManager,
+                            NodeSessionDataManager, SESSION_DATA_ATTRIBUTE)
 
 class KayleeSessionTests(KayleeTest):
     def test_encrypt_decrypt(self):
@@ -13,6 +15,59 @@ class KayleeSessionTests(KayleeTest):
         # test if incorrect signature raises KayleeError
         s2 = s1[3:] # pad the signature
         self.assertRaises(KayleeError, _decrypt, s2, secret_key='abc')
+
+    def test_node_session_data_manager(self):
+        node = Node(NodeID.for_host('127.0.0.1'))
+        task = {
+            'id' : 'i1',
+            '#s1' : 10,
+            '#s2' : [1, 2, 3],
+        }
+
+        nsdm = NodeSessionDataManager()
+        self.assertIsNone(node.session_data)
+        nsdm.store(node, task)
+        self.assertIsNotNone(node.session_data)
+
+        result = {
+            'res' : 'someres',
+        }
+        nsdm.restore(node, result)
+        expected_restored_result = {
+            'res' : 'someres',
+            '#s1' : 10,
+            '#s2' : [1, 2, 3],
+        }
+        self.assertEqual(result, expected_restored_result)
+
+
+    def test_json_session_data_manager(self):
+        node = Node(NodeID.for_host('127.0.0.1'))
+        task = {
+            'id' : 'i1',
+            '#s1' : 10,
+            '#s2' : [1, 2, 3],
+        }
+
+        jsdm = JSONSessionDataManager(secret_key='abc')
+        jsdm.store(node, task)
+        self.assertIn(SESSION_DATA_ATTRIBUTE, task)
+        self.assertEqual(task['id'], 'i1')
+        self.assertNotIn('#s1', task)
+        self.assertNotIn('#s2', task)
+
+        result = {
+            'res' : 'someres',
+            SESSION_DATA_ATTRIBUTE : task[SESSION_DATA_ATTRIBUTE],
+        }
+        jsdm.restore(node, result)
+
+        expected_restored_result = {
+            'res' : 'someres',
+            '#s1' : 10,
+            '#s2' : [1, 2, 3],
+        }
+        self.assertEqual(result, expected_restored_result)
 
 
 kaylee_suite = load_tests([KayleeSessionTests, ])

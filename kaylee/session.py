@@ -8,6 +8,7 @@ from Crypto.Cipher import AES
 from .util import get_secret_key
 from .errors import KayleeError
 
+SESSION_DATA_ATTRIBUTE = '__kl_sd__'
 
 class SessionDataManager(object):
     def store(self, node, task):
@@ -18,23 +19,64 @@ class SessionDataManager(object):
         """TODOC"""
         pass
 
-    def _get_hashed_data(self, task):
+    def _get_session_data(self, task):
         """TODOC"""
         return { key : task[key] for key in task
                  if key.startswith('#') }
 
+    def _remove_session_data_from_task(self, session_data_keys, task):
+        for key in session_data_keys:
+            del task[key]
+
+
+class NodeSessionDataManager(SessionDataManager):
+    def store(self, node, task):
+        sdata = self._get_session_data(task)
+        node.session_data = pickle.dumps(sdata, pickle.HIGHEST_PROTOCOL)
+        self._remove_session_data_from_task(sdata.iterkeys(), task)
+
+    def restore(self, node, result):
+        sdata = pickle.loads(node.session_data)
+        result.update(sdata)
+
 
 class JSONSessionDataManager(SessionDataManager):
-    SESSION_DATA_ATTRIBUTE = '__kl_tsd__'
+    """Stores encrypted session data in task data and restores the session
+    data from the results. For example, the following task data::
+
+      task = {
+          'id' : 'i1',
+          '#s1' : 10,
+          '#s2' : [1, 2, 3]
+      }
+
+    Is encrypted via 'abc' secret key, turns into::
+
+      task = {
+          id : 'i1',
+          '__kl_sd__' : 'yn/fCyEcW8AFrPps7XoxunC...' # 143 chars in total
+      }
+
+    The Kaylee client-side engine automatically attaches the ``'__kl_sd__``
+    data to the result, so that the session data is decrypted and attached
+    back to the result, e.g.::
+
+      {
+          'speed' : 20,
+          '#s1' : 10,
+          '#s2' : [1, 2, 3]
+      }
+    """
 
     def __init__(self, *args, **kwargs):
-        self._secret_key = None
+        self._secret_key = kwargs.get('secret_key', None)
+        self.SESSION_DATA_ATTRIBUTE = SESSION_DATA_ATTRIBUTE
 
     def store(self, node, task):
-        hashed_data = self._get_hashed_data(task)
-        task[self.SESSION_DATA_ATTRIBUTE] = \
-            _encrypt(hashed_data, self.secret_key)
-        for key in hashed_data:
+        session_data = self._get_session_data(task)
+        task[self.SESSION_DATA_ATTRIBUTE] =  _encrypt(session_data,
+                                                      self.secret_key)
+        for key in session_data:
             del task[key]
         return task
 

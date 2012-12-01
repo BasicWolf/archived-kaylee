@@ -7,6 +7,7 @@ from importlib import import_module
 
 
 logging.basicConfig(level=logging.CRITICAL)
+log = logging.getLogger(__name__)
 
 unittest.defaultTestLoader = unittest.TestLoader()
 
@@ -38,9 +39,13 @@ def suite():
         if not fname.endswith('_tests.py'):
             continue
         modname = fname[:-3]
-        mod = import_module(modname)
-        if hasattr(mod, 'kaylee_suite'):
-            suite.addTest(mod.kaylee_suite)
+        try:
+            mod = import_module(modname)
+            if hasattr(mod, 'kaylee_suite'):
+                suite.addTest(mod.kaylee_suite)
+        except Exception as e:
+            log.critical('Error importing module {}: {}'.format(modname, e))
+            sys.exit(0)
     return suite
 
 
