@@ -104,6 +104,25 @@ Format::
   }
 
 
+.. config:: SESSION_DATA_MANAGER
+
+SESSION_DATA_MANAGER
+--------------------
+
+**Optional**. Defines the session data manager. 
+
+.. note:: If no manager is defined,
+the session data will be passed without any warnings exception Format::
+
+
+  REGISTRY = {
+      'name' : 'SessionDataManagerClassName',
+      'config' : {
+
+      },
+  }
+
+
 .. config:: WORKER_SCRIPT_URL
 
 WORKER_SCRIPT_URL

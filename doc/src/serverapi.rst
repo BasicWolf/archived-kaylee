@@ -16,12 +16,32 @@ Kaylee Object
    .. automethod:: accept_result(node_id, data)
    .. autoattribute:: applications
    .. automethod:: clean()
+   ..
+      .. autoattribute:: config
+
+   .. py:attribute:: config
+
+      An instance of :class:`Config` with Kaylee configuration parsed
+      from ``**kwargs``. The configuration parameters are accessed as
+      follows::
+
+        kl.config.CONFIG_PARAMETER
+
    .. automethod:: get_action(node_id)
    .. automethod:: register(remote_host)
-   .. autoattribute:: registry
+   ..
+      .. autoattribute:: registry
+
+   .. py:attribute:: registry
+
+      Active nodes registry (an instance of :class:`NodesRegistry`).
+
    .. automethod:: subscribe(node_id, application)
    .. automethod:: unregister(node_id)
    .. automethod:: unsubscribe(node_id)
+
+
+
 
    .. :inherited-members:
 
@@ -132,8 +152,8 @@ Filters
             }
 
 
-Filters
-.......
+Built-in filters list
+.....................
 
 .. autofunction:: kaylee.filters.app_completed_guard
 
@@ -143,5 +163,15 @@ Filters
 
 .. autofunction:: kaylee.filters.ignore_null_result
 
-.. autofunction:: kaylee.filters.accepts_session_data
 
+.. _session_api:
+
+Session data managers
+---------------------
+
+.. autoclass:: kaylee.session.SessionDataManager
+   :members:
+
+.. autoclass:: kaylee.session.NodeSessionDataManager
+
+.. autoclass:: kaylee.session.JSONSessionDataManager

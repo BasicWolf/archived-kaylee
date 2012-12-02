@@ -65,9 +65,6 @@ class Kaylee(object):
     .. note:: It is the job of a particular front-end to set the
               response content-type to "application/json".
 
-    A convenient way of creating ``Kaylee`` object is via
-    :meth:`kaylee.loader.load` factory.
-
     :param registry: active nodes registry
     :param session_data_manager: global session data manager
     :param applications: a list of applications (:class:`Controller`
@@ -81,11 +78,14 @@ class Kaylee(object):
                  applications = None, **kwargs):
         #: An instance of :class:`Config` with Kaylee configuration parsed
         #: from ``**kwargs``. The configuration parameters are accessed as
-        #: follows:::
-        #: kl.config.CONFIG_PARAMETER
+        #: follows::
+        #: 
+        #:   kl.config.CONFIG_PARAMETER
         self.config = Config(**kwargs)
+
         #: Active nodes registry (an instance of :class:`NodesRegistry`).
         self.registry = registry
+
         self.session_data_manager = session_data_manager
         if applications is not None:
             self._applications = Applications(applications)
@@ -148,7 +148,7 @@ class Kaylee(object):
     def unsubscribe(self, node_id):
         """Unsubscribes the node from the bound application.
 
-        :param node_id: a valid node id
+        :param node_id: a valid node id.
         :type node_id: string
         """
         self.registry[node_id].unsubscribe()

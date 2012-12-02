@@ -1,6 +1,5 @@
 from functools import wraps
 
-from .session import _encrypt, _decrypt
 from .errors import ApplicationCompletedError
 
 #  TODO: add link to kl.NO_SOLUTION

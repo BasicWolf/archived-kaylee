@@ -3,6 +3,85 @@
 Kaylee communication
 ====================
 
+
+Tasks and results
+-----------------
+
+As it has been mentioned many times, Kaylee communicates via JSON. On
+server-side a task data returned by a ``Project`` is a JSON-serializable
+``dict`` with a mandatory ``id`` key in it::
+
+  { 'id' : 't1' }
+
+.. note:: The value of ``task['id']`` is always automatically converted to
+          *string*.
+
+The result returned by the client side of a project should be also formatted
+in a dict-like (JavaScript object) manner::
+
+  { 'speed' : 30, 'acceleration' : 10 }
+
+
+Session data
+------------
+
+The famous `reCAPTCHA`_ project provides a very efficient CAPTCHA mechanism
+and at the same time helps digitizing the text from paper books. reCAPTCHA
+provides a task of recognizing two words from a picture. One of the words
+is a piece of a scanned book page, while another is generated artificially.
+`reCAPTCHA` has to "remember" that a particular user has received a
+particular artificial word in order to validate the user's input.
+
+How would one solve a similar problem with Kaylee? Kaylee provides an
+efficient and simple
+:class:`Session data managers <kaylee.session.SessionDataManager>` mechanism
+to keep Kaylee <-> Node session data between getting a task and accepting
+a result requests. In a case of solving reCAPTCHA issue, the artificial
+word should be stored as a session variable.
+
+In order to become a `session variable`, the variable should start with
+a hash (``'#'``) symbol, for example::
+
+  task = {
+      'id' : '1',
+      'image_path' : 'http:/my.site.com/captcha/tmp/ahU2jcXz.jpg',
+      '#artificial_word' : 'abyrvalg'
+  }
+
+The session data manager scans the outgoing tasks and stores all the
+session variables unless the Node returns a result. In other words,
+before the above task is dispatched to the Node, it should be stripped
+of the session variables::
+
+  {
+      'id' : '1',
+      'image_path' : 'http:/my.site.com/captcha/tmp/ahU2jcXz.jpg',
+  }
+
+And as soon as the results arrive, the session variable is attached to
+the result::
+
+  {
+      'word1' : 'Enormous',
+      'word2' : 'abyrvalg', # this one has been entered by a user
+      '#artificial_word' : 'abyrvalg' # this one is the session data
+  }
+
+
+Built-in session data managers
+..............................
+
+Currently there are two session data managers available out of the box:
+
+* :class:`NodeSessionDataManager <kaylee.session.NodeSessionDataManager>`
+  - keeps the session data attached to :attr:`Node.session_data`.
+
+* :class:`JSONSessionDataManager <kaylee.session.JSONSessionDataManager>`
+  - transfers the encrypted session data within the task and result,
+  without keeping anything on server.
+
+
+
 .. _default-communication:
 
 Default API
@@ -65,55 +144,9 @@ HTTP Method ``POST``
 Post Data   Calculation results.
 =========== ===============================
 
+\
+\
 
 
-Tasks and results
------------------
-
-As it has been mentioned many times, Kaylee communicates via JSON. On
-server-side a task data returned by a ``Project`` is a JSON-serializable
-``dict`` with a mandatory ``id`` key in it::
-
-  { 'id' : 't1' }
-
-.. note:: The value of ``task['id']`` is always automatically converted to
-          *string*.
-
-The result returned by the client side of a project should be also formatted
-in a dict-like (JavaScript object) manner::
-
-  { 'speed' : 30, 'acceleration' : 10 }
-
-
-Session data
-............
-
-The famous `reRECAPTCHA`_ provides a very efficient CAPTCHA mechanism and
-at the same time it helps decyphering books. There are two words which
-should be recognized and entered by the user. One of the words is a piece
-of a scanned book page, while another is generated artificially.
-It means that reCAPTCHA has to "remember" that a particular user has
-recieved a particular artificial word in order to validate the user's input.
-
-How would one solve a similar problem via Kaylee? One way would be saving
-the session data on server-side by sticking it to the Node data.
-
-The problem
-of this approach is that a :cls:`NodesRegistry` may not be able to contain user may session data may contain
-
-Well, it is possible to
-generate the following task::
-
-  {
-      'id' : '1',
-      'image_path' : 'http:/my.site.com/captcha/tmp/ahU2jcXz.jpg',
-      'artificial_word' : 'sunlight'
-  }
-
-And return the following results::
-
-  {
-      '
-  }
 
 .. _reCAPTCHA: http://recaptcha.net
