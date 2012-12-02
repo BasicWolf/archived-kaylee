@@ -172,6 +172,8 @@ Session data managers
 .. autoclass:: kaylee.session.SessionDataManager
    :members:
 
+.. autoclass:: kaylee.session.PhonySessionDataManager
+
 .. autoclass:: kaylee.session.NodeSessionDataManager
 
 .. autoclass:: kaylee.session.JSONSessionDataManager

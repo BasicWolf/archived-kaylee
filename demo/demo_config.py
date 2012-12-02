@@ -20,7 +20,7 @@ REGISTRY = {
 }
 
 SESSION_DATA_MANAGER = {
-    'name' : 'JSONSessionDataManager',
+    'name' : 'NodeSessionDataManager',
     'config' : {}
 }
 

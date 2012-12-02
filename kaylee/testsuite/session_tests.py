@@ -4,7 +4,8 @@ from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.node import Node, NodeID
 from kaylee.errors import KayleeError
 from kaylee.session import (_encrypt, _decrypt, JSONSessionDataManager,
-                            NodeSessionDataManager, SESSION_DATA_ATTRIBUTE)
+                            NodeSessionDataManager, PhonySessionDataManager,
+                            SESSION_DATA_ATTRIBUTE)
 
 class KayleeSessionTests(KayleeTest):
     def test_encrypt_decrypt(self):
@@ -95,5 +96,23 @@ class KayleeSessionTests(KayleeTest):
 
         jsdm.restore(node, task)
         self.assertEqual(task, orig_task)
+
+    def test_phony_session_data_manager(self):
+        node = Node(NodeID.for_host('127.0.0.1'))
+        task1 = {
+            'id' : 'i1',
+            '#s1' : 10,
+            '#s2' : [1, 2, 3],
+        }
+
+        psdm = PhonySessionDataManager()
+        self.assertRaises(KayleeError, psdm.store, node, task1)
+
+        task2 = {
+            'id' : 'i1',
+        }
+        # this should be executed without any errors
+        self.assertIsNone(psdm.store(node, task2))
+
 
 kaylee_suite = load_tests([KayleeSessionTests, ])

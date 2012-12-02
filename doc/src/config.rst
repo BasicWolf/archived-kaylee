@@ -109,17 +109,17 @@ Format::
 SESSION_DATA_MANAGER
 --------------------
 
-**Optional**. Defines the session data manager. 
+**Optional**. Defines the session data manager.
 
-.. note:: If no manager is defined,
-the session data will be passed without any warnings exception Format::
+.. note:: If the option is not defined the loader loads the deafult
+          :class:`Phony <kaylee.session.PhonySessionDataManager>`
+          manager.
 
+Format::
 
-  REGISTRY = {
+  SESSION_DATA_MANAGER = {
       'name' : 'SessionDataManagerClassName',
-      'config' : {
-
-      },
+      'config' : {},
   }
 
 

@@ -31,8 +31,8 @@ The server performs the following routines:
 .. _firststep_projects_and_tasks:
 
 
-Projects, Tasks and Solutions
------------------------------
+Projects and Tasks
+------------------
 
 Kaylee tries to free its users of routines related to the distributed
 computation as much as possible. Still, a user needs to write the
@@ -98,13 +98,13 @@ Auto Filters
 ------------
 Auto-filtering is yet another feature of Kaylee's "write less do more"
 principle. Filters are Python decorators which can be automatically
-applied to Controllers' and Projects' methods. They help to automate
+applied to Controllers' and Projects' methods. They help automating
 lots of data integrity checks and conversions in any part of the
 the ``Client <-> Server <-> Controller <-> Project`` inter-communication.
 For example, the
 :py:func:`normalize_result <kaylee.filters.normalize_result>` filter
 takes care of calling result normalization and validation routines before
-passing it do the decorated function. And all the methods implementing
+passing it to the decorated function. And all the methods implementing
 :py:meth:`Contoller.accept_result` are usually decorated automatically,
 so that a user gets already validated and normalized result.
 

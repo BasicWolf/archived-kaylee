@@ -71,7 +71,11 @@ the result::
 Built-in session data managers
 ..............................
 
-Currently there are two session data managers available out of the box:
+Currently there are three session data managers available out of the box:
+
+* :class:`NodeSessionDataManager <kaylee.session.PhonySessionDataManager>`
+  - the default manager which tracks the tasks and throws a
+  :class:`KayleeError` in case that a task contains session variables.
 
 * :class:`NodeSessionDataManager <kaylee.session.NodeSessionDataManager>`
   - keeps the session data attached to :attr:`Node.session_data`.

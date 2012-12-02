@@ -119,12 +119,18 @@ def load_registry(config):
 
 
 def load_session_data_manager(config):
-    if 'SESSION_DATA_MANAGER' not in config:
-        log.info('No session data manager loaded')
-        return None
-    clsname = config['SESSION_DATA_MANAGER']['name']
-    sdmcls = _classes[session.SessionDataManager][clsname]
-    sdm_config = config['SESSION_DATA_MANAGER'].get('config', {})
+    if 'SESSION_DATA_MANAGER' in config:
+        clsname = config['SESSION_DATA_MANAGER']['name']
+        sdmcls = _classes[session.SessionDataManager][clsname]
+        sdm_config = config['SESSION_DATA_MANAGER'].get('config', {})
+    else:
+        # Load default (should be Phony) session data manager in case it
+        # is not defined in config.
+        default_manager = session.KL_LOADER_DEFAULT_SESSION_DATA_MANAGER
+        log.info('No session data manager loaded, using default: {}'
+                 .format(default_manager))
+        sdmcls = default_manager
+        sdm_config = {}
     return sdmcls(**sdm_config)
 
 
