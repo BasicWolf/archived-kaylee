@@ -69,7 +69,7 @@ kl.get = (url, data, success, fail) ->
     return
 
 
-kl.include = (urls, success, fail) ->
+_dom_include = (urls, success, fail) ->
     if not urls instanceof Array
         urls = [urls]   # in this case string is expected
     count = urls.length
@@ -108,3 +108,28 @@ kl.include = (urls, success, fail) ->
             css.onload = onload
             doc.appendChild(css)
     return
+
+
+_worker_include = (urls, success, fail) ->
+    if not urls instanceof Array
+        urls = [urls]   # in this case string is expected
+
+    all_imported = true
+    for url in urls
+        try
+            importScripts(url)
+        catch error
+            all_imported = false
+            break
+
+    if all_imported
+        success?()
+    else
+        fail?(error)
+
+kl.include = (urls, success, fail) ->
+    # bind appropriate include function as kl.include
+    if __DEFINE_WORKER?
+        _worker_include(urls, success, fail)
+    else
+        _dom_include(urls, success, fail)

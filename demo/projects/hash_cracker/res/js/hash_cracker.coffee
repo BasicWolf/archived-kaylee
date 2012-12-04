@@ -1,7 +1,7 @@
 pj = kl.pj
 
 pj.init = (app_config) ->
-    importScripts(app_config.md5_script)
+    kl.include(app_config.md5_script)
     pj.config = app_config
     kl.project_imported.trigger()
     return

@@ -12,6 +12,8 @@
 # Note that this is a WORKER script. It has no access to global
 # data, document or window objects.
 
+__DEFINE_WORKER = true
+
 pj = kl.pj  # just a shortcut
 
 on_worker_event = (e) ->

@@ -126,7 +126,7 @@ on_node_subscribed = (config) ->
             worker = new Worker(kl.config.WORKER_SCRIPT_URL)
             app.worker = worker
             worker.onmessage = (e) -> worker_message_handler(e)
-            worker.onerror = (data) -> throw new kl.KayleeError(data)
+            worker.onerror = (data) -> throw new kl.KayleeError(data.message)
             kl._message_to_worker('import_project', {
                 'kl_config' : kl.config,
                 'app_config' : app.config,

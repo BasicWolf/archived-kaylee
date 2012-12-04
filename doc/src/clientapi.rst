@@ -30,14 +30,12 @@ following JavaScript objects [2]_:
 
 A typical Kaylee project implements two callbacks in the ``pj`` namespce:
 
-.. js:function:: pj.init(kl_config, app_config)
+.. js:function:: pj.init(app_config)
 
    The function is called only once, when the client-side of the
    application is initialized. You can import required libraries via
    ``importScript()`` here.
 
-   :param kl_config: JSON-formatted Kaylee config set by
-                       :js:func:`kl.setup`
    :param app_config: JSON-formatted application configuration received
                       from Kaylee server.
 
@@ -298,6 +296,7 @@ AJAX
        alert(data);
      } );
 
+
 .. js:function:: kl.post( url [, data] [, success] [, error] )
 
    Invokes asynchronous POST request.
@@ -305,10 +304,18 @@ AJAX
    :param url: request URL
    :param data: JSON object
    :param success: callback invoked in case of successful request.
-   :param error: callback invoked in of request failure.
+   :param error: callback invoked in case of request failure.
 
+
+.. js:function:: kl.importScript(urls, [,success] [, fail])
+
+   Dynamically imports javascript (``*.js``) or stylesheet ``*.css`` files.
+
+   :param urls: a single url or an array of URLS to import.
+   :param success: callback invoked in case of successful import.
+   :param fail: callback invoked in case of failure (does not work for
+                stylesheets!)
 
 
 .. [1] http://en.wikipedia.org/wiki/Web_worker
 .. [2] http://www.w3schools.com/html5/html5_webworkers.asp
-
