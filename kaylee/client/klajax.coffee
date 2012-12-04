@@ -70,7 +70,7 @@ kl.get = (url, data, success, fail) ->
 
 
 _dom_include = (urls, success, fail) ->
-    if not urls instanceof Array
+    if not (urls instanceof Array)
         urls = [urls]   # in this case string is expected
     count = urls.length
     sc = 0              # loaded scripts and stylesheets counter
@@ -111,7 +111,7 @@ _dom_include = (urls, success, fail) ->
 
 
 _worker_include = (urls, success, fail) ->
-    if not urls instanceof Array
+    if not (urls instanceof Array)
         urls = [urls]   # in this case string is expected
 
     all_imported = true

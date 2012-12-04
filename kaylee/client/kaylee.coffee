@@ -131,7 +131,6 @@ on_node_subscribed = (config) ->
                 'kl_config' : kl.config,
                 'app_config' : app.config,
             })
-            app.subscribed = true
 
         when kl.MANUAL_PROJECT_MODE
             include_urls = [config.__kl_project_script__]
@@ -140,7 +139,6 @@ on_node_subscribed = (config) ->
             kl.include(include_urls,
                        () -> pj.init(app.config)
             )
-            app.subscribed = true
 
         else
             throw new kl.KayleeError('Unknown Kaylee Project mode')
@@ -153,6 +151,7 @@ on_node_unsubscibed = (data) ->
     return
 
 on_project_imported = () ->
+    kl._app.subscribed = true
     switch kl._app.mode
         when kl.AUTO_PROJECT_MODE
             kl._app.process_task = (data) ->
