@@ -3,7 +3,7 @@
 #    ~~~~~~~~~~~~~
 #
 #    This is the base file of Kaylee client-side module.
-#    It contains the common code used by Kaylee.
+#    It contains the util and shared code used by Kaylee.
 #
 #    :copyright: (c) 2012 by Zaur Nasibov.
 #    :license: MIT, see LICENSE for more details.
@@ -37,7 +37,6 @@ class Event
         @handlers[t..t] = [] if (t = @handlers.indexOf(handler)) > -1
         return
 kl.Event = Event
-
 
 # currently (01.12.2012) a hack, hopefully will be fixed in newer
 # versions of CoffeeScript

@@ -16,7 +16,7 @@
 #     config : null # {}
 #     worker : null # Worker object
 #     subscribed : false
-#     task_data  : null # current task data
+#     task  : null # current task data
 
 SESSION_DATA_ATTRIBUTE = '__kl_sd__'
 
@@ -64,7 +64,7 @@ kl.subscribe = (name) ->
         mode    : null       # a shortcut to config.__kl_project_mode__
         worker  : null
         subscribed : false
-        task_data : null     # current task data
+        task : null     # current task data
 
         # functions
         process_task   : null
@@ -84,13 +84,13 @@ kl.send_result = (data) ->
                 'the value is empty.')
         if typeof(data) != 'object'
             throw new kl.KayleeError('The returned result is not a JS object.')
-        # before sending the result, check whether app.task_data contains
+        # before sending the result, check whether app.task contains
         # session data and attach it
-        if SESSION_DATA_ATTRIBUTE of kl._app.task_data
+        if SESSION_DATA_ATTRIBUTE of kl._app.task
             data[SESSION_DATA_ATTRIBUTE] = \
-                kl._app.task_data[SESSION_DATA_ATTRIBUTE]
+                kl._app.task[SESSION_DATA_ATTRIBUTE]
         kl.api.send_result(data)
-        kl._app.task_data = null
+        kl._app.task = null
     return
 
 kl._message_to_worker = (msg, data = {}) ->
@@ -168,13 +168,13 @@ on_action_received = (data) ->
         else throw new kl.KayleeError("Unknown action: #{data.action}")
     return
 
-on_task_received = (data) ->
-    kl._app.task_data = data
-    kl._app.process_task(data)
+on_task_received = (task) ->
+    kl._app.task = task
+    kl._app.process_task(task)
     return
 
-on_task_completed = (data) ->
-    kl.send_result(data)
+on_task_completed = (result) ->
+    kl.send_result(result)
     return
 
 # Kaylee worker event handlers
@@ -199,5 +199,5 @@ kl.action_received = new Event(on_action_received)
 kl.task_received = new Event(on_task_received)
 kl.task_completed = new Event(on_task_completed)
 kl.result_sent = new Event()
-kl.log = new Event()
 kl.server_error = new Event()
+kl.log = new Event()

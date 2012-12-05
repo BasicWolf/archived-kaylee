@@ -55,8 +55,8 @@ on_result_sent = () ->
 on_server_error = (message) ->
     kl_console.print("<span class='cerr'>SERVER ERROR: </span> #{message}")
 
-window.onerror = (message) ->
-    kl_console.print("<span class='cerr'>ERROR: </span> #{message}")
-
 on_log = (message) ->
     kl_console.print("<span class='cem'>LOG:</span> #{message}")
+
+window.onerror = (message) ->
+    kl_console.print("<span class='cerr'>ERROR: </span> #{message}")

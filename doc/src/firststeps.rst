@@ -67,8 +67,30 @@ not based on a random factor(s), the solution of ``t1`` and ``t2`` agree
 as well.
 
 The client-side of a project contains the code which actually solves the
-given tasks (see :ref:`clientapi`). To keep things simple the communication
-between client and server is carried out via JSON.
+given tasks (see :ref:`clientapi`). In general a user has to implement
+two simple callbacks in order to complete the projects client side
+(in coffeescript):
+
+.. code-block:: coffeescript
+
+  pj.init = (app_config) ->
+      # Initialize the project and import additional resources
+      # (scripts, stylesheets) if required.
+      return
+
+  pj.process_task = (task) ->
+      # Process the task, generate solution and notify Kaylee that
+      # the task has been completed.
+      result = {
+          'param' : value,
+          'other_param' : other_value,
+          ...
+      }
+      kl.task_completed.trigger(result)
+      return
+
+To keep things simple the communication between client and server is carried
+out via JSON.
 
 An important matter to remember: a single project can be instantiated into
 multiple *applications* that differ by project's configuration.

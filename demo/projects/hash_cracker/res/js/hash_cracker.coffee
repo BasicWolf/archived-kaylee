@@ -5,10 +5,10 @@ pj.init = (app_config) ->
     kl.include(app_config.md5_script, kl.project_imported.trigger)
     return
 
-pj.process_task = (data) ->
-    task_id = data.id
-    hash = data.hash_to_crack
-    salt = data.salt
+pj.process_task = (task) ->
+    task_id = task.id
+    hash = task.hash_to_crack
+    salt = task.salt
     key_id_start = task_id * pj.config.hashes_per_task
 
     for i in [0..pj.config.hashes_per_task - 1]

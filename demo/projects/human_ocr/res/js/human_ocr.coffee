@@ -5,9 +5,9 @@ pj.init = (app_config) ->
     kl.project_imported.trigger()
     return
 
-pj.process_task = (data) ->
+pj.process_task = (task) ->
     img =  document.getElementById('human_ocr_img');
-    img.src = "#{data.url}";
+    img.src = "#{task.url}";
     return
 
 pj._send = () ->
