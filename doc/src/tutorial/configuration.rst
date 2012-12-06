@@ -34,20 +34,13 @@ the ``app_mc_pi_1`` dict:
           'random_points' : 1000000,
           'tasks_count' : 10
       },
-      'storage' : {
-          'name' : 'MemoryPermanentStorage',
-      }
   },
 
 .. module:: kaylee
 
 The ``name`` entry indicates the Python class (:py:class:`kaylee.Project`
 subclass) used in the application. The ``config`` contains the keyword
-arguments passed to ``Project.__init__()``. The ``storage`` entry defines
-the :py:class:`permanent storage <PermanentStorage>` to which the results
-are saved. Here, :py:class:`MemoryPermanentStorage
-<kaylee.contrib.MemoryPermanentStorage>` is a simple in-memory storage from
-:ref:`kaylee.contrib <contrib>` package.
+arguments passed to ``Project.__init__()``.
 
 The final piece of the configuration is the controller. To keep things
 simple, let's use :py:class:`SimpleController
@@ -59,9 +52,19 @@ inside the ``app_mc_pi_1`` dictionary:
 
     'controller' : {
         'name' : 'SimpleController',
+
+        'permanent_storage' : {
+            'name' : 'MemoryPermanentStorage',
+        }
     }
 
-The last step is to add the application to the :config:`APPLICATIONS`
+The ``permanent_storage`` entry defines the :py:class:`permanent storage
+<PermanentStorage>` in which the results are saved. Here,
+:py:class:`MemoryPermanentStorage <kaylee.contrib.MemoryPermanentStorage>`
+is a simple in-memory storage from the :ref:`kaylee.contrib <contrib>`
+package.
+
+At last, the application has to be added to the :config:`APPLICATIONS`
 configuration field. Please make sure that you have only the ``app_mc_pi_1``
 application in the list (this is due to the client-side demo behaviour which
 picks up the first available application).

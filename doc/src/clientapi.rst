@@ -42,7 +42,7 @@ Manual projects
 ...............
 
 A "manual" project is something that cannot be cannot be calculated
-automatically and involves user interaction. 
+automatically and involves user interaction.
 
 
 A typical Kaylee project implements two callbacks in the ``pj`` namespce:
@@ -54,7 +54,7 @@ A typical Kaylee project implements two callbacks in the ``pj`` namespce:
    stylesheets should be imported here (e.g. via :js:func:`kl.include`).
 
    :param app_config: JSON-formatted application configuration received
-                      from Kaylee server.
+                      from Kaylee server
 
 .. js:function:: pj.process_task(task)
 
@@ -63,7 +63,7 @@ A typical Kaylee project implements two callbacks in the ``pj`` namespce:
    results are available the :js:func:`kl.task_completed` event should be
    triggered.
 
-   :param task: JSON-formatted task data.
+   :param task: JSON-formatted task data
 
 
 Core
@@ -105,7 +105,7 @@ Core
       Subscribes the node to an application (see :py:meth:`Kaylee.subscribe`).
       Triggers :js:func:`kl.node_subscribed`.
 
-      :param string app_name: application name.
+      :param string app_name: application name
 
    .. js:attribute:: kl.api.get_action
 
@@ -127,27 +127,39 @@ Core
 
    * **kl_worker_script** - defines a URL of Kaylee worker script.
 
+.. js:function:: kl.error(message)
+
+   Logs the message with "ERROR: " prefix and **throws**
+   :js:class:`kl.KayleeError`. This means that if ``kl.error`` is called
+   outside a ``try..catch`` block the exception will be thrown further unless
+   it reaches the global scope.
 
 .. js:function:: kl.get_action()
 
    Invokes :js:attr:`kl.api.get_action`.
 
+.. js:class:: kl.KayleeError(message)
+
+   Kaylee generic error class, extends ``Error``. The class should not thrown
+   directly, instead use call :js:func:`kl.error`.
+
+.. js:function:: kl.log(message)
+
+   Logs the message to browser console and triggers
+   :js:attr:`kl.message_logged`.
 
 .. js:attribute:: kl.node_id
 
    Current node id. Set when a node is registered by the server.
-
 
 .. js:function:: kl.register()
 
    Invokes :js:attr:`kl.api.register` after internal benchmark and minimum
    requirements (e.g. availability of web workers) tests.
 
-
 .. js:function:: kl.send_result(data)
 
    Invokes :js:attr:`kl.api.send_result`.
-
 
 .. js:function:: kl.subscribe(app_name)
 
@@ -179,8 +191,8 @@ Events
        // Unbind handler from the event.
        my_event.unbind(on_my_event)
 
-   :param function primary_handler: An optional event handler which will
-                                    be the first in the handlers queue.
+   :param function primary_handler: an optional event handler which will
+                                    be the first in the handlers queue
 
 
    .. js:function:: bind(handler)
@@ -209,7 +221,7 @@ Events tirggered by projects
    Should be triggered by a project when a task is compelted. This is
    usually done in :js:func:`pj.process_task`.
 
-   :param object result: task results (javascript object).
+   :param object result: task results (javascript object)
 
 
 Events triggered by Kaylee
@@ -220,33 +232,33 @@ Events triggered by Kaylee
    Triggered when an action from the server is received.
    See :py:meth:`Kaylee.get_action` for more details.
 
-.. js:function:: kl.log(message)
-
-   Triggered when a message requires to be logged.
-
-   :param string message: message to log.
-
 .. js:function:: kl.node_registered(config)
 
    Triggered when Kaylee registeres the node.
 
-   :param object config: Kaylee configuration.
+   :param object config: Kaylee configuration
 
 .. js:function:: kl.node_subscribed(app_config)
 
    Triggered when the node is subcsribed to an application.
 
-   :param object config: application configuration.
+   :param object config: application configuration
 
 .. js:function:: kl.node_unsubscibed()
 
    Triggered when Kaylee unsubscribes the node from an application.
 
+.. js:function:: kl.message_logged(message)
+
+   Triggered by :js:func:`kl.log`.
+
+   :param string message: the logged message
+
 .. js:function:: kl.result_sent(result)
 
    Triggered when Kaylee acknowledges the receipt of the task results.
 
-   :param object result: results sent to the server.
+   :param object result: results sent to the server
 
 .. js:function:: kl.server_error(message)
 
@@ -254,29 +266,31 @@ Events triggered by Kaylee
    (e.g. HTTP status 404 or 500).
 
    :param string message: Error message from the server. This can be used to
-                          e.g. log the server error traceback.
+                          e.g. log the server error traceback
 
 .. js:function:: kl.task_received(task)
 
    Triggered when the client receives a task from the server.
 
-   :param object task: task data.
+   :param object task: task data
 
 
 AJAX
 ----
 
-The ``AJAX`` module is available in both auto(worker-based) and manual(DOM-based)
-projects.
+The ``AJAX`` module provides convenient way to make ``GET/POST`` requests to
+the server. It also provides routines to load javascript and stylesheet files
+on-fly. The functions are accessible by both auto(worker-based) and
+manual(DOM-based) projects.
 
-.. js:function:: kl.get( url[, data] [, success(data)] [, error(message)] )
+.. js:function:: kl.get( url[, data] [, success(data)] [, fail(message)] )
 
    Invokes asynchronous GET request.
 
    :param url: request URL
    :param data: JavaScript object which is transformed to a query string
-   :param success: callback invoked in case of successful request.
-   :param error: callback invoked in of request failure.
+   :param success: callback invoked in case of successful request
+   :param fail: callback invoked in of request failure
 
    Simple usage case example::
 
@@ -285,14 +299,14 @@ projects.
      } );
 
 
-.. js:function:: kl.post( url [, data] [, success] [, error] )
+.. js:function:: kl.post( url [, data] [, success] [, fail] )
 
    Invokes asynchronous POST request with JSON data.
 
    :param url: request URL
    :param data: JSON object
-   :param success: callback invoked in case of successful request.
-   :param error: callback invoked in case of request failure.
+   :param success: callback invoked in case of successful request
+   :param fail: callback invoked in case of request failure
 
 
 .. js:function:: kl.include(urls, [, success] [, fail])
@@ -301,7 +315,7 @@ projects.
    Importing stylesheets is available for manual projects only.
 
    :param urls: a single URL or an array of URLs to import.
-   :param success: callback invoked in case of successful import.
+   :param success: callback invoked in case of successful import
    :param fail: callback invoked in case of failure (does not work for
                 stylesheets!)
 

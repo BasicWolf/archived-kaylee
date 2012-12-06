@@ -10,7 +10,7 @@ $(document).ready( () ->
     kl.task_received.bind(on_task_received)
     kl.task_completed.bind(on_task_completed)
     kl.result_sent.bind(on_result_sent)
-    kl.log.bind(on_log)
+    kl.message_logged.bind(on_message_logged)
     kl.server_error.bind(on_server_error)
     kl.register()
 )
@@ -55,7 +55,7 @@ on_result_sent = () ->
 on_server_error = (message) ->
     kl_console.print("<span class='cerr'>SERVER ERROR: </span> #{message}")
 
-on_log = (message) ->
+on_message_logged = (message) ->
     kl_console.print("<span class='cem'>LOG:</span> #{message}")
 
 window.onerror = (message) ->

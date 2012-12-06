@@ -48,7 +48,7 @@ kl.api =
                 kl.result_sent.trigger(result)
                 kl.action_received.trigger(action_data)
             ),
-            kl._default_server_error_handler
+            kl._preliminary_server_error_handler
         )
         return
 
@@ -80,10 +80,9 @@ kl.get_action = () ->
 kl.send_result = (data) ->
     if kl._app.subscribed
         if not data?
-            throw new kl.KayleeError('Cannot send data: '
-                'the value is empty.')
+            kl.error('Cannot send data: the value is empty.')
         if typeof(data) != 'object'
-            throw new kl.KayleeError('The returned result is not a JS object.')
+            kl.error('The returned result is not a JS object.')
         # before sending the result, check whether app.task contains
         # session data and attach it
         if SESSION_DATA_ATTRIBUTE of kl._app.task
@@ -97,16 +96,12 @@ kl._message_to_worker = (msg, data = {}) ->
     kl._app.worker.postMessage({'msg' : msg, 'data' : data})
     return
 
-kl._default_server_error_handler = (err) ->
+kl._preliminary_server_error_handler = (err) ->
     switch(err)
         when 'INVALID_STATE_ERR'
             @get_action() if kl._app.subscribed
     kl.server_error.trigger(err)
     return
-
-kl.assert = (condition, message) ->
-    if condition
-        throw new kl.KayleeError("ASSERT: #{message}")
 
 # Primary event handlers
 on_node_registered = (data) ->
@@ -125,8 +120,11 @@ on_node_subscribed = (config) ->
             app.worker.terminate() if app.worker?
             worker = new Worker(kl.config.WORKER_SCRIPT_URL)
             app.worker = worker
-            worker.onmessage = (e) -> worker_message_handler(e)
-            worker.onerror = (data) -> throw new kl.KayleeError(data.message)
+            worker.onmessage = (e) ->
+                worker_message_handler(e)
+            worker.onerror = (e) ->
+                msg = "Line #{e.lineno} in #{e.filename}: #{e.message}"
+                kl.error(msg)
             kl._message_to_worker('import_project', {
                 'kl_config' : kl.config,
                 'app_config' : app.config,
@@ -141,7 +139,7 @@ on_node_subscribed = (config) ->
             )
 
         else
-            throw new kl.KayleeError('Unknown Kaylee Project mode')
+            kl.error('Unknown Kaylee Project mode')
     return
 
 on_node_unsubscibed = (data) ->
@@ -183,12 +181,19 @@ worker_message_handler = (event) ->
     msg = data.msg
     mdata = data.data
     switch msg
-        when '__kl_log__' then kl.log.trigger(mdata)
-        when '__kl_error__' then throw new kl.KayleeError(mdata)
-        when '__kl_assert__' then kl.assert(mdata)
+        when '__kl_log__' then kl.log(mdata)
+        when '__kl_error__' then kl.error(mdata)
         when 'project_imported' then kl.project_imported.trigger()
         when 'task_completed' then kl.task_completed.trigger(mdata)
     return
+
+kl.log = (msg) ->
+    console.log('Kaylee: ' + msg)
+    kl.message_logged.trigger(msg)
+
+kl.error = (msg) ->
+    kl.log("ERROR: ")
+    throw new kl.KayleeError(msg)
 
 # Kaylee events
 kl.node_registered = new Event(on_node_registered)
@@ -199,5 +204,5 @@ kl.action_received = new Event(on_action_received)
 kl.task_received = new Event(on_task_received)
 kl.task_completed = new Event(on_task_completed)
 kl.result_sent = new Event()
+kl.message_logged = new Event()
 kl.server_error = new Event()
-kl.log = new Event()

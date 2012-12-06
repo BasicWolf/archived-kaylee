@@ -82,7 +82,7 @@ class Project(object):
         """
 
     def result_stored(self, task_id, data, storage):
-        """A callback invoked by the bound project's controller when
+        """A callback invoked by the bound controller when
         a result is successfully stored to a permanent storage.
 
         :param task_id: Task ID.

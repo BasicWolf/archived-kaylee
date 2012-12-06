@@ -25,15 +25,18 @@ on_worker_event = (e) ->
 
 addEventListener('message', on_worker_event, false)
 
-kl.log = (s) ->
-    post_message('__kl_log__', s)
+kl.log = (msg) ->
+    post_message('__kl_log__', msg)
+
+kl.error = (msg) ->
+    posg_message('__kl_error__', msg)
 
 post_message = (msg, data = {}) ->
     postMessage({'msg' : msg, 'data' : data})
 
 import_project = (kwargs) ->
     kl.config = kwargs.kl_config
-    importScripts(kwargs.app_config.__kl_project_script__)
+    kl.include(kwargs.app_config.__kl_project_script__)
     pj.init(kwargs.app_config)
 
 
@@ -43,7 +46,7 @@ import_project = (kwargs) ->
 # Kaylee Client to Server communication is established.
 #
 # Mostly the code below is used to keep the kaylee.coffee and
-# klworker.coffee interfaces a bit similar.
+# klworker.coffee interfaces similar.
 on_project_imported = () ->
     post_message('project_imported')
 
