@@ -24,8 +24,8 @@ The client-side application configuration is a JSON object passed from the
 server to the client during the application initialization process.
 What kind of configuration does the tutorial app client requires?
 First of all, a Node should know the number of random points to be generated.
-Second, the project requires the ``alea.js`` library. Fortunately the standard 
-``importScripts()`` function is available in HTML5 Web Workers, which loads 
+Second, the project requires the ``alea.js`` library. Fortunately the standard
+``importScripts()`` function is available in HTML5 Web Workers, which loads
 javascript code on the fly. Considering these requirements, the desired
 client-side configuration would be similar to::
 
