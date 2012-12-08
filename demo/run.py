@@ -24,7 +24,7 @@ def setup():
     sys.modules['kaylee_demo'] = KayleeDemo
 
 def main():
-    parser = argparse.ArgumentParser(description='Kaylee launcher')
+    parser = argparse.ArgumentParser(description='Kaylee demo launcher')
     parser.add_argument('-f', '--frontend', default = 'flask',
                         choices = ['flask', 'django'])
     args = parser.parse_args()

@@ -159,11 +159,11 @@ on_project_imported = () ->
     kl.get_action()
     return
 
-on_action_received = (data) ->
-    switch data.action
-        when 'task' then kl.task_received.trigger(data.data)
-        when 'unsubscribe' then kl.node_unsubscibed.trigger(data.data)
-        else throw new kl.KayleeError("Unknown action: #{data.action}")
+on_action_received = (action) ->
+    switch action.action
+        when 'task' then kl.task_received.trigger(action.data)
+        when 'unsubscribe' then kl.node_unsubscibed.trigger(action.data)
+        else kl.error("Unknown action: #{action.action}")
     return
 
 on_task_received = (task) ->

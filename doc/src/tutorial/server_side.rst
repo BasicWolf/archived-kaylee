@@ -21,8 +21,8 @@ Before continuing with the code, lets first think, what kind of
 configuration is required in order to initialize the project? As it was
 discussed in :ref:`tutorial-requirements` and implemented in
 :ref:`tutorial-client-side`, the configuration consists of the amount
-of random points, the URL of the ``alea.js`` script to be passed to
-the client and the total amount of tasks to be supplied by the application::
+of random points, the URL of the ``alea.js`` script and the total amount
+of tasks to be supplied by the application::
 
   def __init__(self, *args, **kwargs):
       super(MonteCarloPiProject, self).__init__(*args, **kwargs)
@@ -37,9 +37,9 @@ the client and the total amount of tasks to be supplied by the application::
 
 Here, the :py:attr:`Project.client_config` attribute is the configuration
 object sent to the client and ``self.tasks_count`` and ``self._tasks_counter``
-are the attributes related to the amount of tasks to be executed.
+are the attributes related to the amount of the supplied tasks.
 
-Next, let's implement the two basic abstract methods of Kaylee Project::
+Next, let's implement two tasks supplying Kaylee Project methods::
 
   def __getitem__(self, task_id):
       return { 'id' : task_id }
@@ -49,11 +49,11 @@ Next, let's implement the two basic abstract methods of Kaylee Project::
           self._tasks_counter += 1
           return self[self._tasks_counter]
       else:
-          raise StopIteration()
+          return None
 
 As you can see, :py:meth:`next_task() <Project.next_task>` in conjunction
-with :py:meth:`__getitem__() <Project.__getitem__>` yields a ``dict``
-object with an obligatory ``id`` derived from ``self._tasks_counter``.
+with :py:meth:`__getitem__() <Project.__getitem__>` returns a ``dict``
+with an obligatory ``id`` key and a value derived from ``self._tasks_counter``.
 
 The next important part of every project is the :py:meth:`normalize_result
 <Project.normalize_result>` method. It is used to verify and normalize the results
@@ -67,9 +67,9 @@ extracted from the parsed JSON object (dictionary)::
           raise InvalidResultError(data, '"pi" key was not found')
 
 
-And finally, :py:meth:`Project.result_stored` - the callback invoked
-by the bound controller. This is a good place to check, whether all
-the required data is collected and the application is completed::
+And finally, :py:meth:`Project.result_stored` - is the callback invoked
+by the bound controller. This is a good place to check, whether all the
+required data is collected hence, the application is completed::
 
   def result_stored(self, task_id, data, storage):
       if len(storage) == self.tasks_count:

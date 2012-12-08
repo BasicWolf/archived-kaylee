@@ -40,7 +40,7 @@ the ``app_mc_pi_1`` dict:
 
 The ``name`` entry indicates the Python class (:py:class:`kaylee.Project`
 subclass) used in the application. The ``config`` contains the keyword
-arguments passed to ``Project.__init__()``.
+arguments passed to ``MonteCarloPiProject.__init__()``.
 
 The final piece of the configuration is the controller. To keep things
 simple, let's use :py:class:`SimpleController

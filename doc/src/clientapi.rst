@@ -54,7 +54,7 @@ A typical Kaylee project implements two callbacks in the ``pj`` namespce:
    stylesheets should be imported here (e.g. via :js:func:`kl.include`).
 
    :param app_config: JSON-formatted application configuration received
-                      from Kaylee server
+                      from Kaylee server.
 
 .. js:function:: pj.process_task(task)
 
@@ -63,7 +63,7 @@ A typical Kaylee project implements two callbacks in the ``pj`` namespce:
    results are available the :js:func:`kl.task_completed` event should be
    triggered.
 
-   :param task: JSON-formatted task data
+   :param task: JSON-formatted task data.
 
 
 Core
@@ -209,7 +209,7 @@ Events
 
 
 Events tirggered by projects
-..............--------------
+............................
 
 .. js:function:: kl.project_imported()
 
@@ -221,28 +221,30 @@ Events tirggered by projects
    Should be triggered by a project when a task is compelted. This is
    usually done in :js:func:`pj.process_task`.
 
-   :param object result: task results (javascript object)
+   :param result: Task results (javascript object).
 
 
 Events triggered by Kaylee
 ..........................
 
-.. js:function:: kl.action_received(data)
+.. js:function:: kl.action_received
 
    Triggered when an action from the server is received.
    See :py:meth:`Kaylee.get_action` for more details.
+
+   :param action: The action data received from the server.
 
 .. js:function:: kl.node_registered(config)
 
    Triggered when Kaylee registeres the node.
 
-   :param object config: Kaylee configuration
+   :param config: Kaylee configuration
 
 .. js:function:: kl.node_subscribed(app_config)
 
    Triggered when the node is subcsribed to an application.
 
-   :param object config: application configuration
+   :param app_config: Application configuration.
 
 .. js:function:: kl.node_unsubscibed()
 
@@ -252,27 +254,27 @@ Events triggered by Kaylee
 
    Triggered by :js:func:`kl.log`.
 
-   :param string message: the logged message
+   :param message: The logged message.
 
 .. js:function:: kl.result_sent(result)
 
-   Triggered when Kaylee acknowledges the receipt of the task results.
+   Triggered when Kaylee acknowledges receiving the result.
 
-   :param object result: results sent to the server
+   :param result: The result sent to the server.
 
 .. js:function:: kl.server_error(message)
 
    Triggered when a request to server has not been completed successfully
    (e.g. HTTP status 404 or 500).
 
-   :param string message: Error message from the server. This can be used to
-                          e.g. log the server error traceback
+   :param message: Error message from the server. This can be used to
+                   e.g. log the server error traceback
 
 .. js:function:: kl.task_received(task)
 
    Triggered when the client receives a task from the server.
 
-   :param object task: task data
+   :param task: The received task.
 
 
 AJAX
@@ -287,10 +289,10 @@ manual(DOM-based) projects.
 
    Invokes asynchronous GET request.
 
-   :param url: request URL
-   :param data: JavaScript object which is transformed to a query string
-   :param success: callback invoked in case of successful request
-   :param fail: callback invoked in of request failure
+   :param url: Request URL.
+   :param data: JavaScript object which is transformed to a query string.
+   :param success: The callback invoked in case of successful request.
+   :param fail: The callback invoked in of request failure.
 
    Simple usage case example::
 
@@ -303,10 +305,10 @@ manual(DOM-based) projects.
 
    Invokes asynchronous POST request with JSON data.
 
-   :param url: request URL
-   :param data: JSON object
-   :param success: callback invoked in case of successful request
-   :param fail: callback invoked in case of request failure
+   :param url: Request URL.
+   :param data: JSON object.
+   :param success: The callback invoked in case of successful request.
+   :param fail: The callback invoked in case of request failure.
 
 
 .. js:function:: kl.include(urls, [, success] [, fail])
@@ -314,10 +316,10 @@ manual(DOM-based) projects.
    Dynamically imports javascript (``*.js``) or stylesheet ``*.css`` files.
    Importing stylesheets is available for manual projects only.
 
-   :param urls: a single URL or an array of URLs to import.
-   :param success: callback invoked in case of successful import
-   :param fail: callback invoked in case of failure (does not work for
-                stylesheets!)
+   :param urls: A single URL or an array of URLs to import.
+   :param success: The callback invoked in case of successful import.
+   :param fail: The callback invoked in case of failure (does not work for
+                stylesheets!).
 
 
 .. [1] http://en.wikipedia.org/wiki/Web_worker

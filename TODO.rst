@@ -1,10 +1,14 @@
-v0.3 <-- Future
-----
-
-* Google App Engine support
 * Better error/exceptions mechanism on client
 * Client: operations timeout (e.g. project import timeout)
 
+v0.4 <-- Far future
+----
+* Google App Engine support
+
+v0.3 <-- Future
+----
+* Kaylee Console API
+* Uploading projects through Console API
 
 v0.2 <-- dev
 ----
@@ -23,6 +27,3 @@ v0.2 <-- dev
 + Modify Storages API, so that PermanentStorage and TemporalStorage
   interfaces look the same.
 
-# serializable -> _serializable_
-
-# Rename "task results" -> "task solutions"

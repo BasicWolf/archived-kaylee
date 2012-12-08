@@ -4,34 +4,40 @@ Step 3: Client-Side Code
 ========================
 
 As you may already know, the client-side of Kaylee is written in
-`CoffeeScript <http://coffeescript.org/>`_. But there is nothing
-that prevents you from writing the project in pure JavaScript!
+`CoffeeScript <http://coffeescript.org/>`_. But there is nothing that
+prevents you from writing the project in pure JavaScript!
 Nevertheless, I highly recommend to spend 30 minutes mastering the basics
 of CoffeeScript to understand the code below.
 
 The client-side code of Kaylee projects basically consists of two callbacks
 in ``pj`` namespace: :js:func:`pj.init(app_config) <pj.init>` and
 :js:func:`pj.process_task(task) <pj.process_task>`.
-The ``pj.init()`` callback initializes projects (e.g. imports 3d party libraries,
-setups configuration etc.). Its arguments are global Kaylee and application
-configurations. It is called after the project script is fully loaded::
+The ``pj.init()`` callback initializes projects (e.g. imports 3d party
+libraries, setups configuration etc.). Its arguments are global Kaylee and
+application configurations. It is called after the project script is fully
+loaded:
+
+.. code-block:: coffeescript
 
   pj.init = (app_config) ->
       pj.config = app_config
       kl.include(app_config.alea_script, kl.project_imported.trigger)
       return
 
-Here, ``alea.js`` is loaded from the URL passed as the application configuration
-value. The configuration is also stored to ``pj.config`` for later use.
-The :js:func:`kl.project_imported` event is triggered as a successful callback
-by :js:func:`kl.include` in case ``alea.js`` has been loaded successfully.
-This is an important part of the project, as Kaylee is waiting for
-:js:func:`kl.project_imported` to be triggered in order to continue executing
-the project.
+Here, ``alea.js`` is loaded from the URL passed as the application
+configuration value. The configuration is also stored to ``pj.config`` for
+later use. The :js:func:`kl.project_imported` event is triggered by
+:js:func:`kl.include` in case ``alea.js`` has been loaded successfully.
 
-The :js:func:`process_task` callback is called every time when Kaylee client
-receives a task from the server. The ``task`` argument is a JSON-formatted
-task data received from the server::
+.. note:: Triggering the :js:func:`kl.project_imported` event is an
+          important part of the process as Kaylee is waiting for the
+          event to be triggered in order to continue communicating with
+          the server-side of the project.
+
+:js:func:`pj.process_task` is called every time Kaylee client receives
+a task from the server. The ``task`` argument is a JSON-formatted task data:
+
+.. code-block:: coffeescript
 
   pj.process_task = (task) ->
       random = new Alea(task.id)
@@ -47,8 +53,7 @@ task data received from the server::
 
 Here, the value of ``pi`` is computed via the the Monte-Carlo algorithm.
 To notify Kaylee  that the task has been completed the
-:js:func:`kl.task_completed` callback with the computation results is
-triggered.
+:js:attr:`kl.task_completed` event is triggered.
 
 If you are comfortable with the code above, copy-paste it to
 ``monte_carlo_pi/js/monte_carlo_pi.coffee``.

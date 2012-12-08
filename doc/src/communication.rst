@@ -3,13 +3,14 @@
 Kaylee communication
 ====================
 
+.. module:: kaylee
 
 Tasks and results
 -----------------
 
 As it has been mentioned many times, Kaylee communicates via JSON. On
 server-side a task data returned by a ``Project`` is a JSON-serializable
-``dict`` with a mandatory ``id`` key in it::
+dict with a mandatory ``id`` key in it::
 
   { 'id' : 't1' }
 
@@ -27,17 +28,17 @@ Session data
 
 The famous `reCAPTCHA`_ project provides a very efficient CAPTCHA mechanism
 and at the same time helps digitizing the text from paper books. reCAPTCHA
-provides a task of recognizing two words from a picture. One of the words
+gives a task of recognizing two words from a picture. One of the words
 is a piece of a scanned book page, while another is generated artificially.
 `reCAPTCHA` has to "remember" that a particular user has received a
 particular artificial word in order to validate the user's input.
 
-How would one solve a similar problem with Kaylee? Kaylee provides an
-efficient and simple
-:class:`Session data managers <kaylee.session.SessionDataManager>` mechanism
-to keep Kaylee <-> Node session data between getting a task and accepting
-a result requests. In a case of solving reCAPTCHA issue, the artificial
-word should be stored as a session variable.
+How would one solve a similar problem with Kaylee? Kaylee has an efficient
+and simple
+:class:`Session data managers <kaylee.session.SessionDataManager>`
+mechanism to keep Kaylee <-> Node session data between getting a task and
+accepting a result requests. In case of solving the `reCAPTCHA` issue, the
+artificial word should be stored as a session variable.
 
 In order to become a `session variable`, the variable should start with
 a hash (``'#'``) symbol, for example::
@@ -48,18 +49,17 @@ a hash (``'#'``) symbol, for example::
       '#artificial_word' : 'abyrvalg'
   }
 
-The session data manager scans the outgoing tasks and stores all the
-session variables unless the Node returns a result. In other words,
-before the above task is dispatched to the Node, it should be stripped
-of the session variables::
+The session data manager scans the outgoing tasks and stores all the session
+variables unless the Node returns a result. In other words, before the above
+task is dispatched to the Node, it is stripped of the session variables::
 
   {
       'id' : '1',
       'image_path' : 'http:/my.site.com/captcha/tmp/ahU2jcXz.jpg',
   }
 
-And as soon as the results arrive, the session variable is attached to
-the result::
+The session variable is attached to the result the moment it arrives to the
+server::
 
   {
       'word1' : 'Enormous',
@@ -71,11 +71,13 @@ the result::
 Built-in session data managers
 ..............................
 
+
+
 Currently there are three session data managers available out of the box:
 
-* :class:`NodeSessionDataManager <kaylee.session.PhonySessionDataManager>`
-  - the default manager which tracks the tasks and throws a
-  :class:`KayleeError` in case that a task contains session variables.
+* :class:`PhonySessionDataManager <kaylee.session.PhonySessionDataManager>`
+  - the default manager which throws :class:`KayleeError` if a task contains
+  session variables.
 
 * :class:`NodeSessionDataManager <kaylee.session.NodeSessionDataManager>`
   - keeps the session data attached to :attr:`Node.session_data`.
@@ -91,20 +93,18 @@ Currently there are three session data managers available out of the box:
 Default API
 -----------
 
-Although Kaylee comes with a default communication API, a user is free to
+Although Kaylee comes with a default communication API, the user is free to
 communicate with Kaylee in any way possible as long as the transferred data
 is kept in JSON format. The default API is implemented on both server
 (:ref:`contrib front-ends <contrib_front_ends>`) and client side
 (:js:attr:`kl.api`) is described below.
-
-.. module:: kaylee
 
 Register
 ........
 
 =========== ==========================
 Server      :py:meth:`Kaylee.register`
-Client      :js:attr:`kl.api.register`
+Client      :js:func:`kl.api.register`
 URL         ``/kaylee/register``
 HTTP Method ``GET``
 =========== ==========================
@@ -115,7 +115,7 @@ Subscribe
 
 =========== ===============================================
 Server      :py:meth:`Kaylee.subscribe`
-Client      :js:attr:`kl.api.subscribe`
+Client      :js:func:`kl.api.subscribe`
 URL         ``/kaylee/apps/{app_name}/subscribe/{node_id}``
 HTTP Method ``POST``
 POST data   null
@@ -130,7 +130,7 @@ Get Action
 
 =========== =============================
 Server      :py:meth:`Kaylee.get_action`
-Client      :js:attr:`kl.api.get_action`
+Client      :js:func:`kl.api.get_action`
 URL         ``/kaylee/actions/{node_id}``
 HTTP Method ``GET``
 Parameters  * ``node_id`` - Node ID.
@@ -142,14 +142,11 @@ Accept Results
 
 =========== ===============================
 Server      :py:meth:`Kaylee.accept_result`
-Client      :js:attr:`kl.api.send_result`
+Client      :js:func:`kl.api.send_result`
 URL         ``/kaylee/actions/{node_id}``
 HTTP Method ``POST``
 Post Data   Calculation results.
 =========== ===============================
-
-\
-\
 
 
 

@@ -6,14 +6,14 @@ Auto Filters
 .. module:: kaylee
 
 The internal Kaylee data flows are passed through Controllers and Projects.
-Every result received by controller is checked for consistency, validated
-and normalized. For example::
+For example::
 
   class MyController(Controller):
       def accept_result(self, node, data):
 
-          # if the '__kl_result__' is Flase, set data to None,
-          # which means that data will not be stored to the project's storage.
+          # if data['__kl_result__'] is Flase, set data to None,
+          # which means that there is no need to store the data to the
+          # permanent storage
           try:
               if data['__kl_result__'] == False:
                   data = None

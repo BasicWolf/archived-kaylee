@@ -91,7 +91,7 @@ class Node(object):
 
     @property
     def session_data(self):
-        """Binary session data (if any)."""
+        """Binary session data stored in ``str``."""
         return self._session_data
 
     @session_data.setter

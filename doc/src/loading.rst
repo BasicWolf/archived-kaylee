@@ -13,7 +13,7 @@ prepared and how Kaylee object is loaded.
 Configuration
 -------------
 Kaylee configuration is an object which holds some :ref:`config <config>`
-parameters. For example: the applications, worker script URI etc.
+parameters like the applications, worker script URI etc.
 
 There are several ways of defining Kaylee configuration:
 
@@ -39,9 +39,8 @@ There are several ways of defining Kaylee configuration:
 
 * An absolute *path* to a Python module file.
 
-Finally, Kaylee can be manually loaded without a configuration object
-at all, but we will talk about this method a bit later.
-Use the method that suits you best.
+Finally, Kaylee can be instantiated manually, but that is recommended for
+testing purposes only.
 
 
 Loading Kaylee Object

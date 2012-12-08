@@ -23,6 +23,3 @@ repository: http://github.com/BasicWolf/kaylee-tutorial-app
    configuration
    compiling
    running
-
-\
-\
