@@ -9,9 +9,8 @@ Before starting the new application please make sure that you are able to
 run Kaylee :ref:`demo` which will guarantee that you will be able to run
 the tutorial application.
 
-In case you'd like to get the whole source code of the tutorial application
-at once, visit the following repository:
-http://github.com/BasicWolf/kaylee-tutorial-app
+The full source code of the tutorial application is available in the following
+repository: http://github.com/BasicWolf/kaylee-tutorial-app
 
 .. toctree::
    :maxdepth: 1
@@ -24,3 +23,6 @@ http://github.com/BasicWolf/kaylee-tutorial-app
    configuration
    compiling
    running
+
+\
+\

@@ -24,9 +24,8 @@ The client-side application configuration is a JSON object passed from the
 server to the client during the application initialization process.
 What kind of configuration does the tutorial app client requires?
 First of all, a Node should know the number of random points to be generated.
-Second, the project requires the ``alea.js`` library. Fortunately the standard
-``importScripts()`` function is available in HTML5 Web Workers, which loads
-javascript code on the fly. Considering these requirements, the desired
+Second, the project requires the ``alea.js`` library which can be loaded
+on-fly via :js:func:`kl.include`. Considering these requirements, the desired
 client-side configuration would be similar to::
 
   {
@@ -35,7 +34,7 @@ client-side configuration would be similar to::
   }
 
 The server-side part of the application should be aware of the amount of
-completed tasks that would be enough to announce the computing process
+the completed tasks that would be enough to announce the computing process
 to be `completed`::
 
   {
@@ -45,10 +44,9 @@ to be `completed`::
 
 Tasks and Solutions Data
 ------------------------
-Every random numbers sequence needs a seed to start with. Fortunately,
-that kind of seed already exists in every task: it is unique task's ``id``
-provided by the project. Even a numerical auto-incremental id is enough
-to serve as a seed::
+Every random numbers sequence needs a seed to start with. That kind of seed
+already exists in every task: it is a unique ``id`` provided by the project.
+Even a numerical id is enough to serve as a seed::
 
   {
       'id' : 1

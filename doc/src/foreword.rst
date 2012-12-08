@@ -55,7 +55,7 @@ distributed/volunteer computing projects with the same elegance as
 
 
 Where should you go from here? I suggest continuing with :ref:`installation` or
-:ref:`firststeps`.
+:ref:`basics`.
 
 .. _BOINC: http://boinc.berkeley.edu/
 .. _SETI: http://setiathome.berkeley.edu/

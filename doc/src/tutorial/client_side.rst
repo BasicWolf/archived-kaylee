@@ -6,12 +6,12 @@ Step 3: Client-Side Code
 As you may already know, the client-side of Kaylee is written in
 `CoffeeScript <http://coffeescript.org/>`_. But there is nothing
 that prevents you from writing the project in pure JavaScript!
-Mastering the basics of CoffeeScript takes less than 30 minutes
-and that is the language used in the tutorial application.
+Nevertheless, I highly recommend to spend 30 minutes mastering the basics
+of CoffeeScript to understand the code below.
 
 The client-side code of Kaylee projects basically consists of two callbacks
-in ``pj`` namespace: :js:func:`pj.init(kl_config, app_config) <pj.init>` and
-:js:func:`pj.on_task_received(task) <pj.on_task_received>`.
+in ``pj`` namespace: :js:func:`pj.init(app_config) <pj.init>` and
+:js:func:`pj.process_task(task) <pj.process_task>`.
 The ``pj.init()`` callback initializes projects (e.g. imports 3d party libraries,
 setups configuration etc.). Its arguments are global Kaylee and application
 configurations. It is called after the project script is fully loaded::

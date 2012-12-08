@@ -76,7 +76,7 @@ will end up in it::
 
   $ pip install kaylee
 
-You can install Kaylee front-end(s) as well::
+You can install the supported front-end(s) as well::
 
   $ pip install flask django
 
@@ -85,12 +85,13 @@ You can install Kaylee front-end(s) as well::
 
 Demo
 ----
-To test whether you have install Kaylee successfully, let's run
-a demo "Hash cracker" application. Download the demo archive
-from http://github.com/BasicWolf/kaylee/downloads and extract
-it to a directory under the virtualenv in which Kaylee is installed.
+To test whether Kaylee has been installed successfully, run the
+"Hash cracker" demo application. Download the demo archive from
+http://github.com/BasicWolf/kaylee/downloads and extract it to a
+directory under the virtualenv in which Kaylee is installed
+(e.g. ``mykaylee/demo``).
 
-To start the demo activate the virtual environment, run
+To start the demo, activate the virtual environment, run
 ``python demo/run.py`` and open a browser page on the following URL:
 http://127.0.0.1:5000.
 
@@ -130,7 +131,7 @@ which says what the cracked hash key was:
   The cracked hash key is: kl
   ...
 
-Continue with :ref:`firststeps`.
+Continue with :ref:`basics`.
 
 .. _Flask: http://flask.pocoo.org
 .. _Django: http://djangoproject.com

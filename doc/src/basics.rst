@@ -1,19 +1,19 @@
-.. _firststeps:
+.. _basics:
 
-First Steps
-===========
+Basic concepts
+==============
 
-This section briefly describes the concepts used in Kaylee with a minimum
-of technical details.
+This section briefly describes the basic concepts used in Kaylee with a
+minimum of technical details.
 
 .. module:: kaylee
 
 Server and Nodes
 ----------------
 
-Kaylee is divided in two parts: the server-side Python brains which control
-the tasks distribution, the results (solutions) collection and the
-client-side Nodes communication processes.
+Kaylee is consists of two parts: the server-side Python brains part, which
+distributes the tasks and gathers the results and the client-side Nodes
+running in users' browsers.
 
 The server performs the following routines:
 
@@ -22,13 +22,13 @@ The server performs the following routines:
     a unique :py:class:`node id <NodeID>`. The information about the nodes
     is maintained on the server via an instance of :py:class:`NodesRegistry`.
   * Subscribes the nodes to applications. During the subscription process
-    the node loads and initializes the project client-side Scripture's(s).
+    the node loads and initializes the application's client-side script.
   * Dispatches the tasks to the nodes. At this stage the subscribed nodes
     receive the tasks, solve them and send the results back to the server.
   * Collects the results from the nodes. Kaylee decides whether the results
     are satisfactory and stores them to a permanent storage.
 
-.. _firststep_projects_and_tasks:
+.. _basics_projects_and_tasks:
 
 
 Projects and Tasks
@@ -62,20 +62,28 @@ that the following code::
   t2 = project[t1['id']]
   t1 == t2
 
-should always be true, so that in cases where the computation algorithm is
-not based on a random factor(s), the solution of ``t1`` and ``t2`` agree
-as well.
+should always be true, for the tasks that contain no random data.
+In any case ``t1 == t2`` or ``t1 != t2`` (because the random factors of
+the tasks differ), the normalized results should always agree::
+
+  # t1['id'] == t2'['id']
+  # but for instance t1 != t2, as t1['c'] == 10, t2['c'] == 20
+  r1 = project.normalize(result_of_t1)
+  r2 = project.normalize(result_of_t2)
+  r1 == r2 # should be still True, for tasks with the similar ID.
 
 The client-side of a project contains the code which actually solves the
 given tasks (see :ref:`clientapi`). In general a user has to implement
-two simple callbacks in order to complete the projects client side
+two simple callbacks in order to complete the project's client side
 (in coffeescript):
 
 .. code-block:: coffeescript
 
   pj.init = (app_config) ->
-      # Initialize the project and import additional resources
-      # (scripts, stylesheets) if required.
+      # Initialize the project, import additional resources
+      # (scripts, stylesheets) if any and notify Kaylee that
+      # the project has been imported successfully.
+      kl.project_imported.trigger()
       return
 
   pj.process_task = (task) ->
@@ -90,15 +98,27 @@ two simple callbacks in order to complete the projects client side
       return
 
 To keep things simple the communication between client and server is carried
-out via JSON.
+out via JSON-formatted ``key-value`` (Python ``dict`` or JavaScript ``object``)
+objects.
 
-An important matter to remember: a single project can be instantiated into
-multiple *applications* that differ by project's configuration.
-For example, a project which is used to model a complex weather process can
-be instantiated based on various initial wind, humidity, temperature etc.
-conditions. Each of this instances will work as a separate Kaylee
-:ref:`Application <firststep_application>`.
+Finally, a project has to `verify` and `normalize` the results. This is done
+via the :meth:`Project.normalize_result(task_id, result)
+<Project.normalize_result>` routine. `Verifying` a result means confirming
+that it is correct, while `normalizing` a result means converting it to a
+common form which has enough information to be stored to the permanent
+results storage. For example::
 
+  def normalize_result(self, task_id, result):
+      try:
+          speed = int(result['speed'])
+          if speed < 0:
+              raise InvalidResultError(result, 'The value of speed '
+                                               'cannot be negative.')
+          # The speed value is the only value returned
+          return result['speed']
+      except KeyError as e:
+          raise InvalidResultError(result, 'The "speed" key was not '
+                                           'found in result.')
 
 Controllers
 -----------
@@ -151,7 +171,7 @@ Is it necessary to use a temporal controller storage? Of course not!
 If the controller does not need to keep the intermediate results it can
 store them right to the permanent result.
 
-.. _firststep_application:
+.. _basics_application:
 
 
 Applications
@@ -160,6 +180,14 @@ By combining controllers, storages and projects users create Kaylee
 `Applications`. Speaking in technical terms, an application
 is an instance of :class:`Controller` class with bound :class:`Project`,
 :class:`TemporalStorage` and :class:`PermanentStorage` objects.
+
+.. note:: A single project can be instantiated into
+  multiple *applications* that differ by project's configuration.
+  For example, a project which is used to model a complex weather process can
+  be instantiated based on various initial wind, humidity, temperature etc.
+  conditions. Each of these project instances will work as a separate Kaylee
+  Application.
+
 
 Continue with :ref:`tutorial`.
 

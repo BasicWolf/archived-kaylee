@@ -10,7 +10,7 @@ instructions for deployment of Kaylee.
 
    foreword
    installation
-   firststeps
+   basics
    tutorial/index
    loading
    communication
