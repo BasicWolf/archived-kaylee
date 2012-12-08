@@ -13,7 +13,7 @@ from abc import abstractmethod
 
 from .util import AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS
 from .errors import KayleeError
-from .filters import ignore_null_result
+from .filters import ignore_none_result
 
 
 AUTO_PROJECT_MODE = 0x2
@@ -33,7 +33,7 @@ class Project(object):
     __metaclass__ = AutoFilterABCMeta
     auto_filter = BASE_FILTERS | CONFIG_FILTERS
     auto_filters = {
-        'normalize_result' : [ignore_null_result, ],
+        'normalize_result' : [ignore_none_result, ],
     }
 
     #: Project mode.

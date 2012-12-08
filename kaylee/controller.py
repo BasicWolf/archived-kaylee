@@ -16,7 +16,7 @@ from datetime import datetime
 from .util import AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS
 from .errors import ApplicationCompletedError
 from .filters import (normalize_result, app_completed_guard,
-                      ignore_null_result)
+                      ignore_none_result)
 
 #: The Application name regular expression pattern which can be used in
 #: e.g. web frameworks' URL dispatchers.
@@ -53,9 +53,10 @@ class Controller(object):
 
     auto_filter = BASE_FILTERS | CONFIG_FILTERS
     auto_filters = {
-        'get_task' : [app_completed_guard, ],
         'accept_result' : [normalize_result, app_completed_guard],
-        'store_result' : [ignore_null_result],
+        'get_task'      : [app_completed_guard],
+        'store_result'  : [ignore_none_result],
+        'subscribe'     : [app_completed_guard],
     }
 
     _app_name_re = re.compile('^{}$'.format(app_name_pattern))
@@ -71,7 +72,6 @@ class Controller(object):
         self.temporal_storage = temporal_storage
         self._state = ACTIVE
 
-    @app_completed_guard
     def subscribe(self, node):
         """Subscribes the node for current application.
 

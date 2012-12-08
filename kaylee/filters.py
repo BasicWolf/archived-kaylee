@@ -44,17 +44,17 @@ def app_completed_guard(f):
 
 
 def normalize_result(f):
-    """The filter normalizes the data before passing it further.
+    """The filter normalizes the result before passing it further.
 
-    *Signature*: ``(self, node, data)``
+    *Signature*: ``(self, node, result)``
 
     .. note:: This is a base filter applied to :meth:`
               Controller.accept_result`.
     """
     @wraps(f)
-    def wrapper(self, node, data):
-        data = self.project.normalize_result(node.task_id, data)
-        return f(self, node, data)
+    def wrapper(self, node, result):
+        result = self.project.normalize_result(node.task_id, result)
+        return f(self, node, result)
     return wrapper
 
 
@@ -65,39 +65,39 @@ def kl_result_filter(f):
     The filter searches for ``'__kl_result__'`` key in the result and acts
     according to the bound value:
 
-    * :data:`NO_SOLUTION` : The result passed to the decorated function is
+    * :result:`NO_SOLUTION` : The result passed to the decorated function is
       turned to `None`. It can be ignored by :meth:`Project.store_result`
       routine.
 
-    *Signature*: ``(self, node, data)``
+    *Signature*: ``(self, node, result)``
     """
     @wraps(f)
-    def wrapper(self, node, data):
+    def wrapper(self, node, result):
         try:
-            kl_result = data['__kl_result__']
+            kl_result = result['__kl_result__']
         except (KeyError, TypeError):
-            return f(self, node, data)
+            return f(self, node, result)
 
         if kl_result == NO_SOLUTION:
-            data = None
-            return f(self, node, data)
+            result = None
+            return f(self, node, result)
         elif kl_result == NEXT_TASK:
             return
 
     return wrapper
 
 
-def ignore_null_result(f):
-    """Ignores ``None`` data by **not** calling the wrapped method.
+def ignore_none_result(f):
+    """Ignores the ``None`` result by **not** calling the wrapped method.
 
-    *Signature*: ``(self, task_id, data)``
+    *Signature*: ``(self, task_id, result)``
 
     .. note:: This is a base filter applied to :meth:`Project.normalize_result`
-              and :meth:`Project.store_result`.
+              and :meth:`Controller.store_result`.
     """
     @wraps(f)
-    def wrapper(self, task_id, data):
-        if data is not None:
-            return f(self, task_id, data)
+    def wrapper(self, task_id, result):
+        if result is not None:
+            return f(self, task_id, result)
         return None
     return wrapper
