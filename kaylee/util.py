@@ -14,14 +14,8 @@ import importlib
 import random
 import string
 from datetime import timedelta
-from abc import ABCMeta
 
 from .errors import KayleeError
-
-
-NO_AUTO_FILTERS = 0x0
-BASE_FILTERS = 0x2
-CONFIG_FILTERS = 0x4
 
 def parse_timedelta(s):
     try:
@@ -108,28 +102,6 @@ class LazyObject(object):
 
     # introspection support:
     __dir__ = _new_method_proxy(dir)
-
-
-
-class AutoFilterABCMeta(ABCMeta):
-    """The Abstract Base Metaclass which also adds auto filters
-    functionality. Maintains ``auto_filter`` and ``auto_filters``
-    attributes of the class.
-    """
-
-    def __new__(mcs, name, bases, dct):
-        cls = super(AutoFilterABCMeta, mcs).__new__(mcs, name, bases, dct)
-        if cls.auto_filter & BASE_FILTERS:
-            # wrap the methods
-            for method_name, filters in cls.auto_filters.iteritems():
-                method = getattr(cls, method_name)
-                for f in filters:
-                    method = f(method)
-                setattr(cls, method_name, method)
-        return cls
-
-    def __init__(mcs, name, bases, dct):
-        super(AutoFilterABCMeta, mcs).__init__(name, bases, dct)
 
 
 def random_string(length, alphabet = None, lowercase = True, uppercase = True,

@@ -42,13 +42,13 @@ Project and controller configuration are also Python dictionaries:
   'project' : {
       'name' : 'ProjectClassName',
       'config' : { ...  },             # optional
-      'filters' : { ... },             # optional
+      'decorators' : { ... },             # optional
   }
 
   'controller' : {
       'name' : 'ControllerClassName',
       'config' : { ... },              # optional
-      'filters' : { ... },             # optional
+      'decorators' : { ... },             # optional
   }
 
 Project and Controller ``config`` sections define the dictionary
@@ -61,19 +61,19 @@ which is passed as ``**kwargs`` during class initialization.
       'opt2' : 10,
   }
 
-The filters are defined as the following dictionary.
-(for more information see :ref:`auto_filters`):
+The decorators are defined as the following dictionary.
+(for more information see :ref:`auto_decorators`):
 
 .. code-block:: python
 
   {
-      method_name_1 : ["filter_function_name_x", ...],
-      method_name_2 : ["filter_function_name_x", ...],
+      method_name_1 : ["decorator_function_name_x", ...],
+      method_name_2 : ["decorator_function_name_x", ...],
   }
 
-Both ``config`` and ``filters`` fields are optional.
+Both ``config`` and ``decorators`` fields are optional.
 It means that there is no need to add any of them if e.g. configuration
-or filters are not required.
+or decorators are not required.
 
 
 .. config:: PROJECTS_DIR

@@ -14,7 +14,7 @@ instructions for deployment of Kaylee.
    tutorial/index
    loading
    communication
-   auto_filters
+   auto_decorators
    contrib
 
 API Reference

@@ -19,7 +19,8 @@ from collections import defaultdict
 import kaylee.contrib
 from .core import Kaylee
 from .errors import KayleeError
-from .util import LazyObject, import_object, CONFIG_FILTERS
+from .util import LazyObject, import_object
+from .decorators import CONFIG_DECORATORS
 from . import storage, controller, project, node, session
 
 import logging
@@ -223,18 +224,18 @@ def _load_controller(conf):
     cobj = ccls(app_name, project, pstorage, tstorage,
                 **conf['controller'].get('config', {}))
 
-    if not ccls.auto_filter & CONFIG_FILTERS:
+    if not ccls.auto_decorators_flags & CONFIG_DECORATORS:
         return cobj
 
-    # dynamically decorate controller methods with filters
-    # (if required and if there are any filters defined).
-    if 'filters' in conf['controller']:
-        filters = conf['controller']['filters']
-        for method_name, filters in filters.iteritems():
+    # dynamically decorate controller methods with auto-decorators
+    # (if required and if there are any decorators defined).
+    if 'decorators' in conf['controller']:
+        decorators = conf['controller']['decorators']
+        for method_name, decorators in decorators.iteritems():
             method = getattr(cobj, method_name)
-            for filter_name in filters:
-                filter_decorator = import_object(filter_name)
-            decorated = types.MethodType(filter_decorator(method.__func__),
+            for decorator_name in decorators:
+                decorator = import_object(decorator_name)
+            decorated = types.MethodType(decorator(method.__func__),
                                          cobj, None)
             setattr(cobj, method_name, decorated)
     return cobj

@@ -136,19 +136,18 @@ results' integrity and accuracy. For more details see
 :py:class:`Controller API <Controller>`).
 
 
-Auto Filters
-------------
-Auto-filtering is yet another feature of Kaylee's "write less do more"
-principle. Filters are Python decorators which can be automatically
-applied to Controllers' and Projects' methods. They help automating
-lots of data integrity checks and conversions in any part of the
-the ``Client <-> Server <-> Controller <-> Project`` inter-communication.
-For example, the
-:py:func:`normalize_result <kaylee.filters.normalize_result>` filter
+Auto Decorators
+---------------
+Auto-decoratoring is yet another feature of Kaylee's "write less do more"
+principle. The decorators can be automatically applied to Controllers'
+and Projects' methods. They help automating lots of data integrity checks
+and conversions in any part of the ``Client <-> Server <-> Controller
+<-> Project`` inter-communication. For example, the
+:py:func:`normalize_result <kaylee.decorators.normalize_result>` decorator
 takes care of calling result normalization and validation routines before
-passing it to the decorated function. And all the methods implementing
-:py:meth:`Contoller.accept_result` are usually decorated automatically,
-so that a user gets already validated and normalized result.
+passing it to the decorated method. And all the methods implementing
+:py:meth:`Contoller.accept_result` are decorated automatically, so that a
+user gets already validated and normalized result.
 
 
 Storages

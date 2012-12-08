@@ -12,11 +12,13 @@
 import re
 from abc import abstractmethod, abstractproperty
 from datetime import datetime
-
-from .util import AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS
 from .errors import ApplicationCompletedError
-from .filters import (normalize_result, app_completed_guard,
-                      ignore_none_result)
+from .decorators import (AutoDecoratorABCMeta,
+                         BASE_DECORATORS,
+                         CONFIG_DECORATORS,
+                         normalize_result,
+                         app_completed_guard,
+                         ignore_none_result,)
 
 #: The Application name regular expression pattern which can be used in
 #: e.g. web frameworks' URL dispatchers.
@@ -36,7 +38,7 @@ class Controller(object):
     A controller, a project, a temporal and permanenet storages altogether
     form a *Kaylee Application*.
 
-    Metaclass: :class:`AutoFilterABCMeta <kaylee.util.AutoFilterABCMeta>`.
+    Metaclass: :class:`AutoDecoratorABCMeta <kaylee.util.AutoDecoratorABCMeta>`.
 
     TODOC
 
@@ -49,10 +51,10 @@ class Controller(object):
     :type project: :class:`Project`
     :type temporal_storage: :class:`TemporalStorage`
     """
-    __metaclass__ = AutoFilterABCMeta
+    __metaclass__ = AutoDecoratorABCMeta
 
-    auto_filter = BASE_FILTERS | CONFIG_FILTERS
-    auto_filters = {
+    auto_decorators_flags = BASE_DECORATORS | CONFIG_DECORATORS
+    auto_decorators = {
         'accept_result' : [normalize_result, app_completed_guard],
         'get_task'      : [app_completed_guard],
         'store_result'  : [ignore_none_result],

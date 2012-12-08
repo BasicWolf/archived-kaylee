@@ -109,59 +109,59 @@ Storage Objects
 
 .. _fitlers_api:
 
-Filters
--------
+Decorators
+----------
 
-.. py:class:: kaylee.util.AutoFilterABCMeta
+.. py:class:: kaylee.util.AutoDecoratorABCMeta
 
-   The Abstract Base Metaclass which also adds auto filters functionality.
-   Maintains ``auto_filter`` and ``auto_filters`` attributes of the class
-   (see :ref:`auto_filters`).
+   The Abstract Base Metaclass which also adds auto decorators functionality.
+   Maintains ``auto_decorator`` and ``auto_decorators`` attributes of the class
+   (see :ref:`auto_decorators`).
 
-   .. _api_auto_filter:
+   .. _api_auto_decorator:
 
-   .. py:attribute:: auto_filter
+   .. py:attribute:: auto_decorator
 
       Binary flag attribute which defines the behaviour of auto-decorating
-      the class with the filters. The value is built from:
+      the class with the decorators. The value is built from:
 
-      * ``kaylee.util.NO_FILTERS``
-      * ``kaylee.util.BASE_FILTERS``
-      * ``kaylee.util.CONFIG_FILTERS``
+      * ``kaylee.util.NO_DECORATORS``
+      * ``kaylee.util.BASE_DECORATORS``
+      * ``kaylee.util.CONFIG_DECORATORS``
 
       e.g. in :py:class:`Project`::
 
-        from kaylee.util import BASE_FILTERS, CONFIG_FILTERS
+        from kaylee.util import BASE_DECORATORS, CONFIG_DECORATORS
 
         class Project(object):
             ...
-            auto_filter = BASE_FILTERS | CONFIG_FILTERS
+            auto_decorator = BASE_DECORATORS | CONFIG_DECORATORS
 
-   .. _api_auto_filters:
+   .. _api_auto_decorators:
 
-   .. py:attribute:: auto_filters
+   .. py:attribute:: auto_decorators
 
-      A ``{ 'method_name' : [filter1, ...] }`` Python dict which defines the
-      filters to bound to the method::
+      A ``{ 'method_name' : [decorator1, ...] }`` Python dict which defines the
+      decorators to bound to the method::
 
         class Controller(object):
             ...
-            auto_filters = {
+            auto_decorators = {
                'get_task' : [app_completed_guard, ],
-               'accept_result' : [normalize_result_filter, ]
+               'accept_result' : [normalize_result_decorator, ]
             }
 
 
-Built-in filters list
-.....................
+Built-in decorators list
+........................
 
-.. autofunction:: kaylee.filters.app_completed_guard
+.. autofunction:: kaylee.decorators.app_completed_guard
 
-.. autofunction:: kaylee.filters.normalize_result
+.. autofunction:: kaylee.decorators.normalize_result
 
-.. autofunction:: kaylee.filters.kl_result_filter
+.. autofunction:: kaylee.decorators.kl_result_handler
 
-.. autofunction:: kaylee.filters.ignore_null_result
+.. autofunction:: kaylee.decorators.ignore_none_result
 
 
 .. _session_api:

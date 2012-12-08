@@ -10,10 +10,11 @@
 """
 
 from abc import abstractmethod
-
-from .util import AutoFilterABCMeta, BASE_FILTERS, CONFIG_FILTERS
 from .errors import KayleeError
-from .filters import ignore_none_result
+from .decorators import (AutoDecoratorABCMeta,
+                         BASE_DECORATORS,
+                         CONFIG_DECORATORS,
+                         ignore_none_result)
 
 
 AUTO_PROJECT_MODE = 0x2
@@ -26,13 +27,13 @@ KL_PROJECT_STYLES = '__kl_project_styles__'
 class Project(object):
     """Kaylee Projects abstract base class.
 
-    Metaclass: :class:`AutoFilterABCMeta <kaylee.util.AutoFilterABCMeta>`.
+    Metaclass: :class:`AutoDecoratorABCMeta <kaylee.util.AutoDecoratorABCMeta>`.
 
     :param script: The URL of the project's client part (\*.js file).
     """
-    __metaclass__ = AutoFilterABCMeta
-    auto_filter = BASE_FILTERS | CONFIG_FILTERS
-    auto_filters = {
+    __metaclass__ = AutoDecoratorABCMeta
+    auto_decorators_flags = BASE_DECORATORS | CONFIG_DECORATORS
+    auto_decorators = {
         'normalize_result' : [ignore_none_result, ],
     }
 
