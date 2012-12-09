@@ -16,8 +16,7 @@ from .errors import ApplicationCompletedError
 from .decorators import (AutoDecoratorABCMeta,
                          BASE_DECORATORS,
                          CONFIG_DECORATORS,
-                         app_completed_guard,
-                         ignore_none_result,)
+                         app_completed_guard)
 
 #: The Application name regular expression pattern which can be used in
 #: e.g. web frameworks' URL dispatchers.
@@ -28,6 +27,17 @@ ACTIVE = 0x2
 #: Indicates completed state of an application.
 COMPLETED = 0x4
 
+KL_RESULT = '__klr__'
+
+#: The ``NO_SOLUTION`` result returned by the node indicates that no solution
+#: was found for the given task. The controller must take this information
+#: into account.
+NO_SOLUTION = { KL_RESULT : 0x2 }
+
+#: The ``NOT_SOLVED`` result returned by the node indicates that the current
+#: task was simply not solved for some reason and there are no results to
+#: accept.
+NOT_SOLVED = { KL_RESULT : 0x4 }
 
 
 class Controller(object):
@@ -57,7 +67,6 @@ class Controller(object):
     auto_decorators = {
         'accept_result' : [app_completed_guard],
         'get_task'      : [app_completed_guard],
-        'store_result'  : [ignore_none_result],
         'subscribe'     : [app_completed_guard],
     }
 

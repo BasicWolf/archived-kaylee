@@ -65,7 +65,7 @@ class HumanOCRProject(Project):
             self.completed = True
 
     def _announce_results(self, storage):
-        print('The OCR results are: {}'.format(list(self.storage.values())))
+        print('The OCR results are: {}'.format(list(storage.values())))
 
 
     # Task generation routines

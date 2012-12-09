@@ -17,7 +17,7 @@ pj._send = () ->
     return
 
 pj._refresh = () ->
-    kl.task_completed.trigger(kl.NEXT_TASK)
+    kl.task_completed.trigger(kl.NOT_SOLVED)
     pj._clear_input()
     return
 

@@ -22,6 +22,7 @@ from functools import wraps
 
 from .node import Node, NodeID
 from .errors import KayleeError, InvalidResultError, NodeRejectedError
+from .controller import KL_RESULT
 
 log = logging.getLogger(__name__)
 
@@ -79,7 +80,7 @@ class Kaylee(object):
         #: An instance of :class:`Config` with Kaylee configuration parsed
         #: from ``**kwargs``. The configuration parameters are accessed as
         #: follows::
-        #: 
+        #:
         #:   kl.config.CONFIG_PARAMETER
         self.config = Config(**kwargs)
 
@@ -232,8 +233,9 @@ class Kaylee(object):
             self.session_data_manager.store(node, task)
 
     def _restore_session_data(self, node, result):
-        if self.session_data_manager is not None:
-            self.session_data_manager.restore(node, result)
+        if not KL_RESULT in result:
+            if self.session_data_manager is not None:
+                self.session_data_manager.restore(node, result)
 
     @property
     def applications(self):

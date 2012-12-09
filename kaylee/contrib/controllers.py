@@ -1,4 +1,4 @@
-from kaylee.controller import Controller
+from kaylee.controller import Controller, NO_SOLUTION, NOT_SOLVED
 from kaylee.errors import ApplicationCompletedError, NodeRejectedError
 
 class SimpleController(Controller):
@@ -30,6 +30,12 @@ class SimpleController(Controller):
         return task
 
     def accept_result(self, node, result):
+        if result == NO_SOLUTION:
+            self._tasks_pool.remove(node.task_id)
+            return
+        elif result == NOT_SOLVED:
+            return
+
         norm_result = self.project.normalize_result(node.task_id, result)
         self.store_result(node.task_id, norm_result)
         self._tasks_pool.remove(node.task_id)
@@ -75,21 +81,32 @@ class ResultsComparatorController(Controller):
         return task
 
     def accept_result(self, node, result):
+        if result == NOT_SOLVED:
+            return
+
         task_id = node.task_id
-        norm_result = self.project.normalize_result(task_id, result)
+
+        if result == NO_SOLUTION:
+            norm_result = result
+        else:
+            norm_result = self.project.normalize_result(task_id, result)
+
         # 'results' computed for the task by various nodes
         tmp_results = self.temporal_storage[task_id]
         if len(tmp_results) == self._results_count_threshold - 1:
             if self._results_are_equal(norm_result, tmp_results):
                 del self.temporal_storage[task_id]
                 self._tasks_pool.remove(task_id)
-                self.store_result(task_id, norm_result)
+                if result != NO_SOLUTION:
+                    self.store_result(task_id, norm_result)
             else:
                 # Something is wrong with either current result or any result
                 # which was received previously. At this point we discard all
                 # results associated with task_id and task_id remains in
-                # tasks_pool.
+                # tasks_pool (if the result is not NO_SOLUTION)
                 del self.temporal_storage[task_id]
+                if result == NO_SOLUTION:
+                    self._task_pool.remove(task_id)
             node.task_id = None
         else:
             self.temporal_storage.add(node.id, task_id, norm_result)

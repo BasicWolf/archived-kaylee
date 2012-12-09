@@ -13,9 +13,7 @@ from abc import abstractmethod
 from .errors import KayleeError
 from .decorators import (AutoDecoratorABCMeta,
                          BASE_DECORATORS,
-                         CONFIG_DECORATORS,
-                         ignore_none_result)
-
+                         CONFIG_DECORATORS)
 
 AUTO_PROJECT_MODE = 0x2
 MANUAL_PROJECT_MODE = 0x4
@@ -34,7 +32,7 @@ class Project(object):
     __metaclass__ = AutoDecoratorABCMeta
     auto_decorators_flags = BASE_DECORATORS | CONFIG_DECORATORS
     auto_decorators = {
-        'normalize_result' : [ignore_none_result, ],
+
     }
 
     #: Project mode.

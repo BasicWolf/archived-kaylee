@@ -57,9 +57,6 @@ app_hash_cracker_1 = {
         'permanent_storage' : {
             'name' : 'MemoryPermanentStorage',
         },
-        'decorators' : {
-            'accept_result' : ['kaylee.decorators.kl_result_handler', ],
-        }
     }
 }
 
@@ -82,9 +79,6 @@ app_hash_cracker_2 = {
     },
     'controller' : {
         'name' : 'SimpleController',
-        'decorators' : {
-            'accept_result' : ['kaylee.decorators.kl_result_handler', ] ,
-        },
         'permanent_storage' : {
             'name' : 'MemoryPermanentStorage',
         },
@@ -111,9 +105,7 @@ app_human_ocr_1 = {
         'permanent_storage' : {
             'name' : 'MemoryPermanentStorage',
         },
-        'decorators' : {
-            'accept_result' : ['kaylee.decorators.kl_result_handler', ] ,
-        }
+
     }
 }
 

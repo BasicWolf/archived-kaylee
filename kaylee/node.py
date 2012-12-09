@@ -81,6 +81,7 @@ class Node(object):
     def accept_result(self, data):
         if self.controller is None:
             raise NodeUnsubscribedError(self)
+
         self.controller.accept_result(self, data)
 
     @property

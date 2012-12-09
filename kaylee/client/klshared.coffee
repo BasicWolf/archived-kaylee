@@ -18,8 +18,8 @@ kl =
     AUTO_PROJECT_MODE : 0x2
     MANUAL_PROJECT_MODE : 0x4
 
-    NO_SOLUTION : {'__kl_result__' : 0x2}
-    NEXT_TASK : {'__kl_result__' : 0x4}
+    NO_SOLUTION : {'__klr__' : 0x2}
+    NOT_SOLVED : {'__klr__' : 0x4}
 
 pj = kl.pj
 
