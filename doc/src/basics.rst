@@ -136,20 +136,6 @@ results' integrity and accuracy. For more details see
 :py:class:`Controller API <Controller>`).
 
 
-Auto Decorators
----------------
-Auto-decoratoring is yet another feature of Kaylee's "write less do more"
-principle. The decorators can be automatically applied to Controllers'
-and Projects' methods. They help automating lots of data integrity checks
-and conversions in any part of the ``Client <-> Server <-> Controller
-<-> Project`` inter-communication. For example, the
-:py:func:`normalize_result <kaylee.decorators.normalize_result>` decorator
-takes care of calling result normalization and validation routines before
-passing it to the decorated method. And all the methods implementing
-:py:meth:`Contoller.accept_result` are decorated automatically, so that a
-user gets already validated and normalized result.
-
-
 Storages
 --------
 As we speak of the tasks' solutions you may wonder, how these results are

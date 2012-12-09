@@ -223,5 +223,4 @@ def _load_controller(conf):
     tstorage = _load_temporal_storage(conf)
     cobj = ccls(app_name, project, pstorage, tstorage,
                 **conf['controller'].get('config', {}))
-
     return cobj
