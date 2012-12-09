@@ -13,10 +13,6 @@ import re
 from abc import abstractmethod, abstractproperty
 from datetime import datetime
 from .errors import ApplicationCompletedError
-from .decorators import (AutoDecoratorABCMeta,
-                         BASE_DECORATORS,
-                         CONFIG_DECORATORS,
-                         app_completed_guard)
 
 #: The Application name regular expression pattern which can be used in
 #: e.g. web frameworks' URL dispatchers.
@@ -48,8 +44,6 @@ class Controller(object):
     A controller, a project, a temporal and permanenet storages altogether
     form a *Kaylee Application*.
 
-    Metaclass: :class:`AutoDecoratorABCMeta <kaylee.util.AutoDecoratorABCMeta>`.
-
     TODOC
 
     :param name: Application name.
@@ -61,14 +55,6 @@ class Controller(object):
     :type project: :class:`Project`
     :type temporal_storage: :class:`TemporalStorage`
     """
-    __metaclass__ = AutoDecoratorABCMeta
-
-    auto_decorators_flags = BASE_DECORATORS | CONFIG_DECORATORS
-    auto_decorators = {
-        'accept_result' : [app_completed_guard],
-        'get_task'      : [app_completed_guard],
-        'subscribe'     : [app_completed_guard],
-    }
 
     _app_name_re = re.compile('^{}$'.format(app_name_pattern))
 
@@ -83,24 +69,20 @@ class Controller(object):
         self.temporal_storage = temporal_storage
         self._state = ACTIVE
 
-    def subscribe(self, node):
-        """Subscribes the node for current application.
-
-        :param node: A registered node.
-        :type node: :class:`Node`
-        """
-        node.subscribe(self)
-        return self.project.client_config
-
     @abstractmethod
     def get_task(self, node):
-        """Returns a task for a node."""
+        """Returns a task for the node.
+
+        :param node: Kaylee Node requesting the task for computation.
+        :throws: :class:`ApplicationCompletedError` if application has been
+                 completed.
+        """
 
     @abstractmethod
     def accept_result(self, node, result):
         """Accepts and processes results from a node.
 
-        :param node: Active Kaylee Node from which the results are received.
+        :param node: Kaylee Node from which the results have been received.
         :param result: JSON-parsed task results.
         :type result: dict or list
         """

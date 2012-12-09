@@ -22,7 +22,8 @@ class SimpleController(Controller):
             except KeyError:
                 # project depleted and nothing in the pool,
                 # looks like the application is completed.
-                raise ApplicationCompletedError(self.name)
+                self.completed = True
+                raise ApplicationCompletedError(self)
 
         task_id = task['id']
         node.task_id = task_id
@@ -70,7 +71,8 @@ class ResultsComparatorController(Controller):
             except KeyError:
                 # project depleted and nothing in the pool,
                 # looks like the application has completed.
-                raise ApplicationCompletedError(self.name)
+                self.completed = True
+                raise ApplicationCompletedError(self)
 
         task_id = task['id']
         node.task_id = task_id

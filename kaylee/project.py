@@ -11,9 +11,6 @@
 
 from abc import abstractmethod
 from .errors import KayleeError
-from .decorators import (AutoDecoratorABCMeta,
-                         BASE_DECORATORS,
-                         CONFIG_DECORATORS)
 
 AUTO_PROJECT_MODE = 0x2
 MANUAL_PROJECT_MODE = 0x4
@@ -25,15 +22,8 @@ KL_PROJECT_STYLES = '__kl_project_styles__'
 class Project(object):
     """Kaylee Projects abstract base class.
 
-    Metaclass: :class:`AutoDecoratorABCMeta <kaylee.util.AutoDecoratorABCMeta>`.
-
     :param script: The URL of the project's client part (\*.js file).
     """
-    __metaclass__ = AutoDecoratorABCMeta
-    auto_decorators_flags = BASE_DECORATORS | CONFIG_DECORATORS
-    auto_decorators = {
-
-    }
 
     #: Project mode.
     mode = AUTO_PROJECT_MODE

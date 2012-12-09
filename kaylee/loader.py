@@ -224,18 +224,4 @@ def _load_controller(conf):
     cobj = ccls(app_name, project, pstorage, tstorage,
                 **conf['controller'].get('config', {}))
 
-    if not ccls.auto_decorators_flags & CONFIG_DECORATORS:
-        return cobj
-
-    # dynamically decorate controller methods with auto-decorators
-    # (if required and if there are any decorators defined).
-    if 'decorators' in conf['controller']:
-        decorators = conf['controller']['decorators']
-        for method_name, decorators in decorators.iteritems():
-            method = getattr(cobj, method_name)
-            for decorator_name in decorators:
-                decorator = import_object(decorator_name)
-            decorated = types.MethodType(decorator(method.__func__),
-                                         cobj, None)
-            setattr(cobj, method_name, decorated)
     return cobj

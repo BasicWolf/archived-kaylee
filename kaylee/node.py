@@ -19,7 +19,8 @@ import hashlib
 from datetime import datetime
 from abc import ABCMeta, abstractmethod
 
-from .errors import warn, InvalidNodeIDError, NodeUnsubscribedError
+from .errors import (warn, InvalidNodeIDError, NodeUnsubscribedError,
+                     ApplicationCompletedError)
 from .util import parse_timedelta
 
 #: The hex string formatted NodeID regular expression pattern which
@@ -56,6 +57,7 @@ class Node(object):
         self._controller = controller
         self._subscription_timestamp = datetime.now()
         self.dirty = True
+        return controller.project.client_config
 
     def unsubscribe(self):
         if self._controller is None:
@@ -74,6 +76,8 @@ class Node(object):
     def get_task(self):
         if self.controller is None:
             raise NodeUnsubscribedError(self)
+        if self.controller.completed:
+            raise ApplicationCompletedError(self.controller)
         task = self.controller.get_task(self)
         task['id'] = str(task['id'])
         return task
@@ -81,7 +85,8 @@ class Node(object):
     def accept_result(self, data):
         if self.controller is None:
             raise NodeUnsubscribedError(self)
-
+        if self.controller.completed:
+            raise ApplicationCompletedError(self.controller)
         self.controller.accept_result(self, data)
 
     @property
