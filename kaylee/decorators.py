@@ -72,21 +72,6 @@ def app_completed_guard(f):
     return wrapper
 
 
-def normalize_result(f):
-    """The decorator normalizes the result before passing it further.
-
-    *Signature*: ``(self, node, result)``
-
-    .. note:: This is a base decorator applied to :meth:`
-              Controller.accept_result`.
-    """
-    @wraps(f)
-    def wrapper(self, node, result):
-        result = self.project.normalize_result(node.task_id, result)
-        return f(self, node, result)
-    return wrapper
-
-
 def kl_result_handler(f):
     """The decorator is designed to be used in "decision search" projects which
     imply that not every task has a correct solution, or solution exists at
@@ -121,8 +106,7 @@ def ignore_none_result(f):
 
     *Signature*: ``(self, task_id, result)``
 
-    .. note:: This is a base decorator applied to :meth:`Project.normalize_result`
-              and :meth:`Controller.store_result`.
+    TODOC
     """
     @wraps(f)
     def wrapper(self, task_id, result):

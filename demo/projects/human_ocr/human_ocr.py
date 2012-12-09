@@ -50,17 +50,15 @@ class HumanOCRProject(Project):
             'id' : task_id,
             'url' : url,
             '#random_string' : rstr,
-            # note the first "#" character in key. In conjunction with
-            # @returns_session_data filter ... TODOC attaching encrypted data
         }
 
-    def normalize_result(self, task_id, data):
-        words = data['captcha'].split()
-        if words[1].lower() != data['#random_string'].lower():
+    def normalize_result(self, task_id, result):
+        words = result['captcha'].split()
+        if words[1].lower() != result['#random_string'].lower():
             raise ValueError('Invalid control parameter value')
         return words[0]
 
-    def result_stored(self, task_id, data, storage):
+    def result_stored(self, task_id, result, storage):
         if len(storage) == self.tasks_count:
             # it is enough to have a single result to complete the project
             self._announce_results(storage)

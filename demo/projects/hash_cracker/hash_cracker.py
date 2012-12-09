@@ -36,13 +36,13 @@ class HashCrackerProject(Project):
             'salt' : self.salt
         }
 
-    def normalize_result(self, task_id, data):
-        key = data['cracked_key']
+    def normalize_result(self, task_id, result):
+        key = result['cracked_key']
         if md5(key + self.salt).hexdigest() == self.hash_to_crack:
             return key
         raise ValueError('Invalid cracked hash key')
 
-    def result_stored(self, task_id, data, storage):
+    def result_stored(self, task_id, result, storage):
         if len(storage) == 1:
             # it is enough to have a single result to complete the project
             self._announce_results(storage)

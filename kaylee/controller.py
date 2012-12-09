@@ -16,7 +16,6 @@ from .errors import ApplicationCompletedError
 from .decorators import (AutoDecoratorABCMeta,
                          BASE_DECORATORS,
                          CONFIG_DECORATORS,
-                         normalize_result,
                          app_completed_guard,
                          ignore_none_result,)
 
@@ -28,6 +27,7 @@ app_name_pattern = r'[a-zA-Z\.\d_-]+'
 ACTIVE = 0x2
 #: Indicates completed state of an application.
 COMPLETED = 0x4
+
 
 
 class Controller(object):
@@ -55,7 +55,7 @@ class Controller(object):
 
     auto_decorators_flags = BASE_DECORATORS | CONFIG_DECORATORS
     auto_decorators = {
-        'accept_result' : [normalize_result, app_completed_guard],
+        'accept_result' : [app_completed_guard],
         'get_task'      : [app_completed_guard],
         'store_result'  : [ignore_none_result],
         'subscribe'     : [app_completed_guard],
@@ -88,19 +88,19 @@ class Controller(object):
         """Returns a task for a node."""
 
     @abstractmethod
-    def accept_result(self, node, data):
+    def accept_result(self, node, result):
         """Accepts and processes results from a node.
 
         :param node: Active Kaylee Node from which the results are received.
-        :param data: JSON-parsed task results.
-        :type data: dict or list
+        :param result: JSON-parsed task results.
+        :type result: dict or list
         """
 
-    def store_result(self, task_id, data):
+    def store_result(self, task_id, result):
         """Stores the result to permanent storage and notifies the bound
         project."""
-        self.permanent_storage.add(task_id, data)
-        self.project.result_stored(task_id, data, self.permanent_storage)
+        self.permanent_storage.add(task_id, result)
+        self.project.result_stored(task_id, result, self.permanent_storage)
 
     @property
     def completed(self):
