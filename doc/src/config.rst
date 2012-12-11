@@ -41,12 +41,12 @@ Project and controller configuration are also Python dictionaries:
 
   'project' : {
       'name' : 'ProjectClassName',
-      'config' : { ...  },             # optional
+      'config' : { ...  },
   }
 
   'controller' : {
       'name' : 'ControllerClassName',
-      'config' : { ... },              # optional
+      'config' : { ... },
   }
 
 Project and Controller ``config`` sections define the dictionary
@@ -58,10 +58,6 @@ which is passed as ``**kwargs`` during class initialization.
       'opt1' : 'val1',
       'opt2' : 10,
   }
-
-The ``config`` field is optional. It means that there is no need to add it
-even with empty contents if the default configuration is sufficient.
-
 
 .. config:: PROJECTS_DIR
 

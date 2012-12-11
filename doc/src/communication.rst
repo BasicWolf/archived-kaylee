@@ -8,9 +8,9 @@ Kaylee communication
 Tasks and results
 -----------------
 
-As it has been mentioned many times, Kaylee communicates via JSON. On
-server-side a task data returned by a ``Project`` is a JSON-serializable
-dict with a mandatory ``id`` key in it::
+As it has been mentioned many times, Kaylee communicates via JSON. On the
+server-side a task data returned by a Project is a JSON-serializable dict
+with a mandatory ``id`` key in it::
 
   { 'id' : 't1' }
 
@@ -30,8 +30,8 @@ The famous `reCAPTCHA`_ project provides a very efficient CAPTCHA mechanism
 and at the same time helps digitizing the text from paper books. reCAPTCHA
 gives a task of recognizing two words from a picture. One of the words
 is a piece of a scanned book page, while another is generated artificially.
-`reCAPTCHA` has to "remember" that a particular user has received a
-particular artificial word in order to validate the user's input.
+`reCAPTCHA` has to remember that a particular user has received a particular
+artificial word in order to validate the input.
 
 How would one solve a similar problem with Kaylee? Kaylee has an efficient
 and simple
@@ -40,8 +40,8 @@ mechanism to keep Kaylee <-> Node session data between getting a task and
 accepting a result requests. In case of solving the `reCAPTCHA` issue, the
 artificial word should be stored as a session variable.
 
-In order to become a `session variable`, the variable should start with
-a hash (``'#'``) symbol, for example::
+In order to become a `session variable`, the variable's name should start
+with a hash (``'#'``) symbol, for example::
 
   task = {
       'id' : '1',
@@ -83,8 +83,8 @@ Currently there are three session data managers available out of the box:
   - keeps the session data attached to :attr:`Node.session_data`.
 
 * :class:`JSONSessionDataManager <kaylee.session.JSONSessionDataManager>`
-  - transfers the encrypted session data within the task and result,
-  without keeping anything on server.
+  - transfers an encrypted session data among the tasks and results,
+  without keeping any data on the server.
 
 
 
@@ -95,7 +95,7 @@ Default API
 
 Although Kaylee comes with a default communication API, the user is free to
 communicate with Kaylee in any way possible as long as the transferred data
-is kept in JSON format. The default API is implemented on both server
+is kept in JSON format. The default API implemented on both contrib front-ends
 (:ref:`contrib front-ends <contrib_front_ends>`) and client side
 (:js:attr:`kl.api`) is described below.
 
@@ -146,8 +146,11 @@ Client      :js:func:`kl.api.send_result`
 URL         ``/kaylee/actions/{node_id}``
 HTTP Method ``POST``
 Post Data   Calculation results.
+Parameters  * ``node_id`` - Node ID.
 =========== ===============================
 
-
+|
+|
+|
 
 .. _reCAPTCHA: http://recaptcha.net

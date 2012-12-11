@@ -27,3 +27,8 @@ v0.2 <-- dev
 + Modify Storages API, so that PermanentStorage and TemporalStorage
   interfaces look the same.
 
+
+Interesting links:
+# http://www.andromedaproject.org/#!/home
+# http://lenta.ru/news/2012/12/10/helpandromeda/
+

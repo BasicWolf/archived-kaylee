@@ -9,41 +9,6 @@ This part of the documentation covers all the client-side interfaces of Kaylee.
 
 Projects
 --------
-There are two kind of Projects available in Kaylee. The ``automatic`` or
-simply ``auto`` applications are executed inside a HTML5 web worker
-controlled by Kaylee. The ``manual`` or ``DOM-based`` projects are executed
-inside the web page's main javascript loop.
-
-
-Auto projects
-.............
-A browser which follows a single thread of execution has to wait on
-JavaScript programs to finish executing before proceeding and this may take
-significant time which the programmer may like to hide from the user.
-HTML5 Web Workers allow concurrent execution of the browser threads and one
-or more JavaScript threads running in the background. A browser can continue
-operating normally while running heavy-performance-dependent javascript
-applications in the background [1]_.
-
-Web workers' code is kept and loaded from external javascript files. That is
-why they do not have access to the following JavaScript objects [2]_:
-
-* The window object
-* The document object
-* The parent object
-
-A project which is executed in a Kaylee-controlled web worker and does not
-depend on the objects listed above in called an ``Auto`` Kaylee project
-(or a project in auto mode). This can be for example a hash-cracking,
-complex function optimization, etc. application.
-
-
-Manual projects
-...............
-
-A "manual" project is something that cannot be cannot be calculated
-automatically and involves user interaction.
-
 
 A typical Kaylee project implements two callbacks in the ``pj`` namespce:
 
@@ -51,16 +16,37 @@ A typical Kaylee project implements two callbacks in the ``pj`` namespce:
 
    The callback is invoked only once, when the client-side of the
    application is initialized. The long-term resources like scripts and
-   stylesheets should be imported here (e.g. via :js:func:`kl.include`).
+   stylesheets should be imported here (e.g. via :js:func:`kl.include`)
+   then, the :js:attr:`kl.project_imported` event should be triggered,
+   for example:
+
+   .. code-block:: coffeescript
+
+      pj.init = (app_config) ->
+          pj._config = app_config  # store config for later use
+          to_include = [app_config.some_script.js,
+                        app_config.another_script.js,
+                        app_config.some_stylesheet.css]
+          kl.include(to_include, kl.project_imported.trigger)
+
+   Or, if there are no resources to import:
+
+   .. code-block:: coffeescript
+
+      pj.init = (app_config) ->
+          pj._config = app_config
+          kl.project_imported.trigger()
+
 
    :param app_config: JSON-formatted application configuration received
-                      from Kaylee server.
+                      from the server-side of the project (see
+                      :attr:`Project.client_config`)
 
 .. js:function:: pj.process_task(task)
 
    The callback is invoked every time a project receives a new task from
    the server. To notify Kaylee that the task has been completed and the
-   results are available the :js:func:`kl.task_completed` event should be
+   results are available the :js:attr:`kl.task_completed` event should be
    triggered.
 
    :param task: JSON-formatted task data.
@@ -71,11 +57,9 @@ Core
 
 .. js:attribute:: kl.api
 
-   This is a very important, a bit complex-syntaxed yet poferwul way
-   of lettings the user to define the HTTP API between the server and
-   Kaylee client.
-
-   ``kl.api`` is an object with four functions in it:
+   Contains the function-attributes which define the HTTP API between the
+   server and Kaylee client. ``kl.api`` is an object with four functions
+   in it:
 
    * :js:attr:`register <kl.api.register>`
    * :js:attr:`subscribe <kl.api.subscribe>`
@@ -83,13 +67,14 @@ Core
    * :js:attr:`send_result <kl.api.send_result>`
 
    Each of these calls corresponds to a particular method of the
-   :py:class:`Kaylee` object on the server side (see :ref:`default-communication`).
-   It is expected that the function will trigger a certain event,
-   for example::
+   core :py:class:`Kaylee` object on the server side
+   (see :ref:`default-communication`). It is expected that the
+   function will trigger a certain event, for example:
 
-        kl.api.register = function () {
-            kl.get("/kaylee/register", kl.node_registered.trigger);
-        }
+   .. code-block:: coffeescript
+
+        kl.api.register = () ->
+            kl.get('/kaylee/register', kl.node_registered.trigger)
 
    .. warning:: Kaylee relies on the corresponding events to be triggered,
                 and will fail  to function properly, if the events are not
@@ -98,37 +83,33 @@ Core
    .. js:attribute:: kl.api.register
 
       Registers Kaylee node (see :py:meth:`Kaylee.register`).
-      Triggers :js:func:`kl.node_registered`.
+      Triggers :js:attr:`kl.node_registered`.
 
    .. js:attribute:: kl.api.subscribe(app_name)
 
       Subscribes the node to an application (see :py:meth:`Kaylee.subscribe`).
-      Triggers :js:func:`kl.node_subscribed`.
-
-      :param string app_name: application name
+      Triggers :js:attr:`kl.node_subscribed`.
 
    .. js:attribute:: kl.api.get_action
 
       Gets the next available action (see :py:meth:`Kaylee.get_action`).
-      Triggers :js:func:`kl.action_received`.
+      Triggers :js:attr:`kl.action_received`.
 
    .. js:attribute:: kl.api.send_result(data)
 
       Sends task results to the server (see :py:meth:`Kaylee.accept_result`).
-      Triggers :js:func:`kl.result_sent` **and** in case that Kaylee
-      immediately returns a new action :js:func:`kl.action_received`.
-
-
+      Triggers :js:attr:`kl.result_sent` **and** in case that Kaylee
+      immediately returns a new action :js:attr:`kl.action_received`.
 
 .. js:attribute:: kl.config
 
-   Kaylee nodes-specific config received from the server.
-   Currently contains a single attribute:
-
-   * **kl_worker_script** - defines a URL of Kaylee worker script.
+   Kaylee client config received from the server after the node has been
+   registered. For full configuration description see
+   :class:`kaylee.core.Config`.
 
 .. js:function:: kl.error(message)
 
+   TODOC: some examples, where and when
    Logs the message with "ERROR: " prefix and **throws**
    :js:class:`kl.KayleeError`. This means that if ``kl.error`` is called
    outside a ``try..catch`` block the exception will be thrown further unless
@@ -320,7 +301,3 @@ manual(DOM-based) projects.
    :param success: The callback invoked in case of successful import.
    :param fail: The callback invoked in case of failure (does not work for
                 stylesheets!).
-
-
-.. [1] http://en.wikipedia.org/wiki/Web_worker
-.. [2] http://www.w3schools.com/html5/html5_webworkers.asp

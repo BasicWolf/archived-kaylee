@@ -12,6 +12,7 @@ instructions for deployment of Kaylee.
    installation
    basics
    tutorial/index
+   projects
    loading
    communication
    contrib

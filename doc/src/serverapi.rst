@@ -8,8 +8,11 @@ Server API
 This part of the documentation covers all the server-side interfaces of Kaylee.
 
 
+Core Objects
+------------
+
 Kaylee Object
--------------
+.............
 
 .. autoclass:: Kaylee
 
@@ -40,15 +43,20 @@ Kaylee Object
    .. automethod:: unregister(node_id)
    .. automethod:: unsubscribe(node_id)
 
-
-
-
    .. :inherited-members:
+
+
+Config Object
+.............
+
+.. autoclass:: kaylee.core.Config
 
 
 
 Node Objects
 ------------
+
+
 
 .. autoclass:: Node
    :members:
