@@ -59,12 +59,15 @@ def json_error_handler(f):
 
 
 class Kaylee(object):
-    """The Kaylee class serves as a layer between WSGI framework and Kaylee
-    applications. It handles requests from clients and returns JSON-formatted
-    data.
+    """The Kaylee class serves as a layer between a WSGI server (framework)
+    and Kaylee applications. The data flow between Kaylee server and the
+    client is kept in JSON format.
 
-    .. note:: It is the job of a particular front-end to set the
-              response content-type to "application/json".
+    .. note:: It is the job of the WSGI front-end to set the response
+              content-type to "application/json".
+
+    The class should be instantiated manually only for testing purposes
+    (see :ref:`loading_kaylee_object` for more details.)
 
     :param registry: active nodes registry
     :param session_data_manager: global session data manager
@@ -192,8 +195,8 @@ class Kaylee(object):
     @json_error_handler
     def accept_result(self, node_id, data):
         """Accepts the results from the node. Returns the next action if
-        :py:attr:`Config.AUTO_GET_ACTION` is True.
-        Otherwise returns the "nop" action.
+        :py:attr:`self.config.AUTO_GET_ACTION <Config.AUTO_GET_ACTION>`
+        is True. Otherwise returns the "nop" (no operatiotion) action.
         Unsubscribes the node if the returned result is invalid.
 
         :param node_id: a valid node id

@@ -25,6 +25,7 @@ from .core import Kaylee, Applications
 from .node import Node, NodeID, NodesRegistry
 from .storage import (TemporalStorage,
                       PermanentStorage )
+from .session import SessionDataManager
 from .controller import Controller
 from .project import Project
 from .errors import KayleeError

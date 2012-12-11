@@ -5,7 +5,7 @@ Server API
 
 .. module:: kaylee
 
-This part of the documentation covers all the server-side interfaces of Kaylee.
+This part of the documentation covers all the server-side Kaylee interfaces.
 
 
 Core Objects
@@ -118,7 +118,7 @@ Storage Objects
 Session data managers
 ---------------------
 
-.. autoclass:: kaylee.session.SessionDataManager
+.. autoclass:: SessionDataManager
    :members:
 
 .. autoclass:: kaylee.session.PhonySessionDataManager

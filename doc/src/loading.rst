@@ -42,6 +42,7 @@ There are several ways of defining Kaylee configuration:
 Finally, Kaylee can be instantiated manually, but that is recommended for
 testing purposes only.
 
+.. _loading_kaylee_object:
 
 Loading Kaylee Object
 ---------------------
