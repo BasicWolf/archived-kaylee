@@ -109,20 +109,19 @@ Core
 
 .. js:function:: kl.error(message)
 
-   TODOC: some examples, where and when
    Logs the message with "ERROR: " prefix and **throws**
    :js:class:`kl.KayleeError`. This means that if ``kl.error`` is called
    outside a ``try..catch`` block the exception will be thrown further unless
-   it reaches the global scope.
-
-.. js:function:: kl.get_action()
-
-   Invokes :js:attr:`kl.api.get_action`.
+   it reaches the global scope. ``kl.error()`` should be called only in case
+   that something went completely wrong and it is not wise to continue
+   running Kaylee on the Node.
+   For example ``kl.error()`` is called by Kaylee when the incoming or
+   outgoing data is malformed.
 
 .. js:class:: kl.KayleeError(message)
 
-   Kaylee generic error class, extends ``Error``. The class should not thrown
-   directly, instead use call :js:func:`kl.error`.
+   Kaylee generic error class, extends ``Error``. The class should not be
+   thrown directly, instead use :js:func:`kl.error`.
 
 .. js:function:: kl.log(message)
 
@@ -131,45 +130,33 @@ Core
 
 .. js:attribute:: kl.node_id
 
-   Current node id. Set when a node is registered by the server.
-
-.. js:function:: kl.register()
-
-   Invokes :js:attr:`kl.api.register` after internal benchmark and minimum
-   requirements (e.g. availability of web workers) tests.
-
-.. js:function:: kl.send_result(data)
-
-   Invokes :js:attr:`kl.api.send_result`.
-
-.. js:function:: kl.subscribe(app_name)
-
-   Setups :js:attr:`kl.app` and invokes :js:attr:`kl.api.subscribe`.
-
+   Current node id. Set when after the node has been registered by the server.
 
 Events
 ------
 
 .. js:class:: Event([primary_handler])
 
-   A simple built-in events mechanism. Sample usage::
+   A simple built-in events mechanism. Sample usage:
 
-       // Declare an event
-       my_event = new Event();
+   .. code-block:: coffeescript
 
-       // This function will server as an event handler
-       on_my_event = function(data) {
-           alert(data);
-       }
+       # Declare an event
+       my_event = new Event()
 
-       // Bind handler function to the event
+       # This function will serve as an event handler
+       on_my_event = (data) ->
+           alert(data)
+
+       # Bind the handler function to the event
        my_event.bind(on_my_event)
 
-       // Trigger event. This will call subscribed functions
-       // in order of subscription.
+       # Trigger the event. This will call the subscribed handlers
+       # in order of subscription (e.g. fist-to-subscribe will be
+       # called first).
        my_event.trigger('Event data goes here')
 
-       // Unbind handler from the event.
+       # Unbind handler from the event.
        my_event.unbind(on_my_event)
 
    :param function primary_handler: an optional event handler which will
@@ -178,15 +165,16 @@ Events
 
    .. js:function:: bind(handler)
 
-      Bind handler to an event.
+      Binds a handler to the event.
 
    .. js:function:: trigger([arg1, arg2, ...])
 
-      Trigger event. This calls all bound handlers with provided arguments.
+      Triggers the event. This calls all bound handlers with the provided
+      arguments.
 
    .. js:function:: unbind(handler)
 
-      Unbind handler.
+      Unbinds the handler.
 
 
 Events tirggered by projects
@@ -208,28 +196,48 @@ Events tirggered by projects
 Events triggered by Kaylee
 ..........................
 
+The events below are the basic Kaylee client-side logic events and should
+**not** be triggered by the user's project code in order to avoid unpredictable
+behaviour. Nevertheless, feel free to bind to these events to the code outside
+of the project and track how Kaylee works internally.
+
+For example, the following code will echo all log messages to the browser
+console:
+
+   .. code-block:: coffeescript
+
+       kl.message_logged.bind(console.log)
+
+In the following example the total amount of tasks is kept in a counter:
+
+   .. code-block:: coffeescript
+
+      tasks_count = 0
+
+      kl.task_received.bind( (task) -> tasks_count += 1 )
+
 .. js:function:: kl.action_received
 
-   Triggered when an action from the server is received.
+   Triggered when an action is received from the server.
    See :py:meth:`Kaylee.get_action` for more details.
 
    :param action: The action data received from the server.
 
 .. js:function:: kl.node_registered(config)
 
-   Triggered when Kaylee registeres the node.
+   Triggered when the node has been successfully registered on the server.
 
    :param config: Kaylee configuration
 
 .. js:function:: kl.node_subscribed(app_config)
 
-   Triggered when the node is subcsribed to an application.
+   Triggered when the node has been subcsribed to an application.
 
    :param app_config: Application configuration.
 
 .. js:function:: kl.node_unsubscibed()
 
-   Triggered when Kaylee unsubscribes the node from an application.
+   Triggered when Kaylee has unsubscribed the node from an application.
 
 .. js:function:: kl.message_logged(message)
 
@@ -266,7 +274,7 @@ the server. It also provides routines to load javascript and stylesheet files
 on-fly. The functions are accessible by both auto(worker-based) and
 manual(DOM-based) projects.
 
-.. js:function:: kl.get( url[, data] [, success(data)] [, fail(message)] )
+.. js:function:: kl.get( url [, data] [, success(data)] [, fail(message)] )
 
    Invokes asynchronous GET request.
 
@@ -275,11 +283,14 @@ manual(DOM-based) projects.
    :param success: The callback invoked in case of successful request.
    :param fail: The callback invoked in of request failure.
 
-   Simple usage case example::
+   Simple usage:
 
-     kl.get('/some/url', function(data) {
-       alert(data);
-     } );
+   .. code-block:: coffeescript
+
+     kl.get('/some/url', (data) ->
+         alert(data)
+     )
+
 
 
 .. js:function:: kl.post( url [, data] [, success] [, fail] )
@@ -297,7 +308,7 @@ manual(DOM-based) projects.
    Dynamically imports javascript (``*.js``) or stylesheet ``*.css`` files.
    Importing stylesheets is available for manual projects only.
 
-   :param urls: A single URL or an array of URLs to import.
+   :param urls: A single URL or an *array* of URLs to import.
    :param success: The callback invoked in case of successful import.
    :param fail: The callback invoked in case of failure (does not work for
                 stylesheets!).

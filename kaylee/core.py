@@ -68,12 +68,11 @@ class Kaylee(object):
 
     :param registry: active nodes registry
     :param session_data_manager: global session data manager
-    :param applications: a list of applications (:class:`Controller`
-                         instances).
+    :param applications: a list of applications (:class:`Controller` objects)
     :param kwargs: Kaylee configuration arguments.
     :type registry: :class:`NodesRegistry`
     :type session_data_manager: :class:`SessionDataManager` or None
-    :type applications: list
+    :type applications: list or None
     """
     def __init__(self, registry, session_data_manager = None,
                  applications = None, **kwargs):

@@ -3,4 +3,6 @@ env/*
 *.backups*
 *.pyc
 *.pyo
-build
+build/
+Kaylee.egg-info/*
+dist/
