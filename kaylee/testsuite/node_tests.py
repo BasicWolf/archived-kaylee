@@ -1,8 +1,9 @@
 import unittest
+from kaylee.testsuite import KayleeTest, load_tests
 from datetime import datetime, timedelta
 from kaylee import Node, NodeID
 from kaylee.errors import InvalidNodeIDError
-from kaylee.testsuite import KayleeTest, load_tests
+from dummy_project import DummyController
 
 
 class NodeIDTests(KayleeTest):
@@ -102,7 +103,7 @@ class NodeTests(KayleeTest):
         node = Node(nid)
         self.assertFalse(node.dirty)
 
-        node.subscribe(None)
+        node.subscribe(DummyController.new_test_instance())
         self.assertTrue(node.dirty)
         node.dirty = False
 
@@ -121,11 +122,12 @@ class NodeTests(KayleeTest):
         node.session_data = 'sd1'
         self.assertEqual(node.session_data, 'sd1')
 
-        node.subscribe('ctr2')
+        ctrl = DummyController.new_test_instance()
+        node.subscribe(ctrl)
         now = datetime.now()
         self.assertTrue(timedelta(seconds = 0) <= now - node.subscription_timestamp
                         <= timedelta(seconds = 3))
-        self.assertEqual(node.controller, 'ctr2')
+        self.assertEqual(node.controller, ctrl)
 
         node.task_id = 'tid789'
         now = datetime.now()

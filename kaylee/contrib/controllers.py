@@ -47,12 +47,12 @@ class SimpleController(Controller):
 
 class ResultsComparatorController(Controller):
     """
-    This controller is a simple implementation of the idea "trust no one".
+    This controller is a simple implementation of the "trust no one" idea.
     The intermediate results are collected in the temporal storage until
-    their number reaches a user-defined limit. Then the results are
-    compared and only if they match among themselves, a single result
-    is passed to the project. The results are discarded if they don't
-    match and the calculations for the task starts again.
+    their number reaches a user-defined limit. Then the results are pairly
+    compared and only if they all match among themselves, a single result
+    is stored inside the permanent storage. The results are discarded if they
+    don't match and the task is pushed back to the "unsolved tasks" pool.
 
     :param results_count_threshold: The amount of task results to be collected
                                     before running the comparison routine.

@@ -26,9 +26,14 @@ class Project(object):
     """
 
     #: Project mode.
-    mode = AUTO_PROJECT_MODE
+    mode = None
 
     def __init__(self, script, *args, **kwargs):
+        # make sure that mode has been defined
+        if self.mode not in [AUTO_PROJECT_MODE, MANUAL_PROJECT_MODE]:
+            raise ValueError('{}.mode is wrong or not defined'.format(
+                    self.__class__.__name__))
+
         #: A dictionary wi]th configuration
         #: details used by every client-side node. If the project is loaded
         #: via a configuration object ``client_config`` is extended by

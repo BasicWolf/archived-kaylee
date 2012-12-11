@@ -15,8 +15,10 @@ PROJECTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             'projects')
 sys.path.insert(0, PROJECTS_DIR)
 
+
 class KayleeTest(unittest.TestCase):
     """Base class for all Kaylee tests."""
+
 
 def load_tests(test_cases):
     suite = unittest.TestSuite()

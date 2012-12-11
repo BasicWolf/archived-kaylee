@@ -5,8 +5,7 @@ import random
 import tempfile
 import Image, ImageFont, ImageDraw
 
-from kaylee import Project
-from kaylee.project import MANUAL_PROJECT_MODE
+from kaylee.project import Project, MANUAL_PROJECT_MODE
 from kaylee.util import random_string
 
 LIPSUM = "Lorem ipsum"

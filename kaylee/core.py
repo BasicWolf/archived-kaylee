@@ -217,9 +217,9 @@ class Kaylee(object):
                                  'as dict: {}'.format(data))
             self._restore_session_data(node, data)
             node.accept_result(data)
-        except ValueError as e:
+        except InvalidResultError as e:
             self.unsubscribe(node)
-            raise InvalidResultError(data, str(e))
+            raise e
 
         if self.config.AUTO_GET_ACTION:
             return self.get_action(node.id)
@@ -248,7 +248,10 @@ class Kaylee(object):
 
 
 class Config(object):
-    """Kaylee Configuration repository."""
+    """Kaylee Configuration repository.
+
+    TODOC.
+    """
     serialized_attributes = [
         'AUTO_GET_ACTION',
         'WORKER_SCRIPT_URL',

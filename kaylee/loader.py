@@ -18,9 +18,8 @@ from collections import defaultdict
 
 import kaylee.contrib
 from .core import Kaylee
-from .errors import KayleeError
+from .errors import KayleeError, warn
 from .util import LazyObject, import_object
-from .decorators import CONFIG_DECORATORS
 from . import storage, controller, project, node, session
 
 import logging
@@ -123,7 +122,11 @@ def load_session_data_manager(config):
     if 'SESSION_DATA_MANAGER' in config:
         clsname = config['SESSION_DATA_MANAGER']['name']
         sdmcls = _classes[session.SessionDataManager][clsname]
-        sdm_config = config['SESSION_DATA_MANAGER'].get('config', {})
+        try:
+            sdm_config = config['SESSION_DATA_MANAGER'].get('config', {})
+        except KeyError:
+            log.warning('Loading session data manager with empty config')
+            sdm_config = {}
     else:
         # Load default (should be Phony) session data manager in case it
         # is not defined in config.

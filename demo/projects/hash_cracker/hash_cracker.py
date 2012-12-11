@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from hashlib import md5
-from kaylee import Project
+from kaylee.project import Project, AUTO_PROJECT_MODE
 
 class HashCrackerProject(Project):
+    mode = AUTO_PROJECT_MODE
+
     def __init__(self, *args, **kwargs):
         super(HashCrackerProject, self).__init__(*args, **kwargs)
         self.alphabet = kwargs['alphabet']
@@ -37,10 +39,13 @@ class HashCrackerProject(Project):
         }
 
     def normalize_result(self, task_id, result):
-        key = result['cracked_key']
-        if md5(key + self.salt).hexdigest() == self.hash_to_crack:
-            return key
-        raise ValueError('Invalid cracked hash key')
+        try:
+            key = result['cracked_key']
+            if md5(key + self.salt).hexdigest() == self.hash_to_crack:
+                return key
+            raise InvalidResultError(result, 'Invalid cracked hash key')
+        except KeyError:
+            raise InvalidResultError(result, '"cracked_key" was not found in result')
 
     def result_stored(self, task_id, result, storage):
         if len(storage) == 1:
