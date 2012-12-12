@@ -66,8 +66,8 @@ class Kaylee(object):
     .. note:: It is the job of the WSGI front-end to set the response
               content-type to "application/json".
 
-    The class should be instantiated manually only for testing purposes
-    (see :ref:`loading_kaylee_object` for more details.)
+    See :ref:`loading_kaylee_object` for  Kaylee object initialization and
+    loading procedure.
 
     :param registry: active nodes registry
     :param session_data_manager: global session data manager
@@ -79,11 +79,8 @@ class Kaylee(object):
     """
     def __init__(self, registry, session_data_manager = None,
                  applications = None, **kwargs):
-        #: An instance of :class:`Config` with Kaylee configuration parsed
-        #: from ``**kwargs``. The configuration parameters are accessed as
-        #: follows::
-        #:
-        #:   kl.config.CONFIG_PARAMETER
+        #: An instance of :class:`kaylee.core.Config` which maintains
+        #: the configuration initially parsed from ``**kwargs**.
         self.config = Config(**kwargs)
 
         #: Active nodes registry (an instance of :class:`NodesRegistry`).
@@ -97,11 +94,11 @@ class Kaylee(object):
 
     @json_error_handler
     def register(self, remote_host):
-        """Registers the remote host as Kaylee Node and returns
+        """Registers the remote host (browser) as Kaylee Node and returns
         JSON-formatted data with the following fields:
 
-        * node_id - hex-formatted node id
-        * config  - global nodes configuration (see :mod:`loader` module)
+        * node_id - node id (hex-formatted string)
+        * config  - client configuration (see :class:`kaylee.core.Config`).
         * applications - a list of Kaylee applications' names.
 
         :param remote_host: the IP address of the remote host
@@ -125,10 +122,9 @@ class Kaylee(object):
 
     @json_error_handler
     def subscribe(self, node_id, application):
-        """Subscribe a node to an application. In practice it means that
-        Kaylee will send task from particular application to this node.
-        When a node subscribes to an application it received the its
-        configuration defined for nodes.
+        """Subscribes a node to an application. After successful subscribtion
+        the node receives a client-side application configuration and invokes
+        client-side project initialization routines.
 
         :param node_id: a valid node id
         :param application: registered Kaylee application name
@@ -168,11 +164,15 @@ class Kaylee(object):
           }
 
         Here, <action> tells the Node, what should it do and <data> is
-        the attached data. The available values of <action> are:
+        the attached data. The valid <actions> are:
 
         * **"task"** - indicated that <data> contains task data
-        * **"unsubscribe"** - indicates that there is no need for the Node to
-          request tasks from the subscribed application anymore.
+        * **"unsubscribe"** - indicates that Kaylee server has unsubscribed
+          the Node from the application. Any further action request by the
+          node will raise :class:`NodeNotSubscribedError
+          kaylee.error.NodeNotSubscribedError`
+        * **"nop"** - indicates that no operation should be carried out by
+          the node right now.
 
         :param node_id: a valid node id
         :type node_id: string
@@ -193,32 +193,31 @@ class Kaylee(object):
                                      'unsubscribed: {}'.format(e))
 
     @json_error_handler
-    def accept_result(self, node_id, data):
+    def accept_result(self, node_id, result):
         """Accepts the results from the node. Returns the next action if
         :py:attr:`self.config.AUTO_GET_ACTION <Config.AUTO_GET_ACTION>`
         is True. Otherwise returns the "nop" (no operatiotion) action.
-        Unsubscribes the node if the returned result is invalid.
+
 
         :param node_id: a valid node id
-        :param data: the data returned by the node. This data will be later
-                     normalized and validated by the project and then
-                     stored to the application's storages.
-        :type node_id: string or JSON-parsed dict/list
-        :type data: string
-        :returns: a task returned by :meth:`get_action` or "nop" action.
+        :param result: the result returned by the node.
+        :type node_id: string
+        :type result: string with JSON-encoded dict data.
+        :returns: A task (an action) returned by :meth:`get_action` or
+                 "nop" action.
         """
         node = self.registry[node_id]
         try:
-            if not isinstance(data, basestring):
-                raise ValueError('Kaylee expects the incoming data to be in '
+            if not isinstance(result, basestring):
+                raise ValueError('Kaylee expects the incoming result to be in '
                                  'string format, not {}'.format(
-                                     data.__class__.__name__))
-            data = json.loads(data)
-            if not isinstance(data, dict):
+                                     result.__class__.__name__))
+            parsed_result = json.loads(parsed_result)
+            if not isinstance(parsed_result, dict):
                 raise ValueError('The returned result was not parsed '
-                                 'as dict: {}'.format(data))
-            self._restore_session_data(node, data)
-            node.accept_result(data)
+                                 'as dict: {}'.format(parsed_data))
+            self._restore_session_data(node, parsed_result)
+            node.accept_result(parsed_result)
         except InvalidResultError as e:
             self.unsubscribe(node)
             raise e
@@ -228,7 +227,7 @@ class Kaylee(object):
         return self._json_action(ACTION_NOP)
 
     def clean(self):
-        """Removes outdated nodes from Kaylee's nodes storage."""
+        """Removes the outdated nodes from Kaylee's nodes storage."""
         self.registry.clean()
 
     def _store_session_data(self, node, task):
@@ -242,7 +241,8 @@ class Kaylee(object):
 
     @property
     def applications(self):
-        """Loaded applications dictionary-like container."""
+        """Available applications container (:class:`
+        kaylee.core.Applications` object)"""
         return self._applications
 
     def _json_action(self, action, data = ''):

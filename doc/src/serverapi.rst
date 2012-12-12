@@ -16,7 +16,7 @@ Kaylee Object
 
 .. autoclass:: Kaylee
 
-   .. automethod:: accept_result(node_id, data)
+   .. automethod:: accept_result(node_id, result)
    .. autoattribute:: applications
    .. automethod:: clean()
    ..
@@ -24,11 +24,8 @@ Kaylee Object
 
    .. py:attribute:: config
 
-      An instance of :class:`Config` with Kaylee configuration parsed
-      from ``**kwargs``. The configuration parameters are accessed as
-      follows::
-
-        kl.config.CONFIG_PARAMETER
+      An instance of :class:`kaylee.core.Config` which maintains
+      the configuration initially parsed from ``**kwargs**``.
 
    .. automethod:: get_action(node_id)
    .. automethod:: register(remote_host)
@@ -51,6 +48,11 @@ Config Object
 
 .. autoclass:: kaylee.core.Config
 
+
+Applications Object
+...................
+
+.. autoclass:: kaylee.core.Applications
 
 
 Node Objects
@@ -89,7 +91,7 @@ Controller Object
 
 .. autoclass:: Controller
 
-   .. automethod:: accept_result(node, data)
+   .. automethod:: accept_result(node, result)
    .. autoattribute:: completed
    .. automethod:: get_task(node)
 
@@ -126,3 +128,22 @@ Session data managers
 .. autoclass:: kaylee.session.NodeSessionDataManager
 
 .. autoclass:: kaylee.session.JSONSessionDataManager
+
+
+Errors
+------
+
+.. autoclass:: kaylee.errors.KayleeError
+
+.. autoclass:: kaylee.errors.ApplicationCompletedError
+
+.. autoclass:: kaylee.errors.InvalidNodeIDError
+
+.. autoclass:: kaylee.errors.InvalidResultError
+
+.. autoclass:: kaylee.errors.NodeNotSubscribedError
+   :members:
+
+.. autoclass:: kaylee.errors.NodeRejectedError
+
+

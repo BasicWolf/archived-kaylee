@@ -94,9 +94,8 @@ SESSION_DATA_MANAGER
 
 **Optional**. Defines the session data manager.
 
-.. note:: If the option is not defined the loader loads the deafult
-          :class:`Phony <kaylee.session.PhonySessionDataManager>`
-          manager.
+.. note:: If the option is not defined the loader loads the deafult :class:`
+          Phony <kaylee.session.PhonySessionDataManager>` manager.
 
 Format::
 

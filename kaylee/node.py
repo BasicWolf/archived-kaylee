@@ -19,7 +19,7 @@ import hashlib
 from datetime import datetime
 from abc import ABCMeta, abstractmethod
 
-from .errors import (warn, InvalidNodeIDError, NodeUnsubscribedError,
+from .errors import (warn, InvalidNodeIDError, NodeNotSubscribedError,
                      ApplicationCompletedError)
 from .util import parse_timedelta
 
@@ -75,19 +75,19 @@ class Node(object):
 
     def get_task(self):
         if self.controller is None:
-            raise NodeUnsubscribedError(self)
+            raise NodeNotSubscribedError(self)
         if self.controller.completed:
             raise ApplicationCompletedError(self.controller)
         task = self.controller.get_task(self)
         task['id'] = str(task['id'])
         return task
 
-    def accept_result(self, data):
+    def accept_result(self, result):
         if self.controller is None:
-            raise NodeUnsubscribedError(self)
+            raise NodeNotSubscribedError(self)
         if self.controller.completed:
             raise ApplicationCompletedError(self.controller)
-        self.controller.accept_result(self, data)
+        self.controller.accept_result(self, result)
 
     @property
     def controller(self):
