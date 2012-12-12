@@ -43,12 +43,6 @@ Kaylee Object
    .. :inherited-members:
 
 
-Config Object
-.............
-
-.. autoclass:: kaylee.core.Config
-
-
 Applications Object
 ...................
 

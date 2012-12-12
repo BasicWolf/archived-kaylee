@@ -1,14 +1,19 @@
-* Better error/exceptions mechanism on client
+vX.Y <-- Very far future
 * Client: operations timeout (e.g. project import timeout)
+* Sleepy loops
+
 
 v0.4 <-- Far future
 ----
 * Google App Engine support
 
+
 v0.3 <-- Future
 ----
+* Default config
 * Kaylee Console API
 * Uploading projects through Console API
+
 
 v0.2 <-- dev
 ----
@@ -31,4 +36,3 @@ v0.2 <-- dev
 Interesting links:
 # http://www.andromedaproject.org/#!/home
 # http://lenta.ru/news/2012/12/10/helpandromeda/
-

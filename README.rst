@@ -8,9 +8,9 @@ It is written in Python and CoffeeScript.
 Is it ready yet?
 ================
 
-Yes, as long as you stick to the provided API. Kaylee is currently
-in early development, but we're looking forward to stick with the
-API, especially the *Projects* part of it.
+**No!** Absolutely not. The Kaylee promise is that each tagged version 
+is self-contained and working fine, but the API is not stable yet and 
+there might be dramatic changes in future.
 
 
 Where are the docs?

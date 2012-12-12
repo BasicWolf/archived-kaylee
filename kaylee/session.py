@@ -64,7 +64,7 @@ class SessionDataManager(object):
 
 
 class PhonySessionDataManager(SessionDataManager):
-    """The default session data manager which throws a :class:`KayleeError`
+    """The default session data manager which throws :class:`KayleeError`
     if any session variables are encountered in an outgoing task."""
     def store(self, node, task):
         session_data = self.get_session_data(task)
@@ -81,8 +81,8 @@ KL_LOADER_DEFAULT_SESSION_DATA_MANAGER = PhonySessionDataManager
 
 
 class NodeSessionDataManager(SessionDataManager):
-    """A session data manager, which utilizes :attr:`Node.session_data`
-    property."""
+    """A session data manager, which keeps the data in
+    :attr:`Node.session_data`."""
     def store(self, node, task):
         session_data = self.get_session_data(task)
         if session_data == {}:
@@ -220,6 +220,3 @@ def _decrypt_attr(data, decryptor):
     attr, val = tdata.split('=', 1)
     val = pickle.loads(val)
     return attr, val
-
-
-

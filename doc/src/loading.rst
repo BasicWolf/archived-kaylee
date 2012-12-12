@@ -12,8 +12,9 @@ prepared and how Kaylee object is loaded.
 
 Configuration
 -------------
-Kaylee configuration is an object which holds some :ref:`config <config>`
-parameters like the applications, worker script URI etc.
+Kaylee configuration is an object which holds certain
+:ref:`configuration <configuration>` parameters like the applications,
+worker script URI etc.
 
 There are several ways of defining Kaylee configuration:
 
@@ -56,4 +57,3 @@ from any part of the code::
   setup('/path/to/config/file.py') # setup accepts any valid config object
 
   # at this point the `kl` proxy refers to the Kaylee object.
-

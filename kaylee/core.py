@@ -81,7 +81,7 @@ class Kaylee(object):
                  applications = None, **kwargs):
         #: An instance of :class:`kaylee.core.Config` which maintains
         #: the configuration initially parsed from ``**kwargs**.
-        self.config = Config(**kwargs)
+        self._config = Config(**kwargs)
 
         #: Active nodes registry (an instance of :class:`NodesRegistry`).
         self.registry = registry
@@ -98,7 +98,7 @@ class Kaylee(object):
         JSON-formatted data with the following fields:
 
         * node_id - node id (hex-formatted string)
-        * config  - client configuration (see :class:`kaylee.core.Config`).
+        * config  - client configuration (see :ref:`configuration`).
         * applications - a list of Kaylee applications' names.
 
         :param remote_host: the IP address of the remote host
@@ -107,13 +107,13 @@ class Kaylee(object):
         node = Node(NodeID.for_host(remote_host))
         self.registry.add(node)
         return json.dumps ({ 'node_id' : str(node.id),
-                             'config' : self.config.to_dict(),
+                             'config' : self._config.to_dict(),
                              'applications' : self._applications.names } )
 
     @json_error_handler
     def unregister(self, node_id):
-        """Remove the node from Kaylee. Kaylee will reject any further
-        requests from the node unless it registers again.
+        """Removes the node from the nodes registry. Practically this means
+        that the remote host (browser) disconnects from Kaylee server.
 
         :param node_id: a valid node id
         :type node_id: string
@@ -122,7 +122,7 @@ class Kaylee(object):
 
     @json_error_handler
     def subscribe(self, node_id, application):
-        """Subscribes a node to an application. After successful subscribtion
+        """Subscribes a node to an application. After a successful subscription
         the node receives a client-side application configuration and invokes
         client-side project initialization routines.
 
@@ -195,9 +195,8 @@ class Kaylee(object):
     @json_error_handler
     def accept_result(self, node_id, result):
         """Accepts the results from the node. Returns the next action if
-        :py:attr:`self.config.AUTO_GET_ACTION <Config.AUTO_GET_ACTION>`
-        is True. Otherwise returns the "nop" (no operatiotion) action.
-
+        :config:`AUTO_GET_ACTION` configuration option is True. Otherwise
+        returns the "nop" (no operatiotion) action.
 
         :param node_id: a valid node id
         :param result: the result returned by the node.
@@ -222,7 +221,7 @@ class Kaylee(object):
             self.unsubscribe(node)
             raise e
 
-        if self.config.AUTO_GET_ACTION:
+        if self._config.AUTO_GET_ACTION:
             return self.get_action(node.id)
         return self._json_action(ACTION_NOP)
 
@@ -241,8 +240,8 @@ class Kaylee(object):
 
     @property
     def applications(self):
-        """Available applications container (:class:`
-        kaylee.core.Applications` object)"""
+        """Available applications container (
+        :class:`kaylee.core.Applications` object)"""
         return self._applications
 
     def _json_action(self, action, data = ''):
@@ -250,9 +249,8 @@ class Kaylee(object):
 
 
 class Config(object):
-    """Kaylee Configuration repository.
-
-    TODOC.
+    """The ``Config`` object maintains the run-time Kaylee
+    configuration options (see :ref:`configuration` for full description).
     """
     serialized_attributes = [
         'AUTO_GET_ACTION',
@@ -263,9 +261,16 @@ class Config(object):
         self._dirty = True
         self._cached_dict = {}
 
+        # first, set the options with default values
         self.AUTO_GET_ACTION = kwargs.get('AUTO_GET_ACTION', True)
-        self.WORKER_SCRIPT_URL = kwargs.get('WORKER_SCRIPT_URL', None)
         self.SECRET_KEY = kwargs.get('SECRET_KEY', None)
+
+        # next, set the options with required values
+        try:
+            self.WORKER_SCRIPT_URL = kwargs.get('WORKER_SCRIPT_URL', None)
+        except KeyError as e:
+            raise KeyError('The required config option is missing: {}'
+                           .format(e.args[0]))
 
     def __setattr__(self, name, value):
         if name != '_dirty':
@@ -283,7 +288,7 @@ class Config(object):
 
 
 class Applications(object):
-    """A container for active Kaylee applications.
+    """A readonly dict-like container for active Kaylee applications.
 
     :param controllers: A list of :class:`Controller` objects.
     """

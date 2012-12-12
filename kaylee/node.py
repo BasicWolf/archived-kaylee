@@ -30,8 +30,7 @@ node_id_pattern = r'[\da-fA-F]{20}'
 
 class Node(object):
     """
-    A Node object contains information about a node which was registered
-    by :class:`Kaylee`.
+    A Node object contains the information about a registered `Kaylee Node`.
 
     :param node_id: an instance of :class:`NodeID` or a string parsable by
                     :class:`NodeID`
@@ -97,7 +96,7 @@ class Node(object):
 
     @property
     def session_data(self):
-        """Binary session data stored in ``str``."""
+        """Binary session data (:class:`str`)"""
         return self._session_data
 
     @session_data.setter
@@ -134,8 +133,8 @@ class Node(object):
 
 class NodeID(object):
     """
-    NodeID is a 10-bytes long ID generated from current UNIX time,
-    remote host identifier and internal incremental counter.
+    NodeID is a 10-bytes long ID generated from the current UNIX time,
+    the remote host identifier and the internal incremental counter.
     The format is::
 
     [UNIX time (4)][counter (2)][remote host identifier hash (4)]
@@ -272,14 +271,14 @@ class NodeID(object):
 
     @property
     def timestamp(self):
-        """A timezone-aware :class:`datetime.datetime` instance representing
+        """A :class:`datetime.datetime` instance representing
         the current NodeID's generation time. It is precise to a second.
         """
         t = struct.unpack(">i", self._id[0:4])[0]
         return datetime.fromtimestamp(t)
 
     def __str__(self):
-        """Hex representation of the  NodeID"""
+        """Hex representation of the NodeID"""
         return binascii.hexlify(self._id).decode()
 
     def __repr__(self):
@@ -310,7 +309,7 @@ class NodeID(object):
         return self._id >= other._id
 
     def __hash__(self):
-        """NodeID's hash"""
+        """Python ``hash()`` of the internal id representation."""
         return hash(self._id)
 
 

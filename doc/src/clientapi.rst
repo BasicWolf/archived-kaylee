@@ -105,7 +105,7 @@ Core
 
    Kaylee client config received from the server after the node has been
    registered. For full configuration description see
-   :class:`kaylee.core.Config`.
+   :ref:`configuration`.
 
 .. js:function:: kl.error(message)
 

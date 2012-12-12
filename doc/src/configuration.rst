@@ -1,4 +1,4 @@
-.. _config:
+.. _configuration:
 
 Configuration Options
 =====================
@@ -6,12 +6,27 @@ Configuration Options
 .. module:: kaylee
 
 This section describes Kaylee configuration options.
-For information on setting up Kaylee, see :ref:`loading`.
+For information on various methods of configuring and
+setting up Kaylee, see :ref:`loading`.
+
+.. config:: AUTO_GET_ACTION
+
+AUTO_GET_ACTION
+---------------
+
+**Default value:** ``True``.
+
+A flag which indicates whether Kaylee will return a next action when a result
+is accepted from the node.
+
 
 .. config:: APPLICATIONS
 
 APPLICATIONS
 ------------
+
+**Default value:** ``[]``.
+
 
 A list which contains the applications' configurations loaded
 by Kaylee. The format is:
@@ -57,6 +72,7 @@ which is passed as ``**kwargs`` during class initialization.
   'config' : {
       'opt1' : 'val1',
       'opt2' : 10,
+
   }
 
 .. config:: PROJECTS_DIR
@@ -67,7 +83,9 @@ PROJECTS_DIR
 Defines a directory in which Kaylee searches for user projects, for
 example:
 
-``/home/user/.kaylee/projects/``.
+.. code-block:: none
+
+  ``/home/user/.kaylee/projects/``
 
 
 .. config:: REGISTRY
@@ -94,8 +112,9 @@ SESSION_DATA_MANAGER
 
 **Optional**. Defines the session data manager.
 
-.. note:: If the option is not defined the loader loads the deafult :class:`
-          Phony <kaylee.session.PhonySessionDataManager>` manager.
+.. note:: If the option is not defined the 
+          default :class:`Phony <kaylee.session.PhonySessionDataManager>`
+          session data manager is loaded.
 
 Format::
 
