@@ -37,22 +37,18 @@ NOT_SOLVED = { KL_RESULT : 0x4 }
 
 
 class Controller(object):
-    """Controller is one of the main parts of Kaylee. A controller
-    is a layer that binds projects and nodes. It dispatches the project tasks
-    to nodes, and collects the results.
+    """A controller object with a bound project and storages forms a *Kaylee
+    application*. It maintains the data (tasks and the results) flow
+    between a project and the outer :class:`Kaylee` interface.
 
-    A controller, a project, a temporal and permanenet storages altogether
-    form a *Kaylee Application*.
-
-    TODOC
-
-    :param name: Application name.
-    :param project: Bound project.
+    :param name: application name
+    :param project: bound project
+    :param permanent_storage: Permanent application results storage
     :param temporal_storage: Internal storage for storing intermediate
-                             (temporal) results before storing them to
-                             a permanent storage.
+                             (temporal) results.
     :type name: string
     :type project: :class:`Project`
+    :type permanent_storage: :class:`PermanentStorage`
     :type temporal_storage: :class:`TemporalStorage`
     """
 
