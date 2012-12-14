@@ -98,8 +98,8 @@ two simple callbacks in order to complete the project's client side
       return
 
 To keep things simple the communication between client and server is carried
-out via JSON-formatted ``key-value`` (Python ``dict`` or JavaScript ``object``)
-objects.
+out via JSON-formatted ``key-value`` (Python :class:`dict` or JavaScript
+``object``) objects.
 
 Finally, a project has to `verify` and `normalize` the results. This is done
 via the :meth:`Project.normalize_result(task_id, result)

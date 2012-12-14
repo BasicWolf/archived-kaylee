@@ -52,7 +52,7 @@ Next, let's implement two tasks supplying Kaylee Project methods::
           return None
 
 As you can see, :py:meth:`next_task() <Project.next_task>` in conjunction
-with :py:meth:`__getitem__() <Project.__getitem__>` returns a ``dict``
+with :py:meth:`__getitem__() <Project.__getitem__>` returns a :class:`dict`
 with an obligatory ``id`` key and a value derived from ``self._tasks_counter``.
 
 The next important part of every project is the :py:meth:`normalize_result

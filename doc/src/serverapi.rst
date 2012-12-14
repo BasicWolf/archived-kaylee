@@ -24,8 +24,10 @@ Kaylee Object
 
    .. py:attribute:: config
 
-      An instance of :class:`kaylee.core.Config` which maintains
+      An internal configuration storage object which maintains
       the configuration initially parsed from ``**kwargs**``.
+      The options are accessed as object attributes, e.g.:
+      ``kl.config.WORKER_SCRIPT_URL``
 
    .. automethod:: get_action(node_id)
    .. automethod:: register(remote_host)
@@ -48,11 +50,13 @@ Applications Object
 
 .. autoclass:: kaylee.core.Applications
 
+   .. py:attribute:: names
+
+   A list of apllications' names.
+
 
 Node Objects
 ------------
-
-
 
 .. autoclass:: Node
    :members:
@@ -79,6 +83,11 @@ Project Object
 
    .. automethod:: __getitem__
 
+Project modes
+.............
+
+.. autodata:: kaylee.project.AUTO_PROJECT_MODE
+.. autodata:: kaylee.project.MANUAL_PROJECT_MODE
 
 Controller Object
 -----------------

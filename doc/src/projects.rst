@@ -7,6 +7,9 @@ Projects
 
 This section examines various Kaylee projects topics in-depth.
 
+
+.. _projects_modes:
+
 Modes
 -----
 

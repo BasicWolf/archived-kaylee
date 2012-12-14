@@ -12,8 +12,14 @@
 from abc import abstractmethod
 from .errors import KayleeError
 
+
+#: Defines auto project mode (see :attr:`Project.mode`)
 AUTO_PROJECT_MODE = 0x2
+
+#: Defines manual project mode (see :attr:`Project.mode`)
 MANUAL_PROJECT_MODE = 0x4
+
+
 KL_PROJECT_MODE = '__kl_project_mode__'
 KL_PROJECT_SCRIPT = '__kl_project_script__'
 KL_PROJECT_STYLES = '__kl_project_styles__'
@@ -25,7 +31,18 @@ class Project(object):
     :param script: The URL of the project's client part (\*.js file).
     """
 
-    #: Project mode.
+    #: Indicates the mode in which project works on the client side.
+    #: Available modes:
+    #:
+    #: * :data:`AUTO_PROJECT_MODE <kaylee.project.AUTO_PROJECT_MODE>`
+    #: * :data:`MANUAL_PROJECT_MODE <kaylee.project.MANUAL_PROJECT_MODE>`
+    #:
+    #: The mode must be set in a project class explicitly e.g.::
+    #:
+    #:    class MyProject(Project):
+    #:        mode = MANUAL_PROJECT_MODE
+    #:
+    #: For detailed description and usage see :ref:`projects_modes`.
     mode = None
 
     def __init__(self, script, *args, **kwargs):
@@ -34,10 +51,15 @@ class Project(object):
             raise ValueError('{}.mode is wrong or not defined'.format(
                     self.__class__.__name__))
 
-        #: A dictionary wi]th configuration
-        #: details used by every client-side node. If the project is loaded
-        #: via a configuration object ``client_config`` is extended by
-        #: ``project.config`` section's value (see :ref:`loading`).
+        #: A dictionary which contains the configuration passed to the
+        #: client-side of the project in :js:func:`pj.init`.
+        #: If the project is loaded from a :ref:`configuration object
+        #: <loading>` the base value of ``client_config`` is extended by
+        #: ``project.config`` configuration section.
+        #:
+        #: .. note:: Initially ``Project.client_config`` contains only the
+        #:           data necessary to properly initialize the client-side
+        #:           of the project.
         self.client_config = {
             KL_PROJECT_SCRIPT : script,
             KL_PROJECT_MODE   : self.mode,
@@ -48,21 +70,25 @@ class Project(object):
 
     @abstractmethod
     def next_task(self):
-        """
-        TODOC
-        Returns the next task. The returned ``None`` value indicates that
+        """Returns the next task. The returned ``None`` value indicates that
         there will be no more new tasks from the project, but the bound
         controller can still refer to the old tasks via ``project[task_id]``.
 
-        :returns: an instance of :class:`Task` or ``None``.
+        :returns: task :class:`dict` or ``None``.
         """
 
     @abstractmethod
     def __getitem__(self, task_id):
-        """TODOC:
-        Returns a task with the required id.
+        """Returns a task with the required id. A task is simply
+        a :class:`dict` with at least an 'id' key in it::
 
-        :rtype: :class:`Task`
+          {
+              'id' : '10',
+              'somedata' : somevalue,
+              # etc.
+          }
+
+        :rtype: :class:`dict`
         """
 
     @abstractmethod
@@ -79,10 +105,9 @@ class Project(object):
         """A callback invoked by the bound controller when
         a result is successfully stored to a permanent storage.
 
-        :param task_id: Task ID.
-        :param data: Task results.
-        :param storage: Application's permanent results storage
-        :type data: dict or list (parsed JSON)
+        :param task_id: Task ID
+        :param data: Normalized task result
+        :param storage: The application's permanent results storage
         :type storage: :class:`PermanentStorage`
         """
         pass

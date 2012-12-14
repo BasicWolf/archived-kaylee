@@ -322,13 +322,17 @@ class NodesRegistry(object):
 
     :param timeout: Nodes timeout. Used by :meth:`clean` to determine if a
                     node is obsolete.
-                    Format: ``1d 12h 10m 5s``, e.g. ``"12h"``; ``"1d 10m"``
-                    etc.
+                    Format: ``1d 12h 59m 59s``, e.g.:
+
+                    * ``'1d 10m'`` - one day, ten minutes
+                    * ``'12h'``    - twelve hours
+                    * ``'5h 10s'`` - five hours, ten seconds
+
     :type timeout: str
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, timeout = '30m', *args, **kwargs):
+    def __init__(self, timeout, *args, **kwargs):
         #: Nodes timeout. Parsed from constructors ``timeout`` argument.
         #: Type: :class:`datetime.timedelta`.
         self.timeout = parse_timedelta(timeout)
@@ -342,7 +346,7 @@ class NodesRegistry(object):
         """Updates previously added "dirty" nodes. There is no need to
         update a node if ``node.dirty == False``.
 
-        :throws: KeyError in case node is not found in registry.
+        :throws: :class:`KeyError` in case node is not found in registry.
         """
 
     @abstractmethod

@@ -18,7 +18,7 @@ worker script URI etc.
 
 There are several ways of defining Kaylee configuration:
 
-* Python ``dict``::
+* Python :class:`dict`::
 
     config = {
       'AUTO_GET_ACTION' : True,

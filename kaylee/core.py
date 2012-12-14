@@ -79,8 +79,10 @@ class Kaylee(object):
     """
     def __init__(self, registry, session_data_manager = None,
                  applications = None, **kwargs):
-        #: An instance of :class:`kaylee.core.Config` which maintains
-        #: the configuration initially parsed from ``**kwargs**.
+        #: An internal configuration storage object which maintains
+        #: the configuration initially parsed from ``**kwargs**``.
+        #: The options are accessed as object attributes, e.g.:
+        #: ``kl.config.WORKER_SCRIPT_URL``.
         self._config = Config(**kwargs)
 
         #: Active nodes registry (an instance of :class:`NodesRegistry`).
@@ -113,7 +115,8 @@ class Kaylee(object):
     @json_error_handler
     def unregister(self, node_id):
         """Removes the node from the nodes registry. Practically this means
-        that the remote host (browser) disconnects from Kaylee server.
+        that the remote host (browser) disconnects or is disconnected from
+        the Kaylee server.
 
         :param node_id: a valid node id
         :type node_id: string
@@ -169,8 +172,8 @@ class Kaylee(object):
         * **"task"** - indicated that <data> contains task data
         * **"unsubscribe"** - indicates that Kaylee server has unsubscribed
           the Node from the application. Any further action request by the
-          node will raise :class:`NodeNotSubscribedError
-          kaylee.error.NodeNotSubscribedError`
+          node raises :class:`NodeNotSubscribedError
+          <kaylee.error.NodeNotSubscribedError>`.
         * **"nop"** - indicates that no operation should be carried out by
           the node right now.
 
@@ -288,12 +291,14 @@ class Config(object):
 
 
 class Applications(object):
-    """A readonly dict-like container for active Kaylee applications.
+    """A readonly container for active Kaylee applications.
 
     :param controllers: A list of :class:`Controller` objects.
     """
     def __init__(self, controllers):
         self._controllers = {c.name : c for c in controllers}
+
+        #: A list of apllications' names
         self.names = sorted(self._controllers.keys())
 
     def __getitem__(self, name):
