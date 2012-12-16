@@ -18,8 +18,8 @@ from collections import defaultdict
 
 import kaylee.contrib
 from .core import Kaylee
-from .errors import KayleeError, warn
-from .util import LazyObject, import_object
+from .errors import KayleeError
+from .util import LazyObject
 from . import storage, controller, project, node, session
 
 import logging
@@ -142,8 +142,8 @@ def load_applications(config):
     apps = []
     if 'APPLICATIONS' in config:
         for conf in config['APPLICATIONS']:
-            controller = _load_controller(conf)
-            apps.append(controller)
+            ct = _load_controller(conf)
+            apps.append(ct)
         log.info('{} applications have been loaded'.format(len(apps)))
     else:
         log.info('No applications have been loaded')
@@ -170,7 +170,6 @@ def _projects_modules(path):
 
 def _update_classes(module):
     """Updates the global _classes variable by the classes found in module."""
-    global _classes
     _valid_subclass = lambda c, bc: issubclass (c, bc) and c is not bc
 
     classes_from_module = _get_classes_from_module(module)
@@ -184,11 +183,6 @@ def _update_classes(module):
 
 
 def _get_classes_from_module(module):
-    """TODOC
-
-    :returns: a list of classes loaded from the modules
-    :rtype: list
-    """
     return [attr for attr in module.__dict__.values()
             if inspect.isclass(attr)]
 
@@ -221,9 +215,9 @@ def _load_controller(conf):
     clsname = conf['controller']['name']
     ccls = _classes[controller.Controller][clsname]
     app_name = conf['name']
-    project = _load_project(conf)
-    pstorage = _load_permanent_storage(conf)
-    tstorage = _load_temporal_storage(conf)
-    cobj = ccls(app_name, project, pstorage, tstorage,
+    pjobj = _load_project(conf)
+    psobj = _load_permanent_storage(conf)
+    tsobj = _load_temporal_storage(conf)
+    cobj = ccls(app_name, pjobj, psobj, tsobj,
                 **conf['controller'].get('config', {}))
     return cobj

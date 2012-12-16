@@ -1,17 +1,14 @@
-vX.Y <-- Very far future
-* Client: operations timeout (e.g. project import timeout)
-* Sleepy loops
+v0.2 (dev)
+----------
+* Pylint the code
+* Remove all the disabled message and pylint again
+* Add description of every message to .pylintrc
 
 
-v0.4 <-- Far future
-----
-* Google App Engine support
-
-
-v0.3 <-- Future
-----
+v0.3 (Future)
+-------------
 * Before you start, reorganize the features below :)
-* Default config
+* Default config instead of core.Config defaults
 * Kaylee Console API
 * Uploading projects through Console API
 * Random data seed per application
@@ -22,26 +19,16 @@ v0.3 <-- Future
 * Аdd the Travelling salesman problem as a demo app.
 * Add a method to a project which returns a 0.0..1 completed value
 * Start thinking of Py3 support
-
-
-v0.2 <-- dev
-----
-
-* project_imported() -> project_imported(bool success)
-
-* Update benchmark
-
-* Decide if storages should raise an error if the result has been
-  submitted previously.
-
-+ Add node registry update()
-
-+ Add node.dirty
-
-+ Modify Storages API, so that PermanentStorage and TemporalStorage
-  interfaces look the same.
-
+* Test with PyPI
 
 Interesting links:
 # http://www.andromedaproject.org/#!/home
 # http://lenta.ru/news/2012/12/10/helpandromeda/
+
+
+v0.4 (Far future)
+-----------------
+* Google App Engine support
+* Client: sleepy loops and special benchmark. Also, benchmark score support on
+  server.
+* Client: operations timeout (e.g. project import timeout)

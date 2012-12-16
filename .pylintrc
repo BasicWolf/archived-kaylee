@@ -33,7 +33,9 @@ load-plugins=
 # can either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once).
-disable=C0103,C0111,W0212,R0903,R0914,W0142,W0212
+disable=C0103,C0111,W0212,R0903,R0914,W0142,W0212,W0603
+
+# W0603: Using the global statement in loader for the _classes cache
 
 
 [REPORTS]

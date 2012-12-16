@@ -66,8 +66,6 @@ class Node(object):
         self._task_timestamp = None
         self._controller = None
         self._task_id = None
-        self._dirty = True
-
         #: Indicates that one of the Node attributes (except ID) has been
         #: changed. ``Node.dirty`` has to be set to ``False`` manually.
         self.dirty = True
@@ -183,6 +181,7 @@ class NodeID(object):
                             .format(basestring.__name__,
                                     type(remote_host).__name__ )
                             )
+        self._id = None
         if node_id is None:
             self._generate(remote_host)
         else:
