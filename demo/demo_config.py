@@ -28,7 +28,7 @@ SESSION_DATA_MANAGER = {
 ## User applications ##
 #######################
 
-app_hash_cracker_1 = {
+app_hash_cracker_comparator = {
     'name' : 'hash_cracker.1',
     'description' : 'Crack a salted hash',
     'project' : {
@@ -46,7 +46,6 @@ app_hash_cracker_1 = {
         },
     },
     'controller' : {
-        # 'name' : 'SimpleController',
         'name' : 'ResultsComparatorController',
         'config' : {
             'results_count_threshold' : 2
@@ -60,7 +59,7 @@ app_hash_cracker_1 = {
     }
 }
 
-app_hash_cracker_2 = {
+app_hash_cracker_simple = {
     'name' : 'hash_cracker.1',
     'description' : 'Crack a salted hash',
     'project' : {
@@ -86,7 +85,7 @@ app_hash_cracker_2 = {
 }
 
 
-app_human_ocr_1 = {
+app_human_ocr_simple = {
     'name' : 'human_ocr.1',
     'description' : 'Involves a human in image recognition',
     'project' : {
@@ -110,7 +109,7 @@ app_human_ocr_1 = {
 }
 
 
-# APPLICATIONS = [app_human_ocr_1]
-# APPLICATIONS = [app_hash_cracker_1]
-# APPLICATIONS = [app_hash_cracker_2]
 
+APPLICATIONS = [app_hash_cracker_simple]
+# APPLICATIONS = [app_hash_cracker_comparator]
+# APPLICATIONS = [app_human_ocr_simple]

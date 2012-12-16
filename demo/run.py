@@ -5,23 +5,11 @@ import sys
 import argparse
 import logging
 
-def setup():
-    logging.basicConfig(level = logging.DEBUG)
+log = logging.getLogger(__name__)
 
-    cur_dir = os.path.dirname(os.path.abspath(__file__))
-    sys.path.insert(0, os.path.join(cur_dir, 'launchers'))
-    sys.path.insert(0, os.path.join(cur_dir, 'launchers/django_launcher'))
-    sys.path.insert(0, os.path.join(cur_dir, 'projects'))
-    sys.path.insert(0, os.path.join(cur_dir, '../'))
+_pjoin = os.path.join
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-    import kaylee
-    kaylee.setup(os.path.join(cur_dir, 'demo_config.py'))
-
-    # module mock
-    class KayleeDemo(object):
-        FRONTEND_TEMPLATES_DIR = os.path.join(cur_dir, 'build/templates')
-        FRONTEND_STATIC_DIR = os.path.join(cur_dir, 'build/static')
-    sys.modules['kaylee_demo'] = KayleeDemo
 
 def main():
     parser = argparse.ArgumentParser(description='Kaylee demo launcher')
@@ -29,6 +17,7 @@ def main():
                         choices = ['flask', 'django'])
     args = parser.parse_args()
 
+    check_env()
     setup()
 
     if args.frontend == 'flask':
@@ -38,7 +27,35 @@ def main():
     run()
 
 
+def check_env():
+    if not os.path.exists(_pjoin(CURRENT_DIR, 'build')):
+        log.warn('The "build" directory was not found. '
+                 'Has the demo been built?')
 
+    try:
+        import Image
+    except ImportError:
+        log.warn('Python Imaging Library is not installed. It is required '
+                 'by the HumanOCR demo application in order to run properly.'
+                 '\nRun "pip install pil" to install PIL.')
+
+def setup():
+    logging.basicConfig(level = logging.DEBUG)
+
+    CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+    sys.path.insert(0, _pjoin(CURRENT_DIR, 'launchers'))
+    sys.path.insert(0, _pjoin(CURRENT_DIR, 'launchers/django_launcher'))
+    sys.path.insert(0, _pjoin(CURRENT_DIR, 'projects'))
+    sys.path.insert(0, _pjoin(CURRENT_DIR, '../'))
+
+    import kaylee
+    kaylee.setup(_pjoin(CURRENT_DIR, 'demo_config.py'))
+
+    # module mock
+    class KayleeDemo(object):
+        FRONTEND_TEMPLATES_DIR = _pjoin(CURRENT_DIR, 'build/templates')
+        FRONTEND_STATIC_DIR = _pjoin(CURRENT_DIR, 'build/static')
+    sys.modules['kaylee_demo'] = KayleeDemo
 
 if __name__ == '__main__':
     main()

@@ -1,11 +1,11 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
 
 import os
 from distutils.command.install_data import install_data
 from distutils.command.install import INSTALL_SCHEMES
 from setuptools import setup, find_packages
 
-version = __import__('kaylee').__version__
+version = '0.2a1'
 
 
 def fullsplit(path, result=None):
@@ -64,6 +64,11 @@ setup(
     scripts = ['kaylee/bin/kaylee-copy-client.py'],
     zip_safe = False,
     platforms = 'any',
+    install_requires=[
+        'pycrypto>=2.6',
+    ],
+
+    test_suite='kaylee.testsuite.suite',
 
     classifiers=[
         'Development Status :: 3 - Alpha',

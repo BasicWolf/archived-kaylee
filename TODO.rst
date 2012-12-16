@@ -10,10 +10,18 @@ v0.4 <-- Far future
 
 v0.3 <-- Future
 ----
+* Before you start, reorganize the features below :)
 * Default config
 * Kaylee Console API
 * Uploading projects through Console API
 * Random data seed per application
+* Replace dummy controllers/storages with the very basic stuff from contrib.
+  Make sure that all the contrib classes that are used in testsuite are
+  also tested.
+* Add werkzeug as a basic server and mark it as a dependency
+* Аdd the Travelling salesman problem as a demo app.
+* Add a method to a project which returns a 0.0..1 completed value
+* Start thinking of Py3 support
 
 
 v0.2 <-- dev

@@ -42,7 +42,7 @@ src/kldemo.js: src/kldemo.coffee
 	cp src/kldemo.js $(KL_CLIENT_DIR)
 
 clean : $(PJ_DIRS)
-	rm -r $(KL_BUILD_DIR)
+	rm -rf $(KL_BUILD_DIR)
 	rm -f src/*.js
 
 .PHONY: clean demo projects $(PJ_DIRS) static

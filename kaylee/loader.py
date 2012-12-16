@@ -162,10 +162,10 @@ def _projects_modules(path):
         # looks like a python module
         try:
             pymod = importlib.import_module(sub_dir)
+            yield pymod
         except ImportError as e:
-            raise ImportError('Unable to import project package "{}": {}'
-                              .format(sub_dir, e))
-        yield pymod
+            log.error('Unable to import project package "{}": {}'
+                      .format(sub_dir, e))
 
 
 def _update_classes(module):

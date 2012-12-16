@@ -214,7 +214,7 @@ class Kaylee(object):
                 raise ValueError('Kaylee expects the incoming result to be in '
                                  'string format, not {}'.format(
                                      result.__class__.__name__))
-            parsed_result = json.loads(parsed_result)
+            parsed_result = json.loads(result)
             if not isinstance(parsed_result, dict):
                 raise ValueError('The returned result was not parsed '
                                  'as dict: {}'.format(parsed_data))
