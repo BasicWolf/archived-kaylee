@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from kaylee.storage import TemporalStorage, PermanentStorage
 from kaylee.errors import KayleeError
 

@@ -35,7 +35,7 @@ class TemporalStorage(object):
 
     @abstractmethod
     def keys(self):
-        """Returns an iterator object of the storage keys."""
+        """Returns an iterator object of the storage keys (task ids)."""
 
     @abstractmethod
     def values(self):
@@ -58,7 +58,7 @@ class TemporalStorage(object):
 
     @abstractmethod
     def __contains__(self, task_id):
-        """Checks if there are any task results in the storage."""
+        """Checks if the task results are in the storage."""
 
 
 class PermanentStorage(object):
@@ -73,7 +73,7 @@ class PermanentStorage(object):
 
     @abstractmethod
     def keys(self):
-        """Returns an iterator object of the storage keys."""
+        """Returns an iterator object of the storage keys (task ids)."""
 
     @abstractmethod
     def values(self):
@@ -87,12 +87,12 @@ class PermanentStorage(object):
     def __getitem__(self, task_id):
         """Returns the task results.
 
-        :rtype: list
+        :rtype: :class:`list`
         """
 
     @abstractmethod
     def __contains__(self, task_id):
-        """Checks if there are any task results in the storage."""
+        """Checks if the task results are in the storage."""
 
     @abstractmethod
     def __iter__(self):

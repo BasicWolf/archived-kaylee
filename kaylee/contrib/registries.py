@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from kaylee.node import NodesRegistry, Node, NodeID
 
 

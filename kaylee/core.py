@@ -21,7 +21,7 @@ from contextlib import closing
 from functools import wraps
 
 from .node import Node, NodeID
-from .errors import KayleeError, InvalidResultError, NodeRejectedError
+from .errors import KayleeError, InvalidResultError, NodeRequestRejectedError
 from .controller import KL_RESULT
 
 log = logging.getLogger(__name__)
@@ -190,7 +190,7 @@ class Kaylee(object):
                 self.registry.update(node)
                 node.dirty = False
             return self._json_action(ACTION_TASK, task)
-        except NodeRejectedError as e:
+        except NodeRequestRejectedError as e:
             return self._json_action(ACTION_UNSUBSCRIBE,
                                      'The node has been automatically '
                                      'unsubscribed: {}'.format(e))

@@ -136,17 +136,18 @@ Session data managers
 Errors
 ------
 
-.. autoclass:: kaylee.errors.KayleeError
 
-.. autoclass:: kaylee.errors.ApplicationCompletedError
+.. autoclass:: KayleeError
 
-.. autoclass:: kaylee.errors.InvalidNodeIDError
+.. autoclass:: ApplicationCompletedError
 
-.. autoclass:: kaylee.errors.InvalidResultError
+.. autoclass:: InvalidNodeIDError
 
-.. autoclass:: kaylee.errors.NodeNotSubscribedError
+.. autoclass:: InvalidResultError
+
+.. autoclass:: NodeNotSubscribedError
    :members:
 
-.. autoclass:: kaylee.errors.NodeRejectedError
+.. autoclass:: NodeRequestRejectedError
 
 

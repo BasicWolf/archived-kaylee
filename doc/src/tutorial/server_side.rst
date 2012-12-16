@@ -9,7 +9,7 @@ required components of Kaylee::
   # monte_carlo_pi.py
 
   from kaylee import Project, Task
-  from kaylee.errors import InvalidResultError
+  from kaylee import InvalidResultError
 
 Next, we have to subclass ``Project`` in order for Kaylee's importing system
 to recognize it::

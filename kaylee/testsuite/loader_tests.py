@@ -58,25 +58,30 @@ class KayleeLoaderTests(KayleeTest):
     def test_load_config_class(self):
         kl = loader.load(TestConfig)
         self.assertIsInstance(kl, Kaylee)
-        self.assertEqual(kl.config.WORKER_SCRIPT_URL, TestConfig.WORKER_SCRIPT_URL)
+        self.assertEqual(kl._config.WORKER_SCRIPT_URL,
+                         TestConfig.WORKER_SCRIPT_URL)
 
     def test_load_config_dict(self):
         kl = loader.load(dict(TestConfig.__dict__))
         self.assertIsInstance(kl, Kaylee)
-        self.assertEqual(kl.config.WORKER_SCRIPT_URL, TestConfig.WORKER_SCRIPT_URL)
+        self.assertEqual(kl._config.WORKER_SCRIPT_URL,
+                         TestConfig.WORKER_SCRIPT_URL)
 
     def test_load_config_module(self):
         import test_config
         kl = loader.load(test_config)
         self.assertIsInstance(kl, Kaylee)
-        self.assertEqual(kl.config.WORKER_SCRIPT_URL, test_config.WORKER_SCRIPT_URL)
+        self.assertEqual(kl._config.WORKER_SCRIPT_URL,
+                         test_config.WORKER_SCRIPT_URL)
 
     def test_load_config_path(self):
-        path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'test_config.py'))
+        path = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                            'test_config.py'))
         kl = loader.load(path)
         import test_config
         self.assertIsInstance(kl, Kaylee)
-        self.assertEqual(kl.config.WORKER_SCRIPT_URL, test_config.WORKER_SCRIPT_URL)
+        self.assertEqual(kl._config.WORKER_SCRIPT_URL,
+                         test_config.WORKER_SCRIPT_URL)
 
     def test_load_applications(self):
         config = dict(TestConfigWithApps.__dict__)

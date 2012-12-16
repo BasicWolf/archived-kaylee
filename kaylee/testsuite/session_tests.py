@@ -2,7 +2,7 @@ import string
 from copy import deepcopy
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.node import Node, NodeID
-from kaylee.errors import KayleeError
+from kaylee import KayleeError
 from kaylee.session import (_encrypt, _decrypt, JSONSessionDataManager,
                             NodeSessionDataManager, PhonySessionDataManager,
                             SESSION_DATA_ATTRIBUTE)

@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 from kaylee.controller import Controller, NO_SOLUTION, NOT_SOLVED
-from kaylee.errors import ApplicationCompletedError, NodeRejectedError
+from kaylee.errors import ApplicationCompletedError, NodeRequestRejectedError
 
 class SimpleController(Controller):
     """
@@ -79,7 +80,8 @@ class ResultsComparatorController(Controller):
         self._tasks_pool.add(task_id)
 
         if node.id in self.temporal_storage[task_id]:
-            raise NodeRejectedError()
+            raise NodeRequestRejectedError('The result of this task has been '
+                                           'already accepted.')
         return task
 
     def accept_result(self, node, result):
@@ -118,7 +120,6 @@ class ResultsComparatorController(Controller):
             if r0 != res:
                 return False
         return True
-
 
     def store_result(self, task_id, result):
         super(ResultsComparatorController, self).store_result(task_id, result)

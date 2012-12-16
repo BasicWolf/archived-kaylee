@@ -172,7 +172,6 @@ class NodeID(object):
     :param remote_host: Remote host IP address or other identifier.
     :type node_id: string, NodeID object or ``None``
     :type remote_host: string
-    :throws: TypeError
     """
     __slots__ = ('_id')
     _inc = 0
@@ -206,7 +205,6 @@ class NodeID(object):
         :param node: a valid NodeID or previously initialized Kaylee Node
                      object.
         :type node: string, NodeID or :class:`Node`
-        :throws: TypeError
         :returns: NodeID object
         """
         if isinstance(node, basestring):
@@ -214,7 +212,7 @@ class NodeID(object):
         elif isinstance(node, NodeID):
             return node
         elif isinstance(node, Node):
-            return node.id
+            return NodeID(node_id = node.id)
         else:
             raise TypeError('node must be an instance of {}, {}, or {} not'
                             ' {}'.format(basestring.__name__,
@@ -346,7 +344,7 @@ class NodesRegistry(object):
         """Updates previously added "dirty" nodes. There is no need to
         update a node if ``node.dirty == False``.
 
-        :throws: :class:`KeyError` in case node is not found in registry.
+        :throws KeyError: in case node is not found in registry.
         """
 
     @abstractmethod

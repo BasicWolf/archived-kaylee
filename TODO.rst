@@ -13,6 +13,7 @@ v0.3 <-- Future
 * Default config
 * Kaylee Console API
 * Uploading projects through Console API
+* Random data seed per application
 
 
 v0.2 <-- dev

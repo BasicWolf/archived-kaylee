@@ -2,7 +2,7 @@ import unittest
 from kaylee.testsuite import KayleeTest, load_tests
 from datetime import datetime, timedelta
 from kaylee import Node, NodeID
-from kaylee.errors import InvalidNodeIDError
+from kaylee import InvalidNodeIDError
 from dummy_project import DummyController
 
 
@@ -41,6 +41,9 @@ class NodeIDTests(KayleeTest):
         self.assertEqual(n, n3)
         self.assertRaises(InvalidNodeIDError, NodeID.from_object, 'abc')
         self.assertRaises(TypeError, NodeID.from_object, 10)
+        node = Node(n)
+        node.id = '10'
+        self.assertRaises(InvalidNodeIDError, NodeID.from_object, node)
 
     def test_internal_counter(self):
         NodeID._inc = 0 # modified for test purposes only

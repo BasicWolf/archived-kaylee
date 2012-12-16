@@ -124,7 +124,7 @@ def get_secret_key(key = None):
     else:
         from kaylee import kl
         if kl._wrapped is not None:
-            key = kl.config.SECRET_KEY
+            key = kl._config.SECRET_KEY
             if key is None:
                 raise KayleeError('SECRET_KEY configuration option is not'
                                   ' defined.')

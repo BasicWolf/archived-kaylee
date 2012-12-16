@@ -37,15 +37,16 @@ NOT_SOLVED = { KL_RESULT : 0x4 }
 
 
 class Controller(object):
-    """A controller object with a bound project and storages forms a *Kaylee
-    application*. It maintains the data (tasks and the results) flow
-    between a project and the outer :class:`Kaylee` interface.
+    """A Controller object maintains the data (tasks and the results) flow
+    between a project the outer :class:`Kaylee` interface and the storages.
+    An instance of ``Controller`` with a bound project and storages forms
+    a *Kaylee Application*.
 
     :param name: application name
     :param project: bound project
-    :param permanent_storage: Permanent application results storage
-    :param temporal_storage: Internal storage for storing intermediate
-                             (temporal) results.
+    :param permanent_storage: permanent application results storage
+    :param temporal_storage: internal storage for storing intermediate
+                             (temporal) results
     :type name: string
     :type project: :class:`Project`
     :type permanent_storage: :class:`PermanentStorage`
@@ -70,17 +71,17 @@ class Controller(object):
         """Returns a task for the node.
 
         :param node: Kaylee Node requesting the task for computation.
-        :throws: :class:`ApplicationCompletedError` if application has been
-                 completed.
+        :type node: :class:`Node`
+        :throws ApplicationCompletedError: if the application is completed.
         """
 
     @abstractmethod
     def accept_result(self, node, result):
-        """Accepts and processes results from a node.
+        """Accepts and processes the results from a node.
 
         :param node: Kaylee Node from which the results have been received.
         :param result: JSON-parsed task results.
-        :type result: dict or list
+        :type result: :class:`dict` or :class:`list`
         """
 
     def store_result(self, task_id, result):
@@ -91,7 +92,7 @@ class Controller(object):
 
     @property
     def completed(self):
-        """Indicates if application was completed."""
+        """Indicates whether the application is completed."""
         return self._state & COMPLETED == COMPLETED
 
     @completed.setter

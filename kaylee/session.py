@@ -1,3 +1,15 @@
+# -*- coding: utf-8 -*-
+"""
+    kaylee.session
+    ~~~~~~~~~~~~~~
+
+    This module provides base interface for managing session data
+    and contains its basic implementations.
+
+    :copyright: (c) 2012 by Zaur Nasibov.
+    :license: MIT, see LICENSE for more details.
+"""
+
 import random
 import cPickle as pickle
 from base64 import b64encode, b64decode
@@ -37,7 +49,7 @@ class SessionDataManager(object):
 
         :param node: the node to which the current task will be sent.
         :param task: task with or without session data. The task is accessed
-                     by-reference.
+                     by reference and is modified in-place.
         :type node: :class:`NodeID`
         :type task: dict
         """
@@ -48,7 +60,8 @@ class SessionDataManager(object):
 
         :param node: the node from which the result was received.
         :param result: the result to which the session data is attached. The
-                       result is accessed by-reference.
+                       result is accessed by reference and is modified
+                       in-place.
         :type node: :class:`NodeID`
         :type result: dict
         """
