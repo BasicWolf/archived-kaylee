@@ -110,12 +110,16 @@ class ResultsComparatorController(Controller):
                 # tasks_pool (if the result is not NO_SOLUTION)
                 del self.temporal_storage[task_id]
                 if result == NO_SOLUTION:
-                    self._task_pool.remove(task_id)
+                    self._tasks_pool.remove(task_id)
             node.task_id = None
         else:
             self.temporal_storage.add(node.id, task_id, norm_result)
 
-    def _results_are_equal(self, r0, res):
+    @staticmethod
+    def _results_are_equal(r0, res):
+        #pylint: disable-msg=W0612
+        #W0612: Unused variable 'node_id'
+        ###
         for node_id, res in res.iteritems():
             if r0 != res:
                 return False

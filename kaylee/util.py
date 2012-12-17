@@ -9,6 +9,10 @@
     :license: MIT, see LICENSE for more details.
 """
 
+#pylint: disable-msg=W0402,W0212
+#W0402: 15,0: Uses of a deprecated module 'string'
+#W0212: Access to a protected member _wrapped of a client class
+
 import re
 import importlib
 import random
@@ -23,7 +27,7 @@ def parse_timedelta(s):
     except AttributeError:
         parse_timedelta.timeout_regex = re.compile(
             r'((?P<days>\d+?)d)?\s?((?P<hours>\d+?)h)?\s?'
-            '((?P<minutes>\d+?)m)?\s?((?P<seconds>\d+?)s)?')
+            r'((?P<minutes>\d+?)m)?\s?((?P<seconds>\d+?)s)?')
         match = parse_timedelta.timeout_regex.match(s)
 
     try:
@@ -104,11 +108,14 @@ class LazyObject(object):
     __dir__ = _new_method_proxy(dir)
 
 
-def random_string(length, alphabet = None, lowercase = True, uppercase = True,
-                  digits = True, extra = ''):
-    if alphabet is not None:
-        src = alphabet
-    else:
+def random_string(length, **kwargs):
+    alphabet = kwargs.get('alphabet', None)
+    lowercase = kwargs.get('lowercase', True)
+    uppercase = kwargs.get('uppercase', True)
+    digits = kwargs.get('digits', True)
+    extra = kwargs.get('extra', '')
+
+    if alphabet is None:
         src = extra
         if lowercase:
             src += string.ascii_lowercase
@@ -116,7 +123,10 @@ def random_string(length, alphabet = None, lowercase = True, uppercase = True,
             src += string.ascii_uppercase
         if digits:
             src += string.digits
+    else:
+        src = alphabet
     return ''.join(random.choice(src) for x in xrange(length))
+
 
 def get_secret_key(key = None):
     if key is not None:

@@ -10,9 +10,7 @@
 """
 
 import re
-from abc import abstractmethod, abstractproperty
-from datetime import datetime
-from .errors import ApplicationCompletedError
+from abc import abstractmethod
 
 #: The Application name regular expression pattern which can be used in
 #: e.g. web frameworks' URL dispatchers.
@@ -56,7 +54,7 @@ class Controller(object):
     _app_name_re = re.compile('^{}$'.format(app_name_pattern))
 
     def __init__(self, name, project, permanent_storage,
-                 temporal_storage = None, *args, **kwargs):
+                 temporal_storage=None):
         if Controller._app_name_re.match(name) is None:
             raise ValueError('Invalid application name: {}'
                              .format(name))

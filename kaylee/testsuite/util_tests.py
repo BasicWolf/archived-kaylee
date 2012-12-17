@@ -71,7 +71,7 @@ class KayleeUtilTests(KayleeTest):
         self.assertEqual(len(s), 100)
 
         # test 'alphabet' argument
-        s = random_string(10, 'a')
+        s = random_string(10, alphabet='a')
         self.assertEqual(s, 'a'*10)
 
         # test other arguments

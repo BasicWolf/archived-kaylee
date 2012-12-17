@@ -10,7 +10,6 @@
 """
 
 from abc import abstractmethod
-from .errors import KayleeError
 
 
 #: Defines auto project mode (see :attr:`Project.mode`)
@@ -28,7 +27,7 @@ KL_PROJECT_STYLES = '__kl_project_styles__'
 class Project(object):
     """Kaylee Projects abstract base class.
 
-    :param script: The URL of the project's client part (\*.js file).
+    :param script: The URL of the project's client part (\\*.js file).
     """
 
     #: Indicates the mode in which project works on the client side.
@@ -45,7 +44,7 @@ class Project(object):
     #: For detailed description and usage see :ref:`projects_modes`.
     mode = None
 
-    def __init__(self, script, *args, **kwargs):
+    def __init__(self, script, **kwargs):
         # make sure that mode has been defined
         if self.mode not in [AUTO_PROJECT_MODE, MANUAL_PROJECT_MODE]:
             raise ValueError('{}.mode is wrong or not defined'.format(

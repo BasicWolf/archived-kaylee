@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, render_template, abort, request, Response
+from flask import Blueprint, request, Response
 from kaylee import kl
 
 bp = Blueprint('kaylee_blueprint', __name__)

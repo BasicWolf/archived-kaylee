@@ -37,6 +37,8 @@ from .errors import (KayleeError,
 
 
 def setup(config):
+    #pylint: disable-msg=W0212
+    #W0212: Access to a protected member _setup
     if config is not None:
         # In this case we are trying to load Kaylee from the given config
         kl._setup(loader.load(config))

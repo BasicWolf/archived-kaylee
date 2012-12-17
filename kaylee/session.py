@@ -9,6 +9,8 @@
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
 """
+#Pylint false alarm of missing hashlib functions
+#pylint: disable-msg=E0611
 
 import random
 import cPickle as pickle
@@ -66,12 +68,14 @@ class SessionDataManager(object):
         :type result: dict
         """
 
-    def get_session_data(self, task):
+    @staticmethod
+    def get_session_data(task):
         """Returns a dict with session variables found in task."""
         return { key : task[key] for key in task
                  if key.startswith('#') }
 
-    def remove_session_data_from_task(self, session_data_keys, task):
+    @staticmethod
+    def remove_session_data_from_task(session_data_keys, task):
         for key in session_data_keys:
             del task[key]
 
@@ -139,11 +143,14 @@ class JSONSessionDataManager(SessionDataManager):
           '#s2' : [1, 2, 3]
       }
 
-    :param secret_key: An override of the global :config:`SECRET_KEY` configuration
-                       parameter.
+    :param secret_key: An override of the global :config:`SECRET_KEY`
+                       configuration parameter.
     """
-    def __init__(self, *args, **kwargs):
-        self._secret_key = kwargs.get('secret_key', None)
+    def __init__(self, secret_key=None):
+        #pylint: disable-msg=W0231
+        #W0231: __init__ method from base class 'SessionDataManager'
+        #       is not called.
+        self._secret_key = secret_key
         self.SESSION_DATA_ATTRIBUTE = SESSION_DATA_ATTRIBUTE
 
     def store(self, node, task):

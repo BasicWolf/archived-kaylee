@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+#pylint: disable-msg=W0231
 from kaylee.storage import TemporalStorage, PermanentStorage
-from kaylee.errors import KayleeError
 
 class MemoryTemporalStorage(TemporalStorage):
     """A simple Python dict-based temporal results storage."""
 
     def __init__(self):
+        self._d = {}
         self.clear()
 
     def add(self, node_id, task_id, result):

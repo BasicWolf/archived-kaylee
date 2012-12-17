@@ -47,7 +47,7 @@ class ApplicationCompletedError(NodeRequestRejectedError):
     Base class: :class:`NodeRequestRejectedError`."""
     def __init__(self, application):
         self.application = application
-        super(NodeRequestRejectedError, self).__init__(
+        super(ApplicationCompletedError, self).__init__(
             'The application "{}" has been completed.'
             .format(application.name) )
 

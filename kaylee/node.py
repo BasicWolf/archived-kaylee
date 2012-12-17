@@ -171,6 +171,9 @@ class NodeID(object):
     :type node_id: string, NodeID object or ``None``
     :type remote_host: string
     """
+    #pylint: disable-msg=W0212
+    #W0212: Access to a protected member _id of a client class (in __eg__ etc.)
+
     __slots__ = ('_id')
     _inc = 0
     _inc_lock = threading.Lock()
@@ -221,6 +224,9 @@ class NodeID(object):
 
     def _generate(self, remote_host):
         """Generates a new value for this NodeID."""
+        #pylint: disable-msg=E1101
+        #E1101: Module 'hashlib' has no 'md5' member # FALSE ALARM
+        ###
         nid = b''
         # 4 bytes current time
         nid += struct.pack('>i', int(time.time()))
@@ -329,7 +335,7 @@ class NodesRegistry(object):
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, timeout, *args, **kwargs):
+    def __init__(self, timeout):
         #: Nodes timeout. Parsed from constructors ``timeout`` argument.
         #: Type: :class:`datetime.timedelta`.
         self.timeout = parse_timedelta(timeout)

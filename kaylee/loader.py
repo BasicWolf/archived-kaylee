@@ -25,7 +25,7 @@ from . import storage, controller, project, node, session
 import logging
 log = logging.getLogger(__name__)
 
-# global (current module scope) holder of classes loaded
+# global (current module scope) cache of classes loaded
 # via refresh() and retrieved via _get_class()
 _classes = None # set in refresh()
 
@@ -95,8 +95,11 @@ def load(config):
 
 
 def refresh(config):
+    #pylint: disable-msg=W0603
+    #W0603: Using the global statement
+
+    # reset the classes cache
     global _classes
-    # reset classes
     _classes = defaultdict(dict)
 
     # load classes from contrib (non-refreshable)

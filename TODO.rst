@@ -20,6 +20,12 @@ v0.3 (Future)
 * Add a method to a project which returns a 0.0..1 completed value
 * Start thinking of Py3 support
 * Test with PyPI
+* Add __setitem__ to storages and re-design parameters order (e.g. task_id, node_id, result)
+* Rebrand: distributed computing -> crowd computing
+
+Also
+----
+* PDB support in Emacs
 
 Interesting links:
 # http://www.andromedaproject.org/#!/home
@@ -32,3 +38,4 @@ v0.4 (Far future)
 * Client: sleepy loops and special benchmark. Also, benchmark score support on
   server.
 * Client: operations timeout (e.g. project import timeout)
+* User management and rankings

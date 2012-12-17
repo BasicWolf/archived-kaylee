@@ -15,7 +15,6 @@ import json
 import traceback
 import logging
 from StringIO import StringIO
-from operator import attrgetter
 from functools import partial
 from contextlib import closing
 from functools import wraps
@@ -39,6 +38,7 @@ def json_error_handler(f):
     JSON-formatted "{ error : str(Exception) }" if an exception has been
     raised.
     """
+    #pylint: disable-msg=W0703
     @wraps(f)
     def wrapper(*args, **kwargs):
         try:
@@ -48,7 +48,8 @@ def json_error_handler(f):
 
             if log.getEffectiveLevel() == logging.DEBUG:
                 with closing(StringIO()) as buf:
-                    exc_type, exc_value, exc_traceback = sys.exc_info()
+                    # exc_type, exc_value, exc_traceback = sys.exc_info()
+                    exc_traceback = sys.exc_info()[2]
                     traceback.print_tb(exc_traceback,
                                        limit = None,
                                        file = buf)
@@ -217,7 +218,7 @@ class Kaylee(object):
             parsed_result = json.loads(result)
             if not isinstance(parsed_result, dict):
                 raise ValueError('The returned result was not parsed '
-                                 'as dict: {}'.format(parsed_data))
+                                 'as dict: {}'.format(parsed_result))
             self._restore_session_data(node, parsed_result)
             node.accept_result(parsed_result)
         except InvalidResultError as e:
@@ -247,7 +248,8 @@ class Kaylee(object):
         :class:`kaylee.core.Applications` object)"""
         return self._applications
 
-    def _json_action(self, action, data = ''):
+    @staticmethod
+    def _json_action(action, data = ''):
         return json.dumps( { 'action' : action, 'data' : data } )
 
 

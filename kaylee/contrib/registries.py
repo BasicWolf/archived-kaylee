@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from kaylee.node import NodesRegistry, Node, NodeID
+from datetime import datetime
+from kaylee.node import NodesRegistry, NodeID
 
 
 class MemoryNodesRegistry(NodesRegistry):

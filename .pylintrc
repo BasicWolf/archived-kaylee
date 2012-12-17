@@ -33,10 +33,16 @@ load-plugins=
 # can either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once).
-disable=C0103,C0111,W0212,R0903,R0914,W0142,W0212,W0603
+disable=I0011,C0111,C0103,R0903,W0142
+# C0111: Missing docstring
+# C0103: Invalid name XXX (should match (([A-Z_][A-Z0-9_]*)|(__.*__))$)
+# R0903: Too few public methods
+# W0142: Used * or ** magic
+
+# C0103,W0212,R0903,R0914,W0142,W0212,W0603,W0402
 
 # W0603: Using the global statement in loader for the _classes cache
-
+# W0402: Uses of a deprecated module 'string' in util.py, which is NOT deprecated at all!
 
 [REPORTS]
 
