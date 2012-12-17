@@ -33,11 +33,12 @@ load-plugins=
 # can either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once).
-disable=I0011,C0111,C0103,R0903,W0142
+disable=I0011,C0111,C0103,R0903,W0142,R0904
 # C0111: Missing docstring
 # C0103: Invalid name XXX (should match (([A-Z_][A-Z0-9_]*)|(__.*__))$)
 # R0903: Too few public methods
 # W0142: Used * or ** magic
+# R0904: Too many public methods
 
 # C0103,W0212,R0903,R0914,W0142,W0212,W0603,W0402
 

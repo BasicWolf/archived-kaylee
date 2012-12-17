@@ -1,4 +1,3 @@
-import string
 from copy import deepcopy
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.node import Node, NodeID

@@ -1,4 +1,3 @@
-import unittest
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.project import Project, AUTO_PROJECT_MODE, MANUAL_PROJECT_MODE
 
@@ -22,13 +21,18 @@ class ProjectTests(KayleeTest):
                 Project.__init__(self, "/script.js")
         self.assertRaises(ValueError, MyProjectInvalidMode)
 
-        # -- test with valid mode
-        class MyProjectWithMode(Project):
+        # -- test with valid modes
+        class MyProjectWithAutoMode(Project):
             mode = AUTO_PROJECT_MODE
             def __init__(self):
                 Project.__init__(self, "/script.js")
+        MyProjectWithAutoMode()
 
-        p = MyProjectWithMode()
+        class MyProjectWithManualMode(Project):
+            mode = MANUAL_PROJECT_MODE
+            def __init__(self):
+                Project.__init__(self, "/script.js")
+        MyProjectWithManualMode()
 
 
 

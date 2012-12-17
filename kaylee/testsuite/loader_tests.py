@@ -1,6 +1,6 @@
-#
-# Comments to dict(Class.__dict__) wrapping: __dict__ is a dictproxy,
-#
+#pylint: disable-msg=W0212
+#W0212: Access to a protected member
+###
 
 from kaylee.testsuite import KayleeTest, load_tests, PROJECTS_DIR
 
@@ -62,13 +62,14 @@ class KayleeLoaderTests(KayleeTest):
                          TestConfig.WORKER_SCRIPT_URL)
 
     def test_load_config_dict(self):
+        # dict(Class.__dict__) wrapping: __dict__ is a dictproxy,
         kl = loader.load(dict(TestConfig.__dict__))
         self.assertIsInstance(kl, Kaylee)
         self.assertEqual(kl._config.WORKER_SCRIPT_URL,
                          TestConfig.WORKER_SCRIPT_URL)
 
     def test_load_config_module(self):
-        import test_config
+        from . import test_config
         kl = loader.load(test_config)
         self.assertIsInstance(kl, Kaylee)
         self.assertEqual(kl._config.WORKER_SCRIPT_URL,
@@ -78,7 +79,7 @@ class KayleeLoaderTests(KayleeTest):
         path = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                             'test_config.py'))
         kl = loader.load(path)
-        import test_config
+        from . import test_config
         self.assertIsInstance(kl, Kaylee)
         self.assertEqual(kl._config.WORKER_SCRIPT_URL,
                          test_config.WORKER_SCRIPT_URL)
