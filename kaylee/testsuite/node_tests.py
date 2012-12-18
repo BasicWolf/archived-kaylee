@@ -1,9 +1,8 @@
-import unittest
 from kaylee.testsuite import KayleeTest, load_tests
 from datetime import datetime, timedelta
 from kaylee import Node, NodeID
 from kaylee import InvalidNodeIDError
-from dummy_project import DummyController
+from kaylee.testsuite.projects.dummy_project import DummyController
 
 
 class NodeIDTests(KayleeTest):
@@ -46,6 +45,11 @@ class NodeIDTests(KayleeTest):
         self.assertRaises(InvalidNodeIDError, NodeID.from_object, node)
 
     def test_internal_counter(self):
+        #pylint: disable-msg=W0612,W0212
+        #W0612: Unused variable 'i'
+        #W0212: Access to a protected member _inc of a client class
+
+        ###
         NodeID._inc = 0 # modified for test purposes only
         remote = '127.0.0.1'
         for i in xrange(0, 2**16 - 1):
@@ -128,7 +132,8 @@ class NodeTests(KayleeTest):
         ctrl = DummyController.new_test_instance()
         node.subscribe(ctrl)
         now = datetime.now()
-        self.assertTrue(timedelta(seconds = 0) <= now - node.subscription_timestamp
+        self.assertTrue(timedelta(seconds = 0)
+                        <= now - node.subscription_timestamp
                         <= timedelta(seconds = 3))
         self.assertEqual(node.controller, ctrl)
 

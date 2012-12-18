@@ -8,10 +8,10 @@
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
 """
-
 #pylint: disable-msg=W0402,W0212
 #W0402: 15,0: Uses of a deprecated module 'string'
 #W0212: Access to a protected member _wrapped of a client class
+###
 
 import re
 import importlib

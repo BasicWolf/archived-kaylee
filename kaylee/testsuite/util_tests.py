@@ -1,3 +1,11 @@
+#pylint: disable-msg=W0402,W0212,E0202
+#W0402: 15,0: Uses of a deprecated module 'string'
+#W0212: Access to a protected member _wrapped of a client class
+#E0202: KayleeUtilTests.test_lazy_object.NonLazy.x: An attribute
+#       affected in kaylee.testsuite.util_tests line 48 hide this method
+#       FALSE ALARM
+###
+
 import string
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.util import (parse_timedelta, LazyObject, random_string,
@@ -31,6 +39,9 @@ class KayleeUtilTests(KayleeTest):
         self.assertRaises(KayleeError, parse_timedelta, '25x 10x')
 
     def test_lazy_object(self):
+        #pylint: disable-msg=W0201
+        #W0201: lo.y defined outside __init__
+
         class NonLazy(object):
             def __init__(self):
                 self._x = 10
@@ -106,8 +117,8 @@ class KayleeUtilTests(KayleeTest):
         self.assertRaises(KayleeError, get_secret_key)
 
         # test loading from config
-        import test_config
-        from kaylee import kl, setup
+        from kaylee.testsuite import test_config
+        from kaylee import setup
         setup(test_config)
         sk = get_secret_key()
         self.assertEqual(sk, test_config.SECRET_KEY)

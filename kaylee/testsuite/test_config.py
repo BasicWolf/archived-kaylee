@@ -1,3 +1,4 @@
+#pylint: disable-all
 from kaylee.testsuite import  PROJECTS_DIR
 
 

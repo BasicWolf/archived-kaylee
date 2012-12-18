@@ -1,5 +1,7 @@
-#pylint: disable-msg=W0212
+#pylint: disable-msg=W0212,W0611
 #W0212: Access to a protected member
+#W0611: Unused import PROJECTS_DIR # FALSE ALARM
+#R0801: Similar lines in 2 files
 ###
 
 from kaylee.testsuite import KayleeTest, load_tests, PROJECTS_DIR
@@ -69,7 +71,7 @@ class KayleeLoaderTests(KayleeTest):
                          TestConfig.WORKER_SCRIPT_URL)
 
     def test_load_config_module(self):
-        from . import test_config
+        test_config = __import__('test_config')
         kl = loader.load(test_config)
         self.assertIsInstance(kl, Kaylee)
         self.assertEqual(kl._config.WORKER_SCRIPT_URL,
@@ -79,7 +81,7 @@ class KayleeLoaderTests(KayleeTest):
         path = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                             'test_config.py'))
         kl = loader.load(path)
-        from . import test_config
+        test_config = __import__('test_config')
         self.assertIsInstance(kl, Kaylee)
         self.assertEqual(kl._config.WORKER_SCRIPT_URL,
                          test_config.WORKER_SCRIPT_URL)

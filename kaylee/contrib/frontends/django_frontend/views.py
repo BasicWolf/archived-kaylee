@@ -8,6 +8,8 @@ def register_node(request):
     reg_data = kl.register(request.META['REMOTE_ADDR'])
     return json_response(reg_data)
 
+#pylint: disable-msg=W0613
+#W0613:  Unused argument 'request'
 @csrf_exempt
 @require_http_methods(["POST"])
 def subscribe_node(request, app_name, node_id):

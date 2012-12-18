@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+#pylint: disable-msg=W0703,W0212
+#W0703: Catching too general exception Exception
+#W0212: Access to a protected member a client class
+#W0231: __init__ method from base class 'TestLoader' is not called
+
+###
 import os
 import sys
 import unittest
@@ -21,11 +27,11 @@ class KayleeTest(unittest.TestCase):
 
 
 def load_tests(test_cases):
-    suite = unittest.TestSuite()
+    tsuite = unittest.TestSuite()
     for tcase in test_cases:
         loaded_suite = unittest.defaultTestLoader.loadTestsFromTestCase(tcase)
-        suite.addTest(loaded_suite)
-    return suite
+        tsuite.addTest(loaded_suite)
+    return tsuite
 
 
 def suite():
@@ -34,7 +40,7 @@ def suite():
     in case you want to test that monkeypatches to Kaylee do not
     break it.
     """
-    suite = unittest.TestSuite()
+    tsuite = unittest.TestSuite()
     cdir = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, cdir)
     for fname in os.listdir(cdir):
@@ -44,27 +50,27 @@ def suite():
         try:
             mod = import_module(modname)
             if hasattr(mod, 'kaylee_suite'):
-                suite.addTest(mod.kaylee_suite)
+                tsuite.addTest(mod.kaylee_suite)
         except Exception as e:
             log.critical('Error importing module {}: {}'.format(modname, e))
             sys.exit(0)
-    return suite
+    return tsuite
 
 
 def find_all_tests(root_suite):
     """Yields all the tests and their names from a given suite."""
     suites = [root_suite]
     while suites:
-        suite = suites.pop()
+        tsuite = suites.pop()
         try:
             # not that suite is iterable, thus every sub-suite from suite
             # is appended to the suites list
-            suites.extend(suite)
+            suites.extend(tsuite)
         except TypeError:
-            yield suite, '{}.{}.{}'.format(
-                suite.__class__.__module__,
-                suite.__class__.__name__,
-                suite._testMethodName ).lower()
+            yield tsuite, '{}.{}.{}'.format(
+                tsuite.__class__.__module__,
+                tsuite.__class__.__name__,
+                tsuite._testMethodName ).lower()
 
 
 class KayleeTestsLoader(unittest.TestLoader):
@@ -79,6 +85,7 @@ class KayleeTestsLoader(unittest.TestLoader):
     """
 
     def __init__(self):
+        unittest.TestLoader.__init__(self)
         self._default_suite = suite()
 
     def loadTestsFromName(self, name, module = None):
@@ -97,14 +104,14 @@ class KayleeTestsLoader(unittest.TestLoader):
         if not tests:
             raise LookupError('Could not find test case for "{}"'.format(name))
 
-        suite = unittest.TestSuite()
+        tsuite = unittest.TestSuite()
         if len(tests) == 1:
             return tests[0]
         for test in tests:
-            suite.addTest(test)
-        return suite
+            tsuite.addTest(test)
+        return tsuite
 
 
 def main():
-    """Runs the testsuite as command line application."""
+    """runs the testsuite as command line application."""
     unittest.main(testLoader = KayleeTestsLoader(), defaultTest = 'default')

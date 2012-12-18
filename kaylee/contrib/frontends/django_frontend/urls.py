@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url
 from kaylee.controller import app_name_pattern
 from kaylee.node import node_id_pattern
 
