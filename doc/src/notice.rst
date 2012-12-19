@@ -1,0 +1,3 @@
+.. _notice:
+
+.. include:: ../../NOTICE
