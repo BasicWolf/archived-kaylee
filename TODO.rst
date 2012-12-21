@@ -22,10 +22,13 @@ v0.3 (Future)
 * Test with PyPI
 * Add __setitem__ to storages and re-design parameters order (e.g. task_id, node_id, result)
 * Rebrand: distributed computing -> crowd computing
+* Google App Engine support
+* Tornado support
 
 Also
 ----
 * PDB support in Emacs
+* Pylint support in Emacs
 
 Interesting links:
 # http://www.andromedaproject.org/#!/home
@@ -34,7 +37,6 @@ Interesting links:
 
 v0.4 (Far future)
 -----------------
-* Google App Engine support
 * Client: sleepy loops and special benchmark. Also, benchmark score support on
   server.
 * Client: operations timeout (e.g. project import timeout)

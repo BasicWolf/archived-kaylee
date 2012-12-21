@@ -86,10 +86,9 @@ You can install the supported front-end(s) as well::
 Demo
 ----
 To test whether Kaylee has been installed successfully, run the
-"Hash cracker" demo application. Download the demo archive from
-http://github.com/BasicWolf/kaylee/downloads and extract it to a
-directory under the virtualenv in which Kaylee is installed
-(e.g. ``mykaylee/demo``).
+"Hash cracker" demo application. Download the `demo archive`_
+and extract it to a directory under the virtualenv in which
+Kaylee is installed (e.g. ``mykaylee/demo``).
 
 To start the demo, activate the virtual environment, run
 ``python demo/run.py`` and open a browser page on the following URL:
@@ -136,3 +135,4 @@ Continue with :ref:`basics`.
 .. _Flask: http://flask.pocoo.org
 .. _Django: http://djangoproject.com
 .. _virtualenv: http://www.virtualenv.org
+.. _`demo archive`: _static/kaylee_dev_demo.zip
