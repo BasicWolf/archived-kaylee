@@ -46,3 +46,4 @@ Additional Notes
    license
    authors
    notice
+   changelog

@@ -1,0 +1,11 @@
+Changelog
+=========
+
+
+v0.2  (23.12.12)
+----------------
+
+* New Sessions Data Managers API and implementation.
+* New "Human OCR" demo project (demonstrates Sessions API).
+* New localbuild script to build demo applications from repository code.
+* Massive Server and Client API improvements.
