@@ -3,19 +3,28 @@
 Step 4: Server-Side Code
 ========================
 
+.. module:: kaylee
+
 Now, let's code a bit on the server-side. First, we need to import the
 required components of Kaylee::
 
   # monte_carlo_pi.py
 
-  from kaylee import Project, Task
-  from kaylee import InvalidResultError
+  from kaylee import Project, InvalidResultError
+  from kaylee.project import AUTO_PROJECT_MODE
 
 Next, we have to subclass ``Project`` in order for Kaylee's importing system
 to recognize it::
 
   class MonteCarloPiProject(Project):
+      mode = AUTO_PROJECT_MODE
       ...
+
+:attr:`Project.mode` tells Kaylee how project tasks are going to be solved:
+automatically, possibly without a user being even notified about them
+or manually, involving a user. The ``MonteCarloPiProject`` is fully
+automated and requires no user input. Thus, its mode is set to
+:data:`AUTO_PROJECT_MODE <project.AUTO_PROJECT_MODE>`.
 
 Before continuing with the code, lets first think, what kind of
 configuration is required in order to initialize the project? As it was
@@ -33,7 +42,6 @@ of tasks to be supplied by the application::
       self.tasks_count = kwargs['tasks_count']
       self._tasks_counter = 0
 
-.. module:: kaylee
 
 Here, the :py:attr:`Project.client_config` attribute is the configuration
 object sent to the client and ``self.tasks_count`` and ``self._tasks_counter``
@@ -74,13 +82,13 @@ required data is collected hence, the application is completed::
   def result_stored(self, task_id, data, storage):
       if len(storage) == self.tasks_count:
           self.completed = True
-          self._announce_results()
+          self._announce_results(storage)
 
 Ah, almost missed the part which announces the final results::
 
-  def _announce_results(self):
-      mid_pi = (sum(res[0] for res in self.storage.values()) /
-                len(self.storage))
+
+  def _announce_results(self, storage):
+      mid_pi = (sum(res[0] for res in storage.values()) / len(storage))
       print('The  value of PI computed by the Monte-Carlo method is: {}'
             .format(mid_pi))
 
