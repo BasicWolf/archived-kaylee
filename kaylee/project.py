@@ -9,7 +9,7 @@
     :license: MIT, see LICENSE for more details.
 """
 
-from abc import abstractmethod
+from abc import ABCMeta, abstractmethod
 
 
 #: Defines auto project mode (see :attr:`Project.mode`)
@@ -42,6 +42,8 @@ class Project(object):
     #:        mode = MANUAL_PROJECT_MODE
     #:
     #: For detailed description and usage see :ref:`projects_modes`.
+    __metaclass__ = ABCMeta
+
     mode = None
 
     def __init__(self, script, **kwargs):

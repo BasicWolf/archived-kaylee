@@ -182,7 +182,6 @@ class Kaylee(object):
         :type node_id: string
         """
         node = self.registry[node_id]
-
         try:
             task = node.get_task()
             self._store_session_data(node, task)

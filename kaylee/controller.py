@@ -10,7 +10,7 @@
 """
 
 import re
-from abc import abstractmethod
+from abc import ABCMeta, abstractmethod
 
 #: The Application name regular expression pattern which can be used in
 #: e.g. web frameworks' URL dispatchers.
@@ -50,6 +50,7 @@ class Controller(object):
     :type permanent_storage: :class:`PermanentStorage`
     :type temporal_storage: :class:`TemporalStorage`
     """
+    __metaclass__ = ABCMeta
 
     _app_name_re = re.compile('^{}$'.format(app_name_pattern))
 
