@@ -5,9 +5,6 @@ from distutils.command.install_data import install_data
 from distutils.command.install import INSTALL_SCHEMES
 from setuptools import setup, find_packages
 
-version = '0.2a1'
-
-
 def fullsplit(path, result=None):
     """
     Split a pathname into components (the opposite of os.path.join) in a
@@ -52,7 +49,7 @@ data_files = [
 
 setup(
     name = 'Kaylee',
-    version = version,
+    version = '0.2',
     url = 'http://github.com/basicwolf/kaylee',
     license = 'LICENSE',
     author = 'Zaur Nasibov',

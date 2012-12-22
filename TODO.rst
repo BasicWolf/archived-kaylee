@@ -24,6 +24,8 @@ v0.3 (Future)
 * Rebrand: distributed computing -> crowd computing
 * Google App Engine support
 * Tornado support
+* Make the loader a bit lazier, e.g. import the projects required by applications only.
+* Refactor demo Kaylee.js path (e.g. static/js/kaylee/ -> static/kaylee/js)
 
 Also
 ----
