@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from kaylee.controller import Controller, NO_SOLUTION, NOT_SOLVED
-from kaylee.errors import ApplicationCompletedError, NodeRequestRejectedError
+from kaylee.errors import (ApplicationCompletedError,
+                           NodeRequestRejectedError,
+                           NoneResultAssertError,)
+
 
 class SimpleController(Controller):
     """
@@ -39,6 +42,9 @@ class SimpleController(Controller):
             return
 
         norm_result = self.project.normalize_result(node.task_id, result)
+        if norm_result is None:
+            raise NoneResultAssertError(result)
+
         self.store_result(node.task_id, norm_result)
         self._tasks_pool.remove(node.task_id)
         if self.project.completed:
@@ -94,6 +100,8 @@ class ResultsComparatorController(Controller):
             norm_result = result
         else:
             norm_result = self.project.normalize_result(task_id, result)
+            if norm_result is None:
+                raise NoneResultAssertError(result)
 
         # 'results' computed for the task by various nodes
         tmp_results = self.temporal_storage[task_id]

@@ -19,7 +19,7 @@ APPLICATIONS = [
     { 'name' : 'dummy.1',
       'description' : 'Dummy application',
       'project' : {
-            'name' : 'DummyProject',
+            'name' : 'AutoTestProject',
             },
       'controller' : {
             'name' :'DummyController',

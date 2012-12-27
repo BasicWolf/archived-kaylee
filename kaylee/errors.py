@@ -11,19 +11,29 @@
 
 import warnings
 
+
 class KayleeError(Exception):
     """Base class for all Kaylee exceptions."""
+
+
+class KayleeProjectAssertError(KayleeError):
+    """Base class for all Kaylee project-related runtime assertion
+    (regular, **not** Python ``asert`` checks) errors."""
+    pass
+
 
 class InvalidNodeIDError(KayleeError):
     """Raised when parsing a node id (e.g. hex string) fails."""
     def __init__(self, node_id):
         KayleeError.__init__(self, '{} is not a valid node id'.format(node_id))
 
+
 class NodeNotSubscribedError(KayleeError):
     """Raised when a Node requests an action or submits results without
     being subscribed to an application."""
     def __init__(self, node):
         KayleeError.__init__(self, 'Node {} is not subscribed'.format(node))
+
 
 class InvalidResultError(ValueError, KayleeError):
     """Raised when a result received from the client is not valid (e.g.
@@ -32,6 +42,15 @@ class InvalidResultError(ValueError, KayleeError):
         super(InvalidResultError, self).__init__(
             'Invalid result "{}": {}'.format(result, why))
 
+
+class NoneResultAssertError(ValueError, KayleeProjectAssertError):
+    """Raised by controller if a normalized result returned by
+    :meth:`Project.normalize_result` is ``None``."""
+    def __init__(self, result):
+        KayleeProjectAssertError.__init__(
+            'A result {} has been normalized to None'.format(result))
+
+
 class NodeRequestRejectedError(KayleeError):
     """Raised when a controller rejects a task request or result response
     from a node for some particular reason (e.g. if the node has submitted
@@ -39,6 +58,7 @@ class NodeRequestRejectedError(KayleeError):
     def __init__(self, message):
         KayleeError.__init__(self, ('The node has been rejected: {}'
                                     .format(message)) )
+
 
 class ApplicationCompletedError(NodeRequestRejectedError):
     """Raised when a node request is rejected due to the
@@ -50,6 +70,7 @@ class ApplicationCompletedError(NodeRequestRejectedError):
         super(ApplicationCompletedError, self).__init__(
             'The application "{}" has been completed.'
             .format(application.name) )
+
 
 class KayleeWarning(UserWarning):
     pass

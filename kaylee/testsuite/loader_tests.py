@@ -39,7 +39,7 @@ class TestConfigWithApps(object):
             'name' : 'dummy.1',
             'description' : 'Dummy application',
             'project' : {
-                'name' : 'DummyProject',
+                'name' : 'AutoTestProject',
             },
             'controller' : {
                 'name' :'DummyController',
@@ -95,7 +95,7 @@ class KayleeLoaderTests(KayleeTest):
 
         app = apps[0]
         self.assertEqual(app.__class__.__name__, 'DummyController')
-        self.assertEqual(app.project.__class__.__name__, 'DummyProject')
+        self.assertEqual(app.project.__class__.__name__, 'AutoTestProject')
         self.assertIsInstance(app.temporal_storage, MemoryTemporalStorage)
         self.assertIsInstance(app.permanent_storage, MemoryPermanentStorage)
         #self.assertIsInstance(app.project.storage, MemoryPermanentStorage)
@@ -118,7 +118,7 @@ class KayleeLoaderTests(KayleeTest):
 
         app = kl.applications['dummy.1']
         self.assertEqual(app.__class__.__name__, 'DummyController')
-        self.assertEqual(app.project.__class__.__name__, 'DummyProject')
+        self.assertEqual(app.project.__class__.__name__, 'AutoTestProject')
 
     def test_kaylee_setup(self):
         from kaylee import setup, kl
@@ -130,7 +130,7 @@ class KayleeLoaderTests(KayleeTest):
 
         app = kl.applications['dummy.1']
         self.assertEqual(app.__class__.__name__, 'DummyController')
-        self.assertEqual(app.project.__class__.__name__, 'DummyProject')
+        self.assertEqual(app.project.__class__.__name__, 'AutoTestProject')
 
 
 kaylee_suite = load_tests([KayleeLoaderTests])

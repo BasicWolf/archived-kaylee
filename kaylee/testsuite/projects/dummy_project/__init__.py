@@ -1,1 +1,1 @@
-from .dummy import DummyProject, DummyController
+from .dummy import AutoTestProject, DummyController
