@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from hashlib import md5
 from kaylee.project import Project, AUTO_PROJECT_MODE
+from kaylee.errors import InvalidResultError
 
 class HashCrackerProject(Project):
     mode = AUTO_PROJECT_MODE

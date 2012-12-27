@@ -7,6 +7,7 @@ import Image, ImageFont, ImageDraw
 
 from kaylee.project import Project, MANUAL_PROJECT_MODE
 from kaylee.util import random_string
+from kaylee.errors import InvalidResultError
 
 LIPSUM = "Lorem ipsum"
 
@@ -54,7 +55,7 @@ class HumanOCRProject(Project):
     def normalize_result(self, task_id, result):
         words = result['captcha'].split()
         if words[1].lower() != result['#random_string'].lower():
-            raise ValueError('Invalid control parameter value')
+            raise InvalidResultError('Invalid control parameter value')
         return words[0]
 
     def result_stored(self, task_id, result, storage):
