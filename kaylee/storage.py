@@ -25,7 +25,7 @@ class TemporalStorage(object):
         """Stores the task result returned by a node."""
 
     @abstractmethod
-    def remove(self, task_id, node_id):
+    def remove(self, task_id, node_id=None):
         """Removes a particular task result returned by a defined node from
         the storage."""
 
@@ -34,7 +34,7 @@ class TemporalStorage(object):
         """Removes all results from the storage."""
 
     @abstractmethod
-    def __getitem__(self, task_id):
+    def __getitem_(_self, task_id):
         """Returns the task results.
 
         :rtype:  (node_id : result) ... iterator
@@ -46,11 +46,20 @@ class TemporalStorage(object):
         particular task result is contained in the storage"""
         pass
 
-    @abstractmethod
+    @abstractproperty
     def count(self):
-        """Returns the amount of results in the storage.
-        This is the same as:: ``len(list(ts.keys()))``, where ``ts`` is an
-        instance of :class:`TemporalStorage`."""
+        """The amount of the stored results' unique task id's. This is
+        the same as ``len(list(ts.keys()))`` where ``ts`` is an instance of
+        :class:`TemporalStorage`."""
+        pass
+
+    @abstractproperty
+    def total_count(self):
+        """The total amount of the stored results. This is the same as
+        ``len(sum(nr) for nr in ts.values())`` where ``ts`` is an instance
+        of  `TemporalStorage`.
+        """
+        pass
 
     @abstractmethod
     def values(self):
@@ -69,9 +78,8 @@ class TemporalStorage(object):
         return self.contains(task_id)
 
     def __delitem__(self, task_id):
-        """Removes all task results from the storage. This is the same as
-        ``ts.remove(task_id)`` where ``ts`` is an instance of
-        :class:`TemporalStorage`."""
+        """Removes all the results from the storage. This is the same as
+        :meth:`TemporalStorage.remove(task_id) <TemporalStorage.remove>`."""
         self.remove(task_id)
 
     def __iter__(self):
@@ -79,8 +87,7 @@ class TemporalStorage(object):
         return self.keys()
 
     def __len__(self):
-        """The same as ``len(ts)`` where ``ts`` is an instance of
-        :class:`TemporalStorage`"""
+        """The same as :meth:`TemporalStorage.count`."""
 
 
 class PermanentStorage(object):
@@ -119,18 +126,18 @@ class PermanentStorage(object):
         is contained in the storage"""
 
     @abstractmethod
-    def values(self):
-        """Returns the stored results iterator object. Each yield item is
-        a list of results associated with a particular task."""
-
-    @abstractmethod
     def keys(self):
         """Returns the stored tasks iterator object of the storage. Each
         yield item is a task ID."""
 
+    @abstractmethod
+    def values(self):
+        """Returns the stored results iterator object. Each yield item is
+        a list of results associated with a particular task."""
+
     @abstractproperty
     def count(self):
-        """Returns the amount of tasks' results in the storage.
+        """The amount of unique task results in the storage.
         This is the same as:: ``len(list(ps.keys()))``, where ``ps`` is an
         instance of :class:`PermanentStorage`.
         """
