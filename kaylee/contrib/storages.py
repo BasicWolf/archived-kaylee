@@ -17,7 +17,7 @@ class MemoryTemporalStorage(TemporalStorage):
     def remove(self, task_id, node_id=None):
         if node_id is None:
             del self._[task_id]
-        elsee:
+        else:
             del self._d[task_id][node_id]
 
     def clear(self):
@@ -74,20 +74,23 @@ class MemoryPermanentStorage(PermanentStorage):
 
     def __init__(self):
         self._d = {}
-        self._count = 0
+        self._total_count = 0
 
     def add(self, task_id, result):
         try:
             self._d[task_id].append(result)
         except KeyError:
             self._d[task_id] = [result, ]
-        self._count += 1
+        self._total_count += 1
 
     def __getitem__(self, task_id):
         return self._d[task_id]
 
     def contains(self, task_id, result = None):
-        pass
+        if result is None:
+            return task_id in self._d
+        else:
+            return task_id in self._d and result in self._d[task_id]
 
     def keys(self):
         return self._d.iterkeys()
@@ -97,17 +100,8 @@ class MemoryPermanentStorage(PermanentStorage):
 
     @property
     def count(self):
-        pass
+        return len(self._d)
 
     @property
     def total_count(self):
-        pass
-
-    def __contains__(self, task_id):
-        return task_id in self._d
-
-    def __iter__(self):
-        return iter(self._d)
-
-    def __len__(self):
-        return self._count
+        return self._total_count

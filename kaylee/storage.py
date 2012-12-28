@@ -120,7 +120,7 @@ class PermanentStorage(object):
         :rtype: :class:`list`
         """
 
-    @abstracmethod
+    @abstractmethod
     def contains(self, task_id, result = None):
         """Checks if any of the task results or a particular task result
         is contained in the storage"""
@@ -155,7 +155,7 @@ class PermanentStorage(object):
 
     def __iter__(self):
         """The same as :meth:`PermanentStorage.keys`."""
-        return self.keys
+        return self.keys()
 
     def __len__(self):
         """Same as :meth:`PermanentStorage.count`."""
