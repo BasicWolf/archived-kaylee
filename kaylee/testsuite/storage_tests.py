@@ -7,6 +7,14 @@ from copy import deepcopy
 SOME = 10
 MANY = 100
 
+
+class TemporalStorageTestsBase(KayleeTest):
+    cls = TemporalStorage
+
+    def setUp(self):
+        pass
+
+
 class PermanentStorageTestsBase(KayleeTest):
     cls = PermanentStorage # redefine in sub-classes
 
@@ -64,6 +72,9 @@ class PermanentStorageTestsBase(KayleeTest):
         ps.add('1', deepcopy(res))
         self.assertEqual(ps['1'], [res, res])
 
+        for i in range(0, SOME):
+            ps.add(self._tid(i), deepcopy(res))
+            self.assertEqual(ps[self._tid(i)], [res])
 
     def test_keys_iter(self):
         ps = self.cls()
