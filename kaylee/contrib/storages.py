@@ -9,20 +9,25 @@ class MemoryTemporalStorage(TemporalStorage):
     def __init__(self):
         self._d = {}
         self.clear()
+        self._total_count = 0
 
     def add(self, task_id, node_id, result):
         d = self._d.get(task_id, {})
         d[node_id.binary] = result
         self._d[task_id] = d
+        self._total_count += 1
 
     def remove(self, task_id, node_id=None):
         if node_id is None:
-            del self._d[task_id]
+            deleted_results = self._d.pop(task_id)
+            self._total_count -= len(deleted_results)
         else:
             del self._d[task_id][node_id]
+            self._total_count -= 1
 
     def clear(self):
         self._d = {}
+        self._total_count = 0
 
     def __getitem__(self, task_id):
         nr_dict = self._d[task_id]
@@ -38,11 +43,11 @@ class MemoryTemporalStorage(TemporalStorage):
 
     @property
     def count(self):
-        pass
+        return len(self._d)
 
     @property
     def total_count(self):
-        pass
+        return self._total_count
 
     def keys(self):
         return self._d.iterkeys()
@@ -50,10 +55,10 @@ class MemoryTemporalStorage(TemporalStorage):
     def values(self):
         def node_result_tuple_generator():
             for nr_dict in self._d.itervalues():
-                for node_id, result in nr_dict:
+                for nid_res_tuple in nr_dict.iteritems():
                     # in Py3 yield from would be proper here
-                    yield (node_id, result)
-        return node_result_tupe_generator()
+                    yield nid_res_tuple
+        return node_result_tuple_generator()
 
 
 class MemoryPermanentStorage(PermanentStorage):

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.storage import TemporalStorage, PermanentStorage
 from kaylee.contrib.storages import (MemoryTemporalStorage,
@@ -94,10 +95,59 @@ class TemporalStorageTestsBase(KayleeTest):
         self._fill_storage(ts, SOME, node_id=node_id)
         self.assertEqual(len(ts), SOME)
         for i in range(0, SOME):
-            tid = ts[_tget(i)]
-            del tid
+            tid = ts[_tgen(i)]
+            del ts[_tgen(i)]
             self.assertRaises(KeyError, ts.__getitem__, tid)
         self.assertEqual(len(ts), 0)
+
+    def test_count_and_total_count(self):
+        # remove many
+        ts = self.cls()
+        self.assertEqual(len(ts), 0)
+        self.assertEqual(ts.count, 0)
+        self.assertEqual(ts.total_count, 0)
+
+        self._fill_storage(ts, SOME)
+        self.assertEqual(len(ts), SOME)
+        self.assertEqual(ts.count, SOME)
+        self.assertEqual(ts.total_count, SOME)
+
+        self._fill_storage(ts, SOME)
+        self._fill_storage(ts, SOME)
+        self.assertEqual(ts.total_count, 3 * SOME)
+
+        ts.remove('t0')
+        self.assertEqual(len(ts), SOME - 1)
+        self.assertEqual(ts.count, SOME - 1)
+        self.assertEqual(ts.total_count, 3 * SOME - 3)
+
+        nid = NodeID()
+        ts.add('t1', nid, 'r12')
+        self.assertEqual(len(ts), SOME - 1)
+        self.assertEqual(ts.count, SOME - 1)
+        self.assertEqual(ts.total_count, 3 * SOME - 2)
+
+        ts.remove('t1', nid)
+        self.assertEqual(len(ts), SOME - 1)
+        self.assertEqual(ts.count, SOME - 1)
+        self.assertEqual(ts.total_count, 3 * SOME - 3)
+
+        ts.add('t0', NodeID(), 'r0')
+        for i in range(0, SOME):
+            ts.remove(_tgen(i))
+        self.assertEqual(len(ts), 0)
+        self.assertEqual(ts.count, 0)
+        self.assertEqual(ts.total_count, 0)
+
+        self._fill_storage(ts, MANY)
+        self._fill_storage(ts, MANY)
+        self.assertEqual(len(ts), MANY)
+        self.assertEqual(ts.count, MANY)
+        self.assertEqual(ts.total_count, 2 * MANY)
+
+        nodes = set(n for n, r in ts.values())
+        self.assertEqual(len(nodes), MANY)
+
 
 
     @staticmethod
@@ -190,17 +240,18 @@ class PermanentStorageTestsBase(KayleeTest):
         test_values_list = [[_rgen(i)] for i in range(0, SOME)]
         self.assertEqual(test_values_list, sorted(list(ps.values())) )
 
-    def test_count(self):
+    def test_count_and_total_count(self):
         ps = self.cls()
+        self._fill_storage(ps, SOME)
+        self.assertEqual(ps.count, len(ps))
+        self.assertEqual(ps.count, SOME)
+        self.assertEqual(ps.total_count, SOME)
+
+        ps.add('t0', 'r0')
         self._fill_storage(ps, SOME)
         self.assertEqual(ps.count, SOME)
-        self.assertEqual(ps.count, len(ps))
+        self.assertEqual(ps.total_count, SOME * 2 + 1)
 
-    def test_total_count(self):
-        ps = self.cls()
-        self._fill_storage(ps, SOME)
-        self._fill_storage(ps, SOME)
-        self.assertEqual(ps.total_count, SOME * 2)
 
     def test_contains(self):
         ps = self.cls()
