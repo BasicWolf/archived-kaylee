@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #pylint: disable-msg=W0231
 from kaylee.storage import TemporalStorage, PermanentStorage
+from kaylee.node import NodeID
 
 class MemoryTemporalStorage(TemporalStorage):
     """A simple Python dict-based temporal results storage."""
@@ -11,12 +12,12 @@ class MemoryTemporalStorage(TemporalStorage):
 
     def add(self, task_id, node_id, result):
         d = self._d.get(task_id, {})
-        d[node_id] = result
+        d[node_id.binary] = result
         self._d[task_id] = d
 
     def remove(self, task_id, node_id=None):
         if node_id is None:
-            del self._[task_id]
+            del self._d[task_id]
         else:
             del self._d[task_id][node_id]
 
@@ -24,10 +25,8 @@ class MemoryTemporalStorage(TemporalStorage):
         self._d = {}
 
     def __getitem__(self, task_id):
-        try:
-            return self._d[task_id]
-        except KeyError:
-            return []
+        nr_dict = self._d[task_id]
+        return ((NodeID(n), r) for n, r in nr_dict.iteritems())
 
     def contains(self, task_id, node_id=None, result=None):
         if result is None and node_id is None:
@@ -55,18 +54,6 @@ class MemoryTemporalStorage(TemporalStorage):
                     # in Py3 yield from would be proper here
                     yield (node_id, result)
         return node_result_tupe_generator()
-
-    def __contains__(self, task_id):
-        return task_id in self._d
-
-    def __delitem__(self, task_id):
-        del self._d[task_id]
-
-    def __iter__(self):
-        return iter(self._d)
-
-    def __len__(self):
-        return sum(len(res) for res in self._d)
 
 
 class MemoryPermanentStorage(PermanentStorage):

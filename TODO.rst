@@ -30,6 +30,12 @@ Feature requests
 * Client: operations timeout (e.g. project import timeout)
 * User management and rankings
 
+
+Refactoring requests
+--------------------
+* NodeID consructor
+* NodeID from_object (do we need it?)
+
 Also
 ----
 * PDB support in Emacs

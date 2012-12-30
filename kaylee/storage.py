@@ -22,7 +22,14 @@ class TemporalStorage(object):
 
     @abstractmethod
     def add(self, task_id, node_id, result):
-        """Stores the task result returned by a node."""
+        """Stores the task result returned by a node.
+
+        :param task_id: task id
+        :param node_id: the id of the node which solved the task
+        :param result: task result
+        :type task_id: :class:`str`
+        :type node_id: :class:`NodeID`
+        """
 
     @abstractmethod
     def remove(self, task_id, node_id=None):
@@ -34,10 +41,11 @@ class TemporalStorage(object):
         """Removes all results from the storage."""
 
     @abstractmethod
-    def __getitem_(_self, task_id):
+    def __getitem__(self, task_id):
         """Returns the task results.
 
-        :rtype:  (node_id : result) ... iterator
+        :rtype:  ``(node_id : result)`` ... iterator, where
+                 ``node_id`` is an instance of :class:`NodeID`.
         """
 
     @abstractmethod
@@ -88,7 +96,7 @@ class TemporalStorage(object):
 
     def __len__(self):
         """The same as :meth:`TemporalStorage.count`."""
-
+        return self.count
 
 class PermanentStorage(object):
     """The interface for applications' permanent results storage.

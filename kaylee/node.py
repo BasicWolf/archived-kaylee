@@ -178,7 +178,7 @@ class NodeID(object):
     _inc = 0
     _inc_lock = threading.Lock()
 
-    def __init__(self, node_id = None, remote_host = '127.0.0.1'):
+    def __init__(self, node_id=None, remote_host='127.0.0.1'):
         if node_id is None and not isinstance(remote_host, basestring):
             raise TypeError('remote_host must be an instance of {}, not {}'
                             .format(basestring.__name__,
@@ -198,7 +198,7 @@ class NodeID(object):
         :type host: string
         :returns: NodeID object
         """
-        return NodeID(remote_host = host)
+        return NodeID(remote_host=host)
 
     @staticmethod
     def from_object(node):
@@ -210,11 +210,11 @@ class NodeID(object):
         :returns: NodeID object
         """
         if isinstance(node, basestring):
-            return NodeID(node_id = node)
+            return NodeID(node_id=node)
         elif isinstance(node, NodeID):
             return node
         elif isinstance(node, Node):
-            return NodeID(node_id = node.id)
+            return NodeID(node_id=node.id)
         else:
             raise TypeError('node must be an instance of {}, {}, or {} not'
                             ' {}'.format(basestring.__name__,
