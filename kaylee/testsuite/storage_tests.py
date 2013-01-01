@@ -74,6 +74,7 @@ class TemporalStorageTestsBase(KayleeTest):
         self.assertRaises(KeyError, ts.__getitem__, 't1')
         self.assertEqual(len(ts), 0)
 
+        # add one, remove two
         ts.add('t1', node_id, 'r1')
         self.assertRaises(KeyError, ts.remove, 't1', NodeID())
         self.assertRaises(KeyError, ts.remove, 't2')
@@ -100,27 +101,62 @@ class TemporalStorageTestsBase(KayleeTest):
             self.assertRaises(KeyError, ts.__getitem__, tid)
         self.assertEqual(len(ts), 0)
 
+    def test_clear(self):
+        # fill and clear
+        ts = self.cls()
+        self._fill_storage(ts, SOME)
+        self.assertEqual(len(ts), SOME)
+        ts.clear()
+        self.assertEqual(len(ts), 0)
+
+        # double fill and clear
+        ts = self.cls()
+        self._fill_storage(ts, SOME)
+        self._fill_storage(ts, SOME)
+        self.assertEqual(len(ts), SOME)
+        ts.clear()
+        self.assertEqual(len(ts), 0)
+
+        # same ts, fill and clear
+        self._fill_storage(ts, SOME, node_id=NodeID())
+        self.assertEqual(len(ts), SOME)
+        ts.clear()
+        self.assertEqual(len(ts), 0)
+
+        # remove all and clear
+        ts = self.cls()
+        self._fill_storage(ts, SOME, node_id=NodeID())
+        for i in range(0, SOME):
+            ts.remove(_tgen(i))
+        self.assertEqual(len(ts), 0)
+        ts.clear()
+        self.assertEqual(len(ts), 0)
+
     def test_count_and_total_count(self):
-        # remove many
+        # initial counts
         ts = self.cls()
         self.assertEqual(len(ts), 0)
         self.assertEqual(ts.count, 0)
         self.assertEqual(ts.total_count, 0)
 
+        # fill
         self._fill_storage(ts, SOME)
         self.assertEqual(len(ts), SOME)
         self.assertEqual(ts.count, SOME)
         self.assertEqual(ts.total_count, SOME)
 
+        # double fill
         self._fill_storage(ts, SOME)
         self._fill_storage(ts, SOME)
         self.assertEqual(ts.total_count, 3 * SOME)
 
+        # remove
         ts.remove('t0')
         self.assertEqual(len(ts), SOME - 1)
         self.assertEqual(ts.count, SOME - 1)
         self.assertEqual(ts.total_count, 3 * SOME - 3)
 
+        # remove with specific node id
         nid = NodeID()
         ts.add('t1', nid, 'r12')
         self.assertEqual(len(ts), SOME - 1)
@@ -132,6 +168,7 @@ class TemporalStorageTestsBase(KayleeTest):
         self.assertEqual(ts.count, SOME - 1)
         self.assertEqual(ts.total_count, 3 * SOME - 3)
 
+        # add one, remove
         ts.add('t0', NodeID(), 'r0')
         for i in range(0, SOME):
             ts.remove(_tgen(i))
@@ -139,16 +176,18 @@ class TemporalStorageTestsBase(KayleeTest):
         self.assertEqual(ts.count, 0)
         self.assertEqual(ts.total_count, 0)
 
+        # more double fill
         self._fill_storage(ts, MANY)
         self._fill_storage(ts, MANY)
         self.assertEqual(len(ts), MANY)
         self.assertEqual(ts.count, MANY)
         self.assertEqual(ts.total_count, 2 * MANY)
 
-        nodes = set(n for n, r in ts.values())
-        self.assertEqual(len(nodes), MANY)
+    def test_keys():
+        pass
 
-
+    def test_values():
+        pass
 
     @staticmethod
     def _fill_storage(ts, count, tgen_func=_tgen, rgen_func=_rgen, node_id=None):
