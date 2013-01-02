@@ -34,12 +34,15 @@ class MemoryTemporalStorage(TemporalStorage):
         return ((NodeID(n), r) for n, r in nr_dict.iteritems())
 
     def contains(self, task_id, node_id=None, result=None):
-        if result is None and node_id is None:
-            return task_id in self._d
-        elif result is None:
-            return node_id in self._d[task_id]
-        else:
-            return result in self._d[task_id][node_id]
+        try:
+            if result is None and node_id is None:
+                return task_id in self._d
+            elif result is None:
+                return node_id in self._d[task_id]
+            else:
+                return result in self._d[task_id][node_id]
+        except KeyError:
+            return False
 
     @property
     def count(self):
