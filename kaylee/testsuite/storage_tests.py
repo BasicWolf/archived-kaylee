@@ -45,6 +45,23 @@ class TemporalStorageTestsBase(KayleeTest):
                 self.assertEqual(nid, node_id)
                 self.assertEqual(res, _rgen(i))
 
+    def test_add_complex_result(self):
+        ts = self.cls()
+        test_res = {
+            'edx' : [1, 2, 3],
+            'eax' : { (3, 4) : (5, 6), 'c' : 10},
+            1 : 100,
+            2 : {
+                3 : 'abc',
+                'cde' : [5, 6, 7] * 100,
+                0 : 'c' * 65537
+            }
+        }
+        ts.add('1', NodeID(), deepcopy(test_res))
+        nr_list = list(ts['1'])
+        added_res = nr_list[0][1]
+        self.assertEqual(test_res, added_res)
+
     def test_overwrite(self):
         # overwrite one
         ts = self.cls()
@@ -221,7 +238,7 @@ class TemporalStorageTestsBase(KayleeTest):
         self.assertEqual(len(nodes), 2 * MANY)
 
     def test_keys_and_iter(self):
-        def _basic_test(ts, count):
+        def _basic_ki_test(ts, count):
             test_task_ids = set(_tgen(i) for i in range(0, count))
             iter_task_ids = set(tid for tid in iter(ts))
             keys_task_ids = set(tid for tid in ts.keys())
@@ -232,29 +249,66 @@ class TemporalStorageTestsBase(KayleeTest):
 
         ts = self.cls()
         self._fill_storage(ts, SOME)
-        _basic_test(ts, SOME)
+        _basic_ki_test(ts, SOME)
 
         # fill more, same test
         self._fill_storage(ts, SOME)
-        _basic_test(ts, SOME)
+        _basic_ki_test(ts, SOME)
 
         # remove a bit
         for i in range(0, SOME):
             ts.remove(_tgen(i))
-        _basic_test(ts, 0)
+        _basic_ki_test(ts, 0)
 
         ts.clear()
         node_id = NodeID()
-        self._fill_storage(ts, SOME, node_id=NodeID())
+        self._fill_storage(ts, SOME, node_id=node_id)
         self._fill_storage(ts, SOME)
 
         for i in range(0, SOME):
             ts.remove(_tgen(i), node_id)
-        _basic_test(ts, SOME)
-
+        _basic_ki_test(ts, SOME)
 
     def test_values(self):
-        pass
+        ts = self.cls()
+        self._fill_storage(ts, SOME)
+        self.assertEqual(len(list(ts.values())), SOME)
+
+        test_results_set = set(_rgen(i) for i in range(0, SOME))
+        for nr in ts.values():
+            self.assertIn(nr[1], test_results_set)
+            self.assertEqual(NodeID(nr[0]).binary, nr[0])
+
+        # fill once more and count
+        self._fill_storage(ts, SOME)
+        for nr in ts.values():
+            self.assertIn(nr[1], test_results_set)
+            self.assertEqual(NodeID(nr[0]).binary, nr[0])
+        self.assertEqual(len(list(ts.values())), 2 * SOME)
+
+        # clear and count
+        ts.clear()
+        self.assertEqual(len(list(ts.values())), 0)
+
+        # specify node id
+        node_id = NodeID()
+        self._fill_storage(ts, SOME, node_id=node_id)
+        for nr in ts.values():
+            self.assertIn(nr[1], test_results_set)
+            self.assertEqual(NodeID(nr[0]).binary, node_id.binary)
+
+        # remove a result by task_id
+        HALF_SOME = SOME // 2
+        for i in range(0, HALF_SOME):
+            ts.remove(_tgen(i))
+        for nr in ts.values():
+            res = nr[1]
+            self.assertGreaterEqual(int(res[-1]), HALF_SOME)
+
+        # fill more and count
+        self._fill_storage(ts, SOME)
+        self.assertEqual(len(list(ts.values())), HALF_SOME + SOME)
+
 
     @staticmethod
     def _fill_storage(ts, count, tgen_func=_tgen, rgen_func=_rgen, node_id=None):
