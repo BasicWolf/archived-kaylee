@@ -1,1 +1,2 @@
-from .dummy import AutoTestProject, DummyController
+from .dummy import AutoTestProject
+from kaylee.testsuite import TestController

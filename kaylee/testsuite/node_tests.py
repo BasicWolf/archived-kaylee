@@ -2,7 +2,7 @@ from kaylee.testsuite import KayleeTest, load_tests
 from datetime import datetime, timedelta
 from kaylee import Node, NodeID
 from kaylee import InvalidNodeIDError
-from kaylee.testsuite.projects.dummy_project import DummyController
+from kaylee.testsuite import TestController
 
 
 class NodeIDTests(KayleeTest):

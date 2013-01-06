@@ -10,7 +10,7 @@ import sys
 import unittest
 import logging
 from importlib import import_module
-
+from .helper import TestTemporalStorage, TestPermanentStorage, TestController
 
 logging.basicConfig(level=logging.CRITICAL)
 log = logging.getLogger(__name__)
@@ -20,6 +20,7 @@ unittest.defaultTestLoader = unittest.TestLoader()
 PROJECTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             'projects')
 sys.path.insert(0, PROJECTS_DIR)
+
 
 
 class KayleeTest(unittest.TestCase):
@@ -113,5 +114,5 @@ class KayleeTestsLoader(unittest.TestLoader):
 
 
 def main():
-    """runs the testsuite as command line application."""
+    """Runs the testsuite as command line application."""
     unittest.main(testLoader = KayleeTestsLoader(), defaultTest = 'default')
