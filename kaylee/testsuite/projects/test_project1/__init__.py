@@ -1,2 +1,2 @@
 from .test_project import AutoTestProject
-from kaylee.testsuite import TestController as TestController1
+from kaylee.testsuite import TestController
