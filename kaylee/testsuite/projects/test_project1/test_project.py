@@ -9,7 +9,7 @@ class AutoTestProject(Project):
         super(AutoTestProject, self).__init__(script = '', *args, **kwargs)
         self.task_id = 0
         self.tasks_count = kwargs.get('tasks_count', 10)
-        self.client_config.update({'dummy_key' : 'dummy_value'})
+        self.client_config.update({'test_key' : 'test_value'})
 
     def __getitem__(self, task_id):
         return {

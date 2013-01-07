@@ -255,11 +255,12 @@ class TemporalStorageTestsBase(KayleeTest):
         self._fill_storage(ts, SOME)
         _basic_ki_test(ts, SOME)
 
-        # remove a bit
+        # remove SOME, same test
         for i in range(0, SOME):
             ts.remove(_tgen(i))
         _basic_ki_test(ts, 0)
 
+        # clear, test with the same NodeID
         ts.clear()
         node_id = NodeID()
         self._fill_storage(ts, SOME, node_id=node_id)

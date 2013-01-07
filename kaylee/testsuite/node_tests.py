@@ -110,7 +110,7 @@ class NodeTests(KayleeTest):
         node = Node(nid)
         self.assertFalse(node.dirty)
 
-        node.subscribe(DummyController.new_test_instance())
+        node.subscribe(TestController.new_test_instance())
         self.assertTrue(node.dirty)
         node.dirty = False
 
@@ -129,7 +129,7 @@ class NodeTests(KayleeTest):
         node.session_data = 'sd1'
         self.assertEqual(node.session_data, 'sd1')
 
-        ctrl = DummyController.new_test_instance()
+        ctrl = TestController.new_test_instance()
         node.subscribe(ctrl)
         now = datetime.now()
         self.assertTrue(timedelta(seconds = 0)

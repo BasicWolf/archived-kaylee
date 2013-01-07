@@ -16,13 +16,13 @@ REGISTRY = {
 }
 
 APPLICATIONS = [
-    { 'name' : 'dummy.1',
-      'description' : 'Dummy application',
+    { 'name' : 'test.1',
+      'description' : 'Test application',
       'project' : {
             'name' : 'AutoTestProject',
             },
       'controller' : {
-            'name' :'DummyController',
+            'name' :'TestController',
             'config' : {},
             'temporal_storage' : {
                 'name' : 'MemoryTemporalStorage',

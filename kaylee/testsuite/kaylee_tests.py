@@ -28,15 +28,15 @@ class KayleeTests(KayleeTest):
 
     def test_subscribe_unsubscribe(self):
         kl = loader.load(self.config)
-        app = kl.applications['dummy.1']
+        app = kl.applications['test.1']
         node_json_config = kl.register('127.0.0.1')
         node_config = json.loads(node_json_config)
         node_id = node_config['node_id']
 
         # test node.subscribe
-        app_json_config = kl.subscribe(node_id, 'dummy.1')
+        app_json_config = kl.subscribe(node_id, 'test.1')
         app_config = json.loads(app_json_config)
-        self.assertEqual(app_config['dummy_key'], 'dummy_value')
+        self.assertEqual(app_config['test_key'], 'test_value')
         node = kl.registry[node_id]
         self.assertEqual(node.controller, app)
         self.assertTrue(0 <= (datetime.now() -

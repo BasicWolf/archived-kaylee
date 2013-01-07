@@ -22,6 +22,10 @@ class NonAbstractProject(Project):
         pass
 
 
-TestTemporalStorage = MemoryTemporalStorage
-TestPermanentStorage = MemoryPermanentStorage
-TestController = SimpleController
+TestTemporalStorage = type('TestTemporalStorage', (MemoryTemporalStorage, ), {})
+TestPermanentStorage = type('TestPermanentStorage', (MemoryPermanentStorage, ), {})
+#TestController = type('TestController', (SimpleController, ), {})
+# class TestController(SimpleController):
+#     pass
+
+# print TestController.__bases__

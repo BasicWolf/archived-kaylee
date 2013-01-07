@@ -176,6 +176,7 @@ def _update_classes(module):
     _valid_subclass = lambda c, bc: issubclass (c, bc) and c is not bc
 
     classes_from_module = _get_classes_from_module(module)
+    print classes_from_module
     for base_class in _loadable_base_classes:
         # update _classes[base_class] with
         # { class_name : class } pairs, where `class` is a subclass of

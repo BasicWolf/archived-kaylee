@@ -36,13 +36,13 @@ class TestConfigWithApps(object):
     WORKER_SCRIPT_URL = '/static/js/kaylee/klworker.js'
     APPLICATIONS = [
         {
-            'name' : 'dummy.1',
-            'description' : 'Dummy application',
+            'name' : 'test.1',
+            'description' : 'Test application',
             'project' : {
                 'name' : 'AutoTestProject',
             },
             'controller' : {
-                'name' :'TestController',
+                'name' :'TestController1',
                 'config' : {},
                 'temporal_storage' : {
                     'name' : 'MemoryTemporalStorage',
@@ -94,7 +94,7 @@ class KayleeLoaderTests(KayleeTest):
         self.assertEqual(len(apps), 1)
 
         app = apps[0]
-        self.assertEqual(app.__class__.__name__, 'TestController')
+        self.assertEqual(app.__class__.__name__, 'TestController1')
         self.assertEqual(app.project.__class__.__name__, 'AutoTestProject')
         self.assertIsInstance(app.temporal_storage, MemoryTemporalStorage)
         self.assertIsInstance(app.permanent_storage, MemoryPermanentStorage)
@@ -116,8 +116,8 @@ class KayleeLoaderTests(KayleeTest):
         kl = loader.load(TestConfigWithApps)
         self.assertIsInstance(kl.registry, MemoryNodesRegistry)
 
-        app = kl.applications['dummy.1']
-        self.assertEqual(app.__class__.__name__, 'TestController')
+        app = kl.applications['test.1']
+        self.assertEqual(app.__class__.__name__, 'TestController1')
         self.assertEqual(app.project.__class__.__name__, 'AutoTestProject')
 
     def test_kaylee_setup(self):
@@ -128,8 +128,8 @@ class KayleeLoaderTests(KayleeTest):
         self.assertIsNotNone(kl._wrapped)
         self.assertIsInstance(kl.registry, MemoryNodesRegistry)
 
-        app = kl.applications['dummy.1']
-        self.assertEqual(app.__class__.__name__, 'TestController')
+        app = kl.applications['test.1']
+        self.assertEqual(app.__class__.__name__, 'TestController1')
         self.assertEqual(app.project.__class__.__name__, 'AutoTestProject')
 
 
