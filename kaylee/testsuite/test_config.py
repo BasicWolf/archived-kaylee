@@ -22,7 +22,7 @@ APPLICATIONS = [
             'name' : 'AutoTestProject',
             },
       'controller' : {
-            'name' :'TestController',
+            'name' :'TestController1',
             'config' : {},
             'temporal_storage' : {
                 'name' : 'MemoryTemporalStorage',
