@@ -1,9 +1,9 @@
+from kaylee.testsuite import KayleeTest
 from kaylee.project import Project
-
 from kaylee.contrib.storages import (MemoryTemporalStorage,
                                      MemoryPermanentStorage)
 from kaylee.contrib.controllers import SimpleController
-
+from abc import ABCMeta, abstractmethod, abstractproperty
 
 class NonAbstractProject(Project):
     def __init__(self, *args, **kwargs):
@@ -36,7 +36,7 @@ class TestController(SimpleController):
         # completely initialize a test controller with all necessary
         # attributes.
         if project_object is None:
-            from kaylee.testsuite.projects.test_auto_project \
+            from kaylee.testsuite.projects.auto_test_project \
                 import AutoTestProject
             project_object = AutoTestProject()
 
@@ -44,3 +44,18 @@ class TestController(SimpleController):
                               project_object,
                               TestPermanentStorage(),
                               TestTemporalStorage())
+
+
+class ContribTestsBase(KayleeTests):
+    """The base class for all contrib classes (controllers, storages etc.)
+    tests. The idea that Kaylee provides basic contrib tests, which """
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def cls_instance(self):
+        """Returns an instance of """
+        return None
+
+    @abstractproperty
+    def cls(self):
+        return None

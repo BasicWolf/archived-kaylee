@@ -173,7 +173,7 @@ def _projects_modules(path):
 
 def _update_classes(module):
     """Updates the global _classes variable by the classes found in module."""
-    _valid_subclass = lambda c, bc: issubclass (c, bc) and c is not bc
+    _subclass_is_valid = lambda c, bc: issubclass (c, bc) and c is not bc
 
     classes_from_module = _get_classes_from_module(module)
     for base_class in _loadable_base_classes:
@@ -181,7 +181,7 @@ def _update_classes(module):
         # { class_name : class } pairs, where `class` is a subclass of
         # `base_class`
         name_class_pairs = { c.__name__ : c for c in classes_from_module
-                             if _valid_subclass(c, base_class) }
+                             if _subclass_is_valid(c, base_class) }
         _classes[base_class].update(name_class_pairs)
 
 

@@ -1,4 +1,4 @@
-from .test_auto_project import AutoTestProject
+from .auto_test_project import AutoTestProject
 from kaylee.testsuite import TestController
 
 
