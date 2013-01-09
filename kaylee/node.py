@@ -76,7 +76,7 @@ class Node(object):
         if self.controller.completed:
             raise ApplicationCompletedError(self.controller)
         task = self.controller.get_task(self)
-        task['id'] = str(task['id'])
+        task['id'] = str(task['id']).strip()
         return task
 
     def accept_result(self, result):

@@ -6,6 +6,7 @@ from kaylee.contrib.controllers import SimpleController
 from kaylee.testsuite.helper import SubclassTestsBase
 from abc import ABCMeta, abstractmethod
 
+
 class ControllerTestsBase(SubclassTestsBase):
     __metaclass__ = ABCMeta
 
@@ -16,10 +17,12 @@ class ControllerTestsBase(SubclassTestsBase):
     def test_init(self):
         pass
 
-    # def test_get_task(self):
-    #     ctr = self.cls_instance()
-
-
+    def test_get_task(self):
+        ctr = self.cls_instance()
+        task = ctr.get_task()
+        self.assertIs(task, dict)
+        self.assertIn('id', task)
+        self.assertTrue(len(str(task['id']).strip()) > 0)
 
 class SimpleControllerTests(ControllerTestsBase):
     def test_init(self):

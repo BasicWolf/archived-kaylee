@@ -47,11 +47,12 @@ class NonAbstractProject(Project):
 class TestTemporalStorage(MemoryTemporalStorage):
     pass
 
+
 class TestPermanentStorage(MemoryPermanentStorage):
     pass
 
-class TestController(SimpleController):
 
+class TestController(SimpleController):
     @staticmethod
     def new_test_instance(project_object=None, app_name='test_app'):
         # Load autoproject from testsuite in order to be able to

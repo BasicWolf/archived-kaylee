@@ -19,7 +19,7 @@ def _rgen(i, prefix='r'):
 
 class TemporalStorageTestsBase(SubclassTestsBase):
     def setUp(self):
-        pass
+        super(TemporalStorageTestsBase, self).setUp()
 
     def test_init(self):
         ts = self.cls_instance()
@@ -328,7 +328,7 @@ class TemporalStorageTestsBase(SubclassTestsBase):
 
 class PermanentStorageTestsBase(SubclassTestsBase):
     def setUp(self):
-        pass
+        super(PermanentStorageTestsBase, self).setUp()
 
     def test_init(self):
         ps = self.cls_instance()
