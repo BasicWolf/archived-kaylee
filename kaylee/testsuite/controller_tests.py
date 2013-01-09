@@ -1,27 +1,34 @@
 # -*- coding: utf-8 -*-
-from kaylee.testsuite import (KayleeTest, load_tests, TestTemporalStorage,
+from kaylee.testsuite import (load_tests, TestTemporalStorage,
                               TestPermanentStorage)
 from kaylee.testsuite.projects.auto_test_project import AutoTestProject
 from kaylee.contrib.controllers import SimpleController
-from abc import ABCMeta
+from kaylee.testsuite.helper import SubclassTestsBase
+from abc import ABCMeta, abstractmethod
 
-class ControllerTestsBase(KayleeTest):
+class ControllerTestsBase(SubclassTestsBase):
     __metaclass__ = ABCMeta
 
-    # @abstractmethod
-    # def init_cls(self):
-    #     pass
-
     def setUp(self):
-        pass
+        super(ControllerTestsBase, self).setUp()
 
+    @abstractmethod
     def test_init(self):
         pass
 
-    def test_get_task(self):
-        pass
+    # def test_get_task(self):
+    #     ctr = self.cls_instance()
+
+
 
 class SimpleControllerTests(ControllerTestsBase):
-    pass
+    def test_init(self):
+        pass
+
+    def cls_instance(self):
+        return SimpleController('test_app',
+                                AutoTestProject(),
+                                TestPermanentStorage())
+
 
 kaylee_suite = load_tests([SimpleControllerTests,])

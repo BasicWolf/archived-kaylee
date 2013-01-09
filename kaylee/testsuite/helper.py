@@ -1,9 +1,31 @@
-from kaylee.testsuite import KayleeTest
+import unittest
 from kaylee.project import Project
 from kaylee.contrib.storages import (MemoryTemporalStorage,
                                      MemoryPermanentStorage)
 from kaylee.contrib.controllers import SimpleController
 from abc import ABCMeta, abstractmethod, abstractproperty
+
+
+class KayleeTest(unittest.TestCase):
+    """Base class for all Kaylee tests."""
+
+class SubclassTestsBase(KayleeTest):
+    """The base class for (sub)classes, e.g. controllers, storages etc.
+    tests. The idea that Kaylee provides basic tests, which can then be
+    subclassed and extentended by class-specific tests"""
+    SOME = 11
+    MANY = SOME ** 2
+
+    __metaclass__ = ABCMeta
+
+    def setUp(self):
+        self.cls = self.cls_instance().__class__
+
+    @abstractmethod
+    def cls_instance(self):
+        """Returns an instance of """
+        return None
+
 
 class NonAbstractProject(Project):
     def __init__(self, *args, **kwargs):
@@ -44,18 +66,3 @@ class TestController(SimpleController):
                               project_object,
                               TestPermanentStorage(),
                               TestTemporalStorage())
-
-
-class ContribTestsBase(KayleeTests):
-    """The base class for all contrib classes (controllers, storages etc.)
-    tests. The idea that Kaylee provides basic contrib tests, which """
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
-    def cls_instance(self):
-        """Returns an instance of """
-        return None
-
-    @abstractproperty
-    def cls(self):
-        return None

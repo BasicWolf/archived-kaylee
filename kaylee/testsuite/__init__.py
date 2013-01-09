@@ -10,7 +10,7 @@ import sys
 import unittest
 import logging
 from importlib import import_module
-from .helper import TestTemporalStorage, TestPermanentStorage, TestController
+from .helper import KayleeTest, TestTemporalStorage, TestPermanentStorage, TestController
 
 logging.basicConfig(level=logging.CRITICAL)
 log = logging.getLogger(__name__)
@@ -20,11 +20,6 @@ unittest.defaultTestLoader = unittest.TestLoader()
 PROJECTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             'projects')
 sys.path.insert(0, PROJECTS_DIR)
-
-
-
-class KayleeTest(unittest.TestCase):
-    """Base class for all Kaylee tests."""
 
 
 def load_tests(test_cases):
