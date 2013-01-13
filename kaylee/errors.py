@@ -43,11 +43,11 @@ class InvalidResultError(ValueError, KayleeError):
             'Invalid result "{}": {}'.format(result, why))
 
 
-class NoneResultAssertError(ValueError, KayleeProjectAssertError):
+class NoneResultAssertError(KayleeProjectAssertError, ValueError):
     """Raised by controller if a normalized result returned by
     :meth:`Project.normalize_result` is ``None``."""
     def __init__(self, result):
-        KayleeProjectAssertError.__init__(
+        super(NoneResultAssertError, self).__init__(
             'A result {} has been normalized to None'.format(result))
 
 

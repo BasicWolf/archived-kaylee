@@ -10,7 +10,8 @@ import sys
 import unittest
 import logging
 from importlib import import_module
-from .helper import KayleeTest, TestTemporalStorage, TestPermanentStorage, TestController
+from .helper import (KayleeTest, TestTemporalStorage, TestPermanentStorage,
+                     TestController)
 
 logging.basicConfig(level=logging.CRITICAL)
 log = logging.getLogger(__name__)

@@ -70,7 +70,7 @@ class TemporalStorageTestsBase(SubclassTestsBase):
 
         # overwrite many
         ts = self.cls_instance()
-        rgen = lambda i : "XYZ{}".format(i)
+        rgen = 'XYZ{}'.format
         self._fill_storage(ts, self.SOME, node_id=node_id)
         self._fill_storage(ts, self.SOME, rgen_func=rgen, node_id=node_id)
 
@@ -442,7 +442,7 @@ class PermanentStorageTestsBase(SubclassTestsBase):
     @staticmethod
     def _fill_storage(ps, count, tgen_func=_tgen, rgen_func=_rgen):
         for i in range(0, count):
-            ps.add(tgen_func(i), _rgen(i))
+            ps.add(tgen_func(i), rgen_func(i))
 
 
 class MemoryPermanentStorageTests(PermanentStorageTestsBase):

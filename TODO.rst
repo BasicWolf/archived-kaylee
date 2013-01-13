@@ -1,7 +1,7 @@
 v0.3
 ----
 ! Document task id stripping!
-* Replace dummy controllers/storages with the very basic stuff from contrib.
++ Replace dummy controllers/storages with the very basic stuff from contrib.
   Make sure that all the contrib classes that are used in testsuite are
   also tested.
 * Refactor demo Kaylee.js path (e.g. static/js/kaylee/ -> static/kaylee/js)

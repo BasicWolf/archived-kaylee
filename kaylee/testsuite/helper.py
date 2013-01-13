@@ -3,7 +3,7 @@ from kaylee.project import Project
 from kaylee.contrib.storages import (MemoryTemporalStorage,
                                      MemoryPermanentStorage)
 from kaylee.contrib.controllers import SimpleController
-from abc import ABCMeta, abstractmethod, abstractproperty
+from abc import ABCMeta, abstractmethod
 
 
 class KayleeTest(unittest.TestCase):
@@ -21,6 +21,8 @@ class SubclassTestsBase(KayleeTest):
     def setUp(self):
         self.cls = self.cls_instance().__class__
 
+    #pylint: disable-msg=R0201
+    #R0201: Method could be a function
     @abstractmethod
     def cls_instance(self):
         """Returns an instance of """
@@ -29,7 +31,7 @@ class SubclassTestsBase(KayleeTest):
 
 class NonAbstractProject(Project):
     def __init__(self, *args, **kwargs):
-        pass
+        super(NonAbstractProject, self).__init__(*args, **kwargs)
 
     def __getitem__(self, task_id):
         pass
