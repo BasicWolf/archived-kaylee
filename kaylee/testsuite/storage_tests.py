@@ -80,8 +80,6 @@ class TemporalStorageTestsBase(SubclassTestsBase):
                 self.assertEqual(nid, node_id)
                 self.assertEqual(res, rgen(i))
 
-
-
     def test_remove_and_del(self):
         # remove one
         ts = self.cls_instance()
@@ -118,7 +116,6 @@ class TemporalStorageTestsBase(SubclassTestsBase):
             self.assertRaises(KeyError, ts.__getitem__, tid)
         self.assertEqual(len(ts), 0)
 
-
     def test_clear(self):
         # fill and clear
         ts = self.cls_instance()
@@ -149,7 +146,6 @@ class TemporalStorageTestsBase(SubclassTestsBase):
         self.assertEqual(len(ts), 0)
         ts.clear()
         self.assertEqual(len(ts), 0)
-
 
     def test_contains_and_in(self):
         ts = self.cls_instance()
@@ -311,7 +307,6 @@ class TemporalStorageTestsBase(SubclassTestsBase):
         expected_count = self.SOME + math.ceil(self.SOME / 2.0)
         self.assertEqual(len(list(ts.values())), expected_count)
 
-
     @staticmethod
     def _fill_storage(ts, count, tgen_func=_tgen, rgen_func=_rgen,
                       node_id=None):
@@ -413,7 +408,6 @@ class PermanentStorageTestsBase(SubclassTestsBase):
         self.assertEqual(ps.count, self.SOME)
         self.assertEqual(ps.total_count, self.SOME * 2 + 1)
 
-
     def test_contains(self):
         ps = self.cls_instance()
         self._fill_storage(ps, self.SOME)
@@ -437,7 +431,6 @@ class PermanentStorageTestsBase(SubclassTestsBase):
             res = "{}{}".format('n', i)
             ps.add('t0', res)
             self.assertTrue(ps.contains('t0', res))
-
 
     @staticmethod
     def _fill_storage(ps, count, tgen_func=_tgen, rgen_func=_rgen):
