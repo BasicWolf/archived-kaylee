@@ -271,7 +271,7 @@ class Config(object):
 
         # next, set the options with required values
         try:
-            self.WORKER_SCRIPT_URL = kwargs.get('WORKER_SCRIPT_URL', None)
+            self.WORKER_SCRIPT_URL = kwargs['WORKER_SCRIPT_URL']
         except KeyError as e:
             raise KeyError('The required config option is missing: {}'
                            .format(e.args[0]))

@@ -4,15 +4,24 @@ v0.3
 + Replace dummy controllers/storages with the very basic stuff from contrib.
   Make sure that all the contrib classes that are used in testsuite are
   also tested.
-* Refactor demo Kaylee.js path (e.g. static/js/kaylee/ -> static/kaylee/js)
-* Add __setitem__ to storages and re-design parameters order (e.g. task_id, node_id, result)
+* Kaylee Core management API
+* Uploading projects through management API
+* Project template and initialization routines
 * Default config instead of core.Config defaults
 * Config verification
 
+..
+  - Refactor demo Kaylee.js path (e.g. static/js/kaylee/ -> static/kaylee/js)
+    # No need in this, kaylee should not have any css.
+
+  - Add __setitem__ to storages and re-design parameters order (e.g. task_id,
+    node_id, result)
+    # Storage items cannot be changed (which would be allowsed by __setitem__
+    # logic). add() should be enough.
+
+
 v0.4
 ----
-* Kaylee Core management API
-* Uploading projects through management API
 * Random data seed per application
 * Werkzeug support
 * Google App Engine support
@@ -45,4 +54,3 @@ Also
 Interesting links:
 # http://www.andromedaproject.org/#!/home
 # http://lenta.ru/news/2012/12/10/helpandromeda/
-

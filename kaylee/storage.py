@@ -98,6 +98,7 @@ class TemporalStorage(object):
         """The same as :meth:`TemporalStorage.count`."""
         return self.count
 
+
 class PermanentStorage(object):
     """The interface for applications' permanent results storage.
     The storage can be a file, a database, a Python object in memory etc.
