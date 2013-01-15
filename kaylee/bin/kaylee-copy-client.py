@@ -43,7 +43,8 @@ def main():
         counter += 1
 
     if counter != FILES_COUNT:
-        print('Error copying files: files are probably absent')
+        print('Error copying files: the amount of copied files ({}) is not '
+              'the same as expected ({})'.format(counter, FILES_COUNT))
         sys.exit(1)
 
     print("Finished.")
