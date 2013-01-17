@@ -1,9 +1,11 @@
 #!/usr/bin/env python
-
 import os
 import sys
-import kaylee
+#import kaylee
 import shutil
+import argparse
+from jinja2 import Template
+
 
 class KayleeCommand(object):
     pass
@@ -26,13 +28,13 @@ class KayleeStartProjectCommand(KayleeCommand):
             KL_PROJECT_TEMPLATE_DIR)
         shutil.copytree(kl_template_dir_path, self.template_dir_path)
 
-    def fill_template_content(self):
+    def render_templates(self):
         _j = os.path.join
         tdp = self.template_dir_path
 
-        with open(_j(tdp, 'server/project.py'), 'rw') as f:
-            content = f.read()
-            # todo: USE Jinja2 here
+        with open(_j(tdp, 'server/project.py.template'), 'rw') as f:
+#            Template.render()content = f.read()
+            pass
 
     def rename_template_files(self):
         _j = os.path.join
