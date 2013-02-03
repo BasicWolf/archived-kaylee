@@ -173,8 +173,6 @@ def _projects_modules(path):
 
 def _update_classes(module):
     """Updates the global _classes variable by the classes found in module."""
-
-
     classes_from_module = _get_classes_from_module(module)
     for base_class in _loadable_base_classes:
         # update _classes[base_class] with
