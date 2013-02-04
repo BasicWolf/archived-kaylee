@@ -4,8 +4,14 @@ from kaylee.conf.manager import BaseCommand
 
 class StartProjectCommand(BaseCommand):
 
+    name = 'startproject'
     help = 'Starts new Kaylee project'
-    args = {}
+    args = {
+        'name' : {}
+    }
 
     def __init__(self, parser):
+        pass
+
+    def execute(self, ns):
         pass

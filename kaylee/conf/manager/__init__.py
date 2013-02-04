@@ -1,1 +1,1 @@
-from .command import CommandsManager
+from .command import BaseCommand, CommandsManager
