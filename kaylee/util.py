@@ -14,9 +14,11 @@
 ###
 
 import re
-import importlib
+import sys
 import random
 import string
+import importlib
+import contextlib
 from datetime import timedelta
 
 from .errors import KayleeError
@@ -148,3 +150,13 @@ def is_strong_subclass(C, B):
     and C is not B.
     """
     return issubclass (C, B) and C is not B
+
+
+@contextlib.contextmanager
+def nostderr():
+    savestderr = sys.stderr
+    class Devnull(object):
+        def write(self, _): pass
+    sys.stderr = Devnull()
+    yield
+    sys.stderr = savestderr

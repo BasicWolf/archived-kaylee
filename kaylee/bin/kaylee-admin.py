@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
-from kaylee.conf.manager import CommandsManager
+from kaylee.conf.manager import execute_from_command_line
 
 # import shutil
 # import argparse
@@ -49,9 +49,5 @@ from kaylee.conf.manager import CommandsManager
 # COMMANDS_LIST = [KayleeStartProjectCommand, ]
 
 
-def main():
-    manager = CommandsManager()
-    manager.parse(sys.argv)
-
 if __name__ == '__main__':
-    main()
+    execute_from_command_line()

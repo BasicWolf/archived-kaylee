@@ -6,12 +6,11 @@ class StartProjectCommand(BaseCommand):
 
     name = 'startproject'
     help = 'Starts new Kaylee project'
+
     args = {
         'name' : {}
     }
 
-    def __init__(self, parser):
-        pass
-
-    def execute(self, ns):
-        pass
+    def execute(cls, ns):
+        # import pdb; pdb.set_trace();
+        print ns.name

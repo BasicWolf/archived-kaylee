@@ -1,32 +1,35 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
 import argparse
-from abc import ABCMeta, abstractmethod
 
 
 class BaseCommand(object):
-    __metaclass__ = ABCMeta
-
     #: Command help text
     help = ''
     name = ''
     args = {}
 
-    def __init__(self, parser):
-        for arg, arg_opts in self.args.items():
+    @classmethod
+    def add_sub_parser(cls, sub_parsers):
+        if cls.name.strip() == '':
+            raise ValueError('{}.name is empty.'.format(cls.__name__))
+
+        parser = sub_parsers.add_parser(cls.name)
+        for arg, arg_opts in cls.args.items():
             if isinstance(arg, str):
                 arg = [arg, ]
             parser.add_argument(*arg, **arg_opts)
+        parser.set_defaults(func=cls.execute)
 
-    @abstractmethod
-    def execute(self, ns):
+    @classmethod
+    def execute(cls, ns):
         pass
 
-class CommandsManager(object):
-    help = 'Kaylee manager'
 
+class CommandsManager(object):
     def __init__(self):
-        self.parser = argparse.ArgumentParser(description=self.help)
+        self.parser = argparse.ArgumentParser(description='Kaylee manager')
         self.sub_parsers = self.parser.add_subparsers(help='sub-commands help')
         # add sub-commands
         from .commands import commands_classes
@@ -38,10 +41,16 @@ class CommandsManager(object):
             raise TypeError('cmd_cls must be a subclass of {}, not {}'
                             .format(BaseCommand.__name__,
                                     type(cmd_cls).__name__))
-        if cmd_cls.name.strip() == '':
-            raise ValueError('{}.name is empty.'.format(cmd_cls.__name__))
-        cmd_parser = self.sub_parsers.add_parser(cmd_cls.name)
-        cmd = cmd_cls(cmd_parser)
+        cmd_cls.add_sub_parser(self.sub_parsers)
 
     def parse(self, argv):
         self.parser.parse_args(argv)
+
+
+
+def execute_from_command_line():
+    manager = CommandsManager()
+    manager.parse(sys.argv)
+
+if __name__ == '__main__':
+    main()
