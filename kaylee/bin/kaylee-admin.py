@@ -5,7 +5,6 @@ from kaylee.conf.manager import execute_from_command_line
 
 # import shutil
 # import argparse
-# from jinja2 import Template
 
 
 # class KayleeCommand(object):

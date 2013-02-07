@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+import os
+import tempfile
+import shutil
+
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.conf.manager import CommandsManager, BaseCommand
 from kaylee.util import nostderr
@@ -25,9 +29,24 @@ class KayleeCommandsManagerTests(KayleeTest):
         manager = CommandsManager()
         with nostderr():
             self.assertRaises(SystemExit, manager.parse, ['startproject'])
-            self.assertRaises(SystemExit, manager.parse, 'startproject')
 
-        manager.parse('startproject pi_calculator')
-        
+        # create a project in a temporary current working dir
+        tmpdir = tempfile.mkdtemp(prefix='kl_')
+        os.chdir(tmpdir)
+
+        self.assertRaises(ValueError, manager.parse, ['startproject', '@$'])
+
+        PROJECT_NAME = 'Pi_Calc'
+        manager.parse(['startproject', PROJECT_NAME])
+
+        with open(os.path.join(tmpdir,
+                               PROJECT_NAME,
+                               'client/{}'.format(PROJECT_NAME))) as f:
+            file_contents = f.read()
+        self.assertEqual(file_contents, )
+        """from .pi_calc import PI_Calc"""
+        shutil.rmtree(tmpdir)
+
+
 
 kaylee_suite = load_tests([KayleeCommandsManagerTests])

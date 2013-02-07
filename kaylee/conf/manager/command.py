@@ -20,11 +20,11 @@ class BaseCommand(object):
             if isinstance(arg, str):
                 arg = [arg, ]
             parser.add_argument(*arg, **arg_opts)
-        parser.set_defaults(func=cls.execute)
+        parser.set_defaults(handler=cls.execute)
 
-    @classmethod
-    def execute(cls, ns):
-        pass
+    @staticmethod
+    def execute(ns):
+        raise NotImplementedError('The command has no execute() static method.')
 
 
 class CommandsManager(object):
@@ -44,8 +44,9 @@ class CommandsManager(object):
         cmd_cls.add_sub_parser(self.sub_parsers)
 
     def parse(self, argv):
-        self.parser.parse_args(argv)
-
+        ns = self.parser.parse_args(argv)
+        if 'handler' in ns:
+            ns.handler(ns)
 
 
 def execute_from_command_line():
