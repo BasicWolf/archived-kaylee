@@ -1,11 +1,11 @@
-from kaylee.project import Project, {{ project_mode }}
+from kaylee.project import Project, AUTO_PROJECT_MODE
 
 
-class {{project_class_name}}(Project):
-    mode = {{ project_mode }}
+class Pi_Calc(Project):
+    mode = AUTO_PROJECT_MODE
 
     def __init__(self, *args, **kwargs):
-        super({{ project_class_name }}, self).__init__(*args, **kwargs)
+        super(Pi_Calc, self).__init__(*args, **kwargs)
 
         self.client_config.update({
 

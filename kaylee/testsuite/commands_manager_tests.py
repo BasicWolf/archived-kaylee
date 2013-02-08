@@ -7,6 +7,9 @@ from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.conf.manager import CommandsManager, BaseCommand
 from kaylee.util import nostderr
 
+CURRENT_DIR = os.path.dirname(__file__)
+RES_DIR = os.path.join(CURRENT_DIR, 'command_manager_tests_resources/')
+
 class KayleeCommandsManagerTests(KayleeTest):
 
     class SimpleCommand(BaseCommand):
@@ -30,21 +33,32 @@ class KayleeCommandsManagerTests(KayleeTest):
         with nostderr():
             self.assertRaises(SystemExit, manager.parse, ['startproject'])
 
+        # test for invalid project name
+        self.assertRaises(ValueError, manager.parse, ['startproject', '@$'])
+        self.assertRaises(ValueError, manager.parse, ['startproject', 'Pi Calc'])
+
+        # test for generated project contents
         # create a project in a temporary current working dir
         tmpdir = tempfile.mkdtemp(prefix='kl_')
         os.chdir(tmpdir)
 
-        self.assertRaises(ValueError, manager.parse, ['startproject', '@$'])
+        manager.parse(['startproject', 'Pi_Calc'])
 
-        PROJECT_NAME = 'Pi_Calc'
-        manager.parse(['startproject', PROJECT_NAME])
+        files_to_validate = [
+            'pi_calc/client/pi_calc.coffee',
+            'pi_calc/server/__init__.py',
+            'pi_calc/server/pi_calc.py',
+        ]
 
-        with open(os.path.join(tmpdir,
-                               PROJECT_NAME,
-                               'client/{}'.format(PROJECT_NAME))) as f:
-            file_contents = f.read()
-        self.assertEqual(file_contents, )
-        """from .pi_calc import PI_Calc"""
+        for fpath in files_to_validate:
+            with open(os.path.join(tmpdir, fpath)) as f:
+                generated_file_contents = f.read()
+            with open(os.path.join(RES_DIR, fpath)) as f:
+                ground_truth_file_contents = f.read()
+
+            self.assertEqual(generated_file_contents,
+                             ground_truth_file_contents)
+
         shutil.rmtree(tmpdir)
 
 
