@@ -67,7 +67,6 @@ class StartProjectCommand(BaseCommand):
             with open(doc_path, 'w') as f:
                 f.write(document_data)
 
-
 def expand_project_mode_opt(opt):
     if opt == 'manual':
         return 'MANUAL_PROJECT_MODE'

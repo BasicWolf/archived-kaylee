@@ -32,10 +32,14 @@ class KayleeCommandsManagerTests(KayleeTest):
         manager = CommandsManager()
         with nostderr():
             self.assertRaises(SystemExit, manager.parse, ['startproject'])
+            # test for invalid mode
+            self.assertRaises(SystemExit, manager.parse,
+                              ['startproject', 'PiCalc', '-m', 'x'])
 
         # test for invalid project name
         self.assertRaises(ValueError, manager.parse, ['startproject', '@$'])
-        self.assertRaises(ValueError, manager.parse, ['startproject', 'Pi Calc'])
+        self.assertRaises(ValueError, manager.parse,
+                          ['startproject', 'Pi Calc'])
 
         # test for generated project contents
         # create a project in a temporary current working dir
@@ -54,7 +58,7 @@ class KayleeCommandsManagerTests(KayleeTest):
             with open(os.path.join(tmpdir, fpath)) as f:
                 generated_file_contents = f.read()
             with open(os.path.join(RES_DIR, fpath)) as f:
-                ground_truth_file_contents = f.read()
+                ground_truth_file_contents = f.read().rstrip('\n')
 
             self.assertEqual(generated_file_contents,
                              ground_truth_file_contents)

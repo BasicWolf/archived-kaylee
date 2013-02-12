@@ -4,9 +4,9 @@ v0.3
 + Replace dummy controllers/storages with the very basic stuff from contrib.
   Make sure that all the contrib classes that are used in testsuite are
   also tested.
++ Project template and initialization routines
 * Kaylee Core management API
 * Uploading projects through management API
-* Project template and initialization routines
 * Default config instead of core.Config defaults
 * Config verification
 

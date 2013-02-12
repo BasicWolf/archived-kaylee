@@ -58,7 +58,10 @@ setup(
     long_description = open('README').read(),
     packages = packages,
     data_files = data_files,
-    scripts = ['kaylee/bin/kaylee-copy-client.py'],
+    scripts = [
+        'kaylee/bin/kaylee-copy-client.py',
+        'kaylee/bin/kaylee-admin',
+        ],
     zip_safe = False,
     platforms = 'any',
     install_requires=[

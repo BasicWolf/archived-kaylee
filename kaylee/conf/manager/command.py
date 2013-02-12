@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
 import argparse
 
 
@@ -43,7 +42,7 @@ class CommandsManager(object):
                                     type(cmd_cls).__name__))
         cmd_cls.add_sub_parser(self.sub_parsers)
 
-    def parse(self, argv):
+    def parse(self, argv=None):
         ns = self.parser.parse_args(argv)
         if 'handler' in ns:
             ns.handler(ns)
@@ -51,7 +50,7 @@ class CommandsManager(object):
 
 def execute_from_command_line():
     manager = CommandsManager()
-    manager.parse(sys.argv)
+    manager.parse()
 
 if __name__ == '__main__':
     main()
