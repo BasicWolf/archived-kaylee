@@ -83,7 +83,7 @@ class Kaylee(object):
         #: An internal configuration storage object which maintains
         #: the configuration initially parsed from ``**kwargs**``.
         #: The options are accessed as object attributes, e.g.:
-        #: ``kl.config.WORKER_SCRIPT_URL``.
+        #: ``kl.settings.SECRET_KEY``.
         self._config = Config(**kwargs)
 
         #: Active nodes registry (an instance of :class:`NodesRegistry`).
@@ -268,13 +268,6 @@ class Config(object):
         # first, set the options with default values
         self.AUTO_GET_ACTION = kwargs.get('AUTO_GET_ACTION', True)
         self.SECRET_KEY = kwargs.get('SECRET_KEY', None)
-
-        # next, set the options with required values
-        try:
-            self.WORKER_SCRIPT_URL = kwargs['WORKER_SCRIPT_URL']
-        except KeyError as e:
-            raise KeyError('The required config option is missing: {}'
-                           .format(e.args[0]))
 
     def __setattr__(self, name, value):
         if name != '_dirty':

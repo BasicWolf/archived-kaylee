@@ -3,13 +3,12 @@ import re
 import argparse
 import shutil
 from jinja2 import Template
-from kaylee.conf.manager import BaseCommand
-
+from kaylee.manager import LocalCommand
 
 
 VALID_NAME_RE = re.compile(r'^\w+$')
 
-PROJECT_TEMPLATE_DIR = 'project_template'
+PROJECT_TEMPLATE_DIR = 'templates/project_template'
 PROJECT_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__),
                                      PROJECT_TEMPLATE_DIR)
 
@@ -24,7 +23,7 @@ TEMPLATE_FILES = [
 ]
 
 
-class StartProjectCommand(BaseCommand):
+class StartProjectCommand(LocalCommand):
     name = 'startproject'
     help = 'Starts new Kaylee project'
 
@@ -66,6 +65,9 @@ class StartProjectCommand(BaseCommand):
             doc_path = os.path.join(dest_path, doc_fname)
             with open(doc_path, 'w') as f:
                 f.write(document_data)
+
+        print('Kaylee project has been successfully started.')
+
 
 def expand_project_mode_opt(opt):
     if opt == 'manual':

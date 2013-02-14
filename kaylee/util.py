@@ -110,13 +110,23 @@ class LazyObject(object):
     __dir__ = _new_method_proxy(dir)
 
 
-def random_string(length, **kwargs):
-    alphabet = kwargs.get('alphabet', None)
-    lowercase = kwargs.get('lowercase', True)
-    uppercase = kwargs.get('uppercase', True)
-    digits = kwargs.get('digits', True)
-    extra = kwargs.get('extra', '')
+class DictAsObjectWrapper(object):
+    def __init__(self, *args, **kwargs):
+        if len(args) > 1:
+            raise ValueError('Expecting a single dict argument or keywords')
+        if len(args) == 1:
+            d = args[0]
+        else:
+            d = {}
 
+        d.update(kwargs)
+
+        for key, val in d.iteritems():
+            setattr(self, key, val)
+
+
+def random_string(length, alphabet=None, lowercase=True, uppercase=True,
+                  digits=True, extra=''):
     if alphabet is None:
         src = extra
         if lowercase:
@@ -153,10 +163,17 @@ def is_strong_subclass(C, B):
 
 
 @contextlib.contextmanager
-def nostderr():
+def nostdout(stdout=True, stderr=True):
     savestderr = sys.stderr
+    savestdout = sys.stdout
     class Devnull(object):
         def write(self, _): pass
-    sys.stderr = Devnull()
+    if stdout:
+        sys.stdout = Devnull()
+    if stderr:
+        sys.stderr = Devnull()
+
     yield
+
+    sys.stdout = savestdout
     sys.stderr = savestderr
