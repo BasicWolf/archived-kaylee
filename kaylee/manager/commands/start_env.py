@@ -43,4 +43,4 @@ class StartEnvCommand(AdminCommand):
             with open(doc_path, 'w') as f:
                 f.write(document_data)
 
-        print('Kaylee environment has been successfully started.')
+        print('Kaylee environment has been successfully created.')

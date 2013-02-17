@@ -126,7 +126,7 @@ class DictAsObjectWrapper(object):
 
 
 def random_string(length, alphabet=None, lowercase=True, uppercase=True,
-                  digits=True, extra=''):
+                  digits=True, special=True, extra=''):
     if alphabet is None:
         src = extra
         if lowercase:
@@ -135,6 +135,8 @@ def random_string(length, alphabet=None, lowercase=True, uppercase=True,
             src += string.ascii_uppercase
         if digits:
             src += string.digits
+        if special:
+            src += '!@#$%^&*()_-+=?/><,.|":;`~'
     else:
         src = alphabet
     return ''.join(random.choice(src) for x in xrange(length))

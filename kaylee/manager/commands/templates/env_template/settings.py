@@ -3,15 +3,14 @@
 AUTO_GET_ACTION = True
 
 # An encrypion key used e.g. in session
-SECRET_KEY = {{ SECRET_KEY }}
-
+SECRET_KEY = "{{ SECRET_KEY }}"
 
 # Nodes registry configuration
 REGISTRY = {
-    'name' : 'MemoryNodesRegistry',
-    'config' : {
-        'timeout' : '30m'
-    },
+   'name' : 'MemoryNodesRegistry',
+   'config' : {
+       'timeout' : '30m'
+   },
 }
 
 # Session data manager configuration
