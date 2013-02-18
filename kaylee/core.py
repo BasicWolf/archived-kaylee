@@ -314,12 +314,3 @@ class Applications(object):
     def empty():
         return Applications([])
 
-
-# class ProjectsManager(object):
-
-#     zip = zipfile.ZipFile(destination+ff_name, 'w', zipfile.ZIP_DEFLATED)
-# rootlen = len(source) + 1
-# for base, dirs, files in os.walk(source):
-#     for file in files:
-#         fn = os.path.join(base, file)
-#         zip.write(fn, fn[rootlen:])

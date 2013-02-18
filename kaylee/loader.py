@@ -9,6 +9,8 @@
     :license: MIT, see LICENSE for more details.
 """
 
+# TODO: config -> settings
+
 import os
 import imp
 import importlib
@@ -106,10 +108,11 @@ def refresh(config):
     _update_classes(kaylee.contrib)
     # load session data managers
     _update_classes(kaylee.session)
+
     # load classes from project modules (refreshable for new modules only)
     if 'PROJECTS_DIR' in config:
-        path = config['PROJECTS_DIR']
-        for mod in _projects_modules(path):
+        projects_dir = config['PROJECTS_DIR']
+        for mod in _projects_modules(projects_dir):
             _update_classes(mod)
     else:
         log.warning('"PROJECTS_DIR" is not found in configuration."')

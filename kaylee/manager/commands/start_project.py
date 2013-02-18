@@ -18,8 +18,8 @@ TEMPLATE_FILES = [
     # e.g. ('client/project.coffee', 'client/{project_name}.coffee'),
 
     ('client/project.coffee', 'client/{project_name}.coffee'),
-    ('server/__init__.py', 'server/__init__.py'),
-    ('server/project.py', 'server/{project_name}.py'),
+    ('__init__.py', '__init__.py'),
+    ('project.py', '{project_name}.py'),
 ]
 
 
@@ -66,7 +66,8 @@ class StartProjectCommand(LocalCommand):
             with open(doc_path, 'w') as f:
                 f.write(document_data)
 
-        print('Kaylee project has been successfully started.')
+        print('Kaylee project "{}" has been successfully started.'.format(
+                ns.name))
 
 
 def expand_project_mode_opt(opt):

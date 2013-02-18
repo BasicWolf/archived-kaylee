@@ -36,13 +36,7 @@ from .errors import (KayleeError,
                      ApplicationCompletedError,)
 
 
-def setup(config):
+def setup(settings):
     #pylint: disable-msg=W0212
     #W0212: Access to a protected member _setup
-    if config is not None:
-        # In this case we are trying to load Kaylee from the given config
-        kl._setup(loader.load(config))
-    else:
-        # In this case the user probably(!) asks us to "release" Kaylee
-        # instance from the proxy.
-        kl._setup(None)
+    kl._setup(loader.load(settings))

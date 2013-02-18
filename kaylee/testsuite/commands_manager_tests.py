@@ -83,8 +83,8 @@ class KayleeCommandsManagerTests(KayleeTest):
 
         files_to_validate = [
             'pi_calc/client/pi_calc.coffee',
-            'pi_calc/server/__init__.py',
-            'pi_calc/server/pi_calc.py',
+            'pi_calc/__init__.py',
+            'pi_calc/pi_calc.py',
         ]
 
         for fpath in files_to_validate:

@@ -25,10 +25,11 @@ class StartEnvCommand(AdminCommand):
 
     @staticmethod
     def execute(ns):
-        secret_key = random_string(20)
+        secret_key = random_string(32)
 
         render_args = {
             'SECRET_KEY' : secret_key,
+            'PROJECTS_DIR' : os.getcwd(),
         }
 
         dest_path = os.path.join(os.getcwd(), ns.name)
@@ -43,4 +44,5 @@ class StartEnvCommand(AdminCommand):
             with open(doc_path, 'w') as f:
                 f.write(document_data)
 
-        print('Kaylee environment has been successfully created.')
+        print('Kaylee environment "{}" has been successfully created.'.format(
+                ns.name))
