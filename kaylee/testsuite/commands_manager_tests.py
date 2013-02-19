@@ -98,6 +98,10 @@ class KayleeCommandsManagerTests(KayleeTest):
 
         shutil.rmtree(tmpdir)
 
+    def test_run(self):
+        manager = LocalCommandsManager()
+        with nostdout():
+            self.assertRaises(SystemExit, manager.parse, ['run'])
 
 
 
