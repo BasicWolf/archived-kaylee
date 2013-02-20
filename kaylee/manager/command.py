@@ -3,6 +3,9 @@ import os
 import argparse
 
 
+import logging
+log = logging.getLogger(__name__)
+
 class BaseCommand(object):
     #: Command help text
     name = ''
@@ -57,7 +60,11 @@ class CommandsManager(object):
 
     @classmethod
     def execute_from_command_line(cls):
-        cls().parse()
+        try:
+            cls().parse()
+        except Exception as e:
+            log.error(e)
+            sys.exit(1)
 
 
 class AdminCommandsManager(CommandsManager):
@@ -70,5 +77,3 @@ class LocalCommandsManager(CommandsManager):
     command_class = LocalCommand
 
 
-if __name__ == '__main__':
-    main()

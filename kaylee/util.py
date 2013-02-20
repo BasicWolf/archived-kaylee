@@ -13,12 +13,14 @@
 #W0212: Access to a protected member _wrapped of a client class
 ###
 
+import os
 import re
 import sys
 import random
 import string
 import importlib
 import contextlib
+import imp
 from datetime import timedelta
 
 from .errors import KayleeError
@@ -179,3 +181,9 @@ def nostdout(stdout=True, stderr=True):
 
     sys.stdout = savestdout
     sys.stderr = savestderr
+
+
+def fwalk(path):
+    for root, dirs, files in os.walk(client_dir):
+        for fname in files:
+            yield os.path.join(root, fname)

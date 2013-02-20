@@ -85,29 +85,43 @@ class KayleeUtilTests(KayleeTest):
         s = random_string(10, alphabet='a')
         self.assertEqual(s, 'a'*10)
 
+
+        # create sets for less resource-demanding testing
+        _string_digits = set(string.digits)
+        _string_ascii_uppercase = set(string.ascii_uppercase)
+        _string_ascii_lowercase = set(string.ascii_lowercase)
         # test other arguments
-        s = random_string(30, uppercase=False, lowercase=False)
+        s = random_string(1000, uppercase=False, lowercase=False, special=False)
         for c in s:
-            self.assertIn(c, string.digits)
+            self.assertIn(c, _string_digits)
 
-        s = random_string(30, lowercase=False, digits=False)
+        s = random_string(1000, lowercase=False, digits=False, special=False)
         for c in s:
-            self.assertIn(c, string.ascii_uppercase)
+            self.assertIn(c, _string_ascii_uppercase)
 
-        s = random_string(30, uppercase=False, digits=False)
+        s = random_string(1000, uppercase=False, digits=False, special=False)
         for c in s:
-            self.assertIn(c, string.ascii_lowercase)
+            self.assertIn(c, _string_ascii_lowercase)
 
         # test 'extra' argument
-        s = random_string(30, uppercase=False, lowercase=False, digits=False,
-                          extra='123')
+        extra = set('123')
+        s = random_string(1000, uppercase=False, lowercase=False, digits=False,
+                          special=False, extra=''.join(extra))
         for c in s:
-            self.assertIn(c, '123')
+            self.assertIn(c, extra)
 
-        extra = '1234567890'
-        s = random_string(1000, uppercase=False, digits=False, extra=extra)
+        extra = set('1234567890')
+        s = random_string(1000, uppercase=False, digits=False, special=False,
+                          extra=''.join(extra))
+        check_set = _string_ascii_lowercase.union(extra)
         for c in s:
-            self.assertIn(c, string.ascii_lowercase + extra)
+            self.assertIn(c, check_set)
+
+        special = set('!@#$%^&*()_-+=?/><,.|":;`~')
+        s = random_string(1000, lowercase=False, uppercase=False, digits=False)
+        for c in s:
+            self.assertIn(c, special)
+
 
     def test_get_secret_key(self):
         sk = get_secret_key('abc')

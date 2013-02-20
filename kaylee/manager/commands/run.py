@@ -4,9 +4,6 @@ import sys
 from kaylee.server import run
 from kaylee.manager import LocalCommand
 
-import logging
-log = logging.getLogger(__name__)
-
 
 class RunCommand(LocalCommand):
     name = 'run'

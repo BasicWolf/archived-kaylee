@@ -10,6 +10,8 @@
 """
 
 # TODO: config -> settings
+# TODO: refactor the whole thing and make a class out of it.
+# TODO: refactor _projects_modules
 
 import os
 import imp
@@ -63,7 +65,8 @@ def load(config):
     """
     # check if python module path
     if isinstance(config, basestring):
-        config = imp.load_source('kl_config', config)
+        if os.path.exists(config):
+            config = imp.load_source('kl_config', config)
     if isinstance(config, (type, types.ModuleType)):
         # convert to dict
         d = {}
@@ -108,14 +111,10 @@ def refresh(config):
     _update_classes(kaylee.contrib)
     # load session data managers
     _update_classes(kaylee.session)
-
     # load classes from project modules (refreshable for new modules only)
-    if 'PROJECTS_DIR' in config:
-        projects_dir = config['PROJECTS_DIR']
-        for mod in _projects_modules(projects_dir):
-            _update_classes(mod)
-    else:
-        log.warning('"PROJECTS_DIR" is not found in configuration."')
+    projects_dir = config['PROJECTS_DIR']
+    for mod in _projects_modules(projects_dir):
+        _update_classes(mod)
 
 
 def load_registry(config):
@@ -158,25 +157,18 @@ def load_applications(config):
 
 def _projects_modules(path):
     """A generator which yields python modules found by given path."""
-    for sub_dir in os.listdir(path):
-        pdir_path = os.path.join(path, sub_dir)
-        if not os.path.isdir(pdir_path):
-            continue
-        if '__init__.py' not in os.listdir(pdir_path):
-            continue
-
-        # looks like a python module
+    for package_name in find_packages(path):
         try:
-            pymod = importlib.import_module(sub_dir)
+            pymod = importlib.import_module(package_name)
             yield pymod
         except ImportError as e:
             log.error('Unable to import project package "{}": {}'
-                      .format(sub_dir, e))
+                      .format(package_name, e))
 
 
 def _update_classes(module):
     """Updates the global _classes variable by the classes found in module."""
-    classes_from_module = _get_classes_from_module(module)
+    classes_from_module = get_classes_from_module(module)
     for base_class in _loadable_base_classes:
         # update _classes[base_class] with
         # { class_name : class } pairs, where `class` is a subclass of
@@ -186,9 +178,18 @@ def _update_classes(module):
         _classes[base_class].update(name_class_pairs)
 
 
-def _get_classes_from_module(module):
+def get_classes_from_module(module):
     return [attr for attr in module.__dict__.values()
             if inspect.isclass(attr)]
+
+def find_packages(path):
+    for sub_dir in os.listdir(path):
+        pdir_path = os.path.join(path, sub_dir)
+        if not os.path.isdir(pdir_path):
+            continue
+        if '__init__.py' not in os.listdir(pdir_path):
+            continue
+        yield sub_dir
 
 
 def _load_permanent_storage(conf):
