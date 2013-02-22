@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
 import argparse
-
 
 import logging
 log = logging.getLogger(__name__)
+
 
 class BaseCommand(object):
     #: Command help text
@@ -60,11 +61,13 @@ class CommandsManager(object):
 
     @classmethod
     def execute_from_command_line(cls):
-        try:
-            cls().parse()
-        except Exception as e:
-            log.error(e)
-            sys.exit(1)
+        setup_logging()
+        cls().parse()
+        # try:
+        #     cls().parse()
+        # except Exception as e:
+        #     log.error(e)
+        #     sys.exit(1)
 
 
 class AdminCommandsManager(CommandsManager):
@@ -75,5 +78,9 @@ class AdminCommandsManager(CommandsManager):
 class LocalCommandsManager(CommandsManager):
     help = 'Kaylee local environment manager'
     command_class = LocalCommand
+
+
+def setup_logging():
+    logging.basicConfig(level=logging.DEBUG)
 
 

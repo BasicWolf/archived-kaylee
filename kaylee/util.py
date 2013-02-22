@@ -22,8 +22,10 @@ import importlib
 import contextlib
 import imp
 from datetime import timedelta
-
 from .errors import KayleeError
+
+import logging
+
 
 def parse_timedelta(s):
     try:
@@ -183,7 +185,9 @@ def nostdout(stdout=True, stderr=True):
     sys.stderr = savestderr
 
 
-def fwalk(path):
-    for root, dirs, files in os.walk(client_dir):
-        for fname in files:
-            yield os.path.join(root, fname)
+def ensure_dir(path):
+    try:
+        os.makedirs(path)
+    except OSError:
+        if not os.path.isdir(path):
+            raise

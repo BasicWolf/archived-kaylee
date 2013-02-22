@@ -50,7 +50,7 @@ def get_build_dir():
     return '/'
 
 def setup_logging():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
 
 if __name__ == '__main__':
