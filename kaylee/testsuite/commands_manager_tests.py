@@ -2,14 +2,19 @@
 import os
 import tempfile
 import shutil
+import imp
 
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.manager import (AdminCommandsManager, LocalCommandsManager,
                             BaseCommand)
 from kaylee.util import nostdout
 
+_pjoin = os.path.join
+
 CURRENT_DIR = os.path.dirname(__file__)
-RES_DIR = os.path.join(CURRENT_DIR, 'command_manager_tests_resources/')
+RES_DIR = _pjoin(CURRENT_DIR, 'command_manager_tests_resources/')
+
+
 
 def tmp_chdir():
     tmpdir = tempfile.mkdtemp(prefix='kl_')
@@ -53,14 +58,22 @@ class KayleeCommandsManagerTests(KayleeTest):
         with nostdout():
             manager.parse(['startenv', 'klenv'])
 
+        # test whether files exist
         files_to_validate = [
             'klenv/klmanage.py',
             'klenv/settings.py',
         ]
 
         for fpath in files_to_validate:
-            full_path = os.path.join(tmpdir, fpath)
+            full_path = _pjoin(tmpdir, fpath)
             self.assertGreater(os.path.getsize(full_path), 0)
+
+        # test settings contents
+        settings_path = _pjoin(tmpdir, 'klenv/settings.py')
+        settings = imp.load_source('tsettings', settings_path)
+        self.assertEqual(settings.PROJECTS_DIR,
+                         _pjoin(tmpdir, 'klenv'))
+
 
     def test_start_project(self):
         manager = LocalCommandsManager()
@@ -88,15 +101,50 @@ class KayleeCommandsManagerTests(KayleeTest):
         ]
 
         for fpath in files_to_validate:
-            with open(os.path.join(tmpdir, fpath)) as f:
+            with open(_pjoin(tmpdir, fpath)) as f:
                 generated_file_contents = f.read()
-            with open(os.path.join(RES_DIR, fpath)) as f:
+            with open(_pjoin(RES_DIR, fpath)) as f:
                 ground_truth_file_contents = f.read().rstrip('\n')
 
             self.assertEqual(generated_file_contents,
                              ground_truth_file_contents)
 
         shutil.rmtree(tmpdir)
+
+    def test_build(self):
+        amanager = AdminCommandsManager()
+        lmanager = LocalCommandsManager()
+
+        tmpdir = tmp_chdir()
+
+        with nostdout():
+            amanager.parse(['startenv', 'tenv'])
+            lmanager.parse(['startproject', 'Pi_Calc'])
+
+        # copy a ready test 'pi calc' project to the environment
+        shutil.copytree(_pjoin(RES_DIR, 'pi_calc'),
+                        _pjoin(tmpdir, 'tenv'))
+
+        files_to_validate = [
+            'js/pi_calc.js',
+            'css/pi_calc.css',
+            'css/other.css'
+            'js/somelib.js',
+            'js/otherlib.js',
+            'data/somelib.dat',
+            'data/atheist'
+        ]
+
+        with nostdout():
+            lmanager.parse(['build'])
+
+        for fname in files_to_validate:
+            fpath = os.path.join(tmpdir, '_build', fname)
+            self.assertTrue(os.path.exists(fpath))
+
+        shutil.rmtree(tmpdir)
+
+
 
     def test_run(self):
         manager = LocalCommandsManager()

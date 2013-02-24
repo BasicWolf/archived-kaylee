@@ -10,7 +10,7 @@ from kaylee.loader import find_packages
 from kaylee.util import ensure_dir
 
 
-def coffee_handler(fpath, build_dir):
+def coffee_handler(fpath, cmd_opts):
     if not fpath.endswith('.coffee'):
         return False
 
@@ -26,11 +26,38 @@ def coffee_handler(fpath, build_dir):
         raise Exception('Error compiling .coffee script:\n{}'
                         .format(stderrdata))
 
-    dest_dir = os.path.join(build_dir, 'js')
+    dest_dir = os.path.join(cmd_opts.dest_dir, 'js')
     ensure_dir(dest_dir)
     outpath = fpath.rstrip('.coffee') + '.js'
-    shutil.copy(outpath, dest_dir)
+    shutil.move(outpath, dest_dir)
+    return True
 
+
+def script_handler(fpath, cmd_opts):
+    if not fpath.endswith('.js'):
+        return False
+
+    dest_dir = os.path.join(cmd_opts.dest_dir, 'js')
+    ensure_dir(dest_dir)
+    shutil.copy(fpath, dest_dir)
+    return True
+
+
+def stylesheet_handler(fpath, cmd_opts):
+    if not fpath.endswith('.css'):
+        return False
+
+    dest_dir = os.path.join(cmd_opts.dest_dir, 'css')
+    ensure_dir(dest_dir)
+    shutil.copy(fpath, dest_dir)
+    return True
+
+
+def data_handler(fpath, cmd_opts):
+    dest_dir = os.path.join(cmd_opts.dest_dir, 'data')
+    ensure_dir(dest_dir)
+    shutil.copy(fpath, dest_dir)
+    return True
 
 
 class BuildCommand(LocalCommand):
@@ -62,15 +89,16 @@ class BuildCommand(LocalCommand):
 
         filetype_handlers = [
             coffee_handler,
-            # script_handler,
-            # stylesheet_handler,
-            # data_handler,
+            script_handler,
+            stylesheet_handler,
+            data_handler,
         ]
 
         # os.walk for files with by-extension sorting
         def _fwalk(path):
+            sort_key = lambda fname: fname.rsplit()[-1]
             for root, dirs, files in os.walk(path):
-                for fname in sorted(files, key=lambda fname: fname.rsplit()[-1]):
+                for fname in sorted(files, key=sort_key):
                     yield os.path.join(root, fname)
 
         for pkg_dir in find_packages(settings.PROJECTS_DIR):
@@ -80,14 +108,7 @@ class BuildCommand(LocalCommand):
 
             for fpath in _fwalk(client_dir):
                 for handler in filetype_handlers:
-                    build_dir = os.path.join(ns.build_dir, pkg_dir)
-                    if handler(fpath, build_dir) == True:
+                    dest_dir = os.path.join(ns.build_dir, pkg_dir)
+                    ns.dest_dir = dest_dir
+                    if handler(fpath, ns) == True:
                         break
-
-        # 3. Build the client as follows:
-        #    os.walk() the client dir
-        #    for each coffee file - compile it
-        #    move every file to corresponding directory
-        #    e.g. '.js' to 'js', '.css' to 'css', '.png/.jpg/etc.' to 'img'
-        #       the rest - move to 'data'. Make sure that these options are
-        #       configurable through command-line.

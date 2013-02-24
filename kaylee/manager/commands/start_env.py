@@ -27,13 +27,13 @@ class StartEnvCommand(AdminCommand):
     def execute(ns):
         secret_key = random_string(32)
 
-        render_args = {
-            'SECRET_KEY' : secret_key,
-            'PROJECTS_DIR' : os.getcwd(),
-        }
-
         dest_path = os.path.join(os.getcwd(), ns.name)
         shutil.copytree(ENV_TEMPLATE_PATH, dest_path)
+
+        render_args = {
+            'SECRET_KEY' : secret_key,
+            'PROJECTS_DIR' : dest_path,
+        }
 
         for fname in TEMPLATE_FILES:
             template_path = os.path.join(dest_path, fname)
