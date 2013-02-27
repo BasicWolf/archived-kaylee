@@ -23,6 +23,7 @@ class BuildCommand(LocalCommand):
     def execute(opts):
         verify_settings(opts)
         verify_build_dir(opts)
+
         print('Building Kaylee environment...')
         settings = imp.load_source('settings', opts.settings_file)
         build_kaylee(settings, opts)
@@ -41,6 +42,59 @@ def verify_build_dir(opts):
     except OSError as e:
         raise OSError('Failed to create build directory {}: {}'
                       .format(opts.build_dir, e))
+
+
+def build_kaylee(settings, opts):
+    print('Copying Kaylee test server files...')
+    KLCL_TEMPLATE_DIR = 'templates/build_template'
+    KLCL_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__),
+                                      KLCL_TEMPLATE_DIR)
+    TEMPLATE_FILES = [
+        ('klconsole.js', 'kaylee/js/klconsole.js'),
+        ('kldemo.js', 'kaylee/js/kldemo.js'),
+        ('index.html', 'index.html'),
+    ]
+
+    dest_path = os.path.join(os.getcwd(), opts.build_dir)
+    ensure_dir(os.path.join(dest_path, 'kaylee/js'))
+    for fname, out_fname in TEMPLATE_FILES:
+        fpath = os.path.join(KLCL_TEMPLATE_PATH, fname)
+        dest_fpath = os.path.join(dest_path, out_fname)
+        shutil.copy(fpath, dest_fpath)
+
+
+def build_projects(settings, opts):
+    filetype_handlers = [
+        coffee_handler,
+        script_handler,
+        stylesheet_handler,
+        data_handler,
+    ]
+
+    # os.walk for files with by-extension sorting
+    def _fwalk(path):
+        sort_key = lambda fname: fname.rsplit()[-1]
+        for root, dirs, files in os.walk(path):
+            for fname in sorted(files, key=sort_key):
+                yield os.path.join(root, fname)
+
+    for pkg_dir in find_packages(settings.PROJECTS_DIR):
+        client_dir = os.path.join(pkg_dir, 'client')
+        if not os.path.isdir(client_dir):
+            break
+
+        print('Building {}...'.format(pkg_dir))
+        dest_dir = os.path.join(opts.build_dir, pkg_dir)
+        opts.dest_dir = dest_dir
+        # clear destination directory before building
+        if os.path.isdir(dest_dir):
+            shutil.rmtree(dest_dir)
+        # build project client by applying appropriate
+        # file handlers
+        for fpath in _fwalk(client_dir):
+            for handler in filetype_handlers:
+                if handler(fpath, opts) == True:
+                    break
 
 
 def coffee_handler(fpath, opts):
@@ -92,54 +146,3 @@ def data_handler(fpath, opts):
     shutil.copy(fpath, dest_dir)
     return True
 
-
-def build_kaylee(settings, opts):
-    KLCL_TEMPLATE_DIR = 'templates/build_template'
-    KLCL_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__),
-                                      KLCL_TEMPLATE_DIR)
-    TEMPLATE_FILES = [
-        ('klconsole.js', 'js/klconsole.js'),
-        ('kldemo.js', 'js/kldemo.js'),
-        ('index.html', 'index.html'),
-    ]
-
-    dest_path = os.path.join(os.getcwd(), opts.build_dir)
-    ensure_dir(os.path.join(dest_path, 'js'))
-    for fname, out_fname in TEMPLATE_FILES:
-        fpath = os.path.join(KLCL_TEMPLATE_PATH, fname)
-        dest_fpath = os.path.join(dest_path, out_fname)
-        shutil.copy(fpath, dest_fpath)
-
-
-def build_projects(settings, opts):
-    filetype_handlers = [
-        coffee_handler,
-        script_handler,
-        stylesheet_handler,
-        data_handler,
-    ]
-
-    # os.walk for files with by-extension sorting
-    def _fwalk(path):
-        sort_key = lambda fname: fname.rsplit()[-1]
-        for root, dirs, files in os.walk(path):
-            for fname in sorted(files, key=sort_key):
-                yield os.path.join(root, fname)
-
-    for pkg_dir in find_packages(settings.PROJECTS_DIR):
-        client_dir = os.path.join(pkg_dir, 'client')
-        if not os.path.isdir(client_dir):
-            break
-
-        print('Building {}...'.format(pkg_dir))
-        dest_dir = os.path.join(opts.build_dir, pkg_dir)
-        opts.dest_dir = dest_dir
-        # clear destination directory before building
-        if os.path.isdir(dest_dir):
-            shutil.rmtree(dest_dir)
-        # build project client by applying appropriate
-        # file handlers
-        for fpath in _fwalk(client_dir):
-            for handler in filetype_handlers:
-                if handler(fpath, opts) == True:
-                    break
