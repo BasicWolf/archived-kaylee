@@ -15,19 +15,28 @@ class RunCommand(LocalCommand):
     }
 
     @staticmethod
-    def execute(ns):
-        print('Launching Kaylee development/testing server...')
+    def execute(opts):
+        validate_settings_file()
+        validate_build_dir()
 
-        if not os.path.exists(ns.settings_file):
-            print('Cannot find the settings file "{}"'.format(
-                ns.settings_file), file=sys.stderr)
-            sys.exit(2)
+        run_dev_server(opts)
 
-        if not os.path.exists(ns.build_dir):
-            print('Cannot find build directory "{}". \nHave you forgotten '
-                  'building the environment? \nIf not, please specify with'
-                  ' -b or --build-dir.'.format(ns.build_dir),
-                  file=sys.stderr)
-            sys.exit(2)
 
-        run(ns.settings_file, ns.build_dir)
+def validate_settings_file(opts):
+    if not os.path.exists(ns.settings_file):
+        raise OSError('Cannot find the settings file "{}"'
+                      .format(opts.settings_file))
+
+
+def validate_build_dir(opts):
+    if not os.path.exists(opts.build_dir):
+        raise OSError (
+            'Cannot find build directory "{}". \n'
+            'Have you forgotten building the environment? \n'
+            'If not, please specify with -b or --build-dir.'
+            .format(ns.build_dir))
+
+
+def run_dev_server(opts):
+    print('Launching Kaylee development/testing server...')
+    run(ns.settings_file, ns.build_dir)

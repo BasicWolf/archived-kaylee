@@ -8,24 +8,30 @@ from werkzeug.wrappers import Request, Response
 from werkzeug.exceptions import HTTPException, NotFound
 from werkzeug.wsgi import SharedDataMiddleware
 from werkzeug.utils import redirect
+from werkzeug.routing import Rule
 
-from kaylee.contrib.frontends.werkzeug_frontend import url_map
+from kaylee.contrib.frontends.werkzeug_frontend import url_map as urls
 
 
 log = logging.getLogger(__name__)
 
 @Request.application
 def application(request):
-    adapter = url_map.bind_to_environ(request.environ)
+    adapter = urls.bind_to_environ(request.environ)
     try:
         endpoint, values = adapter.match()
         endpoint(**values)
     except HTTPException as e:
         return e
 
+def home():
+    pass
 
 def run(settings_file, static_dir):
     setup_logging()
+
+    home_rule = Rule('/', methods=['GET'], endpoint=home)
+    urls.add(home_rule)
 
     # setup Kaylee
     import kaylee

@@ -116,35 +116,33 @@ class KayleeCommandsManagerTests(KayleeTest):
         lmanager = LocalCommandsManager()
 
         tmpdir = tmp_chdir()
+        envdir = os.path.abspath(_pjoin(tmpdir, 'tenv'))
 
         with nostdout():
             amanager.parse(['startenv', 'tenv'])
-            lmanager.parse(['startproject', 'Pi_Calc'])
 
         # copy a ready test 'pi calc' project to the environment
         shutil.copytree(_pjoin(RES_DIR, 'pi_calc'),
-                        _pjoin(tmpdir, 'tenv'))
+                        _pjoin(envdir, 'pi_calc'))
 
         files_to_validate = [
             'js/pi_calc.js',
             'css/pi_calc.css',
-            'css/other.css'
+            'css/other.css',
             'js/somelib.js',
             'js/otherlib.js',
-            'data/somelib.dat',
-            'data/atheist'
+            'data/somedata.dat',
+            'data/otherdata',
         ]
 
+        os.chdir(envdir)
         with nostdout():
             lmanager.parse(['build'])
 
+        builddir = os.path.join(envdir, '_build')
         for fname in files_to_validate:
-            fpath = os.path.join(tmpdir, '_build', fname)
+            fpath = os.path.join(builddir, 'pi_calc', fname)
             self.assertTrue(os.path.exists(fpath))
-
-        shutil.rmtree(tmpdir)
-
-
 
     def test_run(self):
         manager = LocalCommandsManager()

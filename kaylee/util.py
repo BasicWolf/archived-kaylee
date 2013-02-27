@@ -191,3 +191,4 @@ def ensure_dir(path):
     except OSError:
         if not os.path.isdir(path):
             raise
+
