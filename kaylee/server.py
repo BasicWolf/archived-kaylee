@@ -11,17 +11,19 @@ from werkzeug.routing import Rule
 from werkzeug.serving import run_simple
 
 import kaylee
-from kaylee.contrib.frontends.werkzeug_frontend import url_map as urls
+from kaylee.contrib.frontends.werkzeug_frontend import make_url_map
 
 import logging
 log = logging.getLogger(__name__)
 
+url_map = make_url_map(prefix='/kaylee')
+
 @Request.application
 def application(request):
-    adapter = urls.bind_to_environ(request.environ)
+    adapter = url_map.bind_to_environ(request.environ)
     try:
         endpoint, values = adapter.match()
-        return endpoint(**values)
+        return endpoint(request, **values)
     except HTTPException as e:
         return e
 
@@ -33,10 +35,10 @@ def run(settings_file, static_dir):
     # index.html at 'http://server.address/' URL
     with open(os.path.join(static_dir, 'index.html')) as f:
         index_data = f.read()
-    def _home():
+    def _home(request):
         return Response(index_data, mimetype='text/html')
     home_rule = Rule('/', methods=['GET'], endpoint=_home)
-    urls.add(home_rule)
+    url_map.add(home_rule)
 
     log.debug(static_dir)
     # add static data middleware and start the server
