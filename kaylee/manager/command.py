@@ -63,11 +63,12 @@ class CommandsManager(object):
     def execute_from_command_line(cls):
         setup_logging()
         cls().parse()
+
         # try:
         #     cls().parse()
         # except Exception as e:
-        #     log.error(e)
-        #     sys.exit(1)
+        #     print(e)
+        #     raise SystemExit(1)
 
 
 class AdminCommandsManager(CommandsManager):

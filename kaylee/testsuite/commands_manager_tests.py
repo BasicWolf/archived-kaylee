@@ -112,20 +112,19 @@ class KayleeCommandsManagerTests(KayleeTest):
         shutil.rmtree(tmpdir)
 
     def test_build(self):
-        amanager = AdminCommandsManager()
         lmanager = LocalCommandsManager()
-
-        tmpdir = tmp_chdir()
-        envdir = os.path.abspath(_pjoin(tmpdir, 'tenv'))
-
-        with nostdout():
-            amanager.parse(['startenv', 'tenv'])
+        env_path = _start_env()
+        os.chdir(env_path)
 
         # copy a ready test 'pi calc' project to the environment
         shutil.copytree(_pjoin(RES_DIR, 'pi_calc'),
-                        _pjoin(envdir, 'pi_calc'))
+                        _pjoin(env_path, 'pi_calc'))
 
-        files_to_validate = [
+        with nostdout():
+            lmanager.parse(['build'])
+
+        build_path = os.path.join(env_path, '_build')
+        project_files_to_validate = [
             'js/pi_calc.js',
             'css/pi_calc.css',
             'css/other.css',
@@ -134,20 +133,40 @@ class KayleeCommandsManagerTests(KayleeTest):
             'data/somedata.dat',
             'data/otherdata',
         ]
-
-        os.chdir(envdir)
-        with nostdout():
-            lmanager.parse(['build'])
-
-        builddir = os.path.join(envdir, '_build')
-        for fname in files_to_validate:
-            fpath = os.path.join(builddir, 'pi_calc', fname)
+        for fname in project_files_to_validate:
+            fpath = os.path.join(build_path, 'pi_calc', fname)
             self.assertTrue(os.path.exists(fpath))
 
+        kaylee_files_to_validate = [
+            'js/kaylee.js',
+            'js/klworker.js',
+            'js/kldemo.js',
+            'js/jquery.min.js',
+            'css/kldemo.css'
+        ]
+        for fname in kaylee_files_to_validate:
+            fpath = os.path.join(build_path, 'kaylee', fname)
+            self.assertTrue(os.path.exists(fpath))
+
+
     def test_run(self):
-        manager = LocalCommandsManager()
+        env_path = _start_env()
+        os.chdir(env_path)
+        lmanager = LocalCommandsManager()
+
         with nostdout():
-            self.assertRaises(SystemExit, manager.parse, ['run'])
+            self.assertRaises(OSError, lmanager.parse, ['run'])
+
+
+def _start_env(name='tenv'):
+    amanager = AdminCommandsManager()
+
+    tmpdir = tmp_chdir()
+    env_path = os.path.abspath(_pjoin(tmpdir, name))
+
+    with nostdout():
+        amanager.parse(['startenv', 'tenv'])
+    return env_path
 
 
 

@@ -4,6 +4,7 @@ import sys
 import imp
 import subprocess
 import shutil
+import kaylee
 from kaylee import Project
 from kaylee.manager import LocalCommand
 from kaylee.loader import find_packages
@@ -45,18 +46,34 @@ def verify_build_dir(opts):
 
 
 def build_kaylee(settings, opts):
-    print('Copying Kaylee test server files...')
+    print('* Copying Kaylee test server files...')
     KLCL_TEMPLATE_DIR = 'templates/build_template'
     KLCL_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__),
                                       KLCL_TEMPLATE_DIR)
+
+    KLCL_CLIENT_PATH = os.path.join(os.path.dirname(kaylee.__file__),
+                                    'client')
+    CLIENT_FILES = [
+        ('kaylee.js', 'kaylee/js/kaylee.js'),
+        ('klworker.js', 'kaylee/js/klworker.js'),
+    ]
+
     TEMPLATE_FILES = [
-        ('klconsole.js', 'kaylee/js/klconsole.js'),
-        ('kldemo.js', 'kaylee/js/kldemo.js'),
+        ('css/kldemo.css', 'kaylee/css/kldemo.css'),
+        ('js/kldemo.js', 'kaylee/js/kldemo.js'),
+        ('js/jquery.min.js', 'kaylee/js/jquery.min.js'),
         ('index.html', 'index.html'),
     ]
 
     dest_path = os.path.join(os.getcwd(), opts.build_dir)
     ensure_dir(os.path.join(dest_path, 'kaylee/js'))
+    ensure_dir(os.path.join(dest_path, 'kaylee/css'))
+
+    for fname, out_fname in CLIENT_FILES:
+        fpath = os.path.join(KLCL_CLIENT_PATH, fname)
+        dest_fpath = os.path.join(dest_path, out_fname)
+        shutil.copy(fpath, dest_fpath)
+
     for fname, out_fname in TEMPLATE_FILES:
         fpath = os.path.join(KLCL_TEMPLATE_PATH, fname)
         dest_fpath = os.path.join(dest_path, out_fname)
@@ -83,7 +100,7 @@ def build_projects(settings, opts):
         if not os.path.isdir(client_dir):
             break
 
-        print('Building {}...'.format(pkg_dir))
+        print('* Building {}...'.format(pkg_dir))
         dest_dir = os.path.join(opts.build_dir, pkg_dir)
         opts.dest_dir = dest_dir
         # clear destination directory before building
@@ -102,7 +119,6 @@ def coffee_handler(fpath, opts):
         return False
 
     args = ['coffee', '--bare', '-c', fpath]
-    print(' '.join(args))
     proc = subprocess.Popen(args,
                             close_fds=True,
                             stdin=subprocess.PIPE,
@@ -145,4 +161,3 @@ def data_handler(fpath, opts):
     ensure_dir(dest_dir)
     shutil.copy(fpath, dest_dir)
     return True
-

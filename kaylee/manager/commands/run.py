@@ -16,14 +16,14 @@ class RunCommand(LocalCommand):
 
     @staticmethod
     def execute(opts):
-        validate_settings_file()
-        validate_build_dir()
+        validate_settings_file(opts)
+        validate_build_dir(opts)
 
         run_dev_server(opts)
 
 
 def validate_settings_file(opts):
-    if not os.path.exists(ns.settings_file):
+    if not os.path.exists(opts.settings_file):
         raise OSError('Cannot find the settings file "{}"'
                       .format(opts.settings_file))
 
@@ -34,9 +34,9 @@ def validate_build_dir(opts):
             'Cannot find build directory "{}". \n'
             'Have you forgotten building the environment? \n'
             'If not, please specify with -b or --build-dir.'
-            .format(ns.build_dir))
+            .format(opts.build_dir))
 
 
 def run_dev_server(opts):
     print('Launching Kaylee development/testing server...')
-    run(ns.settings_file, ns.build_dir)
+    run(opts.settings_file, opts.build_dir)
