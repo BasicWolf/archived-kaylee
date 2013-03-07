@@ -17,7 +17,7 @@ RES_DIR = _pjoin(CURRENT_DIR, 'command_manager_tests_resources/')
 
 
 def tmp_chdir():
-    tmpdir = tempfile.mkdtemp(prefix='kl_')
+    tmpdir = tempfile.mkdtemp(prefix='kl_unit_test__')
     os.chdir(tmpdir)
     return tmpdir
 
@@ -28,6 +28,12 @@ class KayleeCommandsManagerTests(KayleeTest):
 
     class CommandWithBlankName(BaseCommand):
         name = ''
+
+    def tearDown(self):
+        tmpdir = tempfile.gettempdir()
+        for tdir in os.listdir(tmpdir):
+            if tdir.startswith('kl_unit_test__'):
+                shutil.rmtree(os.path.join(tmpdir, tdir))
 
     def test_init(self):
         manager = AdminCommandsManager()
@@ -108,8 +114,6 @@ class KayleeCommandsManagerTests(KayleeTest):
 
             self.assertEqual(generated_file_contents,
                              ground_truth_file_contents)
-
-        shutil.rmtree(tmpdir)
 
     def test_build(self):
         lmanager = LocalCommandsManager()

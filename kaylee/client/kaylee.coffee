@@ -18,7 +18,22 @@
 #     subscribed : false
 #     task  : null # current task data
 
+# CONSTANTS #
+#-----------#
 SESSION_DATA_ATTRIBUTE = '__kl_sd__'
+
+WORKER_SCRIPT_URL = ((scripts) ->
+    scripts = document.getElementsByTagName('script')
+    script = scripts[scripts.length - 1]
+
+    if not script.getAttribute.length?
+        path = script.src
+
+    # replace 'http://address/kaylee.js' with 'http://address/klworker.js'
+    path = script.getAttribute('src', -1)
+    return path[..path.lastIndexOf('/')] + 'klworker.js'
+)()
+
 
 kl._app = null
 
@@ -58,38 +73,38 @@ kl.register = () ->
 
 kl.subscribe = (name) ->
     kl._app = {
-        # data
+        ## data
         name : name
         config  : null
-        mode    : null       # a shortcut to config.__kl_project_mode__
+        mode    : null # a shortcut to config.__kl_project_mode__
         worker  : null
         subscribed : false
-        task : null     # current task data
+        task : null # current task data
 
-        # functions
-        process_task   : null
+        ## functions
+        # assigned when project is being imported
+        process_task   : () -> ;
     }
     kl.api.subscribe(name)
     return
 
 kl.get_action = () ->
-    if kl._app.subscribed
+    if kl._app.subscribed == true
         kl.api.get_action()
     return
 
 kl.send_result = (data) ->
-    if kl._app.subscribed
-        if not data?
-            kl.error('Cannot send data: the value is empty.')
-        if typeof(data) != 'object'
-            kl.error('The returned result is not a JS object.')
-        # before sending the result, check whether app.task contains
-        # session data and attach it
-        if SESSION_DATA_ATTRIBUTE of kl._app.task
-            data[SESSION_DATA_ATTRIBUTE] = \
-                kl._app.task[SESSION_DATA_ATTRIBUTE]
-        kl.api.send_result(data)
-        kl._app.task = null
+    if not data?
+        kl.error('Cannot send data: the value is empty.')
+    if typeof(data) != 'object'
+        kl.error('The returned result is not a JS object.')
+    # before sending the result, check whether app.task contains
+    # session data and attach it
+    if SESSION_DATA_ATTRIBUTE of kl._app.task
+        data[SESSION_DATA_ATTRIBUTE] = \
+            kl._app.task[SESSION_DATA_ATTRIBUTE]
+    kl.api.send_result(data)
+    kl._app.task = null
     return
 
 kl._message_to_worker = (msg, data = {}) ->
@@ -99,7 +114,7 @@ kl._message_to_worker = (msg, data = {}) ->
 kl._preliminary_server_error_handler = (err) ->
     switch(err)
         when 'INVALID_STATE_ERR'
-            @get_action() if kl._app.subscribed
+            @get_action() if kl._app.subscribed == true
     kl.server_error.trigger(err)
     return
 
@@ -118,7 +133,7 @@ on_node_subscribed = (config) ->
     switch config.__kl_project_mode__
         when kl.AUTO_PROJECT_MODE
             app.worker.terminate() if app.worker?
-            worker = new Worker(kl.config.WORKER_SCRIPT_URL)
+            worker = new Worker(WORKER_SCRIPT_URL)
             app.worker = worker
             worker.onmessage = (e) ->
                 worker_message_handler(e)
@@ -172,7 +187,8 @@ on_task_received = (task) ->
     return
 
 on_task_completed = (result) ->
-    kl.send_result(result)
+    if kl._app? and kl._app.task? and kl._app.subscribed == true
+        kl.send_result(result)
     return
 
 # Kaylee worker event handlers

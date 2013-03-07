@@ -19,8 +19,6 @@ kl.ajax = (url, method, data, success = (()->), fail = (() ->) ) ->
             data = JSON.stringify(data)
             req.open('POST', url, true);
             req.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-            req.setRequestHeader("Content-length", data.length);
-            req.setRequestHeader("Connection", "close");
         when "GET"
             if data?
                 dl = []
@@ -28,8 +26,6 @@ kl.ajax = (url, method, data, success = (()->), fail = (() ->) ) ->
                     dl.push(key + '=' + encodeURIComponent(val))
                 url += '?' + dl.join('&')
             req.open("GET", url, true);
-#    This doesn't work in Chrome yet :(
-#    req.responseType = 'json'
 
     req.onreadystatechange = () ->
         if req.readyState == 4

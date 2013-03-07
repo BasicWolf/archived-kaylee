@@ -58,6 +58,6 @@ on_server_error = (message) ->
 on_message_logged = (message) ->
     kl_console.print("<span class='cem'>LOG:</span> #{message}")
 
-window.onerror = (message, url, linenumber) ->
-    kl_console.print("<span class='cerr'>ERROR: </span> #{message};"
-        " at #{url}:#{linenumber}")
+# window.onerror = (message, url, linenumber) ->
+#     kl_console.print("<span class='cerr'>ERROR: </span> #{message};"
+#         " at #{url}:#{linenumber}")

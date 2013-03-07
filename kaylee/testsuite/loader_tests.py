@@ -23,7 +23,6 @@ _test_REGISTRY = {
 
 class TestConfig(object):
     REGISTRY = _test_REGISTRY
-    WORKER_SCRIPT_URL = '/static/js/kaylee/klworker.js'
 
     SESSION_DATA_MANAGER = {
         'name' : 'JSONSessionDataManager',
@@ -33,7 +32,6 @@ class TestConfig(object):
 
 class TestConfigWithApps(object):
     REGISTRY = _test_REGISTRY
-    WORKER_SCRIPT_URL = '/static/js/kaylee/klworker.js'
     APPLICATIONS = [
         {
             'name' : 'test.1',
@@ -60,22 +58,16 @@ class KayleeLoaderTests(KayleeTest):
     def test_load_config_class(self):
         kl = loader.load(TestConfig)
         self.assertIsInstance(kl, Kaylee)
-        self.assertEqual(kl._config.WORKER_SCRIPT_URL,
-                         TestConfig.WORKER_SCRIPT_URL)
 
     def test_load_config_dict(self):
         # dict(Class.__dict__) wrapping: __dict__ is a dictproxy,
         kl = loader.load(dict(TestConfig.__dict__))
         self.assertIsInstance(kl, Kaylee)
-        self.assertEqual(kl._config.WORKER_SCRIPT_URL,
-                         TestConfig.WORKER_SCRIPT_URL)
 
     def test_load_config_module(self):
         test_config = __import__('test_config')
         kl = loader.load(test_config)
         self.assertIsInstance(kl, Kaylee)
-        self.assertEqual(kl._config.WORKER_SCRIPT_URL,
-                         test_config.WORKER_SCRIPT_URL)
 
     def test_load_config_path(self):
         path = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -83,8 +75,6 @@ class KayleeLoaderTests(KayleeTest):
         kl = loader.load(path)
         test_config = __import__('test_config')
         self.assertIsInstance(kl, Kaylee)
-        self.assertEqual(kl._config.WORKER_SCRIPT_URL,
-                         test_config.WORKER_SCRIPT_URL)
 
     def test_load_applications(self):
         config = dict(TestConfigWithApps.__dict__)

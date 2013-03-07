@@ -258,7 +258,6 @@ class Config(object):
     """
     serialized_attributes = [
         'AUTO_GET_ACTION',
-        'WORKER_SCRIPT_URL',
     ]
 
     def __init__(self, **kwargs):

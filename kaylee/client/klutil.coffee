@@ -18,6 +18,7 @@ util.is_function = (obj) ->
 util.ends_with = (str, suffix) ->
     return str.indexOf(suffix, str.length - suffix.length) != -1
 
+
 class Event
     constructor : (handler = null) ->
         @handlers = []

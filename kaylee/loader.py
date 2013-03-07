@@ -112,9 +112,12 @@ def refresh(config):
     # load session data managers
     _update_classes(kaylee.session)
     # load classes from project modules (refreshable for new modules only)
-    projects_dir = config['PROJECTS_DIR']
-    for mod in _projects_modules(projects_dir):
-        _update_classes(mod)
+    if 'PROJECTS_DIR' in config:
+        projects_dir = config['PROJECTS_DIR']
+        for mod in _projects_modules(projects_dir):
+            _update_classes(mod)
+    else:
+        log.warning('Settings does not contain a "PROJECTS_DIR" field.')
 
 
 def load_registry(config):
