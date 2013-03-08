@@ -159,7 +159,8 @@ def get_secret_key(key = None):
             return key
         else:
             raise KayleeError('Cannot locate a valid secret key because '
-                              'Kaylee is not ready yet.')
+                              'Kaylee proxy object has not beet set up.')
+
 
 def is_strong_subclass(C, B):
     """Return whether class C is a subclass (i.e., a derived class) of class B

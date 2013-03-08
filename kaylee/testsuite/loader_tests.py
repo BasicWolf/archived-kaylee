@@ -54,6 +54,7 @@ class TestConfigWithApps(object):
 
     PROJECTS_DIR = PROJECTS_DIR
 
+
 class KayleeLoaderTests(KayleeTest):
     def test_load_config_class(self):
         kl = loader.load(TestConfig)

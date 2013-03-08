@@ -52,54 +52,56 @@ class LazyKaylee(LazyObject):
             log.debug('Releasing {}'.format(obj))
         else:
             raise TypeError('obj must be an instance of {} or '
-                            'a Kaylee config object, not {}'
+                            'a Kaylee settings object, not {}'
                             .format(Kaylee.__name__, type(obj).__name__))
 
 
-def load(config):
+def load(settings):
     """Loads Kaylee.
 
-    :param config: Kaylee initial configuration object.
-    :type config: dict, class, module or absolute Python module path.
+    :param settings: Kaylee settings object.
+    :type settings: dict, class, module or absolute Python module path.
     :returns: Kaylee object.
     """
-    # check if python module path
-    if isinstance(config, basestring):
-        if os.path.exists(config):
-            config = imp.load_source('kl_config', config)
-    if isinstance(config, (type, types.ModuleType)):
-        # convert to dict
+    # Whatever the initial settings type is, load it (optional) and
+    # convert it to a dictionary.
+    # Note, that only settings with uppercase names' are loaded.
+    if isinstance(settings, basestring):
+        if os.path.exists(settings):
+            settings = imp.load_source('kl_settings', settings)
+    if isinstance(settings, (type, types.ModuleType)):
         d = {}
-        for attr in dir(config):
+        for attr in dir(settings):
             if attr == attr.upper():
-                d[attr] = getattr(config, attr)
-        config = d
-    if isinstance(config, dict):
-        config = { k : v for k, v in config.iteritems() if k == k.upper() }
+                d[attr] = getattr(settings, attr)
+        settings = d
+    if isinstance(settings, dict):
+        settings = { k : v for k, v in settings.iteritems() if k == k.upper() }
 
-    # at this point, if config is not a dict, then object type is wrong.
-    if not isinstance(config, dict):
-        raise TypeError('config must be an instance of {}, {}, {} or {} not {}'
+    # at this point, if settings is not a dict, then object type is wrong.
+    if not isinstance(settings, dict):
+        raise TypeError('settings must be an instance of {}, {}, {} or {} not {}'
                         .format(dict.__name__,
                                 type.__name__,
                                 types.ModuleType.__name__,
                                 basestring.__name__,
-                                type(config).__name__))
+                                type(settings).__name__))
+
     try:
-        refresh(config)
-        registry = load_registry(config)
-        sdm = load_session_data_manager(config)
-        apps = load_applications(config)
+        refresh(settings)
+        registry = load_registry(settings)
+        sdm = load_session_data_manager(settings)
+        apps = load_applications(settings)
     except (KeyError, AttributeError) as e:
-        raise KayleeError('Config error or object was not found: "{}"'
+        raise KayleeError('Settings error or object was not found: "{}"'
                           .format(e.args[0]))
     return Kaylee(registry = registry,
                   session_data_manager = sdm,
                   applications = apps,
-                  **config)
+                  **settings)
 
 
-def refresh(config):
+def refresh(settings):
     #pylint: disable-msg=W0603
     #W0603: Using the global statement
 
@@ -112,32 +114,32 @@ def refresh(config):
     # load session data managers
     _update_classes(kaylee.session)
     # load classes from project modules (refreshable for new modules only)
-    if 'PROJECTS_DIR' in config:
-        projects_dir = config['PROJECTS_DIR']
+    if 'PROJECTS_DIR' in settings:
+        projects_dir = settings['PROJECTS_DIR']
         for mod in _projects_modules(projects_dir):
             _update_classes(mod)
     else:
         log.warning('Settings does not contain a "PROJECTS_DIR" field.')
 
 
-def load_registry(config):
-    clsname = config['REGISTRY']['name']
+def load_registry(settings):
+    clsname = settings['REGISTRY']['name']
     regcls = _classes[node.NodesRegistry][clsname]
-    return regcls(**config['REGISTRY']['config'])
+    return regcls(**settings['REGISTRY']['config'])
 
 
-def load_session_data_manager(config):
-    if 'SESSION_DATA_MANAGER' in config:
-        clsname = config['SESSION_DATA_MANAGER']['name']
+def load_session_data_manager(settings):
+    if 'SESSION_DATA_MANAGER' in settings:
+        clsname = settings['SESSION_DATA_MANAGER']['name']
         sdmcls = _classes[session.SessionDataManager][clsname]
         try:
-            sdm_config = config['SESSION_DATA_MANAGER'].get('config', {})
+            sdm_config = settings['SESSION_DATA_MANAGER'].get('config', {})
         except KeyError:
             log.warning('Loading session data manager with empty config')
             sdm_config = {}
     else:
         # Load default (should be Phony) session data manager in case it
-        # is not defined in config.
+        # is not defined in settings.
         default_manager = session.KL_LOADER_DEFAULT_SESSION_DATA_MANAGER
         log.info('No session data manager loaded, using default: {}'
                  .format(default_manager))
@@ -146,10 +148,10 @@ def load_session_data_manager(config):
     return sdmcls(**sdm_config)
 
 
-def load_applications(config):
+def load_applications(settings):
     apps = []
-    if 'APPLICATIONS' in config:
-        for conf in config['APPLICATIONS']:
+    if 'APPLICATIONS' in settings:
+        for conf in settings['APPLICATIONS']:
             ct = _load_controller(conf)
             apps.append(ct)
         log.info('{} applications have been loaded'.format(len(apps)))
