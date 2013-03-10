@@ -111,7 +111,7 @@ class Kaylee(object):
         node = Node(NodeID.for_host(remote_host))
         self.registry.add(node)
         return json.dumps ({ 'node_id' : str(node.id),
-                             'config' : self._config.to_dict(),
+                             'config' : self._config.to_client_dict(),
                              'applications' : self._applications.names } )
 
     @json_error_handler
@@ -269,7 +269,7 @@ class Config(DictAsObjectWrapper):
         else:
             self.__dict__[name] = value
 
-    def to_dict(self):
+    def to_client_dict(self):
         serialized_settings = [
             'AUTO_GET_ACTION',
         ]
