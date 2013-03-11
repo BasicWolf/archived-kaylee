@@ -18,10 +18,14 @@ AUTO_PROJECT_MODE = 0x2
 #: Defines manual project mode (see :attr:`Project.mode`)
 MANUAL_PROJECT_MODE = 0x4
 
+#: Defines the unknown amount of tasks to be solved by a Kaylee
+#: application.
+UNKNOWN_AMOUNT = 0x1
 
 KL_PROJECT_MODE = '__kl_project_mode__'
 KL_PROJECT_SCRIPT = '__kl_project_script__'
 KL_PROJECT_STYLES = '__kl_project_styles__'
+
 
 
 class Project(object):
@@ -112,3 +116,14 @@ class Project(object):
         :type storage: :class:`PermanentStorage`
         """
         pass
+
+    # @abstractproperty
+    # def progress(self):
+    #     """A tuple of 2 items indicating progress:
+    #     ``(amount_of_tasks_completed, total_amount_of_tasks)``
+
+    #     A negative (:data:`UNKNOWN_AMOUNT`) value of the second item in
+    #     the tuple indicates that the project is not able to calculate the
+    #     total amount of tasks.
+    #     """
+    #     pass

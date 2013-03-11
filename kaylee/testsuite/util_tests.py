@@ -9,7 +9,8 @@
 import string
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.util import (parse_timedelta, LazyObject, random_string,
-                         get_secret_key)
+                         get_secret_key, DictAsObjectWrapper, 
+                         RecursiveDictAsObjectWrapper)
 from kaylee import KayleeError
 
 class KayleeUtilTests(KayleeTest):
@@ -131,11 +132,11 @@ class KayleeUtilTests(KayleeTest):
         self.assertRaises(KayleeError, get_secret_key)
 
         # test loading from config
-        from kaylee.testsuite import test_config
+        from kaylee.testsuite import test_settings
         from kaylee import setup
-        setup(test_config)
+        setup(test_settings)
         sk = get_secret_key()
-        self.assertEqual(sk, test_config.SECRET_KEY)
+        self.assertEqual(sk, test_settings.SECRET_KEY)
 
         # test if default parameter works after previous call
         sk = get_secret_key('abc')
@@ -148,5 +149,18 @@ class KayleeUtilTests(KayleeTest):
         # and the final test :)
         sk = get_secret_key('abc')
         self.assertEqual(sk, 'abc')
+
+    def test_dict_as_object_wrapper(self):
+        d = {'A' : 10, 'B' : 20}
+        wo = DictAsObjectWrapper(**d)
+        self.assertEqual(wo.A, 10)
+        self.assertEqual(wo.B, 20)
+
+        d = {'A' : 10, 'B' : {'C' : 30}}
+        wo = DictAsObjectWrapper(**d)
+        self.assertEqual(wo.B, {'C' : 30})
+
+        wo = RecursiveDictAsObjectWrapper(**d)
+        self.assertEqual(wo.B.C, 30)
 
 kaylee_suite = load_tests([KayleeUtilTests, ])

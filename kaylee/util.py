@@ -115,18 +115,21 @@ class LazyObject(object):
 
 
 class DictAsObjectWrapper(object):
-    def __init__(self, *args, **kwargs):
-        if len(args) > 1:
-            raise ValueError('Expecting a single dict argument or keywords')
-        if len(args) == 1:
-            d = args[0]
-        else:
-            d = {}
-
-        d.update(kwargs)
-
-        for key, val in d.iteritems():
+    def __init__(self, **kwargs):
+        for key, val in kwargs.iteritems():
             setattr(self, key, val)
+
+
+class RecursiveDictAsObjectWrapper(object):
+    def __init__(self, **kwargs):
+        def _update(obj, d):
+            for key, val in d.iteritems():
+                if isinstance(val, dict):
+                    nested_obj = RecursiveDictAsObjectWrapper(**val)
+                    setattr(obj, key, nested_obj)
+                else:
+                    setattr(obj, key, val)
+        _update(self, kwargs)
 
 
 def random_string(length, alphabet=None, lowercase=True, uppercase=True,
@@ -152,7 +155,7 @@ def get_secret_key(key = None):
     else:
         from kaylee import kl
         if kl._wrapped is not None:
-            key = kl._config.SECRET_KEY
+            key = kl.config.SECRET_KEY
             if key is None:
                 raise KayleeError('SECRET_KEY configuration option is not'
                                   ' defined.')

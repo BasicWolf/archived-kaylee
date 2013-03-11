@@ -8,10 +8,10 @@ from datetime import datetime
 
 class KayleeTests(KayleeTest):
     def setUp(self):
-        self.config = __import__('test_config')
+        self.settings = __import__('test_settings')
 
     def test_register_unregister(self):
-        kl = loader.load(self.config)
+        kl = loader.load(self.settings)
         node_json_config = kl.register('127.0.0.1')
         node_config = json.loads(node_json_config)
         self.assertEqual(len(node_config), 3)
@@ -27,7 +27,7 @@ class KayleeTests(KayleeTest):
         self.assertNotIn(nid, kl.registry)
 
     def test_subscribe_unsubscribe(self):
-        kl = loader.load(self.config)
+        kl = loader.load(self.settings)
         app = kl.applications['test.1']
         node_json_config = kl.register('127.0.0.1')
         node_config = json.loads(node_json_config)

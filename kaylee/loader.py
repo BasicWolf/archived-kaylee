@@ -18,6 +18,7 @@ import imp
 import importlib
 import inspect
 import types
+from copy import deepcopy
 from collections import defaultdict
 
 import kaylee.contrib
@@ -28,6 +29,10 @@ from . import storage, controller, project, node, session
 
 import logging
 log = logging.getLogger(__name__)
+
+_default_settings = {
+    'AUTO_GET_ACTION' : True,
+}
 
 # global (current module scope) cache of classes loaded
 # via refresh() and retrieved via _get_class()
@@ -49,7 +54,6 @@ class LazyKaylee(LazyObject):
             self._wrapped = obj
         elif obj is None:
             self._wrapped = None # release the object
-            log.debug('Releasing {}'.format(obj))
         else:
             raise TypeError('obj must be an instance of {} or '
                             'a Kaylee settings object, not {}'
@@ -87,11 +91,13 @@ def load(settings):
                                 basestring.__name__,
                                 type(settings).__name__))
 
+    new_settings = deepcopy(_default_settings)
+    new_settings.update(settings)
     try:
-        refresh(settings)
-        registry = load_registry(settings)
-        sdm = load_session_data_manager(settings)
-        apps = load_applications(settings)
+        refresh(new_settings)
+        registry = load_registry(new_settings)
+        sdm = load_session_data_manager(new_settings)
+        apps = load_applications(new_settings)
     except (KeyError, AttributeError) as e:
         raise KayleeError('Settings error or object was not found: "{}"'
                           .format(e.args[0]))
@@ -118,8 +124,6 @@ def refresh(settings):
         projects_dir = settings['PROJECTS_DIR']
         for mod in _projects_modules(projects_dir):
             _update_classes(mod)
-    else:
-        log.warning('Settings does not contain a "PROJECTS_DIR" field.')
 
 
 def load_registry(settings):
@@ -135,14 +139,11 @@ def load_session_data_manager(settings):
         try:
             sdm_config = settings['SESSION_DATA_MANAGER'].get('config', {})
         except KeyError:
-            log.warning('Loading session data manager with empty config')
             sdm_config = {}
     else:
         # Load default (should be Phony) session data manager in case it
         # is not defined in settings.
         default_manager = session.KL_LOADER_DEFAULT_SESSION_DATA_MANAGER
-        log.info('No session data manager loaded, using default: {}'
-                 .format(default_manager))
         sdmcls = default_manager
         sdm_config = {}
     return sdmcls(**sdm_config)
@@ -154,9 +155,6 @@ def load_applications(settings):
         for conf in settings['APPLICATIONS']:
             ct = _load_controller(conf)
             apps.append(ct)
-        log.info('{} applications have been loaded'.format(len(apps)))
-    else:
-        log.info('No applications have been loaded')
     return apps
 
 

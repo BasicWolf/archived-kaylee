@@ -1,6 +1,7 @@
 #pylint: disable-all
 from kaylee.testsuite import  PROJECTS_DIR
 
+AUTO_GET_ACTION = True
 
 PROJECTS_DIR = PROJECTS_DIR
 

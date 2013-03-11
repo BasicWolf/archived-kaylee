@@ -21,8 +21,12 @@ _test_REGISTRY = {
 }
 
 
-class TestConfig(object):
+class TestSettings(object):
     REGISTRY = _test_REGISTRY
+
+    AUTO_GET_ACTION = True
+
+    SECRET_KEY = '1234'
 
     SESSION_DATA_MANAGER = {
         'name' : 'JSONSessionDataManager',
@@ -30,8 +34,13 @@ class TestConfig(object):
     }
 
 
-class TestConfigWithApps(object):
+class TestSettingsWithApps(object):
     REGISTRY = _test_REGISTRY
+
+    AUTO_GET_ACTION = True
+
+    SECRET_KEY = '1234'
+
     APPLICATIONS = [
         {
             'name' : 'test.1',
@@ -56,31 +65,31 @@ class TestConfigWithApps(object):
 
 
 class KayleeLoaderTests(KayleeTest):
-    def test_load_config_class(self):
-        kl = loader.load(TestConfig)
+    def test_load_settings_class(self):
+        kl = loader.load(TestSettings)
         self.assertIsInstance(kl, Kaylee)
 
-    def test_load_config_dict(self):
+    def test_load_settings_dict(self):
         # dict(Class.__dict__) wrapping: __dict__ is a dictproxy,
-        kl = loader.load(dict(TestConfig.__dict__))
+        kl = loader.load(dict(TestSettings.__dict__))
         self.assertIsInstance(kl, Kaylee)
 
-    def test_load_config_module(self):
-        test_config = __import__('test_config')
-        kl = loader.load(test_config)
+    def test_load_settings_module(self):
+        test_settings = __import__('test_settings')
+        kl = loader.load(test_settings)
         self.assertIsInstance(kl, Kaylee)
 
-    def test_load_config_path(self):
+    def test_load_settings_path(self):
         path = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                            'test_config.py'))
+                                            'test_settings.py'))
         kl = loader.load(path)
-        test_config = __import__('test_config')
+        test_settings = __import__('test_settings')
         self.assertIsInstance(kl, Kaylee)
 
     def test_load_applications(self):
-        config = dict(TestConfigWithApps.__dict__)
-        loader.refresh(config)
-        apps = loader.load_applications(config)
+        settings = dict(TestSettingsWithApps.__dict__)
+        loader.refresh(settings)
+        apps = loader.load_applications(settings)
         self.assertIsInstance(apps, list)
         self.assertEqual(len(apps), 1)
 
@@ -92,19 +101,19 @@ class KayleeLoaderTests(KayleeTest):
         #self.assertIsInstance(app.project.storage, MemoryPermanentStorage)
 
     def test_load_registry(self):
-        config = dict(TestConfig.__dict__)
-        loader.refresh(config)
-        reg = loader.load_registry(config)
+        settings = dict(TestSettings.__dict__)
+        loader.refresh(settings)
+        reg = loader.load_registry(settings)
         self.assertIsInstance(reg, MemoryNodesRegistry)
 
     def test_load_session_data_manager(self):
-        config = dict(TestConfig.__dict__)
-        loader.refresh(config)
-        sdm = loader.load_session_data_manager(config)
+        settings = dict(TestSettings.__dict__)
+        loader.refresh(settings)
+        sdm = loader.load_session_data_manager(settings)
         self.assertIsInstance(sdm, JSONSessionDataManager)
 
     def test_load_kaylee(self):
-        kl = loader.load(TestConfigWithApps)
+        kl = loader.load(TestSettingsWithApps)
         self.assertIsInstance(kl.registry, MemoryNodesRegistry)
 
         app = kl.applications['test.1']
@@ -114,7 +123,7 @@ class KayleeLoaderTests(KayleeTest):
     def test_kaylee_setup(self):
         from kaylee import setup, kl
         self.assertIsNone(kl._wrapped)
-        setup(TestConfigWithApps)
+        setup(TestSettingsWithApps)
 
         self.assertIsNotNone(kl._wrapped)
         self.assertIsInstance(kl.registry, MemoryNodesRegistry)

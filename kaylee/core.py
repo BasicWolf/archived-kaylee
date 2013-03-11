@@ -20,7 +20,8 @@ from contextlib import closing
 from functools import wraps
 
 from .node import Node, NodeID
-from .errors import KayleeError, InvalidResultError, NodeRequestRejectedError
+from .errors import (KayleeError, InvalidResultError, NodeRequestRejectedError,
+                     InvalidConfigurationError)
 from .controller import KL_RESULT
 from .util import DictAsObjectWrapper
 
@@ -84,8 +85,8 @@ class Kaylee(object):
         #: An internal configuration storage object which maintains
         #: the configuration initially parsed from ``**kwargs**``.
         #: The options are accessed as object attributes, e.g.:
-        #: ``kl.settings.SECRET_KEY``.
-        self._config = Config(**kwargs)
+        #: ``kl.config.SECRET_KEY``.
+        self.config = Config(**kwargs)
 
         #: Active nodes registry (an instance of :class:`NodesRegistry`).
         self.registry = registry
@@ -95,6 +96,9 @@ class Kaylee(object):
             self._applications = Applications(applications)
         else:
             self._applications = Applications.empty()
+
+        log.info(str(self._applications))
+
 
     @json_error_handler
     def register(self, remote_host):
@@ -111,7 +115,7 @@ class Kaylee(object):
         node = Node(NodeID.for_host(remote_host))
         self.registry.add(node)
         return json.dumps ({ 'node_id' : str(node.id),
-                             'config' : self._config.to_client_dict(),
+                             'config' : self.config.to_client_dict(),
                              'applications' : self._applications.names } )
 
     @json_error_handler
@@ -225,7 +229,7 @@ class Kaylee(object):
             self.unsubscribe(node)
             raise e
 
-        if self._config.AUTO_GET_ACTION:
+        if self.config.AUTO_GET_ACTION:
             return self.get_action(node.id)
         return self._json_action(ACTION_NOP)
 
@@ -257,10 +261,22 @@ class Config(DictAsObjectWrapper):
     """The ``Config`` object maintains the run-time Kaylee
     configuration options (see :ref:`configuration` for full description).
     """
+    client_config_fields = [
+        'AUTO_GET_ACTION',
+    ]
+
     def __init__(self, **kwargs):
         super(Config, self).__init__(**kwargs)
         self._dirty = True
         self._cached_dict = {}
+
+        if not isinstance(self.AUTO_GET_ACTION, bool):
+            raise InvalidConfigurationError('AUTO_GET_ACTION is not a boolean')
+        if not isinstance(self.SECRET_KEY, basestring):
+            raise InvalidConfigurationError('SECRET_KEY is not a string object')
+        # TODO: verify configuration here
+        # TODO: make this object static, don't allow any changes
+        # E.g. create a util class...
 
     def __setattr__(self, name, value):
         if name != '_dirty':
@@ -270,13 +286,9 @@ class Config(DictAsObjectWrapper):
             self.__dict__[name] = value
 
     def to_client_dict(self):
-        serialized_settings = [
-            'AUTO_GET_ACTION',
-        ]
-
         if self._dirty:
             self._cached_dict = { k : getattr(self, k)
-                                  for k in serialized_attributes }
+                                  for k in self.client_config_fields }
             self._dirty = False
         return self._cached_dict
 
@@ -307,7 +319,13 @@ class Applications(object):
         """Returns the amount of applications in the container."""
         return len(self._controllers)
 
+    def __str__(self):
+        s = 'Kaylee applications({}):\n'.format(len(self))
+        s += '[{}]'.format(', '.join(cname for cname in self._controllers))
+        return s
+
+
+
     @staticmethod
     def empty():
         return Applications([])
-

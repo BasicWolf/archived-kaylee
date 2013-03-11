@@ -72,8 +72,17 @@ class ApplicationCompletedError(NodeRequestRejectedError):
             .format(application.name) )
 
 
+class InvalidConfigurationError(KayleeError):
+    """Raised when :class:`Kaylee object <Kaylee>` configuration is
+    configured improperly."""
+    def __init__(self, message):
+        super(InvalidConfigurationError, self).__init__(
+            'Invalid configuration: ' + message)
+
+
 class KayleeWarning(UserWarning):
     pass
+
 
 def warn(message):
     warnings.warn(message, KayleeWarning, 3)
