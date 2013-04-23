@@ -9,7 +9,7 @@
 import string
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.util import (parse_timedelta, LazyObject, random_string,
-                         get_secret_key, DictAsObjectWrapper, 
+                         get_secret_key, DictAsObjectWrapper,
                          RecursiveDictAsObjectWrapper)
 from kaylee import KayleeError
 
@@ -151,6 +151,8 @@ class KayleeUtilTests(KayleeTest):
         self.assertEqual(sk, 'abc')
 
     def test_dict_as_object_wrapper(self):
+        #pylint: disable-msg=E1101
+        #E1101 Instance of 'DictAsObjectWrapper' has no 'A' member
         d = {'A' : 10, 'B' : 20}
         wo = DictAsObjectWrapper(**d)
         self.assertEqual(wo.A, 10)

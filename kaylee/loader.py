@@ -113,7 +113,7 @@ class Loader(object):
         # load classes from project modules (refreshable for new modules only)
         if 'PROJECTS_DIR' in settings:
             projects_dir = settings['PROJECTS_DIR']
-            for mod in self._projects_modules(projects_dir):
+            for mod in find_modules(projects_dir):
                 self._update_classes(mod)
 
     @property
@@ -147,16 +147,6 @@ class Loader(object):
                 ct = self._load_controller(conf)
                 apps.append(ct)
         return apps
-
-    def _projects_modules(self, path):
-        """A generator which yields python modules found in given path."""
-        for package_name in find_packages(path):
-            try:
-                pymod = importlib.import_module(package_name)
-                yield pymod
-            except ImportError as e:
-                log.error('Unable to import project package "{}": {}'
-                          .format(package_name, e))
 
     def _update_classes(self, module):
         """Updates the _classes field by the classes found in
@@ -207,7 +197,6 @@ class Loader(object):
         return [attr for attr in module.__dict__.values()
                 if inspect.isclass(attr)]
 
-
 def find_packages(path):
     for sub_dir in os.listdir(path):
         pdir_path = os.path.join(path, sub_dir)
@@ -217,3 +206,12 @@ def find_packages(path):
             continue
         yield sub_dir
 
+def find_modules(path):
+    """A generator which yields python modules found in the given path."""
+    for package_name in find_packages(path):
+        try:
+            pymod = importlib.import_module(package_name)
+            yield pymod
+        except ImportError as e:
+            log.error('Unable to import project package "{}": {}'
+                      .format(package_name, e))

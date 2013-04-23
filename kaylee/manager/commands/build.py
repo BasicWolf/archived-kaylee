@@ -1,11 +1,9 @@
 from __future__ import print_function
 import os
-import sys
 import imp
 import subprocess
 import shutil
 import kaylee
-from kaylee import Project
 from kaylee.manager import LocalCommand
 from kaylee.loader import find_packages
 from kaylee.util import ensure_dir
@@ -27,7 +25,7 @@ class BuildCommand(LocalCommand):
 
         print('Building Kaylee environment...')
         settings = imp.load_source('settings', opts.settings_file)
-        build_kaylee(settings, opts)
+        build_kaylee(opts)
         build_projects(settings, opts)
 
 
@@ -45,7 +43,7 @@ def verify_build_dir(opts):
                       .format(opts.build_dir, e))
 
 
-def build_kaylee(settings, opts):
+def build_kaylee(opts):
     print('* Copying Kaylee test server files...')
     KLCL_TEMPLATE_DIR = 'templates/build_template'
     KLCL_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__),
@@ -91,6 +89,8 @@ def build_projects(settings, opts):
     # os.walk for files with by-extension sorting
     def _fwalk(path):
         sort_key = lambda fname: fname.rsplit()[-1]
+        #pylint: disable-msg=W0612
+        #W0612: Unused variable 'dirs'
         for root, dirs, files in os.walk(path):
             for fname in sorted(files, key=sort_key):
                 yield os.path.join(root, fname)
@@ -124,6 +124,8 @@ def coffee_handler(fpath, opts):
                             stdin=subprocess.PIPE,
                             stdout = subprocess.PIPE,
                             stderr = subprocess.PIPE)
+    #pylint: disable-msg=W0612
+    #W0612: Unused variable 'stdoutdata'
     stdoutdata, stderrdata = proc.communicate()
     if stderrdata is not '':
         raise Exception('Error compiling .coffee script:\n{}'

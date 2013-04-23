@@ -224,9 +224,6 @@ class NodeID(object):
 
     def _generate(self, remote_host):
         """Generates a new value for this NodeID."""
-        #pylint: disable-msg=E1101
-        #E1101: Module 'hashlib' has no 'md5' member # FALSE ALARM
-        ###
         nid = b''
         # 4 bytes current time
         nid += struct.pack('>i', int(time.time()))

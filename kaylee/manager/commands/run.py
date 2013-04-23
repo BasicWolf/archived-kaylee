@@ -1,6 +1,5 @@
 from __future__ import print_function
 import os
-import sys
 from kaylee.server import run
 from kaylee.manager import LocalCommand
 

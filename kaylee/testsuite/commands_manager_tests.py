@@ -23,10 +23,10 @@ def tmp_chdir():
 
 
 class KayleeCommandsManagerTests(KayleeTest):
-    class SimpleCommand(BaseCommand):
-        name = 'simple'
-
     class CommandWithBlankName(BaseCommand):
+        #pylint: disable-msg=W0223
+        #W0223:  Method 'execute' is abstract in class 'BaseCommand'
+        #        but is not overridden (throws NotImplementedError)
         name = ''
 
     def tearDown(self):
@@ -36,7 +36,9 @@ class KayleeCommandsManagerTests(KayleeTest):
                 shutil.rmtree(os.path.join(tmpdir, tdir))
 
     def test_init(self):
-        manager = AdminCommandsManager()
+        #pylint: disable-msg=R0201
+        #R0201: Method could be a function
+        AdminCommandsManager()
 
     def test_add_command(self):
         manager = LocalCommandsManager()

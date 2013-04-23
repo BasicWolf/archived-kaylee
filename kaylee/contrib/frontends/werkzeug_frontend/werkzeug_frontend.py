@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from werkzeug.routing import Map, Rule
 from werkzeug.wrappers import Response
 from kaylee import kl
@@ -7,6 +9,8 @@ def kaylee_register_node(request):
     return json_response(reg_data)
 
 def kaylee_subscribe_node(request, app_name, node_id):
+    #pylint: disable-msg=W0613
+    #W0613:  Unused argument 'request'
     node_config = kl.subscribe(node_id, app_name)
     return json_response(node_config)
 

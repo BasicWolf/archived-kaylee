@@ -1,7 +1,6 @@
 #pylint: disable-msg=W0212,W0611
 #W0212: Access to a protected member
 #W0611: Unused import PROJECTS_DIR # FALSE ALARM
-#R0801: Similar lines in 2 files
 ###
 
 from kaylee.testsuite import KayleeTest, load_tests, PROJECTS_DIR
@@ -84,7 +83,6 @@ class KayleeLoaderTests(KayleeTest):
         path = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                             'test_settings.py'))
         kl = loader.load(path)
-        test_settings = __import__('test_settings')
         self.assertIsInstance(kl, Kaylee)
 
     def test_load_applications(self):

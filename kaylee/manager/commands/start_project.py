@@ -1,6 +1,5 @@
 import os
 import re
-import argparse
 import shutil
 from jinja2 import Template
 from kaylee.manager import LocalCommand

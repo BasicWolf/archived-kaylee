@@ -33,13 +33,16 @@ load-plugins=
 # can either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once).
-disable=I0011,C0111,C0103,R0903,W0142,R0904,I0013
+disable=I0011,C0111,C0103,R0903,W0142,R0904,I0013,R0924,R0801
 # C0111: Missing docstring
 # C0103: Invalid name XXX (should match (([A-Z_][A-Z0-9_]*)|(__.*__))$)
 # R0903: Too few public methods
 # W0142: Used * or ** magic
 # R0904: Too many public methods
-# I0013:  1,0: Ignoring entire file
+# I0013: Ignoring entire file
+# R0924: Badly implemented Container, implements __delitem__, __getitem__, __len__ 
+#        but not __setitem__
+# R0801: Similar lines in files
 
 [REPORTS]
 

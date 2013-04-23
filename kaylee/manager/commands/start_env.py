@@ -1,9 +1,8 @@
 import os
-import argparse
 import shutil
 from jinja2 import Template
 from kaylee.manager import AdminCommand
-from kaylee.util import random_string, ensure_dir
+from kaylee.util import random_string
 
 
 class StartEnvCommand(AdminCommand):

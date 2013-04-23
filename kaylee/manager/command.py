@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
-import sys
 import argparse
 
 import logging
@@ -18,7 +16,7 @@ class BaseCommand(object):
         if cls.name.strip() == '':
             raise ValueError('{}.name is empty.'.format(cls.__name__))
 
-        parser = sub_parsers_object.add_parser(cls.name, description=cls.help)
+        parser = sub_parsers_object.add_parser(cls.name, help=cls.help)
         for arg, arg_opts in cls.args.items():
             if isinstance(arg, str):
                 arg = [arg, ]
@@ -31,10 +29,16 @@ class BaseCommand(object):
 
 
 class AdminCommand(BaseCommand):
+    #pylint: disable-msg=W0223
+    #W0223: Method 'execute' is abstract in class 'BaseCommand'
+    #       but is not overridden (throws NotImplementedError).
     pass
 
 
 class LocalCommand(BaseCommand):
+    #pylint: disable-msg=W0223
+    #W0223: Method 'execute' is abstract in class 'BaseCommand'
+    #       but is not overridden (throws NotImplementedError).
     pass
 
 
@@ -44,7 +48,8 @@ class CommandsManager(object):
 
     def __init__(self):
         self.parser = argparse.ArgumentParser(description=self.help)
-        self.sub_parsers = self.parser.add_subparsers(help='sub-commands help')
+        self.sub_parsers = self.parser.add_subparsers(
+            help='Commands.')
         # add sub-commands
         from .commands import commands_classes
         for cmd_cls in commands_classes:
@@ -83,5 +88,3 @@ class LocalCommandsManager(CommandsManager):
 
 def setup_logging():
     logging.basicConfig(level=logging.DEBUG)
-
-

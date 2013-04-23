@@ -1,4 +1,5 @@
-#pylint: disable-all
+# -*- coding: utf-8 -*-
+
 from kaylee.testsuite import  PROJECTS_DIR
 
 AUTO_GET_ACTION = True
