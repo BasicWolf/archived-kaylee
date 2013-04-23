@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
-import argparse
 
 from werkzeug.wrappers import Request, Response
-from werkzeug.exceptions import HTTPException, NotFound
+from werkzeug.exceptions import HTTPException
 from werkzeug.wsgi import SharedDataMiddleware
-from werkzeug.utils import redirect
 from werkzeug.routing import Rule
 from werkzeug.serving import run_simple
 
@@ -35,6 +32,8 @@ def run(settings_file, static_dir):
     # index.html at 'http://server.address/' URL
     with open(os.path.join(static_dir, 'index.html')) as f:
         index_data = f.read()
+    #pylint: disable-msg=W0613
+    #W0613 unused 'request'
     def _home(request):
         return Response(index_data, mimetype='text/html')
     home_rule = Rule('/', methods=['GET'], endpoint=_home)
@@ -50,7 +49,3 @@ def run(settings_file, static_dir):
 
 def setup_logging():
     logging.basicConfig(level=logging.INFO)
-
-
-if __name__ == '__main__':
-    main()

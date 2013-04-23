@@ -8,9 +8,10 @@
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
 """
-#pylint: disable-msg=W0402,W0212
+#pylint: disable-msg=W0402,W0212,R0913
 #W0402: 15,0: Uses of a deprecated module 'string'
 #W0212: Access to a protected member _wrapped of a client class
+#R0913: random_string: Too many arguments (7/5)
 ###
 
 import os
@@ -20,11 +21,8 @@ import random
 import string
 import importlib
 import contextlib
-import imp
 from datetime import timedelta
 from .errors import KayleeError
-
-import logging
 
 
 def parse_timedelta(s):
@@ -149,7 +147,7 @@ def random_string(length, alphabet=None, lowercase=True, uppercase=True,
     return ''.join(random.choice(src) for x in xrange(length))
 
 
-def get_secret_key(key = None):
+def get_secret_key(key=None):
     if key is not None:
         return key
     else:
@@ -177,7 +175,8 @@ def nostdout(stdout=True, stderr=True):
     savestderr = sys.stderr
     savestdout = sys.stdout
     class Devnull(object):
-        def write(self, _): pass
+        def write(self, _):
+            pass
     if stdout:
         sys.stdout = Devnull()
     if stderr:
@@ -195,4 +194,3 @@ def ensure_dir(path):
     except OSError:
         if not os.path.isdir(path):
             raise
-

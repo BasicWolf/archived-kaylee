@@ -229,6 +229,7 @@ class Kaylee(object):
             self.unsubscribe(node)
             raise e
 
+        #pylint: disable-msg=E1101
         if self.config.AUTO_GET_ACTION:
             return self.get_action(node.id)
         return self._json_action(ACTION_NOP)
@@ -269,14 +270,15 @@ class Config(DictAsObjectWrapper):
         super(Config, self).__init__(**kwargs)
         self._dirty = True
         self._cached_dict = {}
+        self._validate()
 
+    def _validate(self):
+        #pylint: disable-msg=E1101
         if not isinstance(self.AUTO_GET_ACTION, bool):
             raise InvalidConfigurationError('AUTO_GET_ACTION is not a boolean')
+        #pylint: disable-msg=E1101
         if not isinstance(self.SECRET_KEY, basestring):
             raise InvalidConfigurationError('SECRET_KEY is not a string object')
-        # TODO: verify configuration here
-        # TODO: make this object static, don't allow any changes
-        # E.g. create a util class...
 
     def __setattr__(self, name, value):
         if name != '_dirty':

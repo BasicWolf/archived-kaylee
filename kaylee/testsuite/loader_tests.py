@@ -12,6 +12,7 @@ from kaylee.contrib import (MemoryTemporalStorage,
                             MemoryPermanentStorage,
                             MemoryNodesRegistry)
 from kaylee.session import JSONSessionDataManager
+from kaylee.loader import Loader
 
 _test_REGISTRY = {
     'name' : 'MemoryNodesRegistry',
@@ -88,8 +89,8 @@ class KayleeLoaderTests(KayleeTest):
 
     def test_load_applications(self):
         settings = dict(TestSettingsWithApps.__dict__)
-        loader.refresh(settings)
-        apps = loader.load_applications(settings)
+        ldr = Loader(settings)
+        apps = ldr.applications
         self.assertIsInstance(apps, list)
         self.assertEqual(len(apps), 1)
 
@@ -102,14 +103,14 @@ class KayleeLoaderTests(KayleeTest):
 
     def test_load_registry(self):
         settings = dict(TestSettings.__dict__)
-        loader.refresh(settings)
-        reg = loader.load_registry(settings)
+        ldr = Loader(settings)
+        reg = ldr.registry
         self.assertIsInstance(reg, MemoryNodesRegistry)
 
     def test_load_session_data_manager(self):
         settings = dict(TestSettings.__dict__)
-        loader.refresh(settings)
-        sdm = loader.load_session_data_manager(settings)
+        ldr = Loader(settings)
+        sdm = ldr.session_data_manager
         self.assertIsInstance(sdm, JSONSessionDataManager)
 
     def test_load_kaylee(self):
