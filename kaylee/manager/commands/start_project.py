@@ -37,7 +37,7 @@ def start_project(opts):
     TEMPLATE_FILES = [
         #(template file in PROJECT_TEMPLATE_DIR,
         # destination file name with {project} macro replacement)
-        # e.g. ('client/project.coffee', 'client/{project_name}.coffee'),
+        # e.g. ('project.py', '{project_name}.py'),
         ('__init__.py', '__init__.py'),
         ('project.py', '{project_name}.py'),
         _client_template_files(opts)
@@ -48,7 +48,6 @@ def start_project(opts):
 
     # copy project template to cwd
     dest_path = os.path.join(os.getcwd(), project_file_name)
-    shutil.copytree(PROJECT_TEMPLATE_PATH, dest_path)
 
     render_args = {
         'project_file_name' : project_file_name,
@@ -58,21 +57,25 @@ def start_project(opts):
 
     for fname, out_fname_template in TEMPLATE_FILES:
         # render template
-        template_path = os.path.join(dest_path, fname)
+        template_path = os.path.join(PROJECT_TEMPLATE_PATH, fname)
         with open(template_path) as f:
             template_data = f.read()
         document_data = Template(template_data).render(**render_args)
 
-        # remove the template file
-        os.remove(template_path)
-
         # write to output file
         out_fname = out_fname_template.format(project_name=project_file_name)
         out_path = os.path.join(dest_path, out_fname)
+        dest_dir = os.path.dirname(out_path)
+        try:
+            os.makedirs(dest_dir)
+        except:
+            pass
+
         with open(out_path, 'w') as f:
             f.write(document_data)
+        shutil.copymode(template_path, out_path)
 
-    print('Kaylee project "{}" has been successfully started.'.format(
+    print('Kaylee project "{}" was created.'.format(
             opts.name))
 
 

@@ -16,8 +16,7 @@ Contrib also contains Flask and Django applications which support Kaylee :ref:`d
 Front-ends
 ----------
 
-The full example of using ``kaylee.contrib.frontends`` is available in
-:ref:`demo` application.
+**TODO:**
 
 Flask
 .....
