@@ -73,9 +73,11 @@ The algorithm of calculating PI is based on the theory explained in
           points_counter += 1
   pi = 4 * points_counter / random_points
 
-On server-side the results are collected and the mean value is calculated::
+On the server-side the results are collected and the mean value is
+calculated::
 
   pi = sum(pi_1, pi_2, ... pi_amount_of_tasks) / amount_of_tasks
+
 
 Continue with :ref:`tutorial-project-structure`.
 

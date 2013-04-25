@@ -12,6 +12,10 @@ class StartProjectCommand(LocalCommand):
     args = {
         'name' : {},
         ('-m', '--mode') : dict(choices=['manual', 'auto'], default='auto'),
+        ('-t', '--template') : dict(
+            choices=['js', 'coffee'], default='js',
+            help=("Defines client-side project's template programming "
+                  "language.")),
     }
 
     @staticmethod
@@ -34,10 +38,9 @@ def start_project(opts):
         #(template file in PROJECT_TEMPLATE_DIR,
         # destination file name with {project} macro replacement)
         # e.g. ('client/project.coffee', 'client/{project_name}.coffee'),
-
-        ('client/project.coffee', 'client/{project_name}.coffee'),
         ('__init__.py', '__init__.py'),
         ('project.py', '{project_name}.py'),
+        _client_template_files(opts)
     ]
 
     # build rendering environment constants
@@ -72,6 +75,14 @@ def start_project(opts):
     print('Kaylee project "{}" has been successfully started.'.format(
             opts.name))
 
+
+def _client_template_files(opts):
+    template = opts.template
+
+    if template == 'js':
+        return ('client/project.js', 'client/{project_name}.js')
+    elif template == 'coffee':
+        return ('client/project.coffee', 'client/{project_name}.coffee')
 
 def expand_project_mode_opt(opt):
     if opt == 'manual':

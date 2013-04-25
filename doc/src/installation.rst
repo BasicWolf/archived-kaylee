@@ -9,16 +9,22 @@ Pre-requirements
 Kaylee is based on the following technologies:
 
 * `Python 2.7 <http://python.org>`_. Kaylee is mainly written in Python.
+* `Werkzeug`_. The built-in test server utilizes the Werkzeug framework.
 * `CoffeeScript <http://coffeescript.org>`_. The client side of Kaylee is
-  written in CoffeeScript which compiles into JavaScript. It is strongly
-  recommended to write Kaylee projects in CoffeeScript.
-* HTML5 Web Workers. This technology enables executing JavaScript code in
-  parallel with the browser's main JavaScript event loop. Kaylee client
-  is able to execute user project's code in a web worker.
+  written in CoffeeScript which compiles into JavaScript. Yet, the user
+  is free to write the client-side of the applications in *vanilla
+  JavaScript*, *ClojureScript*, *JTalk*, *CoffeeScript* and any other
+  programming language that is translated (compiled) into JavaScript and
+  understood by the modern browsers.
+* `HTML5 Web Workers <http://en.wikipedia.org/wiki/Web_worker>`_. This
+  technology enables executing JavaScript code in parallel with the
+  browser's main JavaScript event loop. Kaylee client is able to execute
+  user project's code in a web worker.
 
 Kaylee also requires a server front-end to run. The out-of-the box support
 is available for:
 
+* `Werkzeug`_
 * `Flask`_
 * `Django`_
 
@@ -81,57 +87,11 @@ You can install the supported front-end(s) as well::
   $ pip install flask django
 
 
-.. _demo:
-
-Demo
-----
-To test whether Kaylee has been installed successfully, run the
-"Hash cracker" demo application. Download the `demo archive`_
-and extract it to a directory under the virtualenv in which
-Kaylee is installed (e.g. ``mykaylee/demo``).
-
-To start the demo, activate the virtual environment, run
-``python demo/run.py`` and open a browser page on the following URL:
-http://127.0.0.1:5000.
-
-If everything was successful you should see a page with a black rectangle
-in the middle which represents an "echo" console. Don't worry, it is a part
-of the demo, not Kaylee in general. In a few seconds something weird will
-be happening and at last you will see something like this:
-
-.. image:: _static/demo2.png
-   :align: center
-   :alt: Console with HashCracker application output.
-   :scale: 75 %
-   :width: 800
-   :height: 400
-
-Congratulations! You've just cracked a salted MD5 hash.
-If you scroll the console on the web page
-to the top, you'll see the steps of project's initialization process.
-Finally, check out the shell, you may notice a message from Kaylee
-which says what the cracked hash key was:
-
-.. code-block:: none
-
-  * Running on http://127.0.0.1:5000/
-  * Restarting with reloader
-  127.0.0.1 - "GET / HTTP/1.1" 200 -
-  127.0.0.1 - "GET /static/css/all.css HTTP/1.1" 200 -
-  127.0.0.1 - "GET /static/js/lib/jquery.min.js HTTP/1.1" 200 -
-  127.0.0.1 - "GET /static/js/kaylee/kaylee.js HTTP/1.1" 200 -
-  127.0.0.1 - "GET /static/js/kaylee/klconsole.js HTTP/1.1" 200 -
-  127.0.0.1 - "GET /static/js/kaylee/kldemo.js HTTP/1.1" 200 -
-  127.0.0.1 - "GET /kaylee/register HTTP/1.1" 200 -
-  127.0.0.1 - "POST /kaylee/apps/hash_cracker.1/subscribe/500315e30000f528764d HTTP/1.1" 200 -
-  127.0.0.1 - "GET /kaylee/actions/500315e30000f528764d HTTP/1.1" 200 -
-  127.0.0.1 - "POST /kaylee/actions/500315e30000f528764d HTTP/1.1" 200 -
-  127.0.0.1 - "POST /kaylee/actions/500315e30000f528764d HTTP/1.1" 200 -
-  The cracked hash key is: kl
-  ...
+|
 
 Continue with :ref:`basics`.
 
+.. _Werkzeug: http://werkzeug.pocoo.org/
 .. _Flask: http://flask.pocoo.org
 .. _Django: http://djangoproject.com
 .. _virtualenv: http://www.virtualenv.org

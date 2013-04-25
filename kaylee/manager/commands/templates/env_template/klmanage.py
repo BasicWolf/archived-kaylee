@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import os
 
 def main():
     from kaylee.manager import LocalCommandsManager

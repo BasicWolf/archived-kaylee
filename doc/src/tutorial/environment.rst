@@ -1,7 +1,25 @@
-.. _tutorial-project-structure:
+.. _tutorial-environment:
 
-Step 2: Project Structure
-=========================
+Step 2: Project Environment
+===========================
+
+Kaylee provides convenient projects management scripts which we are
+going to learn in this part of the tutorial. In the working directory run:
+
+.. code-block:: none
+
+  python kaylee-admin.py startenv myenv
+
+This will create a directory ``myenv`` with two files in it: 
+
+* ``klmanage.py`` - environment manager.
+* ``settings.py`` - environment settings.
+
+To start the *Monte-Carlo PI* tutorial project run:
+
+.. code-block:: none
+
+   python klmanage.py startproject monte_carlo_pi
 
 The ``demo/projects`` directory contains all the demo projects with
 their ``*.py``, ``*.coffee`` and ``*.js`` files. First of all create

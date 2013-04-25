@@ -17,7 +17,7 @@ repository: http://github.com/BasicWolf/kaylee-tutorial-app
 
    introduction
    requirements
-   structure
+   environment
    client_side
    server_side
    configuration

@@ -88,19 +88,36 @@ class KayleeCommandsManagerTests(KayleeTest):
         with nostdout():
             self.assertRaises(SystemExit, manager.parse, ['startproject'])
             self.assertRaises(SystemExit, manager.parse,
-                              ['startproject', 'PiCalc', '-m', 'x'])
+                              ['startproject', 'ProjectName', '-m', 'x'])
+            self.assertRaises(SystemExit, manager.parse,
+                              ['startproject', 'ProjectName', '-t', 'abc'])
 
         # test for invalid project name
         self.assertRaises(ValueError, manager.parse, ['startproject', '@$'])
         self.assertRaises(ValueError, manager.parse,
-                          ['startproject', 'Pi Calc'])
+                          ['startproject', 'Projec Name'])
 
         # test for generated project contents
         # create a project in a temporary current working dir
         tmpdir = tmp_chdir()
 
         with nostdout():
-            manager.parse(['startproject', 'Pi_Calc'])
+            manager.parse(['startproject', 'Monte_Carlo_Pi'])
+
+        files_to_validate = [
+            'monte_carlo_pi/client/monte_carlo_pi.js',
+            'monte_carlo_pi/__init__.py',
+            'monte_carlo_pi/monte_carlo_pi.py',
+        ]
+
+        self._validate_content(RES_DIR, tmpdir, files_to_validate)
+
+    def test_start_project_coffee(self):
+        manager = LocalCommandsManager()
+        tmpdir = tmp_chdir()
+
+        with nostdout():
+            manager.parse(['startproject', 'Pi_Calc', '-t', 'coffee'])
 
         files_to_validate = [
             'pi_calc/client/pi_calc.coffee',
@@ -108,14 +125,7 @@ class KayleeCommandsManagerTests(KayleeTest):
             'pi_calc/pi_calc.py',
         ]
 
-        for fpath in files_to_validate:
-            with open(_pjoin(tmpdir, fpath)) as f:
-                generated_file_contents = f.read()
-            with open(_pjoin(RES_DIR, fpath)) as f:
-                ground_truth_file_contents = f.read().rstrip('\n')
-
-            self.assertEqual(generated_file_contents,
-                             ground_truth_file_contents)
+        self._validate_content(RES_DIR, tmpdir, files_to_validate)
 
     def test_build(self):
         lmanager = LocalCommandsManager()
@@ -164,6 +174,18 @@ class KayleeCommandsManagerTests(KayleeTest):
             self.assertRaises(OSError, lmanager.parse, ['run'])
 
 
+    def _validate_content(self, gtdir, tmpdir, files_to_validate):
+        for fpath in files_to_validate:
+            with open(_pjoin(tmpdir, fpath)) as f:
+                generated_file_contents = f.read()
+            with open(_pjoin(gtdir, fpath)) as f:
+                ground_truth_file_contents = f.read().rstrip('\n')
+
+            self.assertEqual(generated_file_contents,
+                             ground_truth_file_contents)
+
+
+
 def _start_env(name='tenv'):
     amanager = AdminCommandsManager()
 
@@ -173,6 +195,8 @@ def _start_env(name='tenv'):
     with nostdout():
         amanager.parse(['startenv', 'tenv'])
     return env_path
+
+
 
 
 

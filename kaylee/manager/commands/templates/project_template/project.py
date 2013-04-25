@@ -1,5 +1,5 @@
 from kaylee.project import Project, {{ project_mode }}
-
+from kaylee.errors import InvalidResultError
 
 class {{project_class_name}}(Project):
     mode = {{ project_mode }}

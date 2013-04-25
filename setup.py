@@ -6,8 +6,7 @@ from distutils.command.install import INSTALL_SCHEMES
 from setuptools import setup, find_packages
 
 def fullsplit(path, result=None):
-    """
-    Split a pathname into components (the opposite of os.path.join) in a
+    """Split a pathname into components (the opposite of os.path.join) in a
     platform-neutral way.
     """
     if result is None:
@@ -59,12 +58,13 @@ setup(
     packages = packages,
     data_files = data_files,
     scripts = [
-        'kaylee/bin/kaylee-copy-client.py',
-        'kaylee/bin/kaylee-admin',
+        'kaylee/bin/kaylee-admin.py',
         ],
     zip_safe = False,
     platforms = 'any',
     install_requires=[
+        'Werkzeug>=0.6.1',
+        'Jinja2>=2.4',
         'pycrypto>=2.6',
     ],
 
