@@ -7,6 +7,7 @@
 ###
 
 import string
+import kaylee
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.util import (parse_timedelta, LazyObject, random_string,
                          get_secret_key, DictAsObjectWrapper,
@@ -14,6 +15,9 @@ from kaylee.util import (parse_timedelta, LazyObject, random_string,
 from kaylee import KayleeError
 
 class KayleeUtilTests(KayleeTest):
+    def setUp(self):
+        kaylee.setup(None)
+
     def test_parse_timedelta(self):
         t1 = parse_timedelta('2d')
         self.assertEqual(t1.days, 2)
@@ -72,7 +76,6 @@ class KayleeUtilTests(KayleeTest):
         lo.x_plus(40)
         self.assertEqual(lo.x, 50)
 
-
     def test_random_string(self):
         # test length
         s = random_string(5)
@@ -85,7 +88,6 @@ class KayleeUtilTests(KayleeTest):
         # test 'alphabet' argument
         s = random_string(10, alphabet='a')
         self.assertEqual(s, 'a'*10)
-
 
         # create sets for less resource-demanding testing
         _string_digits = set(string.digits)
@@ -122,7 +124,6 @@ class KayleeUtilTests(KayleeTest):
         s = random_string(1000, lowercase=False, uppercase=False, digits=False)
         for c in s:
             self.assertIn(c, special)
-
 
     def test_get_secret_key(self):
         sk = get_secret_key('abc')

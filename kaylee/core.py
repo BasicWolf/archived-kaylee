@@ -151,7 +151,8 @@ class Kaylee(object):
             client_config = node.subscribe(app)
             return json.dumps(client_config)
         except KeyError:
-            raise KayleeError('Application "{}" was not found'.format(app))
+            raise KayleeError('Application "{}" was not found'
+                              .format(application))
 
     @json_error_handler
     def unsubscribe(self, node_id):

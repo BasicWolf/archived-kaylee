@@ -152,15 +152,15 @@ def get_secret_key(key=None):
         return key
     else:
         from kaylee import kl
-        if kl._wrapped is not None:
-            key = kl.config.SECRET_KEY
-            if key is None:
-                raise KayleeError('SECRET_KEY configuration option is not'
-                                  ' defined.')
-            return key
-        else:
+        if kl._wrapped is None:
             raise KayleeError('Cannot locate a valid secret key because '
                               'Kaylee proxy object has not beet set up.')
+        key = kl.config.SECRET_KEY
+        if key is None:
+            raise KayleeError('SECRET_KEY configuration option is not '
+                              'defined.')
+        return key
+
 
 
 def is_strong_subclass(C, B):

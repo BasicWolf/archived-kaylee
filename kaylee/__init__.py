@@ -41,6 +41,6 @@ def setup(settings):
         # In this case we are trying to load Kaylee from the given settings
         kl._setup(loader.load(settings))
     else:
-        # In this case the user probably(!) asks us to "release" Kaylee
+        # In this case the user asks us to "release" Kaylee
         # instance from the proxy.
         kl._setup(None)

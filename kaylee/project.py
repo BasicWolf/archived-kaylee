@@ -33,6 +33,7 @@ class Project(object):
 
     :param script: The URL of the project's client part (\\*.js file).
     """
+    __metaclass__ = ABCMeta
 
     #: Indicates the mode in which project works on the client side.
     #: Available modes:
@@ -46,8 +47,6 @@ class Project(object):
     #:        mode = MANUAL_PROJECT_MODE
     #:
     #: For detailed description and usage see :ref:`projects_modes`.
-    __metaclass__ = ABCMeta
-
     mode = None
 
     def __init__(self, script, **kwargs):
