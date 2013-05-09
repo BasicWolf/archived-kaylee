@@ -47,14 +47,14 @@ points together have covered the while area of the square. The equation
 :eq:`firsteq` can now be approximated as follows:
 
 .. math::
-  \pi = 4 \frac{{\mathrm{Number\ of\ points\ in\ circle}}}
+  \pi = 4 \frac{{\mathrm{Number\ of\ points\ in\ the\ circle}}}
                {{\mathrm{Total\ number\ of\ points}}}
 
 The equation leads to an idea that the bigger the number of the
 generated random points is the better is the approximation of PI.
 That is the reason why distributed computation can be used to find
 the value of PI: if one node generates 10 million random random points
-in a second then ten nodes would generate billion random numbers in just
+in a second then ten nodes would generate billion random numbers just in
 10 seconds!
 
 Of course that can be done on your own computer! But this is just a small

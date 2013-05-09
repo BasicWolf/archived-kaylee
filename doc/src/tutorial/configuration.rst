@@ -3,34 +3,32 @@
 Step 5: Configuring the Application
 ===================================
 
-Kaylee has numerous ways of loading the configuration. One of the
-convenient ways is to load it from a ``.py`` file. The
-``demo/demo_config.py`` file used for demo configuration can be as well used
-to configure the tutorial application.
+Kaylee has numerous ways of loading the configuration. The tutorial app
+loads the configuration from the ``settings.py`` file.
 The applications are defined in a Python dictionary-like or JSON-like
 manner. First of all, the application needs a unique name and a description:
 
 .. code-block:: python
 
-  # demo/demo_config.py
+  # settings.py
 
-  app_mc_pi_1 = {
-      'name' : 'mc_pi.1',
+  app_mcpi = {
+      'name' : 'mcpi',
       'description' : 'Find value of Pi via the Monte-Carlo method.',
 
-      ...
+      # ...
   }
 
-Now, let's write the project configuration. Note, that we are still filling
-the ``app_mc_pi_1`` dict:
+Next, the project configuration (*Note, that we are still filling
+the* ``app_mc_pi_1`` *dict*):
 
 .. code-block:: python
 
   'project' : {
-      'name' : 'MonteCarloPiProject',
+      'name' : 'MonteCarloPi',
       'config' : {
-          'script' : '/static/js/projects/monte_carlo_pi/monte_carlo_pi.js',
-          'alea_script' : '/static/js/projects/monte_carlo_pi/alea.js',
+          'script' : '/static/montecarlopi/js/montecarlopi.js',
+          'alea_script' : '/static/montecarlopi/js/alea.js',
           'random_points' : 1000000,
           'tasks_count' : 10
       },
@@ -40,7 +38,7 @@ the ``app_mc_pi_1`` dict:
 
 The ``name`` entry indicates the Python class (:py:class:`kaylee.Project`
 subclass) used in the application. The ``config`` contains the keyword
-arguments passed to ``MonteCarloPiProject.__init__()``.
+arguments passed to ``MonteCarloPi.__init__()``.
 
 The final piece of the configuration is the controller. To keep things
 simple, let's use :py:class:`SimpleController
@@ -65,11 +63,13 @@ is a simple in-memory storage from the :ref:`kaylee.contrib <contrib>`
 package.
 
 At last, the application has to be added to the :config:`APPLICATIONS`
-configuration field. Please make sure that you have only the ``app_mc_pi_1``
+configuration field. Please make sure that you have only the ``app_mcpi``
 application in the list (this is due to the client-side demo behaviour which
 picks up the first available application).
 ::
 
-  APPLICATIONS = [app_mc_pi_1 ]
+  APPLICATIONS = [
+    app_mcpi,
+  ]
 
 Continue with  :ref:`tutorial-compiling`.

@@ -24,9 +24,9 @@ The client-side application configuration is a JSON object passed from the
 server to the client during the application initialization process.
 What kind of configuration does the tutorial app client requires?
 First of all, a Node should know the number of random points to be generated.
-Second, the project requires the ``alea.js`` library which can be loaded
-on-fly via :js:func:`kl.include`. Considering these requirements, the desired
-client-side configuration would be similar to::
+Second, the project requires the ``alea.js`` library by Johannes Baagøe which
+can be loaded on-fly via :js:func:`kl.include`. Considering these requirements,
+the desired client-side configuration would be similar to::
 
   {
       'alea_script' : '/static/projects/monte_carlo_pi/alea.js',
@@ -79,6 +79,6 @@ calculated::
   pi = sum(pi_1, pi_2, ... pi_amount_of_tasks) / amount_of_tasks
 
 
-Continue with :ref:`tutorial-project-structure`.
+Continue with :ref:`tutorial-environment`.
 
-.. _alea.js: http://baagoe.org/en/w/index.php/Better_random_numbers_for_javascript
+.. _alea.js: http://baagoe.org/

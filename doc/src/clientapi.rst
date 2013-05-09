@@ -14,7 +14,7 @@ A typical Kaylee project implements two callbacks in the ``pj`` namespce:
 
 .. js:function:: pj.init(app_config)
 
-   The callback is invoked only once, when the client-side of the
+   The callback which is invoked only once, when the client-side of the
    application is initialized. The long-term resources like scripts and
    stylesheets should be imported here (e.g. via :js:func:`kl.include`)
    then, the :js:attr:`kl.project_imported` event should be triggered,
@@ -44,10 +44,10 @@ A typical Kaylee project implements two callbacks in the ``pj`` namespce:
 
 .. js:function:: pj.process_task(task)
 
-   The callback is invoked every time a project receives a new task from
-   the server. To notify Kaylee that the task has been completed and the
-   results are available the :js:attr:`kl.task_completed` event should be
-   triggered.
+   The callback which is invoked every time a project receives a new task
+   from the server. To notify Kaylee that the task has been completed and
+   the results are available the :js:attr:`kl.task_completed` event should
+   be triggered.
 
    :param task: JSON-formatted task data.
 

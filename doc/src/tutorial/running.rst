@@ -7,7 +7,7 @@ Running the Application
 -----------------------
 
 If everything was configured and compiled properly, you should be able
-to run the MonteCarloPi application the same way as the :ref:`demo`:
+to run the MonteCarloPi application as follows:
 
 Run ``python demo/run.py`` and open http://127.0.0.1:5000.
 

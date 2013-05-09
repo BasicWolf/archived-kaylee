@@ -5,13 +5,14 @@ Step 4: Server-Side Code
 
 .. module:: kaylee
 
-Now, let's code a bit on the server-side. First, we need to import the
-required components of Kaylee::
+Now, let's code a bit on the server-side. The ``montecarlopi.py`` file
+already contains the skeleton of the project. First, the required
+components of Kaylee are imported::
 
-  # monte_carlo_pi.py
+  # montecarlopi.py
 
-  from kaylee import Project, InvalidResultError
   from kaylee.project import AUTO_PROJECT_MODE
+  from kaylee import Project, InvalidResultError
 
 Next, we have to subclass ``Project`` in order for Kaylee's importing system
 to recognize it::
@@ -22,13 +23,12 @@ to recognize it::
 
 :attr:`Project.mode` tells Kaylee how project tasks are going to be solved:
 automatically, possibly without a user being even notified about them
-or manually, involving a user. The ``MonteCarloPiProject`` is fully
-automated and requires no user input. Thus, its mode is set to
+or manually, involving the user. The ``MonteCarloPiProject`` is fully
+automated and requires no user interaction. Thus, its mode is set to
 :data:`AUTO_PROJECT_MODE <project.AUTO_PROJECT_MODE>`.
 
-Before continuing with the code, lets first think, what kind of
-configuration is required in order to initialize the project? As it was
-discussed in :ref:`tutorial-requirements` and implemented in
+What kind of configuration is required in order to initialize the project?
+As it was discussed in :ref:`tutorial-requirements` and implemented in
 :ref:`tutorial-client-side`, the configuration consists of the amount
 of random points, the URL of the ``alea.js`` script and the total amount
 of tasks to be supplied by the application::
@@ -50,7 +50,7 @@ are the attributes related to the amount of the supplied tasks.
 Next, let's implement two tasks supplying Kaylee Project methods::
 
   def __getitem__(self, task_id):
-      return { 'id' : task_id }
+      return {'id': task_id}
 
   def next_task(self):
       if self._tasks_counter < self.tasks_count:
