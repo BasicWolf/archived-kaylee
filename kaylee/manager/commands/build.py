@@ -57,8 +57,8 @@ def build_kaylee(opts):
     ]
 
     TEMPLATE_FILES = [
-        ('css/kldemo.css', 'kaylee/css/kldemo.css'),
-        ('js/kldemo.js', 'kaylee/js/kldemo.js'),
+        ('css/klconsole.css', 'kaylee/css/klconsole.css'),
+        ('js/kldebug.js', 'kaylee/js/kldebug.js'),
         ('js/jquery.min.js', 'kaylee/js/jquery.min.js'),
         ('index.html', 'index.html'),
     ]

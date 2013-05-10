@@ -1,9 +1,9 @@
-TARGETS = kldemo.js
+TARGETS = kldebug.js
 
 all: $(TARGETS)
 
-kldemo.js: kldemo.coffee
-	coffee -j kldemo.js -c kldemo.coffee klconsole.coffee
+kldebug.js: kldebug.coffee
+	coffee -j kldebug.js -c kldebug.coffee klconsole.coffee
 
 clean: 
-	rm -f *.js
+	rm -f kldebug.js

@@ -5,25 +5,25 @@ Step 4: Server-Side Code
 
 .. module:: kaylee
 
-Now, let's code a bit on the server-side. The ``montecarlopi.py`` file
-already contains the skeleton of the project. First, the required
-components of Kaylee are imported::
+The server-side skeleton of the tutorial project should be already
+available ``montecarlopi.py``. Let's go through it line-by line.
+First, the required components of Kaylee are imported::
 
   # montecarlopi.py
 
   from kaylee.project import AUTO_PROJECT_MODE
   from kaylee import Project, InvalidResultError
 
-Next, we have to subclass ``Project`` in order for Kaylee's importing system
-to recognize it::
+The ``MonteCarloPi`` subclasses :class:`kaylee.Project` in order for
+Kaylee importing system to recognize it::
 
-  class MonteCarloPiProject(Project):
+  class MonteCarloPi(Project):
       mode = AUTO_PROJECT_MODE
       ...
 
 :attr:`Project.mode` tells Kaylee how project tasks are going to be solved:
 automatically, possibly without a user being even notified about them
-or manually, involving the user. The ``MonteCarloPiProject`` is fully
+or manually, involving the user. The ``MonteCarloPi`` project is fully
 automated and requires no user interaction. Thus, its mode is set to
 :data:`AUTO_PROJECT_MODE <project.AUTO_PROJECT_MODE>`.
 
@@ -59,21 +59,21 @@ Next, let's implement two tasks supplying Kaylee Project methods::
       else:
           return None
 
-As you can see, :py:meth:`next_task() <Project.next_task>` in conjunction
-with :py:meth:`__getitem__() <Project.__getitem__>` returns a :class:`dict`
-with an obligatory ``id`` key and a value derived from ``self._tasks_counter``.
+The :py:meth:`next_task() <Project.next_task>` in conjunction
+with :py:meth:`__getitem__() <Project.__getitem__>` methods return a
+:class:`dict` with an obligatory ``id`` key and a value derived from
+``self._tasks_counter``.
 
-The next important part of every project is the :py:meth:`normalize_result
+The next important part of every project is the :py:meth:`normalize_result()
 <Project.normalize_result>` method. It is used to verify and normalize the results
 returned by the client. In this case the calculated value of PI is
-extracted from the parsed JSON object (dictionary)::
+extracted from the parsed JSON object (dict)::
 
   def normalize_result(self, task_id, data):
       try:
           return data['pi']
       except KeyError:
           raise InvalidResultError(data, '"pi" key was not found')
-
 
 And finally, :py:meth:`Project.result_stored` - is the callback invoked
 by the bound controller. This is a good place to check, whether all the
@@ -86,14 +86,13 @@ required data is collected hence, the application is completed::
 
 Ah, almost missed the part which announces the final results::
 
-
   def _announce_results(self, storage):
       mid_pi = (sum(res[0] for res in storage.values()) / len(storage))
       print('The  value of PI computed by the Monte-Carlo method is: {}'
             .format(mid_pi))
 
-That is the message you're going to see in Kaylee's front-end shell or
-logs.
+You would see the printed results in the shell from which Kaylee process
+is launched.
 
 The last step concerning the server side : the project has to be imported
 in ``__init__.py`` in order for Kaylee to be able to find it::

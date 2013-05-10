@@ -54,7 +54,7 @@ a task from the server. The ``task`` argument is a JSON-formatted task data:
 
 .. code-block:: js
 
-  pj.on_task_received = function(task) {
+  pj.process_task = function(task) {
       var random = new Alea(task.id);
       var counter = 0;
       for (var i = 0; i < pj.config.random_points; i++) {

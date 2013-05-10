@@ -23,10 +23,13 @@ A typical Kaylee project implements two callbacks in the ``pj`` namespce:
    .. code-block:: coffeescript
 
       pj.init = (app_config) ->
-          pj._config = app_config  # store config for later use
-          to_include = [app_config.some_script.js,
-                        app_config.another_script.js,
-                        app_config.some_stylesheet.css]
+          # store config for later use if needed
+          pj._config = app_config
+          to_include = [
+              app_config.some_script.js,
+              app_config.another_script.js,
+              app_config.some_stylesheet.css
+          ]
           kl.include(to_include, kl.project_imported.trigger)
 
    Or, if there are no resources to import:
@@ -36,7 +39,6 @@ A typical Kaylee project implements two callbacks in the ``pj`` namespce:
       pj.init = (app_config) ->
           pj._config = app_config
           kl.project_imported.trigger()
-
 
    :param app_config: JSON-formatted application configuration received
                       from the server-side of the project (see

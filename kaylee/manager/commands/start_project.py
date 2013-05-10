@@ -4,6 +4,7 @@ import shutil
 from jinja2 import Template
 from kaylee.manager import LocalCommand
 
+# TODO: check other commands for shutil.copytree
 
 class StartProjectCommand(LocalCommand):
     name = 'startproject'
