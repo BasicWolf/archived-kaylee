@@ -323,7 +323,7 @@ class Applications(object):
         return len(self._controllers)
 
     def __str__(self):
-        s = 'Kaylee applications({}):\n'.format(len(self))
+        s = 'Kaylee applications({}): '.format(len(self))
         s += '[{}]'.format(', '.join(cname for cname in self._controllers))
         return s
 

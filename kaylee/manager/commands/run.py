@@ -1,7 +1,19 @@
 from __future__ import print_function
 import os
+from argparse import ArgumentTypeError
 from kaylee.server import run
 from kaylee.manager import LocalCommand
+
+
+def port_type(port):
+    try:
+        p = int(port)
+        if not 1024 < p <= 65536:
+            msg = 'The available port numbers are in (1024..65536] range.'
+            raise ArgumentTypeError(msg)
+        return p
+    except ValueError:
+        raise '{} is not a valid port'.format(port)
 
 
 class RunCommand(LocalCommand):
@@ -10,14 +22,16 @@ class RunCommand(LocalCommand):
 
     args = {
         ('-s', '--settings-file') : dict(default='settings.py'),
-        ('-b', '--build-dir') : dict(default='_build')
+        ('-b', '--build-dir') : dict(default='_build'),
+        ('-p', '--port') : dict(default='5000',
+                                type=port_type,
+                                help='Web server port number')
     }
 
     @staticmethod
     def execute(opts):
         validate_settings_file(opts)
         validate_build_dir(opts)
-
         run_dev_server(opts)
 
 
@@ -38,4 +52,4 @@ def validate_build_dir(opts):
 
 def run_dev_server(opts):
     print('Launching Kaylee development/testing server...')
-    run(opts.settings_file, opts.build_dir)
+    run(opts.settings_file, opts.build_dir, port=opts.port)

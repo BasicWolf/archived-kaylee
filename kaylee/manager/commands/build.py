@@ -11,7 +11,7 @@ from kaylee.util import ensure_dir
 
 class BuildCommand(LocalCommand):
     name = 'build'
-    help = 'Build Kaylee environment'
+    help = 'Builds Kaylee environment'
 
     args = {
         ('-s', '--settings-file') : dict(default='settings.py'),

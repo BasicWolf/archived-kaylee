@@ -21,6 +21,7 @@ import random
 import string
 import importlib
 import contextlib
+import logging
 from datetime import timedelta
 from .errors import KayleeError
 
@@ -194,3 +195,7 @@ def ensure_dir(path):
     except OSError:
         if not os.path.isdir(path):
             raise
+
+def setup_logging():
+    log_format = '%(levelname)s[%(name)s]: %(message)s'
+    logging.basicConfig(level=logging.INFO, format=log_format)

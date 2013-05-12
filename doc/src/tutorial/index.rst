@@ -18,9 +18,7 @@ repository: http://github.com/BasicWolf/kaylee-tutorial-app
    client_side
    server_side
    configuration
-   compiling
-   running
-
+   building_and_running
 
 |
 |

@@ -156,9 +156,9 @@ class KayleeCommandsManagerTests(KayleeTest):
         kaylee_files_to_validate = [
             'js/kaylee.js',
             'js/klworker.js',
-            'js/kldemo.js',
+            'js/kldebug.js',
             'js/jquery.min.js',
-            'css/kldemo.css'
+            'css/klconsole.css'
         ]
         for fname in kaylee_files_to_validate:
             fpath = os.path.join(build_path, 'kaylee', fname)

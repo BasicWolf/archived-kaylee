@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 import argparse
 
+from kaylee.util import setup_logging
+
 import logging
 log = logging.getLogger(__name__)
+
 
 
 class BaseCommand(object):
@@ -67,13 +70,11 @@ class CommandsManager(object):
     @classmethod
     def execute_from_command_line(cls):
         setup_logging()
-        cls().parse()
-
-        # try:
-        #     cls().parse()
-        # except Exception as e:
-        #     print(e)
-        #     raise SystemExit(1)
+        try:
+            cls().parse()
+        except Exception as e:
+            print(e)
+            raise SystemExit(1)
 
 
 class AdminCommandsManager(CommandsManager):
@@ -86,5 +87,3 @@ class LocalCommandsManager(CommandsManager):
     command_class = LocalCommand
 
 
-def setup_logging():
-    logging.basicConfig(level=logging.DEBUG)

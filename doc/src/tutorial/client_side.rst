@@ -66,7 +66,7 @@ a task from the server. The ``task`` argument is a JSON-formatted task data:
       }
       var pi = 4 * counter / pj.config.random_points;
 
-      kl.task_completed({pi: pi});
+      kl.task_completed.trigger({pi: pi});
   };
 
 The same code in CoffeeScript:

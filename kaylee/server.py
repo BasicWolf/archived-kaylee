@@ -9,6 +9,7 @@ from werkzeug.serving import run_simple
 
 import kaylee
 from kaylee.contrib.frontends.werkzeug_frontend import make_url_map
+from kaylee.util import setup_logging
 
 import logging
 log = logging.getLogger(__name__)
@@ -25,7 +26,7 @@ def application(request):
         return e
 
 
-def run(settings_file, static_dir):
+def run(settings_file, static_dir, **kwargs):
     setup_logging()
     kaylee.setup(settings_file)
 
@@ -43,9 +44,7 @@ def run(settings_file, static_dir):
     # add static data middleware and start the server
     app = SharedDataMiddleware(application,
                                {'/static': static_dir })
-    run_simple('127.0.0.1', 5000, app, use_debugger=True,
-               use_reloader=True)
 
-
-def setup_logging():
-    logging.basicConfig(level=logging.INFO)
+    port = kwargs.get('port', 5000)
+    run_simple('127.0.0.1', port, app, use_debugger=True,
+               use_reloader=False)
