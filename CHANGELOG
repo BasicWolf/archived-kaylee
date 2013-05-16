@@ -1,8 +1,12 @@
 Changelog
 =========
 
-v0.3
-* Testsuite updated
+v0.3 (15.05.13)
+* New Kaylee environment and project management scripts.
+* New built-in debug server.
+* New native Werkzeug framework support.
+* Demo projects are now in a separate repository.
+* Updated unit tests.
 
 v0.2  (23.12.12)
 ----------------

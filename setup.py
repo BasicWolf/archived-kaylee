@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
 import os
-from distutils.command.install_data import install_data
-from distutils.command.install import INSTALL_SCHEMES
-from setuptools import setup, find_packages
+from setuptools import setup
 
 def fullsplit(path, result=None):
     """Split a pathname into components (the opposite of os.path.join) in a
@@ -18,50 +16,60 @@ def fullsplit(path, result=None):
         return result
     return fullsplit(head, [tail] + result)
 
-# Tell distutils not to put the data_files in platform-specific installation
-# locations. See here for an explanation:
-# http://groups.google.com/group/comp.lang.python/browse_thread/thread/35ec7b2fed36eaec/2105ee4d9e8042cb
-for scheme in INSTALL_SCHEMES.values():
-    scheme['data'] = scheme['purelib']
 
+EXCLUDE_FROM_PACKAGES = [
+    'kaylee.manager.commands.templates.project_template',
+    'kaylee.testsuite.command_manager_tests_resources.pi_calc',
+    'kaylee.testsuite.command_manager_tests_resources.monte_carlo_pi',
+]
+
+
+def is_package(package_name):
+    for pkg in EXCLUDE_FROM_PACKAGES:
+        if package_name.startswith(pkg):
+            return False
+    return True
 
 root_dir = os.path.dirname(__file__)
 if root_dir != '':
     os.chdir(root_dir)
+kaylee_dir = 'kaylee'
 
-packages = []
+# Compile the list of packages available, because distutils doesn't have
+# an easy way to do this.
+packages, package_data = [], {}
 
-for dirpath, dirnames, filenames in os.walk('kaylee'):
-    # Ignore dirnames that start with '.'
-    for i, dirname in enumerate(dirnames):
-        if dirname.startswith('.'): del dirnames[i]
-    if '__init__.py' in filenames:
-        packages.append('.'.join(fullsplit(dirpath)))
-    # elif filenames:
-        # data_files.append([dirpath, [os.path.join(dirpath, f)
-        #                              for f in filenames]])
-
-data_files = [
-    ('kaylee/client', ['kaylee/client/kaylee.js',
-                       'kaylee/client/klworker.js']),
-]
+for dirpath, dirnames, filenames in os.walk(kaylee_dir):
+    # Ignore PEP 3147 cache dirs and those whose names start with '.'
+    dirnames[:] = [d for d in dirnames if not d.startswith('.') and d != '__pycache__']
+    parts = fullsplit(dirpath)
+    package_name = '.'.join(parts)
+    if '__init__.py' in filenames and is_package(package_name):
+        packages.append(package_name)
+    elif filenames:
+        relative_path = []
+        while '.'.join(parts) not in packages:
+            relative_path.append(parts.pop())
+        relative_path.reverse()
+        path = os.path.join(*relative_path)
+        package_files = package_data.setdefault('.'.join(parts), [])
+        package_files.extend([os.path.join(path, f) for f in filenames])
 
 setup(
-    name = 'Kaylee',
-    version = '0.2',
-    url = 'http://github.com/basicwolf/kaylee',
-    license = 'LICENSE',
-    author = 'Zaur Nasibov',
-    author_email = 'zaur@znasibov.info',
-    description = 'A distributed and crowd computing framework',
-    long_description = open('README').read(),
-    packages = packages,
-    data_files = data_files,
-    scripts = [
+    name='Kaylee',
+    version='0.3a5',
+    url='http://github.com/basicwolf/kaylee',
+    license='LICENSE',
+    author='Zaur Nasibov',
+    author_email='zaur@znasibov.info',
+    description='A distributed and crowd computing framework',
+    long_description=open('README').read(),
+    packages=packages,
+    package_data=package_data,
+    zip_safe=False,
+    scripts=[
         'kaylee/bin/kaylee-admin.py',
-        ],
-    zip_safe = False,
-    platforms = 'any',
+    ],
     install_requires=[
         'Werkzeug>=0.6.1',
         'Jinja2>=2.4',

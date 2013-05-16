@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import stat
 import tempfile
 import shutil
 import imp
@@ -76,6 +77,8 @@ class KayleeCommandsManagerTests(KayleeTest):
             full_path = _pjoin(tmpdir, fpath)
             self.assertGreater(os.path.getsize(full_path), 0)
 
+        self.assertTrue(os.stat(_pjoin(tmpdir, 'klenv/klmanage.py')).st_mode
+                        & stat.S_IXUSR)
         # test settings contents
         settings_path = _pjoin(tmpdir, 'klenv/settings.py')
         settings = imp.load_source('tsettings', settings_path)

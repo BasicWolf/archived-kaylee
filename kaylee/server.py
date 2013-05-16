@@ -14,7 +14,7 @@ from kaylee.util import setup_logging
 import logging
 log = logging.getLogger(__name__)
 
-url_map = make_url_map(prefix='/kaylee')
+url_map = make_url_map(url_prefix='/kaylee')
 
 @Request.application
 def application(request):

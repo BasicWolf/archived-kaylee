@@ -39,8 +39,8 @@ def start_project(opts):
         #(template file in PROJECT_TEMPLATE_DIR,
         # destination file name with {project} macro replacement)
         # e.g. ('project.py', '{project_name}.py'),
-        ('__init__.py', '__init__.py'),
-        ('project.py', '{project_name}.py'),
+        ('__init__.py.template', '__init__.py'),
+        ('project.py.template', '{project_name}.py'),
         _client_template_files(opts)
     ]
 

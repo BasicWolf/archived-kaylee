@@ -1,4 +1,5 @@
 import os
+import stat
 import shutil
 from jinja2 import Template
 from kaylee.manager import AdminCommand
@@ -24,6 +25,7 @@ def start_env(opts):
     ENV_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__),
                                      ENV_TEMPLATE_DIR)
     TEMPLATE_FILES = [
+        # see notes about klmanage.py below
         ('klmanage.py', 'klmanage.py'),
         ('settings.py', 'settings.py'),
     ]
@@ -45,5 +47,7 @@ def start_env(opts):
         with open(out_path, 'w') as f:
             f.write(document_data)
 
+    # explicitly chmod +x klmanage.py
+    os.chmod(os.path.join(dest_path, 'klmanage.py'), stat.S_IXUSR)
     print('Kaylee environment "{}" has been successfully created.'
           .format(opts.name))

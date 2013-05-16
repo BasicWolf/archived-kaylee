@@ -2,7 +2,7 @@
 # when a result is accepted from a node.
 AUTO_GET_ACTION = True
 
-# An encrypion key used e.g. in session
+# The key used for session encryption etc.
 SECRET_KEY = '{{ SECRET_KEY }}'
 
 # A directory in which Kaylee searches for user projects

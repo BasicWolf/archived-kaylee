@@ -26,15 +26,15 @@ def kaylee_process_task(request, node_id):
 def json_response(s):
     return Response(s, mimetype = 'application/json')
 
-def make_url_map(prefix='/kaylee'):
+def make_url_map(url_prefix='/kaylee'):
     return Map([
-        Rule(prefix + '/register',
+        Rule(url_prefix + '/register',
              methods=['GET'],
              endpoint=kaylee_register_node),
-        Rule(prefix + '/apps/<app_name>/subscribe/<node_id>',
+        Rule(url_prefix + '/apps/<app_name>/subscribe/<node_id>',
              methods=['POST'],
              endpoint=kaylee_subscribe_node),
-        Rule(prefix + '/actions/<node_id>',
+        Rule(url_prefix + '/actions/<node_id>',
              methods=['GET', 'POST'],
              endpoint=kaylee_process_task)
     ])

@@ -12,7 +12,7 @@ klc.init = (id) ->
 
 klc.print = (s) ->
     $console.append("#{s}<br>")
-#   $console.scrollTop($console.prop('scrollHeight'))
+    $console.scrollTop($console.prop('scrollHeight'))
     return
 
 klc.set_style = (s) ->

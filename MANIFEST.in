@@ -1,2 +1,11 @@
 include README README.rst CHANGELOG LICENSE NOTICE AUTHORS run-tests.py
-recursive-include kaylee/client *.js
+include MANIFEST.in
+recursive-include kaylee/client *
+recursive-include kaylee/manager/commands/templates/build_template *
+recursive-include kaylee/manager/commands/templates/build_template/css *
+recursive-include kaylee/manager/commands/templates/build_template/js *
+recursive-include kaylee/manager/commands/templates/env_template *
+recursive-include kaylee/manager/commands/templates/project_template *.template
+recursive-include kaylee/manager/commands/templates/project_template/client *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
