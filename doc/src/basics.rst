@@ -49,28 +49,19 @@ A **task** is Python json-serializable dict with an obligatory ``id`` field,
 e.g.::
 
     task = {
-        'id' : 'a10',
-        'speed' : 50,
-        'distance' : 200,
+        'id': 'a10',
+        'speed': 50,
+        'distance': 200,
     }
 
 
-The ``id`` field is used to generate the same task if required. This means
-that the following code::
+The ``id`` field is used to generate the same task if required.
+For example::
 
-  t1 = project.next_task()
-  t2 = project[t1['id']]
+  t1 = project.next_task() # t1 = {'id': 10, 'somedata': 'somevalue'}
+  t2 = project[t1['id']]   # t2 = {'id': 10, 'somedata': 'somevalue'}
   t1 == t2
-
-should always be true, for the tasks that contain no random data.
-In any case ``t1 == t2`` or ``t1 != t2`` (because the random factors of
-the tasks differ), the normalized results should always agree::
-
-  # t1['id'] == t2'['id']
-  # but for instance t1 != t2, as t1['c'] == 10, t2['c'] == 20
-  r1 = project.normalize(result_of_t1)
-  r2 = project.normalize(result_of_t2)
-  r1 == r2 # should be True, for tasks with the similar ID.
+  # >>> True
 
 The client-side of a project contains the code which actually solves the
 given tasks (see :ref:`clientapi`). In general a user has to implement
@@ -81,30 +72,28 @@ two simple callbacks in order to complete the project's client side
 
   pj.init = (app_config) ->
       # Initialize the project, import additional resources
-      # (scripts, stylesheets) if any and notify Kaylee that
-      # the project has been imported successfully.
-
+      # (scripts, stylesheets) if any...
+      # Notify Kaylee that the project has been imported successfully.
       kl.project_imported.trigger()
       return
 
   pj.process_task = (task) ->
-      # Process the task, generate solution and notify Kaylee that
+      # Process the task generate the result and notify Kaylee that
       # the task has been completed.
+      result =
+          param: value,
+          other_param: other_value,
+          # ...
 
-      result = {
-          'param' : value,
-          'other_param' : other_value,
-          ...
-      }
       kl.task_completed.trigger(result)
       return
 
-To keep things simple the data between client and server is transferred
-in JSON format only.
+To keep things simple the data between the client and the server is
+transferred in JSON format only.
 
 Finally, a project has to `verify` and `normalize` the results. This is done
 via the :meth:`Project.normalize_result(task_id, result)
-<Project.normalize_result>` routine. `Verifying` a result means confirming
+<Project.normalize_result>` method. `Verifying` a result means confirming
 that it is correct, while `normalizing` a result means converting it to a
 common form which has enough information to be stored to the permanent
 results storage. For example::
@@ -124,7 +113,7 @@ results storage. For example::
 Controllers
 -----------
 A controller is an object which stands between the outer Kaylee interface
-and a project. A controller keeps the track of subscribed nodes, decides
+and a project. A controller keeps the track of the subscribed nodes, decides
 what kind of task every node will recieve and how the results are collected.
 
 Why do we need controllers at all? Why not communicate directly with the

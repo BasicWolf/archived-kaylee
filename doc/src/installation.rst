@@ -11,7 +11,7 @@ Kaylee is based on the following technologies:
 * `Python 2.7 <http://python.org>`_. Kaylee is mainly written in Python.
 * `Werkzeug`_. The built-in test server utilizes the Werkzeug framework.
 * `CoffeeScript <http://coffeescript.org>`_. The client side of Kaylee is
-  written in CoffeeScript which compiles into JavaScript. Yet, the user
+  written in CoffeeScript which compiles into JavaScript. Yet, a user
   is free to write the client-side of the applications in *vanilla
   JavaScript*, *ClojureScript*, *JTalk*, *CoffeeScript* and any other
   programming language that is translated (compiled) into JavaScript and

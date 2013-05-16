@@ -4,7 +4,8 @@ Step 3: Client-Side Code
 ========================
 
 As you may already know, the client-side of Kaylee is written in
-`CoffeeScript <http://coffeescript.org/>`_. But there is nothing that
+`CoffeeScript <http://coffeescript.org/>`_. Kaylee projects' client-side
+code can be written in CoffeeScript as well. But there is nothing that
 prevents you from writing the project in pure JavaScript!
 The following page contains the client-side code of the tutorial app
 in both CoffeeScript and JavaScript so that you can "feel the difference".
@@ -20,6 +21,7 @@ script is fully loaded:
 
 .. code-block:: js
 
+  // JavaScript
   var pj = kl.pj;
 
   pj.init = function(app_config) {
@@ -27,10 +29,9 @@ script is fully loaded:
       kl.include(app_config.alea_script, kl.project_imported.trigger);
   };
 
-The same code in CoffeeScript:
-
 .. code-block:: coffeescript
 
+  # CoffeeScript
   pj = kl.pj
 
   pj.init = (app_config) ->
@@ -54,6 +55,7 @@ a task from the server. The ``task`` argument is a JSON-formatted task data:
 
 .. code-block:: js
 
+  // JavaScript
   pj.process_task = function(task) {
       var random = new Alea(task.id);
       var counter = 0;
@@ -69,10 +71,10 @@ a task from the server. The ``task`` argument is a JSON-formatted task data:
       kl.task_completed.trigger({pi: pi});
   };
 
-The same code in CoffeeScript:
 
 .. code-block:: coffeescript
 
+  # CoffeeScript
   pj.process_task = (task) ->
       random = new Alea(task.id)
       counter = 0

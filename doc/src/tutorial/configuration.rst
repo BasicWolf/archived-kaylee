@@ -16,11 +16,16 @@ manner. First of all, the application needs a unique name and a description:
       'name' : 'mcpi',
       'description' : 'Find value of Pi via the Monte-Carlo method.',
 
-      # ...
+      'project' : {
+          # ...
+      }
+
+      'controller' : {
+          # ...
+      }
   }
 
-Next, the project configuration (*Note, that we are still filling
-the* ``app_mc_pi_1`` *dict*):
+Next, the project configuration:
 
 .. code-block:: python
 
@@ -40,11 +45,10 @@ The ``name`` entry indicates the Python class (:py:class:`kaylee.Project`
 subclass) used in the application. The ``config`` contains the keyword
 arguments passed to ``MonteCarloPi.__init__()``.
 
-The final piece of the configuration is the controller. To keep things
-simple, let's use :py:class:`SimpleController
-<kaylee.contrib.SimpleController>` from ``kaylee.contrib``. Note that this
-is also the part of the application configuration and recides
-inside the ``app_mc_pi_1`` dictionary:
+The final piece of the configuration is the controller. Let's use
+the basic
+:py:class:`SimpleController <kaylee.contrib.SimpleController>` from
+``kaylee.contrib``:
 
 .. code-block:: python
 
@@ -69,7 +73,45 @@ picks up the first available application).
 ::
 
   APPLICATIONS = [
-    app_mcpi,
+      app_mcpi,
   ]
 
-Continue with  :ref:`tutorial-compiling`.
+
+The application configuration in one piece
+------------------------------------------
+
+::
+
+  app_mcpi = {
+      'name' : 'mcpi',
+      'description' : 'Find value of Pi via the Monte-Carlo method.',
+
+      'project' : {
+          'name' : 'MonteCarloPi',
+          'config' : {
+              'script' : '/static/montecarlopi/js/montecarlopi.js',
+              'alea_script' : '/static/montecarlopi/js/alea.js',
+              'random_points' : 1000000,
+              'tasks_count' : 10
+          },
+      },
+
+      'controller' : {
+          'name' : 'SimpleController',
+
+          'permanent_storage' : {
+              'name' : 'MemoryPermanentStorage',
+          }
+      }
+  }
+
+
+  # Add the applications' configurations here
+  APPLICATIONS = [
+      app_mcpi,
+  ]
+
+
+
+
+Continue with  :ref:`tutorial-building-and-running`.

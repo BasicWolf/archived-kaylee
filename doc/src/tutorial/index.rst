@@ -6,8 +6,8 @@ The easiest way to start with Kaylee is to dive into a simple distributed
 computing application. In this tutorial we are going to write an application
 which computes the value of PI via the **Monte Carlo method**.
 
-The full source code of the tutorial application is available in the following
-repository: http://github.com/BasicWolf/kaylee-tutorial-app
+The full source code of the tutorial application is available in the Kaylee
+demo projects: http://github.com/BasicWolf/kaylee-demo-projects
 
 .. toctree::
    :maxdepth: 1

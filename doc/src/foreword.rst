@@ -15,8 +15,8 @@ a special software which a user has to download, install and keep up running.
 But what if you don't want or not allowed to install the required software?
 What if your platform is not supported, like if you had a smartphone with
 more performance than a 5-year old laptop?
-Wouldn't it be wonderful if one could open a page in a browser and a second later
-a volunteer computing process would start? Moreover, wouldn't it be
+Wouldn't it be wonderful if one could open a page in a browser and a second
+later a volunteer computing process would start? Moreover, wouldn't it be
 great if the browser was looking for the HIV or cancer cure in background,
 while you've been reading your favourite news website?
 
@@ -24,7 +24,7 @@ With those ideas in mind I started developing a Python/JavaScript framework
 but... seems it was too early for me in 2008, as I had just started learning
 Python and was not experienced in writing *good* code at all.
 
-Four years passed and I have returned to the idea of browser-based volunteer
+Four years passed and I have returned to the idea of a browser-based crowd
 computing. Let me describe the situation, as it is in year 2012:
 
 * PCs are still alive but people prefer laptops to the old-fashioned towers.

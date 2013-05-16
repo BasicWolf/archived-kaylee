@@ -6,7 +6,7 @@ Step 4: Server-Side Code
 .. module:: kaylee
 
 The server-side skeleton of the tutorial project should be already
-available ``montecarlopi.py``. Let's go through it line-by line.
+available in ``montecarlopi.py``. Let's go through it line-by line.
 First, the required components of Kaylee are imported::
 
   # montecarlopi.py
@@ -22,7 +22,7 @@ Kaylee importing system to recognize it::
       ...
 
 :attr:`Project.mode` tells Kaylee how project tasks are going to be solved:
-automatically, possibly without a user being even notified about them
+automatically, without a user being even notified about them
 or manually, involving the user. The ``MonteCarloPi`` project is fully
 automated and requires no user interaction. Thus, its mode is set to
 :data:`AUTO_PROJECT_MODE <project.AUTO_PROJECT_MODE>`.
@@ -34,7 +34,7 @@ of random points, the URL of the ``alea.js`` script and the total amount
 of tasks to be supplied by the application::
 
   def __init__(self, *args, **kwargs):
-      super(MonteCarloPiProject, self).__init__(*args, **kwargs)
+      super(MonteCarloPi, self).__init__(*args, **kwargs)
       self.client_config.update({
           'alea_script'   : kwargs['alea_script'],
           'random_points' : kwargs['random_points']

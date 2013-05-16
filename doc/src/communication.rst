@@ -15,7 +15,7 @@ with a mandatory ``id`` key in it::
   { 'id' : 't1' }
 
 .. note:: The value of ``task['id']`` is always automatically converted to
-          *string*.
+          *string* and stripped.
 
 The result returned by the client side of a project should be also formatted
 in a dict-like (JavaScript object) manner::

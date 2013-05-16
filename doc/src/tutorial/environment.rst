@@ -8,7 +8,7 @@ going to learn in this part of the tutorial. In the working directory run:
 
 .. code-block:: none
 
-  python kaylee-admin.py startenv myenv
+  $ kaylee-admin.py startenv myenv
 
 This will create a directory ``myenv`` with two files in it:
 
@@ -19,7 +19,7 @@ To start the *Monte-Carlo PI* tutorial project run:
 
 .. code-block:: none
 
-   python klmanage.py startproject MonteCarloPi
+   $ ./klmanage.py startproject MonteCarloPi
 
 This will create a directory with a project skeleton:
 

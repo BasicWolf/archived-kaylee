@@ -16,8 +16,6 @@ Contrib also contains Flask and Django applications which support Kaylee :ref:`d
 Front-ends
 ----------
 
-**TODO:**
-
 Flask
 .....
 
@@ -37,19 +35,26 @@ Django
 ......
 
 Kaylee provides Django ``application`` which can be used in the following
-fashion:
-
-.. code-block:: python
+fashion::
 
   # Project's urls.py
 
   from django.conf.urls import patterns, include, url
 
   urlpatterns = patterns('',
-      ...,
+      # ...,
       url(r'^kaylee/', include('kaylee.contrib.frontends.django_frontend.urls'))
   )
 
+
+Werkzeug
+........
+
+Kaylee provides Werkzeug ``werkzeug.routing.Map`` object as follows::
+
+  from kaylee.contrib.frontends.werkzeug_frontend import make_url_map
+
+  my_map = make_url_map(url_prefix='/kaylee')
 
 
 Controllers
