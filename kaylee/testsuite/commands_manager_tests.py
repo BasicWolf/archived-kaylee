@@ -78,7 +78,7 @@ class KayleeCommandsManagerTests(KayleeTest):
             self.assertGreater(os.path.getsize(full_path), 0)
 
         self.assertTrue(os.stat(_pjoin(tmpdir, 'klenv/klmanage.py')).st_mode
-                        & stat.S_IXUSR)
+                        & stat.S_IEXEC)
         # test settings contents
         settings_path = _pjoin(tmpdir, 'klenv/settings.py')
         settings = imp.load_source('tsettings', settings_path)

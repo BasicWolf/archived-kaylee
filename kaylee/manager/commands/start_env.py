@@ -48,6 +48,9 @@ def start_env(opts):
             f.write(document_data)
 
     # explicitly chmod +x klmanage.py
-    os.chmod(os.path.join(dest_path, 'klmanage.py'), stat.S_IXUSR)
+    klmanage_path = os.path.join(dest_path, 'klmanage.py')
+    st = os.stat(klmanage_path)
+    os.chmod(klmanage_path, st.st_mode | stat.S_IEXEC)
+
     print('Kaylee environment "{}" has been successfully created.'
           .format(opts.name))
