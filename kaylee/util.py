@@ -182,9 +182,7 @@ def nostdout(stdout=True, stderr=True):
         sys.stdout = Devnull()
     if stderr:
         sys.stderr = Devnull()
-
     yield
-
     sys.stdout = savestdout
     sys.stderr = savestderr
 

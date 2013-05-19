@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
 import stat
 import tempfile
 import shutil
@@ -72,7 +73,6 @@ class KayleeCommandsManagerTests(KayleeTest):
             'klenv/klmanage.py',
             'klenv/settings.py',
         ]
-
         for fpath in files_to_validate:
             full_path = _pjoin(tmpdir, fpath)
             self.assertGreater(os.path.getsize(full_path), 0)
@@ -84,6 +84,18 @@ class KayleeCommandsManagerTests(KayleeTest):
         settings = imp.load_source('tsettings', settings_path)
         self.assertEqual(settings.PROJECTS_DIR,
                          _pjoin(tmpdir, 'klenv'))
+
+        # test 'startenv .' case
+        tmpdir = tmp_chdir()
+        with nostdout():
+            manager.parse(['startenv', '.'])
+        files_to_validate = [
+            'klmanage.py',
+            'settings.py',
+        ]
+        for fpath in files_to_validate:
+            full_path = _pjoin(tmpdir, fpath)
+            self.assertGreater(os.path.getsize(full_path), 0)
 
 
     def test_start_project(self):
@@ -135,14 +147,23 @@ class KayleeCommandsManagerTests(KayleeTest):
         env_path = _start_env()
         os.chdir(env_path)
 
-        # copy a ready test 'pi calc' project to the environment
-        shutil.copytree(_pjoin(RES_DIR, 'pi_calc'),
-                        _pjoin(env_path, 'pi_calc'))
+        # copy a test 'pi calc' project to the environment
+        res_path = _pjoin(RES_DIR, 'pi_calc')
+        dest_path = _pjoin(env_path, 'pi_calc')
+        shutil.copytree(res_path, dest_path)
+
+        # test plain is_kaylee_project_directory()
+        sys.path.insert(0, env_path)
+        from kaylee.manager.commands.build import is_kaylee_project_directory
+        self.assertTrue(is_kaylee_project_directory(res_path))
+        self.assertFalse(is_kaylee_project_directory('/etc'))
+        del sys.path[0]
 
         with nostdout():
             lmanager.parse(['build'])
 
         build_path = os.path.join(env_path, '_build')
+        self.assertTrue(os.path.exists(build_path), build_path)
         project_files_to_validate = [
             'js/pi_calc.js',
             'css/pi_calc.css',
@@ -154,7 +175,7 @@ class KayleeCommandsManagerTests(KayleeTest):
         ]
         for fname in project_files_to_validate:
             fpath = os.path.join(build_path, 'pi_calc', fname)
-            self.assertTrue(os.path.exists(fpath))
+            self.assertTrue(os.path.exists(fpath), fpath)
 
         kaylee_files_to_validate = [
             'js/kaylee.js',
@@ -166,7 +187,6 @@ class KayleeCommandsManagerTests(KayleeTest):
         for fname in kaylee_files_to_validate:
             fpath = os.path.join(build_path, 'kaylee', fname)
             self.assertTrue(os.path.exists(fpath))
-
 
     def test_run(self):
         env_path = _start_env()

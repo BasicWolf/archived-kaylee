@@ -1,6 +1,5 @@
 import os
 import stat
-import shutil
 from jinja2 import Template
 from kaylee.manager import AdminCommand
 from kaylee.util import random_string
@@ -19,7 +18,6 @@ class StartEnvCommand(AdminCommand):
         start_env(opts)
 
 
-
 def start_env(opts):
     ENV_TEMPLATE_DIR = 'templates/env_template'
     ENV_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__),
@@ -30,14 +28,17 @@ def start_env(opts):
         ('settings.py', 'settings.py'),
     ]
 
-    dest_path = os.path.join(os.getcwd(), opts.name)
+    if opts.name == '.':
+        dest_path = os.getcwd()
+    else:
+        dest_path = os.path.join(os.getcwd(), opts.name)
+        os.mkdir(dest_path)
 
     render_args = {
         'SECRET_KEY' : random_string(32),
         'PROJECTS_DIR' : dest_path,
     }
 
-    shutil.copytree(ENV_TEMPLATE_PATH, dest_path)
     for fname, out_fname in TEMPLATE_FILES:
         template_path = os.path.join(ENV_TEMPLATE_PATH, fname)
         with open(template_path) as f:
@@ -52,5 +53,6 @@ def start_env(opts):
     st = os.stat(klmanage_path)
     os.chmod(klmanage_path, st.st_mode | stat.S_IEXEC)
 
-    print('Kaylee environment "{}" has been successfully created.'
-          .format(opts.name))
+    _dirname = 'current directory' if opts.name == '.' else opts.name
+    print('Kaylee environment has been successfully created in {}'
+          .format(_dirname))

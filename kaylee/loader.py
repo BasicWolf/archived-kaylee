@@ -151,7 +151,7 @@ class Loader(object):
     def _update_classes(self, module):
         """Updates the _classes field by the classes found in
         the module."""
-        classes_from_module = self.get_classes_from_module(module)
+        classes_from_module = get_classes_from_module(module)
         for base_class in self._loadable_base_classes:
             # update _classes[base_class] with
             # { class_name : class } pairs, where `class` is a subclass of
@@ -192,10 +192,10 @@ class Loader(object):
                     **conf['controller'].get('config', {}))
         return cobj
 
-    @staticmethod
-    def get_classes_from_module(module):
-        return [attr for attr in module.__dict__.values()
-                if inspect.isclass(attr)]
+
+def get_classes_from_module(module):
+    return [attr for attr in module.__dict__.values()
+            if inspect.isclass(attr)]
 
 def find_packages(path):
     for sub_dir in os.listdir(path):

@@ -1,11 +1,13 @@
 from __future__ import print_function
 import os
+import sys
 import imp
+import importlib
 import subprocess
 import shutil
 import kaylee
 from kaylee.manager import LocalCommand
-from kaylee.loader import find_packages
+from kaylee.loader import find_packages, get_classes_from_module
 from kaylee.util import ensure_dir
 
 
@@ -86,20 +88,13 @@ def build_projects(settings, opts):
         data_handler,
     ]
 
-    # os.walk for files with by-extension sorting
-    def _fwalk(path):
-        sort_key = lambda fname: fname.rsplit()[-1]
-        #pylint: disable-msg=W0612
-        #W0612: Unused variable 'dirs'
-        for root, dirs, files in os.walk(path):
-            for fname in sorted(files, key=sort_key):
-                yield os.path.join(root, fname)
+    # Make sure that the command is able to import the projects'
+    # Python packages.
+    sys.path.insert(0, settings.PROJECTS_DIR)
 
     for pkg_dir in find_packages(settings.PROJECTS_DIR):
-        client_dir = os.path.join(pkg_dir, 'client')
-        if not os.path.isdir(client_dir):
-            break
-
+        if not is_kaylee_project_directory(pkg_dir):
+            continue
         print('* Building {}...'.format(pkg_dir))
         dest_dir = os.path.join(opts.build_dir, pkg_dir)
         opts.dest_dir = dest_dir
@@ -108,11 +103,27 @@ def build_projects(settings, opts):
             shutil.rmtree(dest_dir)
         # build project client by applying appropriate
         # file handlers
-        for fpath in _fwalk(client_dir):
+        client_dir = os.path.join(pkg_dir, 'client')
+        for fname in os.listdir(client_dir):
+            fpath = os.path.join(client_dir, fname)
+            if not os.path.isfile(fpath):
+                continue
             for handler in filetype_handlers:
                 if handler(fpath, opts) == True:
                     break
 
+def is_kaylee_project_directory(path):
+    # check if 'client' directory exists
+    client_dir = os.path.join(path, 'client')
+    if not os.path.isdir(client_dir):
+        return False
+    # check for kaylee.Project subclass
+    package_name = path.rsplit('/')[-1]
+    pymod = importlib.import_module(package_name)
+    for cls in get_classes_from_module(pymod):
+        if issubclass(cls, kaylee.project.Project):
+            return True
+    return False
 
 def coffee_handler(fpath, opts):
     if not fpath.endswith('.coffee'):
