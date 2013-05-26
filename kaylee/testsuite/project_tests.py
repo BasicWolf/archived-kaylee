@@ -12,27 +12,23 @@ class ProjectTests(KayleeTest):
             def __init__(self):
                 super(MyProjectNoMode, self).__init__("/script.js")
 
-        self.assertRaises(ValueError, MyProjectNoMode)
+        self.assertRaises(TypeError, MyProjectNoMode)
 
         # -- test with invalid mode
         class MyProjectInvalidMode(NonAbstractProject):
-            mode = 'abc'
             def __init__(self):
-                super(MyProjectInvalidMode, self).__init__("/script.js")
+                super(MyProjectInvalidMode, self).__init__("/script.js", mode='abc')
         self.assertRaises(ValueError, MyProjectInvalidMode)
 
         # -- test with valid modes
         class MyProjectWithAutoMode(NonAbstractProject):
-            mode = AUTO_PROJECT_MODE
             def __init__(self):
-                super(MyProjectWithAutoMode, self).__init__("/script.js")
-                Project.__init__(self, "/script.js")
+                super(MyProjectWithAutoMode, self).__init__("/script.js", AUTO_PROJECT_MODE)
         MyProjectWithAutoMode()
 
         class MyProjectWithManualMode(NonAbstractProject):
-            mode = MANUAL_PROJECT_MODE
             def __init__(self):
-                super(MyProjectWithManualMode, self).__init__("/script.js")
+                super(MyProjectWithManualMode, self).__init__("/script.js", MANUAL_PROJECT_MODE)
         MyProjectWithManualMode()
 
 

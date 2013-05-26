@@ -3,12 +3,14 @@ from kaylee.project import AUTO_PROJECT_MODE
 from kaylee.errors import InvalidResultError
 
 class AutoTestProject(Project):
-    mode = AUTO_PROJECT_MODE
     RESULT_KEY = 'res'
     TASKS_COUNT = 10
 
     def __init__(self, *args, **kwargs):
-        super(AutoTestProject, self).__init__(script = '', *args, **kwargs)
+        super(AutoTestProject, self).__init__(script='',
+                                              mode=AUTO_PROJECT_MODE,
+                                              *args,
+                                              **kwargs)
         self.task_id = 0
         self.tasks_count = kwargs.get('tasks_count', self.TASKS_COUNT)
         self.client_config.update({'test_key' : 'test_value'})

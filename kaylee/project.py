@@ -32,28 +32,23 @@ class Project(object):
     """Kaylee Projects abstract base class.
 
     :param script: The URL of the project's client part (\\*.js file).
+    :param mode: defines :attr:`Project.mode <kaylee.Project.mode>`.
     """
     __metaclass__ = ABCMeta
 
-    #: Indicates the mode in which project works on the client side.
-    #: Available modes:
-    #:
-    #: * :data:`AUTO_PROJECT_MODE <kaylee.project.AUTO_PROJECT_MODE>`
-    #: * :data:`MANUAL_PROJECT_MODE <kaylee.project.MANUAL_PROJECT_MODE>`
-    #:
-    #: The mode must be set in a project class explicitly e.g.::
-    #:
-    #:    class MyProject(Project):
-    #:        mode = MANUAL_PROJECT_MODE
-    #:
-    #: For detailed description and usage see :ref:`projects_modes`.
-    mode = None
-
-    def __init__(self, script, **kwargs):
+    def __init__(self, script, mode, **kwargs):
         # make sure that mode has been defined
-        if self.mode not in [AUTO_PROJECT_MODE, MANUAL_PROJECT_MODE]:
-            raise ValueError('{}.mode is wrong or not defined'.format(
-                    self.__class__.__name__))
+
+        #: Indicates the mode in which project works on the client side.
+        #: Available modes:
+        #:
+        #: * :data:`AUTO_PROJECT_MODE <kaylee.project.AUTO_PROJECT_MODE>`
+        #: * :data:`MANUAL_PROJECT_MODE <kaylee.project.MANUAL_PROJECT_MODE>`
+        #:
+        #: For detailed description and usage see :ref:`projects_modes`.
+        if mode not in [AUTO_PROJECT_MODE, MANUAL_PROJECT_MODE]:
+            raise ValueError('Wrong project mode: {}'.format(mode))
+        self.mode = mode
 
         #: A dictionary which contains the configuration passed to the
         #: client-side of the project in :js:func:`pj.init`.

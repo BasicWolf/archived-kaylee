@@ -2,10 +2,9 @@ from kaylee.project import Project, AUTO_PROJECT_MODE
 from kaylee.errors import InvalidResultError
 
 class Pi_Calc(Project):
-    mode = AUTO_PROJECT_MODE
 
     def __init__(self, *args, **kwargs):
-        super(Pi_Calc, self).__init__(*args, **kwargs)
+        super(Pi_Calc, self).__init__(mode=AUTO_PROJECT_MODE, *args, **kwargs)
 
         self.client_config.update({
 
