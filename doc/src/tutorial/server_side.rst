@@ -18,14 +18,7 @@ The ``MonteCarloPi`` subclasses :class:`kaylee.Project` in order for
 Kaylee importing system to recognize it::
 
   class MonteCarloPi(Project):
-      mode = AUTO_PROJECT_MODE
       ...
-
-:attr:`Project.mode` tells Kaylee how project tasks are going to be solved:
-automatically, without a user being even notified about them
-or manually, involving the user. The ``MonteCarloPi`` project is fully
-automated and requires no user interaction. Thus, its mode is set to
-:data:`AUTO_PROJECT_MODE <project.AUTO_PROJECT_MODE>`.
 
 What kind of configuration is required in order to initialize the project?
 As it was discussed in :ref:`tutorial-requirements` and implemented in
@@ -34,7 +27,7 @@ of random points, the URL of the ``alea.js`` script and the total amount
 of tasks to be supplied by the application::
 
   def __init__(self, *args, **kwargs):
-      super(MonteCarloPi, self).__init__(*args, **kwargs)
+      super(MonteCarloPi, self).__init__(mode=AUTO_PROJECT_MODE, *args, **kwargs)
       self.client_config.update({
           'alea_script'   : kwargs['alea_script'],
           'random_points' : kwargs['random_points']
@@ -42,10 +35,16 @@ of tasks to be supplied by the application::
       self.tasks_count = kwargs['tasks_count']
       self._tasks_counter = 0
 
-
-Here, the :py:attr:`Project.client_config` attribute is the configuration
+Here, :py:attr:`Project.client_config` attribute is the configuration
 object sent to the client and ``self.tasks_count`` and ``self._tasks_counter``
 are the attributes related to the amount of the supplied tasks.
+
+Notice the ``mode`` argument, which determines the :attr:`Project.mode`.
+It tells Kaylee how project tasks are going to be solved:
+*automatically*, without a user being even notified about them
+or *manually*, involving the user. The ``MonteCarloPi`` project is fully
+automated and requires no user interaction. Thus, its mode is set to
+:data:`AUTO_PROJECT_MODE <project.AUTO_PROJECT_MODE>`.
 
 Next, let's implement two tasks supplying Kaylee Project methods::
 
