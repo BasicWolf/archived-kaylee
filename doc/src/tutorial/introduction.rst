@@ -7,7 +7,7 @@ Monte Carlo methods (or Monte Carlo experiments) are a class of computational
 algorithms that rely on repeated random sampling to compute their results.
 How is it possible to compute the value of PI with such algorithm?
 Imagine a circle inscribed into a square with the side size of 1.
-Thus, the ratio of the area of the square to the are of the circle is:
+Thus, the ratio of the area of the square to the area of the circle is:
 
 .. math::
   :label: firsteq

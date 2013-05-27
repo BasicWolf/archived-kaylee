@@ -80,7 +80,7 @@ Currently there are three session data managers available out of the box:
   session variables.
 
 * :class:`NodeSessionDataManager <kaylee.session.NodeSessionDataManager>`
-  - keeps the session data attached to :attr:`Node.session_data`.
+  - pickles the data and stores it in :attr:`Node.session_data`.
 
 * :class:`JSONSessionDataManager <kaylee.session.JSONSessionDataManager>`
   - transfers an encrypted session data among the tasks and results,
@@ -140,14 +140,14 @@ Parameters  * ``node_id`` - Node ID.
 Accept Results
 ..............
 
-=========== ===============================
+=========== ===================================
 Server      :py:meth:`Kaylee.accept_result`
 Client      :js:func:`kl.api.send_result`
 URL         ``/kaylee/actions/{node_id}``
 HTTP Method ``POST``
-Post Data   Calculation results.
+Post Data   Calculation results in JSON format.
 Parameters  * ``node_id`` - Node ID.
-=========== ===============================
+=========== ===================================
 
 |
 |

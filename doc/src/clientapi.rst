@@ -295,7 +295,7 @@ manual(DOM-based) projects.
 
 
 
-.. js:function:: kl.post( url [, data] [, success] [, fail] )
+.. js:function:: kl.post( url [, data] [, success(data)] [, fail(message)] )
 
    Invokes asynchronous POST request with JSON data.
 
@@ -305,7 +305,7 @@ manual(DOM-based) projects.
    :param fail: The callback invoked in case of request failure.
 
 
-.. js:function:: kl.include(urls, [, success] [, fail])
+.. js:function:: kl.include(urls, [, success(data)] [, fail(message)])
 
    Dynamically imports javascript (``*.js``) or stylesheet ``*.css`` files.
    Importing stylesheets is available for manual projects only.

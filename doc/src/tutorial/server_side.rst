@@ -39,7 +39,8 @@ Here, :py:attr:`Project.client_config` attribute is the configuration
 object sent to the client and ``self.tasks_count`` and ``self._tasks_counter``
 are the attributes related to the amount of the supplied tasks.
 
-Notice the ``mode`` argument, which determines the :attr:`Project.mode`.
+Notice the ``mode`` argument, which determines the
+:py:attr:`Project.mode`.
 It tells Kaylee how project tasks are going to be solved:
 *automatically*, without a user being even notified about them
 or *manually*, involving the user. The ``MonteCarloPi`` project is fully
@@ -64,15 +65,17 @@ with :py:meth:`__getitem__() <Project.__getitem__>` methods return a
 ``self._tasks_counter``.
 
 The next important part of every project is the :py:meth:`normalize_result()
-<Project.normalize_result>` method. It is used to verify and normalize the results
-returned by the client. In this case the calculated value of PI is
-extracted from the parsed JSON object (dict)::
+<Project.normalize_result>` method. It is used to verify and normalize the
+results returned by the client. In this case the calculated value of PI is
+extracted from the parsed JSON object (dict) and converted to float::
 
   def normalize_result(self, task_id, data):
       try:
-          return data['pi']
+          return float(data['pi'])
       except KeyError:
           raise InvalidResultError(data, '"pi" key was not found')
+      except ValueError:
+          raise InvalidResultError(data, 'error converting the value of "pi" to float')
 
 And finally, :py:meth:`Project.result_stored` - is the callback invoked
 by the bound controller. This is a good place to check, whether all the
@@ -96,6 +99,6 @@ is launched.
 The last step concerning the server side : the project has to be imported
 in ``__init__.py`` in order for Kaylee to be able to find it::
 
-  from .monte_carlo_pi import MonteCarloPiProject
+  from .monte_carlo_pi import MonteCarloPi
 
 Continue with :ref:`tutorial-configuration`.

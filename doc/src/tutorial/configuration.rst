@@ -17,10 +17,12 @@ manner. First of all, the application needs a unique name and a description:
       'description' : 'Find value of Pi via the Monte-Carlo method.',
 
       'project' : {
+          # explained below
           # ...
       }
 
       'controller' : {
+          # explained below
           # ...
       }
   }

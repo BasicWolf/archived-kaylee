@@ -56,7 +56,7 @@ def json_error_handler(f):
                                        limit = None,
                                        file = buf)
                     exc_str += '\n' + buf.getvalue()
-            return json.dumps({ 'error' : exc_str })
+            return json.dumps({'error': exc_str })
 
     return wrapper
 
@@ -75,7 +75,7 @@ class Kaylee(object):
     :param registry: active nodes registry
     :param session_data_manager: global session data manager
     :param applications: a list of applications (:class:`Controller` objects)
-    :param kwargs: Kaylee configuration arguments.
+    :param \**kwargs: Kaylee configuration arguments.
     :type registry: :class:`NodesRegistry`
     :type session_data_manager: :class:`SessionDataManager` or None
     :type applications: list or None
@@ -83,7 +83,7 @@ class Kaylee(object):
     def __init__(self, registry, session_data_manager = None,
                  applications = None, **kwargs):
         #: An internal configuration storage object which maintains
-        #: the configuration initially parsed from ``**kwargs**``.
+        #: the configuration initially parsed from ``**kwargs``.
         #: The options are accessed as object attributes, e.g.:
         #: ``kl.config.SECRET_KEY``.
         self.config = Config(**kwargs)

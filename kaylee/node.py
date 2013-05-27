@@ -151,15 +151,15 @@ class NodeID(object):
     Another useful conversion is::
 
         n1 = NodeID()
-        n2 = NodeID( str(NodeID) )
+        n2 = NodeID(str(NodeID))
         n1 == n2
         # >>> True
 
     The NodeID object can be also effectively used as a key in collections::
 
         n1 = NodeID()
-        d = { n1: 'some_val' }
-        n2 = NodeID( str(NodeID) )
+        d = {n1: 'some_val'}
+        n2 = NodeID(str(NodeID))
         n2 in d
         # >>> True
 

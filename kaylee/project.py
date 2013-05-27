@@ -37,7 +37,8 @@ class Project(object):
     __metaclass__ = ABCMeta
 
     def __init__(self, script, mode, **kwargs):
-        # make sure that mode has been defined
+        if mode not in [AUTO_PROJECT_MODE, MANUAL_PROJECT_MODE]:
+            raise ValueError('Wrong project mode: {}'.format(mode))
 
         #: Indicates the mode in which project works on the client side.
         #: Available modes:
@@ -46,8 +47,6 @@ class Project(object):
         #: * :data:`MANUAL_PROJECT_MODE <kaylee.project.MANUAL_PROJECT_MODE>`
         #:
         #: For detailed description and usage see :ref:`projects_modes`.
-        if mode not in [AUTO_PROJECT_MODE, MANUAL_PROJECT_MODE]:
-            raise ValueError('Wrong project mode: {}'.format(mode))
         self.mode = mode
 
         #: A dictionary which contains the configuration passed to the
@@ -64,6 +63,7 @@ class Project(object):
             KL_PROJECT_MODE   : self.mode,
             KL_PROJECT_STYLES : kwargs.get('styles', None)
         }
+
         #: Indicates whether the project was completed.
         self.completed = False
 

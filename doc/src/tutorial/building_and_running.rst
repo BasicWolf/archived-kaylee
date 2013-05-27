@@ -40,10 +40,12 @@ If yes, check the shell, the value of PI should probably be there::
 Do you wonder how come these calculations were distributed?
 Well, they weren't, because there was only one node participating.
 Try increasing the amount of tasks and then launch the calculations in two
-browser tabs or even two different browsers. That's when the calculations
+different browsers (e.g. Opera_ and Chrome_). That's when the calculations
 will be truly distributed.
 
 P.S. Remeber, the full source code of the tutorial application is located
 in the following repository: http://github.com/BasicWolf/kaylee-demo-projects
 
-.. _Werkzeug: http://werkzeug.pocoo.org/
+.. _Werkzeug: http://werkzeug.pocoo.org
+.. _Opera: http://opera.com
+.. _Chrome: http://chrome.google.com
