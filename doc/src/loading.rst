@@ -6,13 +6,15 @@ Loading Kaylee
 .. module:: kaylee
 
 Kaylee has a powerful :py:mod:`loader` module which implements several
-function in order to conveniently load Kaylee and the required objects.
+functions in order to conveniently load Kaylee and the required objects.
 This part of the documentation describes how Kaylee configuration is
 prepared and how Kaylee object is loaded.
 
-Configuration
--------------
-Kaylee configuration is an object which holds certain
+Settings
+--------
+Kaylee settings 
+TODO:
+s an object which holds certain
 :ref:`configuration <configuration>` parameters like the applications,
 worker script URI etc.
 

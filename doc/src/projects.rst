@@ -55,12 +55,13 @@ The real-world example projects are `reCAPTCHA <RECAPTCHA>`_,
 Defining in code
 ................
 
-The project mode is defined in :class:`project class <Project>` as follows::
+The project mode is an argument of :meth:`Project.__init__`::
 
-    from kaylee.project import Project, AUTO_PROJECT_MODE, MANUAL_PROJECT_MODE
+    from kaylee.project import Project, AUTO_PROJECT_MODE
 
     class MyProject(Project):
-        mode = MANUAL_PROJECT_MODE
+        def __init__(self, *args, **kwargs):
+            super(MyProject, self).__init__(mode=MANUAL_PROJECT_MODE, *args, **kwargs)
 
 .. _SPACEGAME: http://www.thespacegame.org/
 .. _ANDROMEDA: http://www.andromedaproject.org/

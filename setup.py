@@ -57,7 +57,7 @@ for dirpath, dirnames, filenames in os.walk(kaylee_dir):
 
 setup(
     name='Kaylee',
-    version='0.3a5',
+    version='0.3a6',
     url='http://github.com/basicwolf/kaylee',
     license='LICENSE',
     author='Zaur Nasibov',
