@@ -47,7 +47,7 @@ or *manually*, involving the user. The ``MonteCarloPi`` project is fully
 automated and requires no user interaction. Thus, its mode is set to
 :data:`AUTO_PROJECT_MODE <project.AUTO_PROJECT_MODE>`.
 
-Next, let's implement two tasks supplying Kaylee Project methods::
+Next, let's implement two tasks which supply Kaylee Project methods::
 
   def __getitem__(self, task_id):
       return {'id': task_id}
