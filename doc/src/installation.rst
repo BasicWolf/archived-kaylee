@@ -68,9 +68,13 @@ within::
 
   $ mkdir mykaylee
   $ cd mykaylee
-  $ virtualenv env
+  $ virtualenv env --system-site-packages
   Installing distribute..............done.
   Installing pip.....................done.
+
+The ``--system-site-packages`` option tells the virtual environment to give
+access to the global site-packages dir (e.g. for global python-imaging
+or python-crypto access).
 
 Now, whenever you want to work on a project, you only have to activate the
 corresponding environment::

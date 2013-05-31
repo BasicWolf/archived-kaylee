@@ -10,7 +10,7 @@
 #    :license: MIT, see LICENSE for more details.
 ###
 
-kl.ajax = (url, method, data, success = (()->), fail = (() ->) ) ->
+kl.ajax = (url, method, data, success=(()->), fail=(()->)) ->
     req = new XMLHttpRequest();
 
     switch method
@@ -121,7 +121,7 @@ _worker_include = (urls, success, fail) ->
     if all_imported
         success?()
     else
-        fail?(error)
+        fail?(error.message)
 
 kl.include = (urls, success, fail) ->
     # bind appropriate include function as kl.include

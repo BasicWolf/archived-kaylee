@@ -65,8 +65,8 @@ class ResultsComparatorController(Controller):
                                     before running the comparison routine.
     """
     def __init__(self, *args, **kwargs):
+        self._results_count_threshold = kwargs.pop('results_count_threshold')
         super(ResultsComparatorController, self).__init__(*args, **kwargs)
-        self._results_count_threshold = kwargs['results_count_threshold']
         self._tasks_pool = set()
 
     def get_task(self, node):

@@ -36,7 +36,9 @@ post_message = (msg, data = {}) ->
 
 import_project = (kwargs) ->
     kl.config = kwargs.kl_config
-    kl.include(kwargs.app_config.__kl_project_script__)
+    kl.include(kwargs.app_config.__kl_project_script__,
+               ()->kl.log('The project script has been imported'),
+               kl.error)
     pj.init(kwargs.app_config)
 
 
