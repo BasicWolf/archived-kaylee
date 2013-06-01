@@ -25,7 +25,7 @@ Kaylee Object
    .. py:attribute:: config
 
       An internal configuration storage object which maintains
-      the configuration initially parsed from ``**kwargs**``.
+      the configuration initially parsed from ``**kwargs``.
       The options are accessed as object attributes, e.g.:
       ``kl.config.WORKER_SCRIPT_URL``
 
@@ -89,6 +89,9 @@ Project modes
 .. autodata:: kaylee.project.AUTO_PROJECT_MODE
 .. autodata:: kaylee.project.MANUAL_PROJECT_MODE
 
+
+.. _controllersapi:
+
 Controller Object
 -----------------
 
@@ -98,6 +101,8 @@ Controller Object
    .. autoattribute:: completed
    .. automethod:: get_task(node)
 
+
+.. _storagesapi:
 
 Storage Objects
 ---------------

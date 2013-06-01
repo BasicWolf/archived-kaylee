@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import argparse
+from StringIO import StringIO
+from contextlib import closing
 
 from kaylee.util import setup_logging
 

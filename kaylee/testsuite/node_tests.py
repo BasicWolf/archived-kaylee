@@ -1,6 +1,7 @@
 from kaylee.testsuite import KayleeTest, load_tests
 from datetime import datetime, timedelta
 from kaylee import Node, NodeID
+from kaylee.node import extract_node_id
 from kaylee import InvalidNodeIDError
 from kaylee.testsuite import TestController
 
@@ -29,20 +30,20 @@ class NodeIDTests(KayleeTest):
         self.assertRaises(TypeError, NodeID.for_host, 1000)
         self.assertRaises(TypeError, NodeID.for_host, 100.1)
 
-    def test_from_object(self):
+    def test_extract_node_id(self):
         n  = NodeID.for_host('127.0.0.1')
-        n1 = NodeID.from_object(n)
+        n1 = extract_node_id(n)
         self.assertIs(n, n1)
-        n2 = NodeID.from_object(str(n))
+        n2 = extract_node_id(str(n))
         self.assertEqual(n, n2)
         node = Node(n)
-        n3 = NodeID.from_object(node)
+        n3 = extract_node_id(node)
         self.assertEqual(n, n3)
-        self.assertRaises(InvalidNodeIDError, NodeID.from_object, 'abc')
-        self.assertRaises(TypeError, NodeID.from_object, 10)
+        self.assertRaises(InvalidNodeIDError, extract_node_id, 'abc')
+        self.assertRaises(TypeError, extract_node_id, 10)
         node = Node(n)
         node.id = '10'
-        self.assertRaises(InvalidNodeIDError, NodeID.from_object, node)
+        self.assertRaises(InvalidNodeIDError, extract_node_id, node)
 
     def test_internal_counter(self):
         #pylint: disable-msg=W0612,W0212

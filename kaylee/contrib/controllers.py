@@ -8,9 +8,9 @@ from kaylee.errors import (ApplicationCompletedError,
 class SimpleController(Controller):
     """
     This is a very basic controller which serves the tasks by
-    Node requests and passes the accepted results directly to the project.
+    node requests and passes the accepted results directly to the project.
     Its ``completed`` indicator is set to ``True`` the moment the bound
-    project is completed. The controller doesn't use temporal storage.
+    project is completed. The controller doesn't use a temporal storage.
     """
     def __init__(self, *args, **kwargs):
         super(SimpleController, self).__init__(*args, **kwargs)
@@ -55,7 +55,7 @@ class SimpleController(Controller):
 class ResultsComparatorController(Controller):
     """
     This controller is a simple implementation of the "trust no one" idea.
-    The intermediate results are collected in the temporal storage until
+    The intermediate results are collected in a temporal storage until
     their number reaches a user-defined limit. Then the results are pairly
     compared and only if they all match among themselves, a single result
     is stored inside the permanent storage. The results are discarded if they

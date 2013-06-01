@@ -146,7 +146,7 @@ on_node_subscribed = (config) ->
             })
 
         when kl.MANUAL_PROJECT_MODE
-            include_urls = [config.__kl_project_script__]
+            include_urls = [config.__kl_project_script_url__]
             if config.__kl_project_styles__
                 include_urls.push(config.__kl_project_styles__)
             kl.include(include_urls,

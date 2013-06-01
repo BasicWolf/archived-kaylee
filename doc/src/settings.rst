@@ -1,13 +1,12 @@
-.. _configuration:
+.. _settings:
 
-Configuration Options
-=====================
+Settings
+========
 
 .. module:: kaylee
 
-This section describes Kaylee configuration options.
-For information on various methods of configuring and
-setting up Kaylee, see :ref:`loading`.
+This section describes Kaylee settings.
+For information on various methods of setting up Kaylee, see :ref:`loading`.
 
 .. config:: AUTO_GET_ACTION
 
@@ -44,24 +43,24 @@ Every ``app`` is a Python dictionary with application configuration:
 .. code-block:: python
 
   app1 = {
-      'name' : 'Application name',
-      'description' : 'Application description',
-      'project' : { ... },
-      'controller' : { ... },
+      'name': 'Application name',
+      'description': 'Application description',
+      'project': { ... },
+      'controller': { ... },
   },
 
 Project and controller configuration are also Python dictionaries:
 
 .. code-block:: python
 
-  'project' : {
-      'name' : 'ProjectClassName',
-      'config' : { ...  },
+  'project': {
+      'name': 'ProjectClassName',
+      'config': { ...  },
   }
 
-  'controller' : {
-      'name' : 'ControllerClassName',
-      'config' : { ... },
+  'controller': {
+      'name': 'ControllerClassName',
+      'config': { ... },
   }
 
 Project and Controller ``config`` sections define the dictionary
@@ -69,9 +68,9 @@ which is passed as ``**kwargs`` during class initialization.
 
 .. code-block:: python
 
-  'config' : {
-      'opt1' : 'val1',
-      'opt2' : 10,
+  'config': {
+      'opt1': 'val1',
+      'opt2': 10,
 
   }
 
@@ -97,12 +96,24 @@ Python dict with :class:`Nodes Registry <NodesRegistry>` configuration.
 Format::
 
   REGISTRY = {
-      'name' : 'RegistryClassName',
-      'config' : {
+      'name': 'RegistryClassName',
+      'config': {
         # timeout format: 1d 12h 10m 5s, e.g. "12h"; "1d 10m" etc.
-        'timeout' : '12h'
+        'timeout': '12h'
       },
   }
+
+
+.. config:: SECRET_KEY
+
+SECRET_KEY
+----------
+
+Defines the secret key used for encryption routines.
+
+Format::
+
+  SECRET_KEY = 'thisIS_mySeCrEtKey123' # any string
 
 
 .. config:: SESSION_DATA_MANAGER
@@ -112,15 +123,15 @@ SESSION_DATA_MANAGER
 
 **Optional**. Defines the session data manager.
 
-.. note:: If the option is not defined the 
+.. note:: If the option is not defined the
           default :class:`Phony <kaylee.session.PhonySessionDataManager>`
           session data manager is loaded.
 
 Format::
 
   SESSION_DATA_MANAGER = {
-      'name' : 'SessionDataManagerClassName',
-      'config' : {},
+      'name': 'SessionDataManagerClassName',
+      'config': {},
   }
 
 

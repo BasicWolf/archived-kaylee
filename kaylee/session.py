@@ -39,14 +39,14 @@ class SessionDataManager(object):
         session variables should be removed in the following task::
 
           task = {
-              'id' : 'i1',
-              '#s1' : 10,
-              '#s2' : [1, 2, 3]
+              'id': 'i1',
+              '#s1': 10,
+              '#s2': [1, 2, 3]
           }
 
-          manager.store(task)
+          manager.store(node, task)
 
-          # task -> { 'id' : 'i1' }.
+          # task -> {'id': 'i1'}.
 
 
         :param node: the node to which the current task will be sent.
@@ -129,8 +129,8 @@ class JSONSessionDataManager(SessionDataManager):
     Encrypted via the "abc" secret key turns into::
 
       task = {
-          id : 'i1',
-          '__kl_sd__' : 'yn/fCyEcW8AFrPps7XoxunC...' # 143 chars in total
+          id: 'i1',
+          '__kl_sd__': 'yn/fCyEcW8AFrPps7XoxunC...' # 143 chars in total
       }
 
     The Kaylee client-side engine automatically attaches the ``'__kl_sd__``
@@ -138,13 +138,13 @@ class JSONSessionDataManager(SessionDataManager):
     could be decrypted and restored, e.g.::
 
       {
-          'speed' : 20,
-          '#s1' : 10,
-          '#s2' : [1, 2, 3]
+          'speed': 20,
+          '#s1': 10,
+          '#s2': [1, 2, 3]
       }
 
     :param secret_key: An override of the global :config:`SECRET_KEY`
-                       configuration parameter.
+                       parameter.
     """
     def __init__(self, secret_key=None):
         #pylint: disable-msg=W0231

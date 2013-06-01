@@ -3,8 +3,9 @@
 Step 5: Configuring the Application
 ===================================
 
-Kaylee has numerous ways of loading the configuration. The tutorial app
-loads the configuration from the ``settings.py`` file.
+Kaylee has numerous ways of loading the settings and the applications
+configuration. The convenient way is to keep all the settings and the
+configuration in ``settings.py``.
 The applications are defined in a Python dictionary-like or JSON-like
 manner. First of all, the application needs a unique name and a description:
 
@@ -34,7 +35,7 @@ Next, the project configuration:
   'project' : {
       'name' : 'MonteCarloPi',
       'config' : {
-          'script' : '/static/montecarlopi/js/montecarlopi.js',
+          'script_url' : '/static/montecarlopi/js/montecarlopi.js',
           'alea_script' : '/static/montecarlopi/js/alea.js',
           'random_points' : 1000000,
           'tasks_count' : 10
@@ -91,7 +92,7 @@ The application configuration in one piece
       'project' : {
           'name' : 'MonteCarloPi',
           'config' : {
-              'script' : '/static/montecarlopi/js/montecarlopi.js',
+              'script_url' : '/static/montecarlopi/js/montecarlopi.js',
               'alea_script' : '/static/montecarlopi/js/alea.js',
               'random_points' : 1000000,
               'tasks_count' : 10

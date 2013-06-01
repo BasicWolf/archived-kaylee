@@ -25,31 +25,34 @@ class RunCommand(LocalCommand):
         ('-b', '--build-dir') : dict(default='_build'),
         ('-p', '--port') : dict(default='5000',
                                 type=port_type,
-                                help='Web server port number')
+                                help='Web server port number'),
+        '--debug' : dict(default=False,
+                         action='store_true',
+                         help='Debug ON'),
     }
 
     @staticmethod
     def execute(opts):
-        validate_settings_file(opts)
-        validate_build_dir(opts)
-        run_dev_server(opts)
+        RunCommand.validate_settings_file(opts)
+        RunCommand.validate_build_dir(opts)
+        RunCommand.run_dev_server(opts)
 
+    @staticmethod
+    def validate_settings_file(opts):
+        if not os.path.exists(opts.settings_file):
+            raise OSError('Cannot find the settings file "{}"'
+                          .format(opts.settings_file))
 
-def validate_settings_file(opts):
-    if not os.path.exists(opts.settings_file):
-        raise OSError('Cannot find the settings file "{}"'
-                      .format(opts.settings_file))
+    @staticmethod
+    def validate_build_dir(opts):
+        if not os.path.exists(opts.build_dir):
+            raise OSError (
+                'Cannot find build directory "{}". \n'
+                'Have you forgotten building the environment? \n'
+                'If not, please specify with -b or --build-dir.'
+                .format(opts.build_dir))
 
-
-def validate_build_dir(opts):
-    if not os.path.exists(opts.build_dir):
-        raise OSError (
-            'Cannot find build directory "{}". \n'
-            'Have you forgotten building the environment? \n'
-            'If not, please specify with -b or --build-dir.'
-            .format(opts.build_dir))
-
-
-def run_dev_server(opts):
-    print('Launching Kaylee development/testing server...')
-    run(opts.settings_file, opts.build_dir, port=opts.port)
+    @staticmethod
+    def run_dev_server(opts):
+        print('Launching Kaylee development/testing server...')
+        run(opts.settings_file, opts.build_dir, opts.port, opts.debug)

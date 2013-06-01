@@ -107,16 +107,16 @@ Core
 
    Kaylee client config received from the server after the node has been
    registered. For full configuration description see
-   :ref:`configuration`.
+   :ref:`settings`.
 
 .. js:function:: kl.error(message)
 
-   Logs the message with "ERROR: " prefix and **throws**
+   Logs the message with "ERROR: " prefix and throws
    :js:class:`kl.KayleeError`. This means that if ``kl.error`` is called
    outside a ``try..catch`` block the exception will be thrown further unless
    it reaches the global scope. ``kl.error()`` should be called only in case
    that something went completely wrong and it is not wise to continue
-   running Kaylee on the Node.
+   running Kaylee on the node.
    For example ``kl.error()`` is called by Kaylee when the incoming or
    outgoing data is malformed.
 

@@ -23,7 +23,7 @@ MANUAL_PROJECT_MODE = 0x4
 UNKNOWN_AMOUNT = 0x1
 
 KL_PROJECT_MODE = '__kl_project_mode__'
-KL_PROJECT_SCRIPT = '__kl_project_script__'
+KL_PROJECT_SCRIPT_URL = '__kl_project_script_url__'
 KL_PROJECT_STYLES = '__kl_project_styles__'
 
 
@@ -31,12 +31,12 @@ KL_PROJECT_STYLES = '__kl_project_styles__'
 class Project(object):
     """Kaylee Projects abstract base class.
 
-    :param script: The URL of the project's client part (\\*.js file).
+    :param script_url: The URL of the project's client part (\\*.js file).
     :param mode: defines :attr:`Project.mode <kaylee.Project.mode>`.
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, script, mode, **kwargs):
+    def __init__(self, script_url, mode, **kwargs):
         if mode not in [AUTO_PROJECT_MODE, MANUAL_PROJECT_MODE]:
             raise ValueError('Wrong project mode: {}'.format(mode))
 
@@ -59,9 +59,9 @@ class Project(object):
         #:           data necessary to properly initialize the client-side
         #:           of the project.
         self.client_config = {
-            KL_PROJECT_SCRIPT : script,
-            KL_PROJECT_MODE   : self.mode,
-            KL_PROJECT_STYLES : kwargs.get('styles', None)
+            KL_PROJECT_SCRIPT_URL: script_url,
+            KL_PROJECT_MODE: self.mode,
+            KL_PROJECT_STYLES: kwargs.get('styles', None),
         }
 
         #: Indicates whether the project was completed.

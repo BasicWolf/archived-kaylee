@@ -26,8 +26,9 @@ def application(request):
         return e
 
 
-def run(settings_file, static_dir, **kwargs):
-    setup_logging()
+def run(settings_file, static_dir, port=5000, debug=False):
+    loglevel = logging.DEBUG if debug else logging.INFO
+    setup_logging(loglevel)
     kaylee.setup(settings_file)
 
     # index.html at 'http://server.address/' URL
@@ -45,6 +46,6 @@ def run(settings_file, static_dir, **kwargs):
     app = SharedDataMiddleware(application,
                                {'/static': static_dir })
 
-    port = kwargs.get('port', 5000)
     run_simple('127.0.0.1', port, app, use_debugger=True,
                use_reloader=False)
+

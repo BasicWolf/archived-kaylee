@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-from kaylee.node import NodesRegistry, NodeID
+from kaylee.node import NodesRegistry, NodeID, extract_node_id
 
 
 class MemoryNodesRegistry(NodesRegistry):
@@ -29,17 +29,17 @@ class MemoryNodesRegistry(NodesRegistry):
         return len(self._d)
 
     def __delitem__(self, node):
-        node_id = NodeID.from_object(node)
+        node_id = extract_node_id(node)
         try:
             del self._d[node_id]
         except KeyError:
             pass
 
     def __getitem__(self, node_id):
-        node_id = NodeID.from_object(node_id)
+        node_id = extract_node_id(node_id)
         return self._d[node_id]
 
     def __contains__(self, node):
-        node_id = NodeID.from_object(node)
+        node_id = extract_node_id(node)
         return node_id in self._d
 

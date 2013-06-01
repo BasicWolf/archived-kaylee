@@ -9,7 +9,8 @@ Kaylee comes with a small ``contrib`` package which currently plays a role
 of :py:class:`Controller`, :py:class:`TemporalStorage` and
 :py:class:`PermanentStorage` implementation examples.
 
-Contrib also contains Flask and Django applications which support Kaylee :ref:`default-communication`.
+Contrib also contains Werkzeug, Flask and Django applications which support
+the :ref:`default communication API <default-communication>`.
 
 .. _contrib_front_ends:
 
@@ -28,7 +29,7 @@ fashion::
   app = Flask(__name__)
 
   app.register_blueprint(kaylee_blueprint,
-                         url_prefix = '/kaylee')
+                         url_prefix='/kaylee')
 
 
 Django
@@ -66,6 +67,7 @@ Controllers
 
 .. autoclass:: ResultsComparatorController
 
+See :ref:`Controller API <controllersapi>` for more details.
 
 Storages
 --------
@@ -73,3 +75,5 @@ Storages
 .. autoclass:: MemoryTemporalStorage
 
 .. autoclass:: MemoryPermanentStorage
+
+See :ref:`Storages API <storagesapi>` for more details.

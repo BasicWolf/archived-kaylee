@@ -200,27 +200,6 @@ class NodeID(object):
         """
         return NodeID(remote_host=host)
 
-    @staticmethod
-    def from_object(node):
-        """Extracts or constructs NodeID from the given object.
-
-        :param node: a valid NodeID or previously initialized Kaylee Node
-                     object.
-        :type node: string, NodeID or :class:`Node`
-        :returns: NodeID object
-        """
-        if isinstance(node, basestring):
-            return NodeID(node_id=node)
-        elif isinstance(node, NodeID):
-            return node
-        elif isinstance(node, Node):
-            return NodeID(node_id=node.id)
-        else:
-            raise TypeError('node must be an instance of {}, {}, or {} not'
-                            ' {}'.format(basestring.__name__,
-                                         NodeID.__name__,
-                                         Node.__name__,
-                                         type(node).__name__))
 
     def _generate(self, remote_host):
         """Generates a new value for this NodeID."""
@@ -276,7 +255,7 @@ class NodeID(object):
         """
         t = struct.unpack(">i", self._id[0:4])[0]
         return datetime.fromtimestamp(t)
-
+    
     def __str__(self):
         """Hex representation of the NodeID"""
         return binascii.hexlify(self._id).decode()
@@ -285,27 +264,27 @@ class NodeID(object):
         return "NodeID('{}')".format(str(self))
 
     def __eq__(self, other):
-        other = NodeID.from_object(other)
+        other = NodeID(other)
         return self._id == other._id
 
     def __ne__(self, other):
-        other = NodeID.from_object(other)
+        other = NodeID(other)
         return self._id != other._id
 
     def __lt__(self, other):
-        other = NodeID.from_object(other)
+        other = NodeID(other)
         return self._id < other._id
 
     def __le__(self, other):
-        other = NodeID.from_object(other)
+        other = NodeID(other)
         return self._id <= other._id
 
     def __gt__(self, other):
-        other = NodeID.from_object(other)
+        other = NodeID(other)
         return self._id > other._id
 
     def __ge__(self, other):
-        other = NodeID.from_object(other)
+        other = NodeID(other)
         return self._id >= other._id
 
     def __hash__(self):
@@ -374,3 +353,26 @@ class NodesRegistry(object):
 
         :param node: an instance of :class:`Node` or a valid node id.
         """
+
+def extract_node_id(node_or_node_id):
+    """Extracts or constructs NodeID from the given object.
+
+    :param node_or_node_id: a valid NodeID or previously initialized
+                            Kaylee Node object.
+    :type node_or_node_id: string, :class:`NodeID` or :class:`Node`
+    :returns: :class:`NodeID` object
+    """
+    no = node_or_node_id
+    if isinstance(no, basestring):
+        return NodeID(node_id=no)
+    elif isinstance(no, NodeID):
+        return no
+    elif isinstance(no, Node):
+        return NodeID(node_id=no.id)
+    else:
+        raise TypeError('node must be an instance of {}, {}, or {} not'
+                        ' {}'.format(basestring.__name__,
+                                     NodeID.__name__,
+                                     Node.__name__,
+                                     type(no).__name__))
+

@@ -188,6 +188,7 @@ class Loader(object):
         pjobj = self._load_project(conf)
         psobj = self._load_permanent_storage(conf)
         tsobj = self._load_temporal_storage(conf)
+
         cobj = ccls(app_name, pjobj, psobj, tsobj,
                     **conf['controller'].get('config', {}))
         return cobj

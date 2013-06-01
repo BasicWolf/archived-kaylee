@@ -7,7 +7,7 @@ class AutoTestProject(Project):
     TASKS_COUNT = 10
 
     def __init__(self, *args, **kwargs):
-        super(AutoTestProject, self).__init__(script='',
+        super(AutoTestProject, self).__init__(script_url='',
                                               mode=AUTO_PROJECT_MODE,
                                               *args,
                                               **kwargs)
@@ -17,7 +17,7 @@ class AutoTestProject(Project):
 
     def __getitem__(self, task_id):
         return {
-            'id' : str(task_id),
+            'id': str(task_id),
         }
 
     def next_task(self):

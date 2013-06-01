@@ -53,8 +53,8 @@ def json_error_handler(f):
                     # exc_type, exc_value, exc_traceback = sys.exc_info()
                     exc_traceback = sys.exc_info()[2]
                     traceback.print_tb(exc_traceback,
-                                       limit = None,
-                                       file = buf)
+                                       limit= None,
+                                       file= buf)
                     exc_str += '\n' + buf.getvalue()
             return json.dumps({'error': exc_str })
 
@@ -106,7 +106,7 @@ class Kaylee(object):
         JSON-formatted data with the following fields:
 
         * node_id - node id (hex-formatted string)
-        * config  - client configuration (see :ref:`configuration`).
+        * config  - client configuration (see :ref:`settings`).
         * applications - a list of Kaylee applications' names.
 
         :param remote_host: the IP address of the remote host
@@ -169,8 +169,8 @@ class Kaylee(object):
         The format of the JSON response is::
 
           {
-              'action' : <action>,
-              'data'   : <data>
+              'action': <action>,
+              'data': <data>
           }
 
         Here, <action> tells the Node, what should it do and <data> is

@@ -12,11 +12,16 @@ class StartProjectCommand(LocalCommand):
 
     args = {
         'name' : {},
-        ('-m', '--mode') : dict(choices=['manual', 'auto'], default='auto'),
+        ('-m', '--mode') : dict(
+            choices=['manual', 'auto'],
+            default='auto',
+            help="project mode",
+        ),
         ('-t', '--template') : dict(
-            choices=['js', 'coffee'], default='js',
-            help=("Defines client-side project's template programming "
-                  "language.")),
+            choices=['js', 'coffee'],
+            default='js',
+            help="client-side programming language.",
+        ),
     }
 
     @staticmethod

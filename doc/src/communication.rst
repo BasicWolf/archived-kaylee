@@ -8,11 +8,11 @@ Kaylee communication
 Tasks and results
 -----------------
 
-As it has been mentioned many times, Kaylee communicates via JSON. On the
-server-side a task data returned by a Project is a JSON-serializable dict
-with a mandatory ``id`` key in it::
+Kaylee server and nodes communicates via JSON. On the server-side a task
+data returned by a Project is a JSON-serializable dict with a mandatory
+``id`` key in it::
 
-  { 'id' : 't1' }
+  {'id': 't1'}
 
 .. note:: The value of ``task['id']`` is always automatically converted to
           *string* and stripped.
@@ -20,7 +20,7 @@ with a mandatory ``id`` key in it::
 The result returned by the client side of a project should be also formatted
 in a dict-like (JavaScript object) manner::
 
-  { 'speed' : 30, 'acceleration' : 10 }
+  {'speed': 30, 'acceleration': 10 }
 
 
 Session data
@@ -35,8 +35,8 @@ artificial word in order to validate the input.
 
 How would one solve a similar problem with Kaylee? Kaylee has an efficient
 and simple
-:class:`Session data managers <kaylee.session.SessionDataManager>`
-mechanism to keep Kaylee <-> Node session data between getting a task and
+:class:`Session data managers <kaylee.SessionDataManager>`
+mechanism to keep Kaylee server <-> node session data between getting a task and
 accepting a result requests. In case of solving the `reCAPTCHA` issue, the
 artificial word should be stored as a session variable.
 
@@ -44,34 +44,33 @@ In order to become a `session variable`, the variable's name should start
 with a hash (``'#'``) symbol, for example::
 
   task = {
-      'id' : '1',
-      'image_path' : 'http:/my.site.com/captcha/tmp/ahU2jcXz.jpg',
-      '#artificial_word' : 'abyrvalg'
+      'id': '1',
+      'image_path': 'http:/my.site.com/captcha/tmp/ahU2jcXz.jpg',
+      '#artificial_word': 'abyrvalg'
   }
 
 The session data manager scans the outgoing tasks and stores all the session
-variables unless the Node returns a result. In other words, before the above
-task is dispatched to the Node, it is stripped of the session variables::
+variables unless the Node returns a result. In other words, before the
+task (above) is dispatched to the Node, it is stripped of the session
+variables::
 
   {
-      'id' : '1',
-      'image_path' : 'http:/my.site.com/captcha/tmp/ahU2jcXz.jpg',
+      'id': '1',
+      'image_path': 'http:/my.site.com/captcha/tmp/ahU2jcXz.jpg',
   }
 
 The session variable is attached to the result the moment it arrives to the
 server::
 
   {
-      'word1' : 'Enormous',
-      'word2' : 'abyrvalg', # this one has been entered by a user
-      '#artificial_word' : 'abyrvalg' # this one is the session data
+      'word1': 'Enormous',
+      'word2': 'abyrvalg', # this one has been entered by a user
+      '#artificial_word': 'abyrvalg' # this one is the session data
   }
 
 
 Built-in session data managers
 ..............................
-
-
 
 Currently there are three session data managers available out of the box:
 
@@ -80,10 +79,10 @@ Currently there are three session data managers available out of the box:
   session variables.
 
 * :class:`NodeSessionDataManager <kaylee.session.NodeSessionDataManager>`
-  - pickles the data and stores it in :attr:`Node.session_data`.
+  - pickles the data and stores it (locally) in :attr:`Node.session_data`.
 
 * :class:`JSONSessionDataManager <kaylee.session.JSONSessionDataManager>`
-  - transfers an encrypted session data among the tasks and results,
+  - transfers an encrypted session data among the tasks and the results,
   without keeping any data on the server.
 
 

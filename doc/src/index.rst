@@ -26,6 +26,8 @@ instructions for deployment of Kaylee.
    loading
    communication
    contrib
+   manager
+
 
 API Reference
 -------------
@@ -42,7 +44,7 @@ method, this part of the documentation is for you.
 .. toctree::
    :maxdepth: 1
 
-   configuration
+   settings
 
 Additional Notes
 ----------------
