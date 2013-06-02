@@ -6,7 +6,7 @@
 #    It contains a small AJAX library used in a browser's
 #    main JavaScript event loop.
 #
-#    :copyright: (c) 2012 by Zaur Nasibov.
+#    :copyright: (c) 2013 by Zaur Nasibov.
 #    :license: MIT, see LICENSE for more details.
 ###
 
@@ -44,11 +44,13 @@ kl.ajax = (url, method, data, success=(()->), fail=(()->)) ->
     req.send(data);
     return
 
+
 kl.post = (url, data, success, fail) ->
     _success = (resp_data) ->
         if resp_data.error? then fail(resp_data.error) else success(resp_data)
     kl.ajax(url, 'POST', data, _success, fail)
     return
+
 
 kl.get = (url, data, success, fail) ->
     # remap the arguments in case that the first argument is
@@ -110,18 +112,21 @@ _worker_include = (urls, success, fail) ->
     if not (urls instanceof Array)
         urls = [urls]   # in this case string is expected
 
+    error_message = ''
     all_imported = true
     for url in urls
         try
             importScripts(url)
         catch error
             all_imported = false
+            error_message = "Error importing #{url}: #{error.message}"
             break
 
     if all_imported
         success?()
     else
-        fail?(error.message)
+        fail?(error_message)
+
 
 kl.include = (urls, success, fail) ->
     # bind appropriate include function as kl.include

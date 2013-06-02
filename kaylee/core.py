@@ -47,7 +47,6 @@ def json_error_handler(f):
             return f(*args, **kwargs)
         except Exception as e:
             exc_str = str(e)
-
             if log.getEffectiveLevel() == logging.DEBUG:
                 with closing(StringIO()) as buf:
                     # exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -163,7 +162,7 @@ class Kaylee(object):
         """
         self.registry[node_id].unsubscribe()
 
-    @json_error_handler
+#    @json_error_handler
     def get_action(self, node_id):
         """Returns an action (usually a task from the subscribed application).
         The format of the JSON response is::

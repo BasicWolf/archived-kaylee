@@ -208,7 +208,7 @@ kl.log = (msg) ->
     kl.message_logged.trigger(msg)
 
 kl.error = (msg) ->
-    kl.log("ERROR: ")
+    kl.log("ERROR: #{msg}")
     throw new kl.KayleeError(msg)
 
 # Kaylee events

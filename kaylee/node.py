@@ -255,7 +255,7 @@ class NodeID(object):
         """
         t = struct.unpack(">i", self._id[0:4])[0]
         return datetime.fromtimestamp(t)
-    
+
     def __str__(self):
         """Hex representation of the NodeID"""
         return binascii.hexlify(self._id).decode()
@@ -375,4 +375,3 @@ def extract_node_id(node_or_node_id):
                                      NodeID.__name__,
                                      Node.__name__,
                                      type(no).__name__))
-

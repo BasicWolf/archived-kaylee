@@ -30,8 +30,8 @@ class MemoryTemporalStorage(TemporalStorage):
         self._total_count = 0
 
     def __getitem__(self, task_id):
-        nr_dict = self._d[task_id]
-        return ((NodeID(n), r) for n, r in nr_dict.iteritems())
+        nr_dict = self._d.get(task_id, {})
+        return {NodeID(n): r for n, r in nr_dict.iteritems()}
 
     def contains(self, task_id, node_id=None, result=None):
         try:

@@ -3,6 +3,9 @@
 import os
 from setuptools import setup
 
+import kaylee
+
+
 def fullsplit(path, result=None):
     """Split a pathname into components (the opposite of os.path.join) in a
     platform-neutral way.
@@ -57,7 +60,7 @@ for dirpath, dirnames, filenames in os.walk(kaylee_dir):
 
 setup(
     name='Kaylee',
-    version='0.3a6',
+    version=kaylee.__version__,
     url='http://github.com/basicwolf/kaylee',
     license='LICENSE',
     author='Zaur Nasibov',

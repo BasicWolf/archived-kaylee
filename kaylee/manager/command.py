@@ -3,12 +3,6 @@ import argparse
 from StringIO import StringIO
 from contextlib import closing
 
-from kaylee.util import setup_logging
-
-import logging
-log = logging.getLogger(__name__)
-
-
 
 class BaseCommand(object):
     #: Command help text
@@ -71,7 +65,6 @@ class CommandsManager(object):
 
     @classmethod
     def execute_from_command_line(cls):
-        setup_logging()
         try:
             cls().parse()
         except Exception as e:
@@ -87,5 +80,4 @@ class AdminCommandsManager(CommandsManager):
 class LocalCommandsManager(CommandsManager):
     help = 'Kaylee local environment manager'
     command_class = LocalCommand
-
 

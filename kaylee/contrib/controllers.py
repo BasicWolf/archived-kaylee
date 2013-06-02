@@ -85,7 +85,7 @@ class ResultsComparatorController(Controller):
         node.task_id = task_id
         self._tasks_pool.add(task_id)
 
-        if node.id in self.temporal_storage[task_id]:
+        if self.temporal_storage.contains(task_id, node.id):
             raise NodeRequestRejectedError('The result of this task has been '
                                            'already accepted.')
         return task
@@ -121,7 +121,7 @@ class ResultsComparatorController(Controller):
                     self._tasks_pool.remove(task_id)
             node.task_id = None
         else:
-            self.temporal_storage.add(node.id, task_id, norm_result)
+            self.temporal_storage.add(task_id, node.id, norm_result)
 
     @staticmethod
     def _results_are_equal(r0, res):

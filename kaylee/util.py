@@ -194,6 +194,6 @@ def ensure_dir(path):
         if not os.path.isdir(path):
             raise
 
-def setup_logging(level=logging.INFO):
+def setup_logging(loglevel=logging.INFO):
     log_format = '%(levelname)s[%(name)s]: %(message)s'
-    logging.basicConfig(level=level, format=log_format)
+    logging.basicConfig(level=loglevel, format=log_format)

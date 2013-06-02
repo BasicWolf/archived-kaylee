@@ -43,9 +43,9 @@ The supported commands are:
     (default: ``_build``).
 
 * ``run [-h] [--debug] [-s SETTINGS_FILE] [-b BUILD_DIR] [-p PORT]``
-  - starts the built-in web server and runs the previously built Kaylee 
-    development environment. The server currently listens on 
-    ``127.0.0.1`` only.
+  - starts the built-in web server and runs the previously built Kaylee
+  development environment. The server currently listens on ``127.0.0.1``
+  only.
 
   Options:
 

@@ -5,7 +5,7 @@
 #    This is the base file of Kaylee client-side Web Worker module.
 #    This module is used to execute the AUTO-mode projects.
 #
-#    :copyright: (c) 2012 by Zaur Nasibov.
+#    :copyright: (c) 2013 by Zaur Nasibov.
 #    :license: MIT, see LICENSE for more details.
 ###
 
@@ -29,17 +29,19 @@ kl.log = (msg) ->
     post_message('__kl_log__', msg)
 
 kl.error = (msg) ->
-    posg_message('__kl_error__', msg)
+    post_message('__kl_error__', msg)
 
 post_message = (msg, data = {}) ->
     postMessage({'msg' : msg, 'data' : data})
 
 import_project = (kwargs) ->
     kl.config = kwargs.kl_config
+    _project_imported = () ->
+        kl.log('The project script has been imported')
+        pj.init(kwargs.app_config)
     kl.include(kwargs.app_config.__kl_project_script_url__,
-               ()->kl.log('The project script has been imported'),
-               kl.error)
-    pj.init(kwargs.app_config)
+        _project_imported, kl.error)
+
 
 
 # Although the events and handlers  below look alike the code
