@@ -44,8 +44,8 @@ class TemporalStorage(object):
     def __getitem__(self, task_id):
         """Returns the task results.
 
-        :rtype:  ``{node_id1: result1, ... }`` dict, where
-                 ``node_idx`` is an instance of :class:`NodeID`.
+        :rtype:  ``(node_id : result)`` ... iterator, where
+                 ``node_id`` is an instance of :class:`NodeID`.
         """
 
     @abstractmethod

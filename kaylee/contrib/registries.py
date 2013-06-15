@@ -1,4 +1,14 @@
 # -*- coding: utf-8 -*-
+"""
+    kaylee.contrib.registries
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    The module provides basic Kaylee Node registry implementation(s).
+
+    :copyright: (c) 2013 by Zaur Nasibov.
+    :license: MIT, see LICENSE for more details.
+"""
+
 from datetime import datetime
 from kaylee.node import NodesRegistry, NodeID, extract_node_id
 

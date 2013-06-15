@@ -14,7 +14,7 @@
     :license: MIT, see LICENSE for more details.
 """
 
-__version__ = '0.3a7'
+__version__ = '0.3'
 
 from . import loader
 kl = loader.LazyKaylee()

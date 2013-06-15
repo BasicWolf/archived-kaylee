@@ -91,6 +91,13 @@ You can install the supported front-end(s) as well::
   $ pip install flask django
 
 
+Demo projects
+-------------
+
+All Kaylee demo projects as well as instructions to setup and run
+the demo environment are available in the following Github repository:
+http://github.com/BasicWolf/kaylee-demo-projects
+
 |
 
 Continue with :ref:`basics`.
@@ -99,4 +106,3 @@ Continue with :ref:`basics`.
 .. _Flask: http://flask.pocoo.org
 .. _Django: http://djangoproject.com
 .. _virtualenv: http://www.virtualenv.org
-.. _`demo archive`: _static/kaylee_dev_demo.zip

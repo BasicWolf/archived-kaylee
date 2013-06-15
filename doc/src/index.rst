@@ -8,6 +8,11 @@ Welcome to Kaylee
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+Kaylee is a Python and JavaScript framework for developing in-browser
+distributed and volunteer computing applications that allows programmers
+to concentrate on business logic by leaving all the computational nodes
+handling to Kaylee.
+
 User's Guide
 ------------
 

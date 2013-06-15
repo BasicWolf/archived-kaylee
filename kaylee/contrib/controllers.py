@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+"""
+    kaylee.contrib.controllers
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    The module provides basic Kaylee controller implementations.
+
+    :copyright: (c) 2013 by Zaur Nasibov.
+    :license: MIT, see LICENSE for more details.
+"""
 from kaylee.controller import Controller, NO_SOLUTION, NOT_SOLVED
 from kaylee.errors import (ApplicationCompletedError,
                            NodeRequestRejectedError,

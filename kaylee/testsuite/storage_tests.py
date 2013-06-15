@@ -111,9 +111,9 @@ class TemporalStorageTestsBase(SubclassTestsBase):
         self._fill_storage(ts, self.SOME, node_id=node_id)
         self.assertEqual(len(ts), self.SOME)
         for i in range(0, self.SOME):
-            tid = ts[_tgen(i)]
+            tid_res = ts[_tgen(i)]
             del ts[_tgen(i)]
-            self.assertRaises(KeyError, ts.__getitem__, tid)
+            self.assertRaises(KeyError, ts.__getitem__, list(tid_res)[0])
         self.assertEqual(len(ts), 0)
 
     def test_clear(self):

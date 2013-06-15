@@ -211,6 +211,8 @@ class NodeID(object):
             nid += struct.pack(">i", NodeID._inc)[2:4]
             NodeID._inc = (NodeID._inc + 1) % 0xFFFF
         # 4 bytes host
+        #pylint: disable-msg=E1101
+        #E1101: Instance of 'md5' has no 'update' member
         host_hash = hashlib.md5()
         host_hash.update(remote_host)
         nid += host_hash.digest()[0:4]

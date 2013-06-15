@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
+"""
+    kaylee.contrib.storages
+    ~~~~~~~~~~~~~~~~~~~~~~~
+
+    The module provides basic Kaylee storages' implementations.
+
+    :copyright: (c) 2013 by Zaur Nasibov.
+    :license: MIT, see LICENSE for more details.
+"""
 #pylint: disable-msg=W0231
+
 from kaylee.storage import TemporalStorage, PermanentStorage
 from kaylee.node import NodeID
 
@@ -30,8 +40,8 @@ class MemoryTemporalStorage(TemporalStorage):
         self._total_count = 0
 
     def __getitem__(self, task_id):
-        nr_dict = self._d.get(task_id, {})
-        return {NodeID(n): r for n, r in nr_dict.iteritems()}
+        nr_dict = self._d[task_id]
+        return ((NodeID(n), r) for n, r in nr_dict.iteritems())
 
     def contains(self, task_id, node_id=None, result=None):
         try:
