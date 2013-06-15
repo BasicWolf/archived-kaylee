@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
+"""
+    kaylee.manager.command
+    ~~~~~~~~~~~~~~~~~~~~~~
+
+    The module contains base Kaylee manager commands.
+
+    :copyright: (c) 2013 by Zaur Nasibov.
+    :license: MIT, see LICENSE for more details.
+"""
 import argparse
-from StringIO import StringIO
-from contextlib import closing
 
 
 class BaseCommand(object):
@@ -80,4 +87,3 @@ class AdminCommandsManager(CommandsManager):
 class LocalCommandsManager(CommandsManager):
     help = 'Kaylee local environment manager'
     command_class = LocalCommand
-

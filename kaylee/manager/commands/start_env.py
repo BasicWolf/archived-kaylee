@@ -17,7 +17,8 @@ class StartEnvCommand(AdminCommand):
     def execute(opts):
         start_env(opts)
 
-
+#pylint: disable-msg=R0914
+#R0914: 21,0:start_env: Too many local variables (16/15)
 def start_env(opts):
     ENV_TEMPLATE_DIR = 'templates/env_template'
     ENV_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__),

@@ -2,7 +2,7 @@ _tasks_counter = 1
 
 $(document).ready( () ->
     kl_console.init('console')
-    kl_console.print('<b>Kaylee status console</b><br>')
+    kl_console.print('<b>Kaylee echo console</b><br>')
     kl.node_registered.bind(on_node_registered)
     kl.node_subscribed.bind(on_node_subscribed)
     kl.node_unsubscibed.bind(on_node_unsubscibed)
@@ -22,7 +22,7 @@ on_node_registered = (data) ->
     if data.applications.length == 0
         kl_console.print("No applications found")
         return
-        
+
     apps = data.applications.join(', ')
     app = data.applications[0]
     kl_console.print("Available applications:
@@ -31,7 +31,7 @@ on_node_registered = (data) ->
                       <span class='cem'>#{app}</span>.")
     kl.subscribe(app)
     return
-    
+
 on_node_subscribed = (config) ->
 #    if config.__kl_project_mode__ == kl.MANUAL_PROJECT_MODE
 #        kl_console.set_style(kl_console.HALF_SIZE_STYLE)
@@ -43,34 +43,35 @@ on_node_subscribed = (config) ->
 on_node_unsubscibed = (data) ->
     kl_console.print("Node unsubscibed: <span class='cem'>#{data}</span>")
     return
-    
+
 on_project_imported = (app_name) ->
     kl_console.print("Project files imported successfully.")
     return
-    
+
 on_task_received = (data) ->
-    kl_console.print("Task [<span class='cem'>id=#{data.id} /
-                      ##{_tasks_counter}</span>] received.")
+    kl_console.print("<br>Task [<span class='cem'>id=#{data.id} /
+                      ##{_tasks_counter}</span>] received. <br>
+                      Data: #{JSON.stringify(data)}")
     return
-    
+
 on_task_completed = (data) ->
     kl_console.print("Task [<span class='cem'>##{_tasks_counter}</span>]
-                      completed.")
+                      completed. <br>Result: #{JSON.stringify(data)}")
     _tasks_counter += 1
     return
-    
+
 on_result_sent = () ->
     kl_console.print("The result has been sent to the server.")
     return
-    
+
 on_server_error = (message) ->
     kl_console.print("<span class='cerr'>SERVER ERROR: </span> #{message}")
     return
-    
+
 on_message_logged = (message) ->
     kl_console.print("<span class='cem'>LOG:</span> #{message}")
     return
-    
+
 # window.onerror = (message, url, linenumber) ->
 #     kl_console.print("<span class='cerr'>ERROR: </span> #{message};"
 #         " at #{url}:#{linenumber}")
