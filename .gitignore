@@ -3,6 +3,7 @@ env/*
 *.backups*
 *.pyc
 *.pyo
+.coverage
 build/
 Kaylee.egg-info/*
 dist/
