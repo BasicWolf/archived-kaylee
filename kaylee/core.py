@@ -14,7 +14,7 @@ import sys
 import json
 import traceback
 import logging
-from StringIO import StringIO
+from io import StringIO
 from functools import partial
 from contextlib import closing
 from functools import wraps
@@ -215,7 +215,7 @@ class Kaylee(object):
         """
         node = self.registry[node_id]
         try:
-            if not isinstance(result, basestring):
+            if not isinstance(result, str):
                 raise ValueError('Kaylee expects the incoming result to be in '
                                  'string format, not {}'.format(
                                      result.__class__.__name__))
@@ -277,7 +277,7 @@ class Config(DictAsObjectWrapper):
         if not isinstance(self.AUTO_GET_ACTION, bool):
             raise InvalidConfigurationError('AUTO_GET_ACTION is not a boolean')
         #pylint: disable-msg=E1101
-        if not isinstance(self.SECRET_KEY, basestring):
+        if not isinstance(self.SECRET_KEY, str):
             raise InvalidConfigurationError('SECRET_KEY is not a string object')
 
     def __setattr__(self, name, value):

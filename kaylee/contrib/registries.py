@@ -30,7 +30,7 @@ class MemoryNodesRegistry(NodesRegistry):
                            'node {} was not found'.format(node))
 
     def clean(self):
-        nodes_to_clean = (node for node in self._d.iteritems()
+        nodes_to_clean = (node for node in self._d.items()
                           if datetime.now() - node.id.timestamp > self.timeout)
         for node in nodes_to_clean:
             del self._d[node]

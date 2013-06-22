@@ -179,9 +179,9 @@ class NodeID(object):
     _inc_lock = threading.Lock()
 
     def __init__(self, node_id=None, remote_host='127.0.0.1'):
-        if node_id is None and not isinstance(remote_host, basestring):
+        if node_id is None and not isinstance(remote_host, str):
             raise TypeError('remote_host must be an instance of {}, not {}'
-                            .format(basestring.__name__,
+                            .format(str.__name__,
                                     type(remote_host).__name__ )
                             )
         self._id = None
@@ -214,7 +214,7 @@ class NodeID(object):
         #pylint: disable-msg=E1101
         #E1101: Instance of 'md5' has no 'update' member
         host_hash = hashlib.md5()
-        host_hash.update(remote_host)
+        host_hash.update(remote_host.encode('utf-8'))
         nid += host_hash.digest()[0:4]
         # 10 bytes total
         self._id = nid
@@ -222,23 +222,20 @@ class NodeID(object):
     def _parse(self, nid):
         if isinstance(nid, NodeID):
             self._id = nid._id
-        elif isinstance(nid, basestring):
+        elif isinstance(nid, bytes):
             if len(nid) == 10:
-                if isinstance(nid, str):
-                    self._id = nid
-                else:
-                    raise InvalidNodeIDError(nid)
-            elif len(nid) == 20:
-                try:
-                    self._id = nid.decode('hex')
-                except (TypeError, ValueError):
-                    raise InvalidNodeIDError(nid)
+                self._id = nid
+            else:
+                raise InvalidNodeIDError(nid)
+        elif isinstance(nid, str):
+            if len(nid) == 20:
+                self._id = bytes.fromhex(nid)
             else:
                 raise InvalidNodeIDError(nid)
         else:
             raise TypeError('id must be an instance of {}, {} or {}, not {}'
                             .format(str.__name__,
-                                    unicode.__name__,
+                                    bytes.__name__,
                                     self.__class__.__name__,
                                     type(nid).__name__))
 
@@ -365,7 +362,7 @@ def extract_node_id(node_or_node_id):
     :returns: :class:`NodeID` object
     """
     no = node_or_node_id
-    if isinstance(no, basestring):
+    if isinstance(no, str):
         return NodeID(node_id=no)
     elif isinstance(no, NodeID):
         return no
@@ -373,7 +370,7 @@ def extract_node_id(node_or_node_id):
         return NodeID(node_id=no.id)
     else:
         raise TypeError('node must be an instance of {}, {}, or {} not'
-                        ' {}'.format(basestring.__name__,
+                        ' {}'.format(str.__name__,
                                      NodeID.__name__,
                                      Node.__name__,
                                      type(no).__name__))

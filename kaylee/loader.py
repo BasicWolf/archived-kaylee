@@ -10,12 +10,12 @@
 """
 
 import os
-import imp
 import importlib
 import inspect
 import types
 from copy import deepcopy
 from collections import defaultdict
+from importlib.machinery import SourceFileLoader
 
 import kaylee.contrib
 from .core import Kaylee
@@ -53,9 +53,9 @@ def load(settings):
     # Whatever the initial settings type is, load it (optional) and
     # convert it to a dictionary.
     # Note, that only settings with uppercase names' are loaded.
-    if isinstance(settings, basestring):
+    if isinstance(settings, str):
         if os.path.exists(settings):
-            settings = imp.load_source('kl_settings', settings)
+            settings = SourceFileLoader('kl_settings', settings).load_module()
     if isinstance(settings, (type, types.ModuleType)):
         d = {}
         for attr in dir(settings):
@@ -63,7 +63,7 @@ def load(settings):
                 d[attr] = getattr(settings, attr)
         settings = d
     if isinstance(settings, dict):
-        settings = {k : v for k, v in settings.iteritems() if k == k.upper()}
+        settings = {k : v for k, v in settings.items() if k == k.upper()}
 
     # at this point, if settings is not a dict, then object type is wrong.
     if not isinstance(settings, dict):
@@ -72,7 +72,7 @@ def load(settings):
                             dict.__name__,
                             type.__name__,
                             types.ModuleType.__name__,
-                            basestring.__name__,
+                            str.__name__,
                             type(settings).__name__))
 
     new_settings = deepcopy(_default_settings)

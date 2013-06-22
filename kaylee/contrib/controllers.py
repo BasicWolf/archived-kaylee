@@ -137,7 +137,7 @@ class ResultsComparatorController(Controller):
         #pylint: disable-msg=W0612
         #W0612: Unused variable 'node_id'
         ###
-        for node_id, res in res.iteritems():
+        for node_id, res in res.items():
             if r0 != res:
                 return False
         return True

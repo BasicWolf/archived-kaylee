@@ -41,7 +41,7 @@ class MemoryTemporalStorage(TemporalStorage):
 
     def __getitem__(self, task_id):
         nr_dict = self._d[task_id]
-        return ((NodeID(n), r) for n, r in nr_dict.iteritems())
+        return ((NodeID(n), r) for n, r in nr_dict.items())
 
     def contains(self, task_id, node_id=None, result=None):
         try:
@@ -63,12 +63,12 @@ class MemoryTemporalStorage(TemporalStorage):
         return self._total_count
 
     def keys(self):
-        return self._d.iterkeys()
+        return iter(self._d)
 
     def values(self):
         def node_result_tuple_generator():
-            for nr_dict in self._d.itervalues():
-                for nid_res_tuple in nr_dict.iteritems():
+            for nr_dict in self._d.values():
+                for nid_res_tuple in nr_dict.items():
                     # in Py3 yield from would be proper here
                     yield nid_res_tuple
         return node_result_tuple_generator()
@@ -98,10 +98,10 @@ class MemoryPermanentStorage(PermanentStorage):
             return task_id in self._d and result in self._d[task_id]
 
     def keys(self):
-        return self._d.iterkeys()
+        return iter(self._d)
 
     def values(self):
-        return self._d.itervalues()
+        return iter(self._d.values())
 
     @property
     def count(self):

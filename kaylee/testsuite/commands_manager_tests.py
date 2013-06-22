@@ -4,7 +4,7 @@ import sys
 import stat
 import tempfile
 import shutil
-import imp
+from importlib.machinery import SourceFileLoader
 
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.manager import (AdminCommandsManager, LocalCommandsManager,
@@ -81,7 +81,7 @@ class KayleeCommandsManagerTests(KayleeTest):
                         & stat.S_IEXEC)
         # test settings contents
         settings_path = _pjoin(tmpdir, 'klenv/settings.py')
-        settings = imp.load_source('tsettings', settings_path)
+        settings = SourceFileLoader('tsettings', settings_path).load_module()
         self.assertEqual(settings.PROJECTS_DIR,
                          _pjoin(tmpdir, 'klenv'))
 

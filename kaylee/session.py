@@ -13,7 +13,9 @@
 #pylint: disable-msg=E0611
 
 import random
-import cPickle as pickle
+import pickle
+import string
+import re
 from base64 import b64encode, b64decode
 from hmac import new as hmac
 from hashlib import sha1, sha256
@@ -21,9 +23,11 @@ from Crypto.Cipher import AES
 from abc import ABCMeta, abstractmethod
 
 from .util import get_secret_key
-from .errors import KayleeError
+from .util import KayleeError
+
 
 SESSION_DATA_ATTRIBUTE = '__kl_sd__'
+SESSION_DATA_KEY_NAME_REO = re.compile(r'^#[\w]+$', re.ASCII)
 
 class SessionDataManager(object):
     """The abstract base class representing Session data manager
@@ -106,7 +110,7 @@ class NodeSessionDataManager(SessionDataManager):
             return
 
         node.session_data = pickle.dumps(session_data, pickle.HIGHEST_PROTOCOL)
-        self.remove_session_data_from_task(session_data.iterkeys(), task)
+        self.remove_session_data_from_task(session_data.keys(), task)
 
     def restore(self, node, result):
         if node.session_data is None:
@@ -160,7 +164,7 @@ class JSONSessionDataManager(SessionDataManager):
 
         task[self.SESSION_DATA_ATTRIBUTE] =  _encrypt(session_data,
                                                       self.secret_key)
-        self.remove_session_data_from_task(session_data.iterkeys(), task)
+        self.remove_session_data_from_task(session_data.keys(), task)
 
     def restore(self, node, result):
         if self.SESSION_DATA_ATTRIBUTE not in result:
@@ -176,6 +180,12 @@ class JSONSessionDataManager(SessionDataManager):
         return self._secret_key
 
 
+class SessionKeyNameError(KayleeError):
+    """Raised when a session variable name is invalid."""
+    def __init__(self, why):
+        KayleeError.__init__(self, 'Invalid session variable name: {}'.format(why))
+
+
 def _encrypt(data, secret_key):
     """Encrypt the data and return its base64 representation.
 
@@ -184,34 +194,39 @@ def _encrypt(data, secret_key):
     :type data: any pickable Python object
     :type secret_key: str
     """
-    mac = hmac(secret_key, None, sha1)
-    encryption_key = sha256(secret_key).digest()
+    bsecret_key = secret_key.encode('utf-8')
+    mac = hmac(bsecret_key, None, sha1)
+    encryption_key = sha256(bsecret_key).digest()
 
-    iv = ''.join(chr(random.randint(0, 0xFF)) for i in xrange(16))
+    iv = bytes(random.randint(0, 0xFF) for i in range(16))
     encryptor = AES.new(encryption_key, AES.MODE_CBC, iv)
 
     b64_iv = b64encode(iv)
     result = [b64_iv]      # store initialization vector
-    for key, val in data.iteritems():
+    for key, val in data.items():
+        if SESSION_DATA_KEY_NAME_REO.match(key) is None:
+            raise SessionKeyNameError(key)
         result.append(_encrypt_attr(key, val, encryptor))
-        mac.update('|' + result[-1])
+        mac.update(b'|' + result[-1])
 
-    return '{}?{}'.format(b64encode(mac.digest()), '&'.join(result))
+    return '{}?{}'.format(b64encode(mac.digest()).decode('utf-8'),
+                          (b'&'.join(result)).decode('utf-8'))
 
 
 def _decrypt(s, secret_key):
+    bsecret_key = secret_key.encode('utf-8')
     base64_hash, data = s.split('?', 1)
-    mac = hmac(secret_key, None, sha1)
+    mac = hmac(bsecret_key, None, sha1)
 
     iv, data = data.split('&', 1)
     iv = b64decode(iv)
 
-    decryption_key = sha256(secret_key).digest()
+    decryption_key = sha256(bsecret_key).digest()
     decryptor = AES.new(decryption_key, AES.MODE_CBC, iv)
 
     res = {}
     for item in data.split('&'):
-        mac.update('|' + item)
+        mac.update(b'|' + item.encode('utf-8'))
         attr, val = _decrypt_attr(item, decryptor)
         res[attr] = val
 
@@ -223,12 +238,12 @@ def _decrypt(s, secret_key):
 
 def _encrypt_attr(attr, value, encryptor):
     BLOCK_SIZE = 32
-    PADDING = ' '
+    PADDING = b' '
     # one-liner to sufficiently pad the text to be encrypted
     pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
 
     val = pickle.dumps(value, pickle.HIGHEST_PROTOCOL)
-    val = '{}={}'.format(attr, val)
+    val = attr.encode('ascii') + b'=' + val
     val = encryptor.encrypt(pad(val))
     val = b64encode(val)
     return val
@@ -236,7 +251,7 @@ def _encrypt_attr(attr, value, encryptor):
 
 def _decrypt_attr(data, decryptor):
     tdata = b64decode(data)
-    tdata = decryptor.decrypt(tdata).rstrip(' ')
-    attr, val = tdata.split('=', 1)
+    tdata = decryptor.decrypt(tdata).rstrip(b' ')
+    attr, val = tdata.split(b'=', 1)
     val = pickle.loads(val)
-    return attr, val
+    return attr.decode('ascii'), val

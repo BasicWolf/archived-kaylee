@@ -53,7 +53,7 @@ class NodeIDTests(KayleeTest):
         ###
         NodeID._inc = 0 # modified for test purposes only
         remote = '127.0.0.1'
-        for i in xrange(0, 2**16 - 1):
+        for i in range(0, 2**16 - 1):
             n = NodeID.for_host(remote)
         bid = bytearray(n.binary)
         self.assertEqual(bid[4], 0xFF)
@@ -71,14 +71,14 @@ class NodeIDTests(KayleeTest):
         n1 = NodeID.for_host('127.0.0.1')
         n2 = NodeID(str(n1))
         self.assertEqual(n1, n2)
-        n2 = NodeID(unicode(n1))
+        n2 = NodeID(bytes.fromhex(str(n1)))
         self.assertEqual(n1, n2)
 
         n2 = NodeID(n1)
         self.assertEqual(n1, n2)
         self.assertRaises(TypeError, NodeID, 123)
         self.assertRaises(InvalidNodeIDError, NodeID, 'abc')
-        self.assertRaises(InvalidNodeIDError, NodeID, u'1'*10)
+        self.assertRaises(InvalidNodeIDError, NodeID, '1'*10)
 
     def test_dates(self):
         n1 = NodeID.for_host('127.0.0.1')

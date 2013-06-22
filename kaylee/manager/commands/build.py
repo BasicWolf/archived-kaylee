@@ -1,11 +1,11 @@
 from __future__ import print_function
 import os
 import sys
-import imp
 import importlib
 import subprocess
 import shutil
 import kaylee
+from importlib.machinery import SourceFileLoader
 from kaylee.manager import LocalCommand
 from kaylee.loader import find_packages, get_classes_from_module
 from kaylee.util import ensure_dir
@@ -26,7 +26,7 @@ class BuildCommand(LocalCommand):
         verify_build_dir(opts)
 
         print('Building Kaylee environment...')
-        settings = imp.load_source('settings', opts.settings_file)
+        settings = SourceFileLoader('settings', opts.settings_file).load_module()
         build_kaylee(opts)
         build_projects(settings, opts)
 
@@ -138,7 +138,7 @@ def coffee_handler(fpath, opts):
     #pylint: disable-msg=W0612
     #W0612: Unused variable 'stdoutdata'
     stdoutdata, stderrdata = proc.communicate()
-    if stderrdata is not '':
+    if stderrdata != b'':
         raise Exception('Error compiling .coffee script:\n{}'
                         .format(stderrdata))
 

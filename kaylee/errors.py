@@ -11,10 +11,9 @@
 
 import warnings
 
-
-class KayleeError(Exception):
-    """Base class for all Kaylee exceptions."""
-
+# TODO:
+# compatibility, this file is going to be removed
+from .util import KayleeError
 
 class KayleeProjectAssertError(KayleeError):
     """Base class for all Kaylee project-related runtime assertion

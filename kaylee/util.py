@@ -23,8 +23,10 @@ import importlib
 import contextlib
 import logging
 from datetime import timedelta
-from .errors import KayleeError
 
+
+class KayleeError(Exception):
+    """Base class for all Kaylee exceptions."""
 
 def parse_timedelta(s):
     try:
@@ -37,7 +39,7 @@ def parse_timedelta(s):
 
     try:
         time_params = {}
-        for (name, param) in match.groupdict().iteritems():
+        for (name, param) in match.groupdict().items():
             if param is not None:
                 time_params[name] = int(param)
         if time_params == {}:
@@ -115,14 +117,14 @@ class LazyObject(object):
 
 class DictAsObjectWrapper(object):
     def __init__(self, **kwargs):
-        for key, val in kwargs.iteritems():
+        for key, val in kwargs.items():
             setattr(self, key, val)
 
 
 class RecursiveDictAsObjectWrapper(object):
     def __init__(self, **kwargs):
         def _update(obj, d):
-            for key, val in d.iteritems():
+            for key, val in d.items():
                 if isinstance(val, dict):
                     nested_obj = RecursiveDictAsObjectWrapper(**val)
                     setattr(obj, key, nested_obj)
@@ -145,7 +147,7 @@ def random_string(length, alphabet=None, lowercase=True, uppercase=True,
             src += '!@#$%^&*()_-+=?/><,.|":;`~'
     else:
         src = alphabet
-    return ''.join(random.choice(src) for x in xrange(length))
+    return ''.join(random.choice(src) for x in range(length))
 
 
 def get_secret_key(key=None):
