@@ -9,7 +9,7 @@ install:
 
 
 # command to run tests
-script: run-tests.py
+script: make tests
 
 notifications:
   email: false
