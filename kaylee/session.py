@@ -23,7 +23,7 @@ from Crypto.Cipher import AES
 from abc import ABCMeta, abstractmethod
 
 from .util import get_secret_key
-from .errors import KayleeError
+from .errors import KayleeError, SessionKeyNameError
 
 
 SESSION_DATA_ATTRIBUTE = '__kl_sd__'
@@ -75,8 +75,20 @@ class SessionDataManager(object):
     @staticmethod
     def get_session_data(task):
         """Returns a dict with session variables found in task."""
-        return { key : task[key] for key in task
-                 if key.startswith('#') }
+        # data keys regular expression
+        try:
+            key_reo = _encrypt.key_reo
+        except AttributeError:
+            key_reo = _encrypt.key_reo = re.compile(r'^#[\w]+$', re.ASCII)
+
+        # find task data by #keys, test names, store to dict and return
+        ret = {}
+        for key in task:
+            if key.startswith('#'):
+                if key_reo.match(key) is None:
+                    raise SessionKeyNameError(key)
+                ret[key] = task[key]
+        return ret
 
     @staticmethod
     def remove_session_data_from_task(session_data_keys, task):
@@ -180,10 +192,6 @@ class JSONSessionDataManager(SessionDataManager):
         return self._secret_key
 
 
-class SessionKeyNameError(KayleeError):
-    """Raised when a session variable name is invalid."""
-    def __init__(self, why):
-        KayleeError.__init__(self, 'Invalid session variable name: {}'.format(why))
 
 
 def _encrypt(data, secret_key):
@@ -201,22 +209,15 @@ def _encrypt(data, secret_key):
     iv = bytes(random.randint(0, 0xFF) for i in range(16))
     encryptor = AES.new(encryption_key, AES.MODE_CBC, iv)
 
+    encrypted_data = _encrypt_data(data, encryptor)
+    mac.update(b'|' + encrypted_data)
+
     b64_iv = b64encode(iv)
-    result = [b64_iv]      # store initialization vector
-    # data keys regular expression
-    try:
-        key_reo = _encrypt.key_reo
-    except AttributeError:
-        key_reo = _encrypt.key_reo = re.compile(r'^#[\w]+$', re.ASCII)
+    data_out_list = [b64_iv, encrypted_data]
+    data_out = (b'&'.join(data_out_list)).decode('utf-8')
+    mac_out = b64encode(mac.digest()).decode('utf-8')
 
-    for key, val in data.items():
-        if key_reo.match(key) is None:
-            raise SessionKeyNameError(key)
-        result.append(_encrypt_attr(key, val, encryptor))
-        mac.update(b'|' + result[-1])
-
-    return '{}?{}'.format(b64encode(mac.digest()).decode('utf-8'),
-                          (b'&'.join(result)).decode('utf-8'))
+    return '{}?{}'.format(mac_out, data_out)
 
 
 def _decrypt(s, secret_key):
@@ -230,34 +231,30 @@ def _decrypt(s, secret_key):
     decryption_key = sha256(bsecret_key).digest()
     decryptor = AES.new(decryption_key, AES.MODE_CBC, iv)
 
-    res = {}
-    for item in data.split('&'):
-        mac.update(b'|' + item.encode('utf-8'))
-        attr, val = _decrypt_attr(item, decryptor)
-        res[attr] = val
+    mac.update(b'|' + data.encode('utf-8'))
+    decrypted_data = _decrypt_data(data, decryptor)
 
     if b64decode(base64_hash) == mac.digest():
-        return res
+        return decrypted_data
     else:
         raise KayleeError('Encrypted data signature verification failed.')
 
 
-def _encrypt_attr(attr, value, encryptor):
+def _pad_data(s):
     BLOCK_SIZE = 32
     PADDING = b' '
-    # one-liner to sufficiently pad the text to be encrypted
-    pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
+    return s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * PADDING
 
-    val = pickle.dumps(value, pickle.HIGHEST_PROTOCOL)
-    val = attr.encode('ascii') + b'=' + val
-    val = encryptor.encrypt(pad(val))
+
+def _encrypt_data(data, encryptor):
+    val = pickle.dumps(data, pickle.HIGHEST_PROTOCOL)
+    val = encryptor.encrypt(_pad_data(val))
     val = b64encode(val)
     return val
 
 
-def _decrypt_attr(data, decryptor):
-    tdata = b64decode(data)
-    tdata = decryptor.decrypt(tdata).rstrip(b' ')
-    attr, val = tdata.split(b'=', 1)
+def _decrypt_data(data, decryptor):
+    val = b64decode(data)
+    val = decryptor.decrypt(val).rstrip(b' ')
     val = pickle.loads(val)
-    return attr.decode('ascii'), val
+    return val

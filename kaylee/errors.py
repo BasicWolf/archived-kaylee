@@ -80,6 +80,12 @@ class InvalidConfigurationError(KayleeError):
             'Invalid configuration: ' + message)
 
 
+class SessionKeyNameError(KayleeError):
+    """Raised when a session variable name is invalid."""
+    def __init__(self, why):
+        KayleeError.__init__(self, 'Invalid session variable name: {}'.format(why))
+
+
 class KayleeWarning(UserWarning):
     pass
 

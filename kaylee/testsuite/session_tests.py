@@ -4,10 +4,13 @@ from kaylee.node import Node, NodeID
 from kaylee import KayleeError
 from kaylee.session import (_encrypt, _decrypt, JSONSessionDataManager,
                             NodeSessionDataManager, PhonySessionDataManager,
-                            SESSION_DATA_ATTRIBUTE, SessionKeyNameError)
+                            SESSION_DATA_ATTRIBUTE, 
+                            SessionDataManager,)
+from kaylee.errors import SessionKeyNameError
 
 class KayleeSessionTests(KayleeTest):
     def test_encrypt_decrypt(self):
+        # a dict
         d1 = {'#f1' : 'val1', '#f2' : 20}
         s1 = _encrypt(d1, 'abc')
         d1_d = _decrypt(s1, 'abc')
@@ -17,16 +20,26 @@ class KayleeSessionTests(KayleeTest):
         s2 = s1[3:] # pad the signature
         self.assertRaises(KayleeError, _decrypt, s2, 'abc')
 
+        # a list
+        d3 = ['123', 123, {1, 2, 3}]
+        s3 = _encrypt(d3, 'abc')
+        d3_d = _decrypt(s3, 'abc')
+        self.assertEqual(d3, d3_d)
+
+        # an int
+        d4 = 123
+        s4 = _encrypt(d4, 'abc')
+        d4_d = _decrypt(s4, 'abc')
+        self.assertEqual(d4, d4_d)
+
     def test_session_errors(self):
         # test for unicode characters in encrypted data
         derr = [
             {'#я1' : 'val1', '#f2' : 20},
-            {'#s1' : 'val1', 'f2' : 20},
-            {'#s1' : 'val1', '?f2' : 20},
             {'#s1' : 'val1', '#ц2' : 20},
         ]
         for d in derr:
-            self.assertRaises(SessionKeyNameError, _encrypt, d, 'abc')
+            self.assertRaises(SessionKeyNameError, SessionDataManager.get_session_data, d)
 
     def test_node_session_data_manager(self):
         node = Node(NodeID.for_host('127.0.0.1'))
