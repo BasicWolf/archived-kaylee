@@ -22,11 +22,9 @@ import string
 import importlib
 import contextlib
 import logging
+import itertools
 from datetime import timedelta
-
-
-class KayleeError(Exception):
-    """Base class for all Kaylee exceptions."""
+from .errors import KayleeError
 
 def parse_timedelta(s):
     try:
@@ -133,9 +131,12 @@ class RecursiveDictAsObjectWrapper(object):
         _update(self, kwargs)
 
 
+
 def random_string(length, alphabet=None, lowercase=True, uppercase=True,
                   digits=True, special=True, extra=''):
-    if alphabet is None:
+    if alphabet is not None:
+        src = alphabet
+    else:
         src = extra
         if lowercase:
             src += string.ascii_lowercase
@@ -145,8 +146,7 @@ def random_string(length, alphabet=None, lowercase=True, uppercase=True,
             src += string.digits
         if special:
             src += '!@#$%^&*()_-+=?/><,.|":;`~'
-    else:
-        src = alphabet
+
     return ''.join(random.choice(src) for x in range(length))
 
 

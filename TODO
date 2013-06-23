@@ -1,6 +1,5 @@
 v0.4
 ----
-* Migrate to Python 3
 * Move errors from error.py to appropriate *.py files
 * Communication through document.cookie: make sure that only 1 instance of
   Kaylee is running in a single browser.
@@ -39,6 +38,8 @@ Interesting links
 
 COMPLETED
 =========
+v0.4
+* Migrate to Python 3
 
 v0.3
 ----

@@ -112,7 +112,11 @@ class ResultsComparatorController(Controller):
             if norm_result is None:
                 raise NoneResultAssertError(result)
 
-        # 'results' computed for the task by various nodes
+        # no previous results for current task
+        if not self.temporal_storage.contains(task_id):
+            self.temporal_storage.add(task_id, node.id, norm_result)
+            return
+
         tmp_results = self.temporal_storage[task_id]
         if len(tmp_results) == self._results_count_threshold - 1:
             if self._results_are_equal(norm_result, tmp_results):

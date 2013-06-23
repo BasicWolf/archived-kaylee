@@ -23,11 +23,11 @@ from Crypto.Cipher import AES
 from abc import ABCMeta, abstractmethod
 
 from .util import get_secret_key
-from .util import KayleeError
+from .errors import KayleeError
 
 
 SESSION_DATA_ATTRIBUTE = '__kl_sd__'
-SESSION_DATA_KEY_NAME_REO = re.compile(r'^#[\w]+$', re.ASCII)
+
 
 class SessionDataManager(object):
     """The abstract base class representing Session data manager
@@ -203,8 +203,14 @@ def _encrypt(data, secret_key):
 
     b64_iv = b64encode(iv)
     result = [b64_iv]      # store initialization vector
+    # data keys regular expression
+    try:
+        key_reo = _encrypt.key_reo
+    except AttributeError:
+        key_reo = _encrypt.key_reo = re.compile(r'^#[\w]+$', re.ASCII)
+
     for key, val in data.items():
-        if SESSION_DATA_KEY_NAME_REO.match(key) is None:
+        if key_reo.match(key) is None:
             raise SessionKeyNameError(key)
         result.append(_encrypt_attr(key, val, encryptor))
         mac.update(b'|' + result[-1])

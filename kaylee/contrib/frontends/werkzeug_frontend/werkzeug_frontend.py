@@ -18,7 +18,8 @@ def kaylee_process_task(request, node_id):
     if request.method == 'GET':
         return json_response(kl.get_action(node_id))
     else:
-        next_task = kl.accept_result(node_id, request.data)
+        data = request.data.decode('utf-8')
+        next_task = kl.accept_result(node_id, data)
         # the reason for using request.data instead of request.json
         # is that Kaylee expects the "raw", non-processed data
         return json_response(next_task)

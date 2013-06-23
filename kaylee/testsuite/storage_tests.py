@@ -31,7 +31,7 @@ class TemporalStorageTestsBase(SubclassTestsBase):
         ts = self.cls_instance()
         node_id = NodeID()
         ts.add('t1', node_id, 'r1')
-        self.assertEqual(list(ts['t1']), [(node_id, 'r1'), ])
+        self.assertEqual(ts['t1'], {node_id : 'r1'})
 
         # add many
         ts = self.cls_instance()
@@ -39,7 +39,7 @@ class TemporalStorageTestsBase(SubclassTestsBase):
         self._fill_storage(ts, self.MANY, node_id=node_id)
         for i in range(0, self.MANY):
             tid = _tgen(i)
-            for nid, res in ts[tid]:
+            for nid, res in ts[tid].items():
                 self.assertEqual(nid, node_id)
                 self.assertEqual(res, _rgen(i))
 
@@ -56,8 +56,7 @@ class TemporalStorageTestsBase(SubclassTestsBase):
             }
         }
         ts.add('1', NodeID(), deepcopy(test_res))
-        nr_list = list(ts['1'])
-        added_res = nr_list[0][1]
+        added_res = list(ts['1'].values())[0]
         self.assertEqual(test_res, added_res)
 
     def test_overwrite(self):
@@ -66,7 +65,8 @@ class TemporalStorageTestsBase(SubclassTestsBase):
         node_id = NodeID()
         ts.add('t1', node_id, 'r1')
         ts.add('t1', node_id, 'r2')
-        self.assertEqual(list(ts['t1']), [(node_id, 'r2'), ])
+
+        self.assertEqual(ts['t1'], {node_id: 'r2'})
 
         # overwrite many
         ts = self.cls_instance()
@@ -76,7 +76,7 @@ class TemporalStorageTestsBase(SubclassTestsBase):
 
         for i in range(0, self.SOME):
             tid = _tgen(i)
-            for nid, res in ts[tid]:
+            for nid, res in ts[tid].items():
                 self.assertEqual(nid, node_id)
                 self.assertEqual(res, rgen(i))
 

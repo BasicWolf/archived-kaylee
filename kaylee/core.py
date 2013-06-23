@@ -162,7 +162,7 @@ class Kaylee(object):
         """
         self.registry[node_id].unsubscribe()
 
-#    @json_error_handler
+    @json_error_handler
     def get_action(self, node_id):
         """Returns an action (usually a task from the subscribed application).
         The format of the JSON response is::

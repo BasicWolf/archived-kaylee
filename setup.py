@@ -74,8 +74,8 @@ setup(
         'kaylee/bin/kaylee-admin.py',
     ],
     install_requires=[
-        'Werkzeug>=0.6.1',
-        'Jinja2>=2.4',
+        'Werkzeug>=0.10',
+        'Jinja2>=2.7',
         'pycrypto>=2.6',
     ],
 
@@ -89,7 +89,7 @@ setup(
         'Natural Language :: English',
         'Operating System :: POSIX',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.3',
         'Programming Language :: JavaScript',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
         'Topic :: Software Development :: Libraries :: Python Modules',
