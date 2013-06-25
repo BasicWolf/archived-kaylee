@@ -25,6 +25,9 @@ def tmp_chdir():
 
 
 class KayleeCommandsManagerTests(KayleeTest):
+    def setUp(self):
+        self.maxDiff = None
+
     class CommandWithBlankName(BaseCommand):
         #pylint: disable-msg=W0223
         #W0223:  Method 'execute' is abstract in class 'BaseCommand'

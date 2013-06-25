@@ -10,7 +10,7 @@ from kaylee import loader, Kaylee
 from kaylee.contrib import (MemoryTemporalStorage,
                             MemoryPermanentStorage,
                             MemoryNodesRegistry)
-from kaylee.session import JSONSessionDataManager
+from kaylee.session import ClientSessionDataManager
 from kaylee.loader import Loader
 
 _test_REGISTRY = {
@@ -29,7 +29,7 @@ class TestSettings(object):
     SECRET_KEY = '1234'
 
     SESSION_DATA_MANAGER = {
-        'name' : 'JSONSessionDataManager',
+        'name' : 'ClientSessionDataManager',
         'config' : {}
     }
 
@@ -109,7 +109,7 @@ class KayleeLoaderTests(KayleeTest):
         settings = dict(TestSettings.__dict__)
         ldr = Loader(settings)
         sdm = ldr.session_data_manager
-        self.assertIsInstance(sdm, JSONSessionDataManager)
+        self.assertIsInstance(sdm, ClientSessionDataManager)
 
     def test_load_kaylee(self):
         kl = loader.load(TestSettingsWithApps)
