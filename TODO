@@ -1,6 +1,6 @@
 v0.4
 ----
-* Move errors from error.py to appropriate *.py files
+
 * Communication through document.cookie: make sure that only 1 instance of
   Kaylee is running in a single browser.
 * Random data seed per application (e.g in Project settings)
@@ -51,6 +51,10 @@ v0.3
 + Config verification
 + Werkzeug support
 
+
+Cancelled
+---------
+
 - Refactor demo Kaylee.js path (e.g. static/js/kaylee/ -> static/kaylee/js)
   # No need in this, kaylee should not have any css.
 
@@ -61,3 +65,6 @@ v0.3
 
 - Uploading projects through management API
   # Mayble in some future version.
+
+- Move errors from error.py to appropriate *.py files
+  # bad idea

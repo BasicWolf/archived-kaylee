@@ -68,7 +68,9 @@ kl.api =
         return
 
 kl.register = () ->
-    kl.api.register()
+    kl.instance.is_unique(
+        kl.api.register,
+        () -> kl.error("Another Kaylee instance is already running"))
     return
 
 kl.subscribe = (name) ->
@@ -210,6 +212,8 @@ kl.log = (msg) ->
 kl.error = (msg) ->
     kl.log("ERROR: #{msg}")
     throw new kl.KayleeError(msg)
+
+
 
 # Kaylee events
 kl.node_registered = new Event(on_node_registered)

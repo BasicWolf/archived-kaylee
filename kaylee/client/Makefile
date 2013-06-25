@@ -1,6 +1,6 @@
 TARGETS = kaylee.js klworker.js
 KL_COFFEE = klshared.coffee klutil.coffee klajax.coffee klbenchmark.coffee \
-			kaylee.coffee 
+			klinstance.coffee kaylee.coffee 
 KL_WORKER_COFFEE = klshared.coffee klutil.coffee klajax.coffee klworker.coffee
 
 COFFEE = coffee

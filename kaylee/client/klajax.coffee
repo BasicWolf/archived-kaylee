@@ -2,7 +2,7 @@
 #    klajax.coffee
 #    ~~~~~~~~~~~~~
 #
-#    This is the base file of Kaylee client-side module.
+#    This file is a part of Kaylee client-side module.
 #    It contains a small AJAX library used in a browser's
 #    main JavaScript event loop.
 #

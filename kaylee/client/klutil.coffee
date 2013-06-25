@@ -2,15 +2,14 @@
 #    klutil.coffee
 #    ~~~~~~~~~~~~~
 #
-#    This is the base file of Kaylee client-side module.
+#    This file is a part of Kaylee client-side module.
 #    It contains the util and shared code used by Kaylee.
 #
 #    :copyright: (c) 2012 by Zaur Nasibov.
 #    :license: MIT, see LICENSE for more details.
 ###
 
-util = {}
-kl.util = util
+kl.util = util = {}
 
 util.is_function = (obj) ->
     return typeof(obj) == 'function'
@@ -19,7 +18,7 @@ util.ends_with = (str, suffix) ->
     return str.indexOf(suffix, str.length - suffix.length) != -1
 
 
-class Event
+kl.Event = class Event
     constructor : (handler = null) ->
         @handlers = []
         @handlers.push(handler) if handler?
@@ -37,10 +36,13 @@ class Event
     unbind : (handler) =>
         @handlers[t..t] = [] if (t = @handlers.indexOf(handler)) > -1
         return
-kl.Event = Event
 
 # currently (01.12.2012) a hack, hopefully will be fixed in newer
 # versions of CoffeeScript
-class KayleeError extends Error then constructor: -> super
+kl.KayleeError = class KayleeError extends Error then constructor: -> super
 
-kl.KayleeError = KayleeError
+util.after = (timeout, f) ->
+    setTimeout(f, timeout)
+
+util.every = (period, f) ->
+    setInterval(f, period)
