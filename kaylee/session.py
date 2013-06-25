@@ -113,7 +113,7 @@ class PhonySessionDataManager(SessionDataManager):
 KL_LOADER_DEFAULT_SESSION_DATA_MANAGER = PhonySessionDataManager
 
 
-class NodeSessionDataManager(SessionDataManager):
+class ServerSessionDataManager(SessionDataManager):
     """A session data manager, which keeps the data in
     :attr:`Node.session_data`."""
     def store(self, node, task):
@@ -132,7 +132,7 @@ class NodeSessionDataManager(SessionDataManager):
         result.update(session_data)
 
 
-class JSONSessionDataManager(SessionDataManager):
+class ClientSessionDataManager(SessionDataManager):
     """Stores encrypted session variables in task and restores them
     from the results. For example, the following task data::
 

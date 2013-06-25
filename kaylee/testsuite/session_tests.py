@@ -2,8 +2,8 @@ from copy import deepcopy
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.node import Node, NodeID
 from kaylee import KayleeError
-from kaylee.session import (_encrypt, _decrypt, JSONSessionDataManager,
-                            NodeSessionDataManager, PhonySessionDataManager,
+from kaylee.session import (_encrypt, _decrypt, ClientSessionDataManager,
+                            ServerSessionDataManager, PhonySessionDataManager,
                             SESSION_DATA_ATTRIBUTE, 
                             SessionDataManager,)
 from kaylee.errors import SessionKeyNameError
@@ -49,7 +49,7 @@ class KayleeSessionTests(KayleeTest):
             '#s2' : [1, 2, 3],
         }
 
-        nsdm = NodeSessionDataManager()
+        nsdm = ServerSessionDataManager()
         self.assertIsNone(node.session_data)
         nsdm.store(node, task)
         self.assertIsNotNone(node.session_data)
@@ -89,7 +89,7 @@ class KayleeSessionTests(KayleeTest):
             '#s2' : [1, 2, 3],
         }
 
-        jsdm = JSONSessionDataManager(secret_key='abc')
+        jsdm = ClientSessionDataManager(secret_key='abc')
         jsdm.store(node, task)
         self.assertIn(SESSION_DATA_ATTRIBUTE, task)
         self.assertEqual(task['id'], 'i1')
