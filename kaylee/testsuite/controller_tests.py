@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from abc import ABCMeta, abstractmethod
 
+from kaylee import Controller
 from kaylee.testsuite import (load_tests, TestPermanentStorage)
 from kaylee.testsuite.helper import SubclassTestsBase
 from kaylee.testsuite.projects.auto_test_project import AutoTestProject
@@ -10,13 +11,11 @@ from kaylee.errors import InvalidResultError
 
 
 
-class ControllerTestsBase(SubclassTestsBase):
+class ControllerTestsBase(SubclassTestsBase, metaclass=ABCMeta):
     """The class contains only basic generic tests that can be applied
     to any controller. Please subclass and extend the tests for thorough
     testing.
     """
-    __metaclass__ = ABCMeta
-
     def setUp(self):
         super(ControllerTestsBase, self).setUp()
 
@@ -53,6 +52,11 @@ class ControllerTestsBase(SubclassTestsBase):
 class SimpleControllerTests(ControllerTestsBase):
     def test_init(self):
         pass
+
+    def test_is_abstract(self):
+        project = AutoTestProject()
+        storage = TestPermanentStorage()
+        self.assertRaises(TypeError, Controller, 'app', project, storage)
 
     def cls_instance(self):
         return SimpleController('test_simple_controller_app',

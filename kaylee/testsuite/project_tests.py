@@ -31,6 +31,8 @@ class ProjectTests(KayleeTest):
                 super(MyProjectWithManualMode, self).__init__("/script.js", MANUAL_PROJECT_MODE)
         MyProjectWithManualMode()
 
+    def test_is_abstract(self):
+        self.assertRaises(TypeError, Project, '/script.ks', AUTO_PROJECT_MODE)
 
 
 kaylee_suite = load_tests([ProjectTests, ])

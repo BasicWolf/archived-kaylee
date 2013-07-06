@@ -291,7 +291,7 @@ class NodeID(object):
         return hash(self._id)
 
 
-class NodesRegistry(object):
+class NodesRegistry(object, metaclass=ABCMeta):
     """
     The interface for registered nodes storage. A NodesRegistry is a place
     where Kaylee keeps information about active  Nodes. It can be as simple
@@ -308,8 +308,6 @@ class NodesRegistry(object):
 
     :type timeout: str
     """
-    __metaclass__ = ABCMeta
-
     def __init__(self, timeout):
         #: Nodes timeout. Parsed from constructors ``timeout`` argument.
         #: Type: :class:`datetime.timedelta`.

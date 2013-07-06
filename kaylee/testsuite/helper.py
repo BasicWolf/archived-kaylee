@@ -9,14 +9,12 @@ from abc import ABCMeta, abstractmethod
 class KayleeTest(unittest.TestCase):
     """Base class for all Kaylee tests."""
 
-class SubclassTestsBase(KayleeTest):
+class SubclassTestsBase(KayleeTest, metaclass=ABCMeta):
     """The base class for (sub)classes, e.g. controllers, storages etc.
     tests. The idea that Kaylee provides basic tests, which can then be
     subclassed and extentended by class-specific tests"""
     SOME = 11
     MANY = SOME ** 2
-
-    __metaclass__ = ABCMeta
 
     def setUp(self):
         self.cls = self.cls_instance().__class__

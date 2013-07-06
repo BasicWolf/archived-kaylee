@@ -439,11 +439,17 @@ class PermanentStorageTestsBase(SubclassTestsBase):
 
 
 class MemoryPermanentStorageTests(PermanentStorageTestsBase):
+    def test_is_abstract(self):
+        self.assertRaises(TypeError, PermanentStorage)
+
     def cls_instance(self):
         return MemoryPermanentStorage()
 
 
 class MemoryTemporalStorageTests(TemporalStorageTestsBase):
+    def test_is_abstract(self):
+        self.assertRaises(TypeError, TemporalStorage)
+
     def cls_instance(self):
         return MemoryTemporalStorage()
 

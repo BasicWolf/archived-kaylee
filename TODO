@@ -1,8 +1,6 @@
 v0.4
 ----
 
-* Communication through document.cookie: make sure that only 1 instance of
-  Kaylee is running in a single browser.
 * Random data seed per application (e.g in Project settings)
 * Google App Engine support
 * Tornado support
@@ -39,7 +37,9 @@ Interesting links
 COMPLETED
 =========
 v0.4
-* Migrate to Python 3
++ Migrate to Python 3
++ Make sure that only 1 instance of Kaylee per host is running in a 
+  single browser.
 
 v0.3
 ----

@@ -12,14 +12,12 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
 
 
-class TemporalStorage(object):
+class TemporalStorage(object, metaclass=ABCMeta):
     """The interface for applications' temporal results storage.
 
     Note that using this storage is to be decided by a controller.
     A controller may not need a temporal storage at all.
     """
-    __metaclass__ = ABCMeta
-
     @abstractmethod
     def add(self, task_id, node_id, result):
         """Stores the task result returned by a node.
@@ -99,7 +97,7 @@ class TemporalStorage(object):
         return self.count
 
 
-class PermanentStorage(object):
+class PermanentStorage(object, metaclass=ABCMeta):
     """The interface for applications' permanent results storage.
     The storage can be a file, a database, a Python object in memory etc.
 
@@ -116,8 +114,6 @@ class PermanentStorage(object):
     Initially adds the results to the storage, and appends the results if
     called the second, the third etc. time with the same ``task_id`` argument.
     """
-    __metaclass__ = ABCMeta
-
     @abstractmethod
     def add(self, task_id, result):
         """Stores the task result."""

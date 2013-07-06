@@ -34,7 +34,7 @@ NO_SOLUTION = { KL_RESULT : 0x2 }
 NOT_SOLVED = { KL_RESULT : 0x4 }
 
 
-class Controller(object):
+class Controller(object, metaclass=ABCMeta):
     """A Controller object maintains the data (tasks and the results) flow
     between a project the outer :class:`Kaylee` interface and the storages.
     An instance of ``Controller`` with a bound project and storages forms
@@ -50,7 +50,7 @@ class Controller(object):
     :type permanent_storage: :class:`PermanentStorage`
     :type temporal_storage: :class:`TemporalStorage`
     """
-    __metaclass__ = ABCMeta
+
 
     _app_name_re = re.compile('^{}$'.format(app_name_pattern))
 

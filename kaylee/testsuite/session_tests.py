@@ -138,5 +138,7 @@ class KayleeSessionTests(KayleeTest):
         # this should be executed without any errors
         self.assertIsNone(psdm.store(node, task2))
 
+    def test_is_abstract(self):
+        self.assertRaises(TypeError, SessionDataManager)
 
 kaylee_suite = load_tests([KayleeSessionTests, ])

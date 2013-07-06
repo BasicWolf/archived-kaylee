@@ -28,13 +28,12 @@ KL_PROJECT_STYLES = '__kl_project_styles__'
 
 
 
-class Project(object):
+class Project(object, metaclass=ABCMeta):
     """Kaylee Projects abstract base class.
 
     :param script_url: The URL of the project's client part (\\*.js file).
     :param mode: defines :attr:`Project.mode <kaylee.Project.mode>`.
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self, script_url, mode, **kwargs):
         if mode not in [AUTO_PROJECT_MODE, MANUAL_PROJECT_MODE]:

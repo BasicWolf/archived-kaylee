@@ -29,13 +29,11 @@ from .errors import KayleeError, SessionKeyNameError
 SESSION_DATA_ATTRIBUTE = '__kl_sd__'
 
 
-class SessionDataManager(object):
+class SessionDataManager(object, metaclass=ABCMeta):
     """The abstract base class representing Session data manager
     interface.
 
     """
-    __metaclass__ = ABCMeta
-
     @abstractmethod
     def store(self, node, task):
         """Stores the session variables found in task and then  removes

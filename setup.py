@@ -74,7 +74,7 @@ setup(
         'kaylee/bin/kaylee-admin.py',
     ],
     install_requires=[
-        'Werkzeug>=0.10',
+        'Werkzeug>=0.9.1',
         'Jinja2>=2.7',
         'pycrypto>=2.6',
     ],
