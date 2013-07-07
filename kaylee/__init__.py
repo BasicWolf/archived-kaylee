@@ -17,7 +17,7 @@
 __version__ = '0.3'
 
 from . import loader
-kl = loader.LazyKaylee()
+
 
 from .core import Kaylee, Applications
 from .node import Node, NodeID, NodesRegistry
@@ -33,6 +33,7 @@ from .errors import (KayleeError,
                      NodeRequestRejectedError,
                      ApplicationCompletedError,)
 
+kl = loader.LazyKaylee()
 
 def setup(settings):
     #pylint: disable-msg=W0212

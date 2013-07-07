@@ -10,7 +10,7 @@ import string
 import kaylee
 from kaylee.testsuite import KayleeTest, load_tests
 from kaylee.util import (parse_timedelta, LazyObject, random_string,
-                         get_secret_key, DictAsObjectWrapper,
+                         DictAsObjectWrapper,
                          RecursiveDictAsObjectWrapper)
 from kaylee import KayleeError
 
@@ -124,32 +124,6 @@ class KayleeUtilTests(KayleeTest):
         s = random_string(1000, lowercase=False, uppercase=False, digits=False)
         for c in s:
             self.assertIn(c, special)
-
-    def test_get_secret_key(self):
-        sk = get_secret_key('abc')
-        self.assertEqual(sk, 'abc')
-
-        # test when config is not loaded
-        self.assertRaises(KayleeError, get_secret_key)
-
-        # test loading from config
-        from kaylee.testsuite import test_settings
-        from kaylee import setup
-        setup(test_settings)
-        sk = get_secret_key()
-        self.assertEqual(sk, test_settings.SECRET_KEY)
-
-        # test if default parameter works after previous call
-        sk = get_secret_key('abc')
-        self.assertEqual(sk, 'abc')
-
-        # test for proper behaviour after releasing the object from proxy
-        setup(None)
-        self.assertRaises(KayleeError, get_secret_key)
-
-        # and the final test :)
-        sk = get_secret_key('abc')
-        self.assertEqual(sk, 'abc')
 
     def test_dict_as_object_wrapper(self):
         #pylint: disable-msg=E1101

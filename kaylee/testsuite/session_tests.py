@@ -4,7 +4,7 @@ from kaylee.node import Node, NodeID
 from kaylee import KayleeError
 from kaylee.session import (_encrypt, _decrypt, ClientSessionDataManager,
                             ServerSessionDataManager, PhonySessionDataManager,
-                            SESSION_DATA_ATTRIBUTE, 
+                            SESSION_DATA_ATTRIBUTE, EncryptedSessionDataManager,
                             SessionDataManager,)
 from kaylee.errors import SessionKeyNameError
 
@@ -120,6 +120,10 @@ class KayleeSessionTests(KayleeTest):
 
         jsdm.restore(node, task)
         self.assertEqual(task, orig_task)
+
+        jsdm2 = ClientSessionDataManager(secret_key='abc')
+        self.assertIsInstance(jsdm2, EncryptedSessionDataManager)
+        self.assertEqual(len(jsdm2.secret_key), (len('abc')))
 
     def test_phony_session_data_manager(self):
         node = Node(NodeID.for_host('127.0.0.1'))

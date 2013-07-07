@@ -6,12 +6,14 @@
 from kaylee.testsuite import KayleeTest, load_tests, PROJECTS_DIR
 
 import os
-from kaylee import loader, Kaylee
+from kaylee import loader, Kaylee, KayleeError
+from kaylee.errors import SettingsError
 from kaylee.contrib import (MemoryTemporalStorage,
                             MemoryPermanentStorage,
                             MemoryNodesRegistry)
 from kaylee.session import ClientSessionDataManager
-from kaylee.loader import Loader
+from kaylee.loader import Loader, SettingsValidator
+from kaylee.util import generate_sercret_key
 
 _test_REGISTRY = {
     'name' : 'MemoryNodesRegistry',
@@ -26,11 +28,13 @@ class TestSettings(object):
 
     AUTO_GET_ACTION = True
 
-    SECRET_KEY = '1234'
+    SECRET_KEY = generate_sercret_key()
 
     SESSION_DATA_MANAGER = {
         'name' : 'ClientSessionDataManager',
-        'config' : {}
+        'config' : {
+            'secret_key' : SECRET_KEY
+        }
     }
 
 
@@ -39,7 +43,7 @@ class TestSettingsWithApps(object):
 
     AUTO_GET_ACTION = True
 
-    SECRET_KEY = '1234'
+    SECRET_KEY = generate_sercret_key()
 
     APPLICATIONS = [
         {
@@ -130,6 +134,18 @@ class KayleeLoaderTests(KayleeTest):
         app = kl.applications['test.1']
         self.assertEqual(app.__class__.__name__, 'TestController1')
         self.assertEqual(app.project.__class__.__name__, 'AutoTestProject')
+
+
+    def test_settings_validator(self):
+        sv = SettingsValidator
+        self.assertRaises(SettingsError, sv.validate_AUTO_GET_ACTION, {'AUTO_GET_ACTION': 10})
+        # self.assertRaises(KayleeError, Settings, SECRET_KEY=123)
+        # self.assertRaises(KayleeError, Settings, SECRET_KEY='abc')
+
+        # self.assertIsNone(_validate({
+        #     'SECRET_KEY': ' ',
+        #     'AUTO_GET_ACTION' : True
+        # }))
 
 
 kaylee_suite = load_tests([KayleeLoaderTests])

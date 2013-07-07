@@ -72,12 +72,11 @@ class ApplicationCompletedError(NodeRequestRejectedError):
             .format(application.name) )
 
 
-class InvalidConfigurationError(KayleeError):
-    """Raised when :class:`Kaylee object <Kaylee>` configuration is
-    configured improperly."""
+class SettingsError(KayleeError):
+    """Raised when Kaylee settings are invalid"""
     def __init__(self, message):
-        super(InvalidConfigurationError, self).__init__(
-            'Invalid configuration: ' + message)
+        super(SettingsError, self).__init__(
+            'Invalid settings: ' + message)
 
 
 class SessionKeyNameError(KayleeError):

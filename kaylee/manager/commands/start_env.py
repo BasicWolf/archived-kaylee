@@ -2,8 +2,7 @@ import os
 import stat
 from jinja2 import Template
 from kaylee.manager import AdminCommand
-from kaylee.util import random_string
-
+from kaylee.util import generate_sercret_key
 
 class StartEnvCommand(AdminCommand):
     name = 'startenv'
@@ -36,7 +35,7 @@ def start_env(opts):
         os.mkdir(dest_path)
 
     render_args = {
-        'SECRET_KEY' : random_string(32),
+        'SECRET_KEY' : generate_sercret_key(),
         'PROJECTS_DIR' : dest_path,
     }
 

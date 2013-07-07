@@ -22,11 +22,11 @@ from hashlib import sha1, sha256
 from Crypto.Cipher import AES
 from abc import ABCMeta, abstractmethod
 
-from .util import get_secret_key
+from .util import random_string
 from .errors import KayleeError, SessionKeyNameError
 
 
-SESSION_DATA_ATTRIBUTE = '__kl_sd__'
+SESSION_DATA_ATTRIBUTE = '__kl_session_data__'
 
 
 class SessionDataManager(object, metaclass=ABCMeta):
@@ -94,6 +94,22 @@ class SessionDataManager(object, metaclass=ABCMeta):
             del task[key]
 
 
+
+class EncryptedSessionDataManager(SessionDataManager):
+    """The implementation of this abstract class is a
+    session data manager which encrypts all stored session data.
+
+    :param secret_key: A key used to encrypt the data. Generated automatically
+                       if not supplied
+                       (see :attr:`EncryptedSessionDataManager.SECRET_KEY_LENGTH`).
+    :type secret_key: str
+    """
+
+    def __init__(self, secret_key):
+        self.secret_key = secret_key
+        super(EncryptedSessionDataManager, self).__init__()
+
+
 class PhonySessionDataManager(SessionDataManager):
     """The default session data manager which throws :class:`KayleeError`
     if any session variables are encountered in an outgoing task."""
@@ -130,7 +146,7 @@ class ServerSessionDataManager(SessionDataManager):
         result.update(session_data)
 
 
-class ClientSessionDataManager(SessionDataManager):
+class ClientSessionDataManager(EncryptedSessionDataManager):
     """Stores encrypted session variables in task and restores them
     from the results. For example, the following task data::
 
@@ -144,10 +160,10 @@ class ClientSessionDataManager(SessionDataManager):
 
       task = {
           id: 'i1',
-          '__kl_sd__': 'yn/fCyEcW8AFrPps7XoxunC...' # 143 chars in total
+          '#__kl_sd__': 'yn/fCyEcW8AFrPps7XoxunC...' # 143 chars in total
       }
 
-    The Kaylee client-side engine automatically attaches the ``'__kl_sd__``
+    The Kaylee client-side engine automatically attaches the ``'#__kl_sd__``
     data to the JSON result sent to the server, so that the session data
     could be decrypted and restored, e.g.::
 
@@ -156,16 +172,13 @@ class ClientSessionDataManager(SessionDataManager):
           '#s1': 10,
           '#s2': [1, 2, 3]
       }
-
-    :param secret_key: An override of the global :config:`SECRET_KEY`
-                       parameter.
     """
-    def __init__(self, secret_key=None):
+    def __init__(self, secret_key):
         #pylint: disable-msg=W0231
         #W0231: __init__ method from base class 'SessionDataManager'
         #       is not called.
-        self._secret_key = secret_key
         self.SESSION_DATA_ATTRIBUTE = SESSION_DATA_ATTRIBUTE
+        super(ClientSessionDataManager, self).__init__(secret_key)
 
     def store(self, node, task):
         session_data = self.get_session_data(task)
@@ -182,14 +195,6 @@ class ClientSessionDataManager(SessionDataManager):
         sd = _decrypt(result[self.SESSION_DATA_ATTRIBUTE], self.secret_key)
         del result[self.SESSION_DATA_ATTRIBUTE]
         result.update(sd)
-
-    @property
-    def secret_key(self):
-        if self._secret_key is None:
-            self._secret_key = get_secret_key()
-        return self._secret_key
-
-
 
 
 def _encrypt(data, secret_key):

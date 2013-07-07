@@ -2,7 +2,8 @@
 # when a result is accepted from a node.
 AUTO_GET_ACTION = True
 
-# The key used for session encryption etc.
+# A string that can be explicitly used in all the configurations
+# which require a secret key (for encryption, signing etc).
 SECRET_KEY = '{{ SECRET_KEY }}'
 
 # A directory in which Kaylee searches for user projects

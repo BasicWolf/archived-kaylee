@@ -26,6 +26,9 @@ import itertools
 from datetime import timedelta
 from .errors import KayleeError
 
+
+MIN_SECRET_KEY_LENGTH = 32
+
 def parse_timedelta(s):
     try:
         match = parse_timedelta.timeout_regex.match(s)
@@ -150,21 +153,8 @@ def random_string(length, alphabet=None, lowercase=True, uppercase=True,
     return ''.join(random.choice(src) for x in range(length))
 
 
-def get_secret_key(key=None):
-    if key is not None:
-        return key
-    else:
-        from kaylee import kl
-        if kl._wrapped is None:
-            raise KayleeError('Cannot locate a valid secret key because '
-                              'Kaylee proxy object has not beet set up.')
-        key = kl.config.SECRET_KEY
-        if key is None:
-            raise KayleeError('SECRET_KEY configuration option is not '
-                              'defined.')
-        return key
-
-
+def generate_sercret_key():
+    return random_string(MIN_SECRET_KEY_LENGTH)
 
 def is_strong_subclass(C, B):
     """Return whether class C is a subclass (i.e., a derived class) of class B

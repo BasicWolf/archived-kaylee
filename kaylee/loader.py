@@ -19,16 +19,14 @@ from importlib.machinery import SourceFileLoader
 
 import kaylee.contrib
 from .core import Kaylee
-from .errors import KayleeError
-from .util import LazyObject, is_strong_subclass
+from .errors import KayleeError, SettingsError
+from .util import (LazyObject, is_strong_subclass, MIN_SECRET_KEY_LENGTH,)
 from . import storage, controller, project, node, session
 
 import logging
 log = logging.getLogger(__name__)
 
-_default_settings = {
-    'AUTO_GET_ACTION' : True,
-}
+
 
 
 class LazyKaylee(LazyObject):
@@ -75,10 +73,9 @@ def load(settings):
                             str.__name__,
                             type(settings).__name__))
 
-    new_settings = deepcopy(_default_settings)
-    new_settings.update(settings)
     try:
-        loader = Loader(new_settings)
+        SettingsValidator.validate(settings)
+        loader = Loader(settings)
         registry = loader.registry
         sdm = loader.session_data_manager
         apps = loader.applications
@@ -91,8 +88,32 @@ def load(settings):
                   **settings)
 
 
+class SettingsValidator:
+    @staticmethod
+    def validate(settings):
+        SettingsValidator.validate_AUTO_GET_ACTION(settings)
+        SettingsValidator.validate_SECRET_KEY(settings)
 
-class Loader(object):
+    @staticmethod
+    def validate_AUTO_GET_ACTION(settings):
+        val = settings['AUTO_GET_ACTION']
+        if not isinstance(val, bool):
+            raise SettingsError('AUTO_GET_ACTION is not a boolean')
+
+    @staticmethod
+    def validate_SECRET_KEY(settings):
+        if 'SECRET_KEY' not in settings:
+            return
+        val = settings['SECRET_KEY']
+        if not isinstance(val, str):
+            raise SettingsError('SECRET_KEY is not a string object')
+        if len(val) < MIN_SECRET_KEY_LENGTH:
+            raise SettingsError('SECRET_KEY is too short (at least {} '
+                                'characters are required)'
+                                .format(MIN_SECRET_KEY_LENGTH))
+
+
+class Loader:
     _loadable_base_classes = [
         project.Project,
         controller.Controller,
@@ -105,7 +126,6 @@ class Loader(object):
     def __init__(self, settings):
         self._classes = defaultdict(dict)
         self._settings = settings
-
         # load classes from contrib (non-refreshable)
         self._update_classes(kaylee.contrib)
         # load session data managers
@@ -115,6 +135,7 @@ class Loader(object):
             projects_dir = settings['PROJECTS_DIR']
             for mod in find_modules(projects_dir):
                 self._update_classes(mod)
+
 
     @property
     def registry(self):

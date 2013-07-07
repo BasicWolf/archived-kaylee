@@ -20,8 +20,8 @@ from contextlib import closing
 from functools import wraps
 
 from .node import Node, NodeID
-from .errors import (KayleeError, InvalidResultError, NodeRequestRejectedError,
-                     InvalidConfigurationError)
+from .errors import (KayleeError, InvalidResultError, NodeRequestRejectedError)
+
 from .controller import KL_RESULT
 from .util import DictAsObjectWrapper
 
@@ -114,7 +114,7 @@ class Kaylee(object):
         node = Node(NodeID.for_host(remote_host))
         self.registry.add(node)
         return json.dumps ({ 'node_id' : str(node.id),
-                             'config' : self.config.to_client_dict(),
+                             'config' : self.config.client_config(),
                              'applications' : self._applications.names } )
 
     @json_error_handler
@@ -262,23 +262,10 @@ class Config(DictAsObjectWrapper):
     """The ``Config`` object maintains the run-time Kaylee
     configuration options (see :ref:`configuration` for full description).
     """
-    client_config_fields = [
-        'AUTO_GET_ACTION',
-    ]
-
     def __init__(self, **kwargs):
         super(Config, self).__init__(**kwargs)
         self._dirty = True
         self._cached_dict = {}
-        self._validate()
-
-    def _validate(self):
-        #pylint: disable-msg=E1101
-        if not isinstance(self.AUTO_GET_ACTION, bool):
-            raise InvalidConfigurationError('AUTO_GET_ACTION is not a boolean')
-        #pylint: disable-msg=E1101
-        if not isinstance(self.SECRET_KEY, str):
-            raise InvalidConfigurationError('SECRET_KEY is not a string object')
 
     def __setattr__(self, name, value):
         if name != '_dirty':
@@ -287,10 +274,14 @@ class Config(DictAsObjectWrapper):
         else:
             self.__dict__[name] = value
 
-    def to_client_dict(self):
+    def client_config(self):
+        client_config_fields = [
+            'AUTO_GET_ACTION',
+        ]
+
         if self._dirty:
-            self._cached_dict = { k : getattr(self, k)
-                                  for k in self.client_config_fields }
+            self._cached_dict = {k : getattr(self, k)
+                                 for k in client_config_fields}
             self._dirty = False
         return self._cached_dict
 

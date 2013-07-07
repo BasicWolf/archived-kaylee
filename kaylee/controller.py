@@ -8,9 +8,9 @@
     :copyright: (c) 2012 by Zaur Nasibov.
     :license: MIT, see LICENSE for more details.
 """
-
 import re
 from abc import ABCMeta, abstractmethod
+
 
 #: The Application name regular expression pattern which can be used in
 #: e.g. web frameworks' URL dispatchers.
@@ -55,7 +55,7 @@ class Controller(object, metaclass=ABCMeta):
     _app_name_re = re.compile('^{}$'.format(app_name_pattern))
 
     def __init__(self, name, project, permanent_storage,
-                 temporal_storage=None):
+                 temporal_storage=None, **kwargs):
         if Controller._app_name_re.match(name) is None:
             raise ValueError('Invalid application name: {}'
                              .format(name))

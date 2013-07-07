@@ -20,7 +20,7 @@
 
 # CONSTANTS #
 #-----------#
-SESSION_DATA_ATTRIBUTE = '__kl_sd__'
+SESSION_DATA_ATTRIBUTE = '__kl_session_data__'
 
 WORKER_SCRIPT_URL = ((scripts) ->
     scripts = document.getElementsByTagName('script')
@@ -29,7 +29,7 @@ WORKER_SCRIPT_URL = ((scripts) ->
     if not script.getAttribute.length?
         path = script.src
 
-    # replace 'http://address/kaylee.js' with 'http://address/klworker.js'
+    # replace 'http://path/to/kaylee.js' with 'http://path/to/klworker.js'
     path = script.getAttribute('src', -1)
     return path[..path.lastIndexOf('/')] + 'klworker.js'
 )()
