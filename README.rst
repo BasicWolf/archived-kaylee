@@ -1,3 +1,8 @@
+Archived
+========
+
+The project has been archived, no more commits are expected.
+
 Kaylee
 ======
 
